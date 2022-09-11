@@ -21,6 +21,11 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+
+output/
+src/output/
+sample/*.dll
+
 x64/
 x86/
 TabbedWnd/
@@ -88,7 +93,6 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.rar
-*.dll
 *.exe
 *.obj
 *.iobj
@@ -376,3 +380,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/src/Sample/DotnetComponent/SunnyCtrl/Cosmos.dll
