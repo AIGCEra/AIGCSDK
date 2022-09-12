@@ -694,6 +694,7 @@ namespace CommonUniverse {
 	class CWebRTImpl {
 	public:
 		CWebRTImpl() {
+			m_bIsNoWebRT = false;
 			m_bHostMsgLoop = false;
 			m_hParent = NULL;
 			m_hSmallIcon = nullptr;
@@ -722,6 +723,7 @@ namespace CommonUniverse {
 		bool m_bOfficeApp = false;
 		bool m_bEclipse = false;
 		bool m_bIsDlgApp = false;
+		bool m_bIsNoWebRT = false;
 		bool m_bCanClose;
 		bool m_bWinFormActived;
 		bool m_bEnableProcessFormTabKey;
