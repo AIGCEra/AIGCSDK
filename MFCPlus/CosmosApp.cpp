@@ -1,5 +1,5 @@
 /********************************************************************************
- *           Web Runtime for Application - Version 1.0.0.202203120001           *
+ *           Web Runtime for Application - Version 1.0.1.202110220001           *
  ********************************************************************************
  * Copyright (C) 2002-2021 by Tangram Team.   All Rights Reserved.
  *
@@ -127,151 +127,191 @@
  *
  *******************************************************************************/
 
-#pragma once
+#include "CosmosApp.h"
+#include "TangramXmlParse.cpp"
+#include <afxole.h>
 
-#include <map>
-#include <afxcontrolbars.h>     // MFC support for ribbons and control bars
-#include "metahost.h"
-#include "CommonUniverse.h"
-#include "TangramXmlParse.h"
-#include <ppl.h>
-#include <ppltasks.h>
-#include <agents.h>
-#include <shlobj.h>
-#include <atlctl.h>
-#include <afxcview.h>
+#ifdef _AFXDLL
+extern CFrameWnd* g_pTopLevelFrame = nullptr;
+#endif
 
-using namespace std;
-using namespace ATL;
-using namespace concurrency;
+typedef IWebRT* (__stdcall* GetWebRT)();
+typedef CWebRTImpl* (__stdcall* GetWebRTImpl)(IWebRT**);
 
-#pragma comment(lib, "imagehlp.lib")
+typedef int(__stdcall* _InitApp)(bool bSupportCrashReporting, void*);
+typedef bool(__stdcall* _IsBrowserModel)(bool bSupportCrashReporting, void*);
+_InitApp FuncInitApp;
+_IsBrowserModel FuncIsBrowserModel;
+
+CWinApp* g_pAppBase = nullptr;
+IWebRT* g_pWebRT = nullptr;
 
 namespace CommonUniverse
 {
-	class CWebRTApp :
-		public CWinApp,
-		public IUniverseAppProxy,
-		public IWebRTWindowProvider {
-	public:
-		CWebRTApp();
-		virtual ~CWebRTApp();
-		CString GetDocTemplateID(CDocument* pDoc);
-		virtual bool InitApp();
+	CWebRTImpl* g_pWebRTImpl = nullptr;
+	CWebRTBrowserFactory* g_pBrowserFactory = nullptr;
 
-		//IWebRTWindowProvider:
-		virtual bool WebRTInit(CString strID);
-
-	private:
-		bool m_bBuiltInBrowser = false;
-		bool m_bCrashReporting = false;
-		bool m_bNoDefaultMainWnd = false;
-		map<CView*, CDocument*> m_mapViewDoc;
-		BOOL IsBrowserModel(bool bCrashReporting);
-		bool ProcessAppType(bool bCrashReporting);
-		virtual int Run();
-		virtual BOOL InitApplication();
-		virtual HWND GetActivePopupMenu(HWND hWnd);
-
-		//IUniverseAppProxy:
-		virtual void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
-		virtual void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
-		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
-		virtual CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
-		virtual CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
-		virtual void OnIPCMsg(CWebPageImpl* pWebPageImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
-		virtual void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
-		virtual void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID);
-		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd);
-		virtual CString QueryWndClassName(HWND hWnd);
-		virtual CString QueryDocType(HWND hWnd);
-		virtual bool EclipseAppInit() { return false; };
-		virtual bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
-		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo);
-		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
-
-		//IWebRTWindowProvider:
-		//virtual bool WebRTInit(CString strID);
-		virtual CString GetNames();
-		virtual CString GetTags(CString strName);
-		virtual HWND Create(HWND hParentWnd, IXobj* pGrid);
-	};
-
-	class CWebRTAppEx :
-		public CWinAppEx,
-		public IUniverseAppProxy,
-		public IWebRTWindowProvider {
-	public:
-		CWebRTAppEx();
-		virtual ~CWebRTAppEx();
-		CString GetDocTemplateID(CDocument* pDoc);
-		virtual bool InitApp();
-		//IWebRTWindowProvider:
-		virtual bool WebRTInit(CString strID);
-
-	private:
-		bool m_bBuiltInBrowser = false;
-		bool m_bCrashReporting = false;
-		bool m_bNoDefaultMainWnd = false;
-		map<CView*, CDocument*> m_mapViewDoc;
-		BOOL IsBrowserModel(bool bCrashReporting);
-		bool ProcessAppType(bool bCrashReporting);
-		virtual int Run();
-		virtual BOOL InitApplication();
-		virtual HWND GetActivePopupMenu(HWND hWnd);
-
-		//IUniverseAppProxy:
-		virtual void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
-		virtual void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
-		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
-		virtual CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
-		virtual CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
-		virtual void OnIPCMsg(CWebPageImpl* pWebPageImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
-		virtual void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
-		virtual void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID);
-		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd);
-		virtual CString QueryWndClassName(HWND hWnd);
-		virtual CString QueryDocType(HWND hWnd);
-		virtual bool EclipseAppInit() { return false; };
-		virtual bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
-		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo);
-		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
-
-		//IWebRTWindowProvider:
-		//virtual bool WebRTInit(CString strID);
-		virtual CString GetNames();
-		virtual CString GetTags(CString strName);
-		virtual HWND Create(HWND hParentWnd, IXobj* pGrid);
-	};
-
-	class CWebRTMDIFrame :
-		public CMDIFrameWndEx,
-		public CNucleiProxy
+	class CTangramHelperWnd : public CWnd
 	{
 	public:
-		CWebRTMDIFrame() {};
-		virtual ~CWebRTMDIFrame() {};
-
-		DECLARE_DYNCREATE(CWebRTMDIFrame)
-
-		virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
-		//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-
-	protected:
-		DECLARE_MESSAGE_MAP()
-
-	private:
-		bool bAdjustClient = false;
-
-		void AdjustClientArea();
-		void OnTabChange(IXobj* sender, LONG ActivePage, LONG OldPage);
-		void OnClrControlCreated(IXobj* Node, IDispatch* Ctrl, CString CtrlName, HWND CtrlHandle);
-		void OnEvent(IDispatch* sender, IDispatch* EventArg) {};
-		void OnControlNotify(IXobj* sender, LONG NotifyCode, LONG CtrlID, HWND CtrlHandle, CString CtrlClassName) {};
-		void OnHubbleEvent(IWebRTEventObj* NotifyObj) {};
+		CTangramHelperWnd() {}
+		virtual ~CTangramHelperWnd() {}
+		void PostNcDestroy()
+		{
+			CWnd::PostNcDestroy();
+			delete this;
+		}
+		BEGIN_MSG_MAP(CTangramHelperWnd)
+		END_MSG_MAP()
 	};
-};
 
-using namespace CommonUniverse;
-extern IWebRT* g_pWebRT;
+	CComponentApp::CComponentApp()
+	{
+		g_pAppBase = this;
+	}
+
+	CComponentApp::~CComponentApp()
+	{
+	}
+
+	bool CComponentApp::WebRTInit(CString strID)
+	{
+		HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));;
+		if (hModule)
+		{
+			if (m_strContainer != _T(""))
+			{
+				m_strContainer = _T(",") + m_strContainer + _T(",");
+				m_strContainer.Replace(_T(",,"), _T(","));
+			}
+			GetWebRTImpl _pHubbleImplFunction;
+			_pHubbleImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+			g_pWebRTImpl = _pHubbleImplFunction(&g_pWebRT);
+			if (g_pWebRTImpl->m_nAppType == APP_BROWSER_ECLIPSE)
+			{
+#ifdef _AFXDLL
+#ifdef _DEBUG
+				::MessageBox(NULL, _T("Chrome-Eclipse Model is not support MFC Share Dll"), _T("Warnning"), MB_OK);
+#endif 
+				TRACE(_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support MFC Share Dll********\r\n\r\n"));
+#endif
+			}
+			strID.Trim();
+			if (strID == _T(""))
+				strID = _T("views");
+			if (m_strProviderID == _T(""))
+			{
+				CString strName = g_pAppBase->m_pszAppName;
+				m_strProviderID = strName + _T(".") + strID;
+			}
+			if (m_strProviderID != _T(""))
+			{
+				m_strProviderID.MakeLower();
+				g_pWebRTImpl->InserttoDataMap(1, m_strProviderID, static_cast<IWebRTWindowProvider*>(this));
+			}
+		}
+		return true;
+	}
+
+	CString CComponentApp::GetNames()
+	{
+		if (m_mapDOMObj.size())
+		{
+			CString strNames = _T("");
+			for (auto it = m_mapDOMObj.begin(); it != m_mapDOMObj.end(); it++)
+			{
+				strNames += it->first;
+				strNames += _T(",");
+			}
+			return strNames.MakeLower();
+		}
+		return _T("");
+	}
+
+	CString CComponentApp::GetTags(CString strName)
+	{
+		strName.Trim().MakeLower();
+		if (strName != _T(""))
+		{
+			auto it = m_mapDOMObjStyle.find(strName);
+			if (it != m_mapDOMObjStyle.end())
+			{
+				return it->second;
+			}
+		}
+		return _T("");
+	}
+
+	BOOL CComponentApp::InitInstance()
+	{
+		WebRTInit(_T(""));
+		return CWinApp::InitInstance();
+	}
+
+	int CComponentApp::ExitInstance()
+	{
+		return CWinApp::ExitInstance();
+	}
+
+	HWND CComponentApp::Create(HWND hParentWnd, IXobj* pGrid)
+	{
+		CWnd* pParent = CWnd::FromHandlePermanent(hParentWnd);
+		if (pParent == nullptr)
+		{
+			pParent = new CTangramHelperWnd();
+			if (!pParent->SubclassWindow(hParentWnd))
+			{
+				TRACE(_T("\n**********************Error**********************\n"));
+				return NULL;
+			}
+		}
+		BSTR bstrTag = L"";
+		pGrid->get_Attribute(L"xobjtype", &bstrTag);
+		USES_CONVERSION;
+		CString m_strTag = OLE2T(bstrTag);
+		::SysFreeString(bstrTag);
+		m_strTag.Trim().MakeLower();
+		if (m_strTag != _T(""))
+		{
+			auto it = m_mapDOMObj.find(m_strTag);
+			if (it != m_mapDOMObj.end())
+			{
+				CRuntimeClass* pCls = (CRuntimeClass*)it->second;
+				CWnd* pWnd = (CWnd*)pCls->CreateObject();
+				if (pWnd)
+				{
+					if (pCls->IsDerivedFrom(RUNTIME_CLASS(CFormView)))
+					{
+						AfxSetResourceHandle(CWinApp::m_hInstance);
+					}
+					pGrid->get_Attribute(L"style", &bstrTag);
+					CString strStyle = OLE2T(bstrTag);
+					strStyle.Trim();
+					if (strStyle == _T(""))
+					{
+						::SysFreeString(bstrTag);
+						pGrid->get_Attribute(L"tabstyle", &bstrTag);
+						strStyle = OLE2T(bstrTag);
+						::SysFreeString(bstrTag);
+						strStyle.Trim();
+					}
+					if (pWnd->Create(nullptr, strStyle, WS_CHILD | WS_VISIBLE, CRect(0, 0, 0, 0), pParent, 0, nullptr))
+					{
+						::PostMessage(pWnd->m_hWnd, WM_COSMOSMSG, (WPARAM)pGrid, 20191031);
+						pGrid->get_Attribute(L"activepage", &bstrTag);
+						long nCount = 0;
+						pGrid->get_Cols(&nCount);
+						CString m_strTag = OLE2T(bstrTag);
+						::SysFreeString(bstrTag);
+						int nActivePage = _wtoi(m_strTag);
+						if (nCount)
+							nActivePage = nActivePage % nCount;
+						::PostMessage(pWnd->m_hWnd, WM_TABCHANGE, nActivePage, 0);
+						return pWnd->m_hWnd;
+					}
+				}
+			}
+		}
+		return NULL;
+	}
+}

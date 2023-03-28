@@ -763,7 +763,7 @@ bool CTangramXmlParse::LoadXml(CString strXML)
 
 bool CTangramXmlParse::LoadFile(CString strFile)
 {
-	HRESULT hr = CoInitializeEx(NULL,0);
+	//HRESULT hr = CoInitializeEx(NULL,0);
 	if (m_pDoc != NULL) m_pDoc.Release();
 	if (CoCreateInstance(CLSID_DOMDocument, NULL, CLSCTX_INPROC_SERVER, IID_IXMLDOMDocument, (void**)&m_pDoc) == S_OK)	
 	{

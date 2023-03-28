@@ -148,7 +148,6 @@ typedef bool(__stdcall* _IsBrowserModel)(bool bSupportCrashReporting, void*);
 _IsBrowserModel FuncIsBrowserModel;
 CWinApp* g_pAppBase = nullptr;
 CWebRTImpl* g_pWebRTImpl = nullptr;
-CWebRTBrowserFactory* g_pBrowserFactory = nullptr;
 class CTangramHelperWnd : public CWnd {
  public:
   CTangramHelperWnd() {}
@@ -318,6 +317,20 @@ class CWebRTProxy : public IWebRTDelegate {
           break;
       }
     }
+    else
+    {
+        TCHAR m_szBuffer[MAX_PATH];
+        ::GetModuleFileName(GetModuleHandle(NULL), m_szBuffer, MAX_PATH);
+        SHFILEINFOW info;
+        if (SHGetFileInfoW(m_szBuffer,
+            FILE_ATTRIBUTE_NORMAL,
+            &info,
+            sizeof(info),
+            SHGFI_SYSICONINDEX | SHGFI_ICON | SHGFI_USEFILEATTRIBUTES))
+        {
+            return info.hIcon;
+        }
+    }
     return NULL;
   }
 };
@@ -468,6 +481,33 @@ bool CWebRTApp::WebRTInit(CString strID) {
       return false;
     }
   }
+  HMODULE hModule = ::GetModuleHandle(L"webrt.dll");
+  if (hModule == nullptr)
+      hModule = ::LoadLibrary(L"webrt.dll");
+  if (hModule == nullptr) {
+      TCHAR m_szBuffer[MAX_PATH];
+      if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
+          m_szBuffer) == S_OK) {
+          CString strChromeRTFilePath = CString(m_szBuffer);
+          strChromeRTFilePath += _T("\\WebRT\\webrt.dll");
+          if (::PathFileExists(strChromeRTFilePath)) {
+              hModule = ::LoadLibrary(strChromeRTFilePath);
+          }
+      }
+      if (hModule == nullptr)
+          hModule = ::LoadLibrary(L"webrt.dll");
+  }
+  if (hModule) {
+      BOOL isBrowserModel = false;
+      FuncIsBrowserModel =
+          (_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
+      if (FuncIsBrowserModel != NULL) {
+          isBrowserModel = FuncIsBrowserModel(false, this);
+          if (isBrowserModel)
+              return false;
+      }
+  }
+
   TCHAR m_szBuffer[MAX_PATH];
   TCHAR szDriver[MAX_PATH] = {0};
   TCHAR szDir[MAX_PATH] = {0};
@@ -478,7 +518,7 @@ bool CWebRTApp::WebRTInit(CString strID) {
   CString strTangramDll = szDriver;
   strTangramDll += szDir;
   strTangramDll += _T("universe.dll");
-  HMODULE hModule = ::LoadLibrary(strTangramDll);
+  hModule = ::LoadLibrary(strTangramDll);
   if (hModule) {
     if (m_strContainer != _T("")) {
       m_strContainer = _T(",") + m_strContainer + _T(",");
@@ -1179,6 +1219,32 @@ bool CWebRTAppEx::WebRTInit(CString strID) {
       return false;
     }
   }
+  HMODULE hModule = ::GetModuleHandle(L"webrt.dll");
+  if (hModule == nullptr)
+      hModule = ::LoadLibrary(L"webrt.dll");
+  if (hModule == nullptr) {
+      TCHAR m_szBuffer[MAX_PATH];
+      if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
+          m_szBuffer) == S_OK) {
+          CString strChromeRTFilePath = CString(m_szBuffer);
+          strChromeRTFilePath += _T("\\WebRT\\webrt.dll");
+          if (::PathFileExists(strChromeRTFilePath)) {
+              hModule = ::LoadLibrary(strChromeRTFilePath);
+          }
+      }
+      if (hModule == nullptr)
+          hModule = ::LoadLibrary(L"webrt.dll");
+  }
+  if (hModule) {
+      BOOL isBrowserModel = false;
+      FuncIsBrowserModel =
+          (_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
+      if (FuncIsBrowserModel != NULL) {
+          isBrowserModel = FuncIsBrowserModel(false, this);
+          if (isBrowserModel)
+              return false;
+      }
+  }
   TCHAR m_szBuffer[MAX_PATH];
   TCHAR szDriver[MAX_PATH] = {0};
   TCHAR szDir[MAX_PATH] = {0};
@@ -1189,7 +1255,7 @@ bool CWebRTAppEx::WebRTInit(CString strID) {
   CString strTangramDll = szDriver;
   strTangramDll += szDir;
   strTangramDll += _T("universe.dll");
-  HMODULE hModule = ::LoadLibrary(strTangramDll);
+  hModule = ::LoadLibrary(strTangramDll);
   if (hModule) {
     if (m_strContainer != _T("")) {
       m_strContainer = _T(",") + m_strContainer + _T(",");

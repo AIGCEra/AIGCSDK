@@ -601,6 +601,7 @@ namespace CommonUniverse {
 		virtual CString QueryWndClassName(HWND hWnd) { return _T(""); }
 		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo) { return _T(""); }
 		virtual HWND GetFrameWnd(HWND hWnd, int& nType) { return NULL; }
+		virtual void OnCustomizedMainWindowElement(HWND hMainWnd, CString strXml) {}
 	};
 
 	class IWebRTCLRImpl {
@@ -1233,10 +1234,6 @@ namespace CommonUniverse {
 			m_pRemoteCosmos = nullptr;
 			m_pChromeRenderFrameHost = g_pWebRTImpl->m_pCreatingChromeRenderFrameHostBase;
 			g_pWebRTImpl->m_pCreatingChromeRenderFrameHostBase = nullptr;
-			if (m_pChromeRenderFrameHost->m_bNTPFrame)
-			{
-				::PostAppMessage(::GetCurrentThreadId(), WM_COSMOSMSG, (WPARAM)this, 20220815);
-			}
 		}
 
 		virtual ~CWebPageImpl() {}
@@ -1254,6 +1251,7 @@ namespace CommonUniverse {
 		virtual IXobj* GetParentXobj() { return nullptr; }
 		virtual INucleus* GetNucleus() { return nullptr; }
 		virtual void OnCloudMsgReceived(CSession*) {}
+		virtual void ObserveViewport(CString strName, CString strXML) {}
 	};
 
 	class CChromeRendererFrameBase {

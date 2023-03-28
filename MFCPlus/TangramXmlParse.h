@@ -26,7 +26,12 @@
 #define __TANGRAMXMLPARSE_H__
 
 #include <vector>
+#include <atlstr.h>
+
 using namespace std;
+using namespace ATL;
+
+#define TGM_NUCLEUS _T("nucleus")
 
 #include <msxml2.h>
 #pragma comment(lib,"msxml2.Lib")
