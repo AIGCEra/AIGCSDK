@@ -1,0 +1,18 @@
+// ATLApp.idl : IDL source for ATLApp
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ATLApp.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(5a319c27-7415-4304-80ee-4bce0f6759da),
+	version(1.0),
+]
+library ATLAppLib
+{
+	importlib("stdole2.tlb");
+};
+

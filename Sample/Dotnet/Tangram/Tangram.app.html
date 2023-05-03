@@ -1,0 +1,397 @@
+﻿<!--
+    If the executable file of your desktop application is "ProjectName.exe",
+    you need an initialization web page named as  
+            "ProjectName.app.html", 
+    here is the basic structure of this page, the web part of your desktop 
+    application, in fact, from this page starts. If your desktop application 
+    is a C# WinForm application, you need to replace 
+            "Application.Run" 
+    with 
+            "Universe.WebRT.Run" 
+    at the beginning of the program to load this initialization page when the 
+    software starts running.
+-->
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Who I am? Why am I here?</title>
+    <link rel="icon" href="webpage/app.png" sizes="32x32">
+    <script type="text/javascript">
+        /*
+            Each application-oriented Web page contains a "cosmos" element to
+            manage the extended WebDOM elements related to Web Runtime. For each
+            WinForm object, cosmos will trigger the event "onLoadCloudForm" or
+            "onLoadMdiCloudForm" at WebPage side after the WinForm Object is loaded
+            at Native Desktop side, depending on the type of the WinForm Object
+            being loaded.
+        */
+        cosmos.onLoadCloudForm = function (e) {
+            form = e.form;
+            switch (form.name) {
+                case "mainForm":
+                    {
+                        form.addEventListener("button3", "OnClick", function (e) {
+                            /*
+                                Dynamically creating WinForm objects in web pages is one of the
+                                important web extension technologies provided by WebRuntime, the
+                                way to extend applications is similar to Visual Basic for Application
+                                in MS Office, at this time, JavaScript is similar to VBA macro language.
+                            */
+                            var xform = cosmos.createWinForm(cosmos.getElementById("create_form_1"),
+                                0,
+                                function (formcreated) {
+                                    formcreated.addEventListener("button1", "OnClick", function (formobj) {
+                                        formobj.setStr("textBox1", "fill textbox by javascript: " + formobj.handle);
+                                    });
+                                    formcreated.BindCtrlValue("textBox1", function (e) {
+                                        alert("hi" + "  --  " + e.getStr("textBox1"));
+                                    });
+                                });
+                        });
+                        /*
+                         ClouldMessage is an important mode of interaction between Web code and
+                         native code. by providing such a message mechanism, WebRuntime establishes
+                         a complementary solution between local code and Web code.
+                        */
+                        form.onCloudMessageForCloudForm = function (e) {
+                            switch (this.msgID) {
+                                case "button1_OnClick":
+                                    alert(this.workElement.children[0].outerHTML);
+                                    this.Observe("panel1", this.workElement.children[0].tagName, this.workElement.children[0].outerHTML);
+                                    cosmos.openUrl("host:webpage/WebApp1.html", 100);
+                                    break;
+                                case "button2_OnClick":
+                                    alert(this.workElement.children[0].outerHTML);
+                                    this.Observe("panel1", this.workElement.children[0].tagName, this.workElement.children[0].outerHTML);
+                                    cosmos.openUrl("host:webpage/SubWebApp1.html", 2);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        form.onXobjCreated = function (e) {
+                            var galaxy = e.xobj.getStr("galaxy");
+                            var nucleus = e.xobj.getStr("nucleus");
+                            switch (galaxy) {
+                                case "panel1":
+                                    {
+                                        switch (nucleus) {
+                                            case "default":
+                                                {
+                                                    switch (e.xobj.name) {
+                                                        case "SunnyCtrl_UserControl2":
+                                                            {
+                                                                /*
+                                                                 If the native object corresponding to "xobj"
+                                                                 is not a WinForm object, processing the message
+                                                                 from the corresponding native object here:
+                                                                */
+                                                                e.xobj.onCloudMessageForXobj = function (e) {
+                                                                    switch (this.msgID) {
+                                                                        case "button1_OnClick":
+                                                                            this.Observe("panel1", this.workElement.children[0].tagName, this.workElement.children[0].outerHTML);
+                                                                            break;
+                                                                        default:
+                                                                            break;
+                                                                    }
+                                                                }
+                                                            }
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    break;
+                            }
+                        };
+                    }
+                    break;
+                case "create_form_1":
+                    {
+                        form.onCloudMessageForCloudForm = function (e) {
+                            switch (e.msgID) {
+                                case "button1_OnClick":
+                                    alert(this.workElement.children[0].tagName);
+                                    this.Observe("mainpanel", this.workElement.children[0].tagName, this.workElement.children[0].outerHTML);
+                                    cosmos.Observe(this.workElement.children[1].tagName, this.workElement.children[1].outerHTML);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        /*
+                         WebRuntime believes that the design of each WinForm object includes
+                         two stages, one is the design stage of the native client, where the
+                         role of the form designer is decisive, after the native code is compiled,
+                         the structural design of WinForm objects will enter the second stage in
+                         the web page, based on the description of WebDOM, the native structure
+                         of WinForm will undergo huge runtime changes, each new UI element added
+                         according to the Web description in WinForm will fire the event "onXobjCreated".
+                        */
+                        form.onXobjCreated = function (e) {
+                            var galaxy = e.xobj.getStr("galaxy");
+                            var nucleus = e.xobj.getStr("nucleus");
+                            switch (galaxy) {
+                                case "mainpanel":
+                                    {
+                                        switch (nucleus) {
+                                            case "default":
+                                                {
+                                                    switch (e.xobj.name) {
+                                                        case "sunnyForms2_Form4":
+                                                            {
+                                                                e.xobj.BindCtrlValue("textBox1", function (e) {
+                                                                    alert("BindCtrlValue, value was modified:" + e.getStr("textBox1"));
+                                                                });
+                                                                /*
+                                                                 If the native object corresponding to "xobj" is a WinForm object,
+                                                                 processing the message from the corresponding WinForm object here:
+                                                                */
+                                                                e.xobj.onCloudMessageForCloudForm = function (e) {
+                                                                    switch (this.msgID) {
+                                                                        case "button1_OnClick":
+                                                                            this.setStr("textBox1", "fill textbox by javascript: " + e.xobj.getStr("textBox1"))
+                                                                            this.Observe("mainpanel", this.workElement.children[0].tagName, this.workElement.children[0].outerHTML);
+                                                                            break;
+                                                                        case "textBox1_TextChanged":
+                                                                            {
+                                                                                alert("textBox1_TextChanged:" + e.xobj.getStr("text"));
+                                                                            }
+                                                                            break;
+                                                                        default:
+                                                                            break;
+                                                                    }
+                                                                }
+                                                                /*
+                                                                 If the native object corresponding to "xobj" is not a WinForm object,
+                                                                 processing the message from the corresponding native object here:
+                                                                */
+                                                                e.xobj.onCloudMessageForXobj = function (e) {
+                                                                    switch (this.msgID) {
+                                                                        default:
+                                                                            break;
+                                                                    }
+                                                                }
+                                                            }
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    break;
+                            }
+                        };
+                    }
+                    break;
+            }
+        };
+    </script>
+</head>
+<body>
+    <!--
+        Cosmos Object DOM Structure
+    -->
+    <cosmos>
+        <!-- Define new DOM elements -->
+        <define tagName="mainWindow"></define>
+        <define tagName="application"></define>
+        <define tagName="webViewport"></define>
+        <!--
+            The "application" element is required, it can provide application-level configuration.
+        -->
+        <application>
+            <modules>
+                <!--
+                    Every desktop application needs a mechanism to map ".NET UI Object"
+                    events to JavaScript code. "SunnyForms.dll" implements a mapping mechanism
+                    to realize the code mapping channel between .NET events and JavaScript.
+                    This is a C# project with a very simple structure. Please refer
+                    to the example source code for details.
+                -->
+                <module libname="SunnyForms.dll" objname="Sunny.WebDelegate" functionname="Init"></module>
+            </modules>
+
+            <!-- Add a group of "Chromium Tab" structures to the main Form of the application. -->
+            <urls>
+                <url url="host:WebPage/AboutWebRuntime.html"></url>
+                <url url="host:WebPage/webapp2.html"></url>
+            </urls>
+        </application>
+
+        <!--
+            Every WinForm application contains at least one WinForm Object(usually including
+            multiple WinForm objects). When designing the software, we need to design it in
+            the Form-designer. Once compiled, the structure of the corresponding WinForm object
+            will be solidified. After the application system is connected with Web Runtime,
+            the basic structure of the winform will be further expanded in the sense of the Web,
+            this expansion will greatly expand the expressive ability of the compiled WinForm
+            object, that is, the Web technology will endow the relevant WinForm object with
+            richer content expression.
+        -->
+        <mainWindow objid="," id="mainForm" mainwindow="true" caption="Tribute to Classic" width="1500" height="900">
+            <!--
+                Each WinForm or Usercontrol DOM structure contains an event map, which is
+                used to match the JavaScript part of event processing for the controls
+                contained in the WinForm structure in the Web page, this part can be seen
+                as a continuation of the native code. In many cases, the native code is not
+                enough to adapt to enough application scenarios, the extension of Web code
+                will provide a processing mechanism that adapts to specific scenarios.
+            -->
+            <eventmap>
+                <button1 event="OnClick">
+                    <button1>
+                        <nucleus>
+                            <xobj style="18" activepage="1">
+                                <xobj objid="SunnyCtrl.UserControl2,SunnyCtrl" caption="First Page"></xobj>
+                                <xobj objid="nucleus1" caption="Compound grid World Gives You An Unexpected Surprise" id="host1"></xobj>
+                                <xobj objid="SunnyCtrl.UserControl1,SunnyCtrl" caption="Third Page"></xobj>
+                            </xobj>
+                        </nucleus>
+                    </button1>
+                </button1>
+                <button2 event="OnClick">
+                    <buttonx>
+                        <nucleus>
+                            <xobj style="29" activepage="1">
+                                <xobj objid="SunnyCtrl.UserControl2,SunnyCtrl" caption="1 First Page"></xobj>
+                                <xobj objid="nucleus1" caption="Compound grid World Gives You An Unexpected Surprise" id="host1"></xobj>
+                                <xobj objid="SunnyCtrl.UserControl1,SunnyCtrl" caption="Third Page"></xobj>
+                            </xobj>
+                        </nucleus>
+                    </buttonx>
+                </button2>
+            </eventmap>
+
+            <!--
+                For those controls whose Dock property value is "DockFill" or "DockNone" (for
+                example, "panel1" here.), WebRuntime will extend their design to the Web page,
+                that is, FormDesigner only completes the design of its native-part, and more
+                rich and powerful content design will occur in the Web-part, its Web continuation
+                part is an extended element tree which is used to present a multi-hierarchy UI
+                structure, so that the WinForm Object can form a powerful dynamic UI mechanism.
+            -->
+            <panel1 id="mainworkclient">
+                <default>
+                    <nucleus>
+                        <!--
+                            For a dom element "xobj", if it contains a group of "xobj" child elements and
+                            has no "rows" and "cols" attributes, we will interpret it as a "tab window" with
+                            m tabs at runtime, where m is the number of "xobj" child elements it contains.
+                        -->
+                        <xobj style="5" activepage="1" xobjtype="tabctrl" objid="mfctab" location="3">
+                            <!--
+                                For a dom element "xobj", if it contains a group of "xobj" child elements
+                                and has "rows" and "cols" attributes, we will interpret it as a "grid window"
+                                with m rows and n columns at runtime, where m and n are its attribute values
+                                of "rows" and "cols" respectively.
+                            -->
+                            <xobj caption="Cloudx Application" id='Splitter1' rows='1' cols='2' height='250,' width='550,'>
+                                <!--
+                                    How to make the "xobj" element host a .NET UI object (WinForm, .NET Control
+                                    or WPF Control)? If you plan to let "xobj" element adapt to a .NET UI object
+                                    contained in “Component.dll”, and you know that the class name of this UI
+                                    object is "ObjClassName" and that the namespace of this object is "NameSpaceName",
+                                    you need to specify the "objid" attribute value of the "xobj" element as
+                                    "NameSpaceName.ObjClassName,Component", Web Runtime will create the corresponding
+                                    object in the actual scene.
+                                -->
+                                <xobj id="SunnyCtrl_UserControl2" objid="SunnyCtrl.UserControl2,SunnyCtrl">
+                                    <eventmap>
+                                        <button1 event="OnClick">
+                                            <button1>
+                                                <nucleus>
+                                                    <xobj style="49" activepage="1">
+                                                        <xobj objid="SunnyCtrl.UserControl2,SunnyCtrl" caption="First Page"></xobj>
+                                                        <xobj objid="nucleus1" caption="Compound grid World Gives You An Unexpected Surprise" id="host1"></xobj>
+                                                        <xobj objid="SunnyCtrl.UserControl1,SunnyCtrl" caption="Third Page"></xobj>
+                                                    </xobj>
+                                                </nucleus>
+                                            </button1>
+                                        </button1>
+                                    </eventmap>
+                                </xobj>
+                                <xobj objid="" id=""></xobj>
+                            </xobj>
+                            <xobj caption="Common Web Runtime for Application" url="host" id="host1"></xobj>
+                        </xobj>
+                    </nucleus>
+                </default>
+            </panel1>
+        </mainWindow>
+
+        <!--
+            The Web page needs to provide a "webViewport" element to present
+            the native UI elements in the Web page.
+        -->
+        <webViewport>
+            <nucleus>
+                <xobj rows="1" cols="2" width="750," id="xxx">
+                    <xobj id="hostclient"></xobj>
+                    <xobj objid="nucleus" id="mainClient1"></xobj>
+                </xobj>
+            </nucleus>
+        </webViewport>
+        <!--
+            Each desktop application can support any number of WinForm objects.
+            Here, developers can provide a set of WinForm object templates
+            based on WebDOM. When the desktop application runs, they can create
+            WinForm objects corresponding to the templates with JavaScript scripts.
+        -->
+        <forms>
+            <Form1 objid="sunnyForms2.Form1,sunnyForms2" caption="Form1@SunnyForm2" id="create_form_1" width="1000" height="800">
+                <eventmap>
+                    <button1 event="OnClick">
+                        <btn>
+                            <nucleus>
+                                <xobj style="29">
+                                    <xobj objid="nucleus" caption="test button onclick 2"></xobj>
+                                    <xobj objid="SunnyCtrl.UserControl3,SunnyCtrl" caption="Second Page 2"></xobj>
+                                    <xobj objid="SunnyCtrl.UserControl2,SunnyCtrl" caption="Third Page"></xobj>
+                                </xobj>
+                            </nucleus>
+                        </btn>
+                    </button1>
+                </eventmap>
+                <mainpanel>
+                    <default>
+                        <nucleus>
+                            <xobj id='properties' rows='2' cols='1' height='300,250,' width='300,' middlecolor='RGB(255,224,192)'>
+                                <xobj id='tangramtabctrl_Page2' objid="nucleus"></xobj>
+                                <xobj id='sunnyForms2_Form4' objid="sunnyForms2.Form4,sunnyForms2">
+                                    <eventmap>
+                                        <button1 event="OnClick">
+                                            <button1>
+                                                <nucleus>
+                                                    <xobj style="19" activepage="1">
+                                                        <xobj objid="SunnyCtrl.UserControl2,SunnyCtrl" caption="First Page"></xobj>
+                                                        <xobj objid="nucleus1" caption="Compound grid World Gives You An Unexpected Surprise" id="host1"></xobj>
+                                                        <xobj objid="SunnyCtrl.UserControl1,SunnyCtrl" caption="Third Page"></xobj>
+                                                    </xobj>
+                                                </nucleus>
+                                            </button1>
+                                        </button1>
+                                        <textBox1 event="TextChanged">
+                                            <textBox1>
+                                                <somenodedata-for-textbox1></somenodedata-for-textbox1>
+                                            </textBox1>
+                                        </textBox1>
+                                    </eventmap>
+                                </xobj>
+                            </xobj>
+                        </nucleus>
+                    </default>
+                </mainpanel>
+            </Form1>
+        </forms>
+    </cosmos>
+    <h1>Welcome to the magical world of Web Runtime!</h1>
+    <p>
+        Here, you will become the organizer of all kinds of resources,
+        and a new <i>Web-ecosystem</i> will gradually unfold ...
+    </p>
+</body>
+</html>
