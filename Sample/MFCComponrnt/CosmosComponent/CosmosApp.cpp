@@ -3,7 +3,7 @@
  ********************************************************************************
  * Copyright (C) 2002-2021 by Tangram Team.   All Rights Reserved.
  *
- * Web Runtime is a new, subversive and Internet Oriented Development Technology
+ * AIGC for Desktop Application is a new, subversive and Internet Oriented Development Technology
  * for Windows Desktop Software. Its core idea is that, relying on the open-source
  * project of Chromium, developers are allowed to use their familiar software
  * development technology to realize the Main Process of their application system
@@ -83,7 +83,7 @@
  * moving away. How Desktop Software finds its most suitable position has always been
  * an interesting topic, but there has been no proper solution. Although CEF and Electron
  * are very popular, they cannot fundamentally solve the key problem of desktop software
- * connecting to the Internet. Web Runtime tries to consider this issue from a new
+ * connecting to the Internet. AIGC for Desktop Application tries to consider this issue from a new
  * perspective, due to the needs of Internet content security and rendering, Internet
  * giants have formed a unique Sandbox-Based Multi-Process Architecture for the basic
  * framework of the Web Browser, which makes the browser structure completely different
