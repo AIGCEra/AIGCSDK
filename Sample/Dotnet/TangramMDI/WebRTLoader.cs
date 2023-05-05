@@ -6,7 +6,7 @@ namespace WebRT
 {
     static public class WebRTLoader
     {
-        public static void Run(Object StartObj)
+        public static void Run(object StartObj)
         {
             try
             {
@@ -20,11 +20,11 @@ namespace WebRT
                     Type t = StartObj.GetType();
                     if (t.IsSubclassOf(typeof(Form)))
                     {
-                        Application.Run((Form)StartObj);
+                        Application.Run(StartObj as Form);
                     }
                     else if (t.IsSubclassOf(typeof(ApplicationContext)))
                     {
-                        Application.Run((ApplicationContext)StartObj);
+                        Application.Run(StartObj as ApplicationContext);
                     }
                 }
                 else
