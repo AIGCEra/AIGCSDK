@@ -11,12 +11,8 @@ namespace WebRT
             try
             {
                 Assembly am = Assembly.Load("cosmos");
-                if (am != null)
-                {
-                    Type t = am.GetType("Universe.WebRT");
-                    t?.GetMethod("Run", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { StartObj });
-                }
-
+                Type t = am.GetType("Universe.WebRT");
+                t?.GetMethod("Run", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { StartObj });
             }
             catch (Exception) { 
                 if (StartObj != null)
