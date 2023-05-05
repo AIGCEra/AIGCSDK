@@ -16,7 +16,7 @@ namespace TangramMDI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Universe.WebRT.Run(new MDIParent());
+            WebRT.WebRTLoader.Run(new MDIParent());
         }
     }
 }

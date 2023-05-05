@@ -20,6 +20,41 @@ namespace WebRT
 {
     static class WebDelegate
     {
+        public static void Run(Object FormObj)
+        {
+            try
+            {
+                System.Reflection.Assembly am = System.Reflection.Assembly.Load("cosmos");
+                if (am != null)
+                {
+                    Type t = am.GetType("Universe.WebRT");
+                    if (t != null)
+                    {
+                        t.GetMethod("Run", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { FormObj });
+                    }
+                }
+
+            }
+            catch (FileNotFoundException ex)
+            {
+                if (FormObj != null)
+                {
+                    if (FormObj.GetType().IsSubclassOf(typeof(Form)))
+                    {
+                        Application.Run((Form)FormObj);
+                    }
+                    else if (FormObj.GetType().IsSubclassOf(typeof(ApplicationContext)))
+                    {
+                        Application.Run((ApplicationContext)FormObj);
+                    }
+                }
+                else
+                {
+                    Application.Run();
+                }
+            }
+        }
+
         private static int Init(string argument)
         {
             WebRT.OnBindCLRObjToWebPage += Tangram_OnBindCLRObjToWebPage;

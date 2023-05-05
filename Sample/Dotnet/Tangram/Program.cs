@@ -16,7 +16,7 @@ namespace Tangram
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Universe.WebRT.Run(new Form1());
+            WebRT.WebRTLoader.Run(new Form1());
         }
     }
 }
