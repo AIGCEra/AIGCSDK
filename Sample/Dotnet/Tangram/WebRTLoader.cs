@@ -20,18 +20,14 @@ namespace WebRT
                 {
                     Type t = StartObj.GetType();
                     if (t.IsSubclassOf(typeof(Form)))
-                    {
                         Application.Run(StartObj as Form);
-                    }
                     else if (t.IsSubclassOf(typeof(ApplicationContext)))
-                    {
                         Application.Run(StartObj as ApplicationContext);
-                    }
+                    else
+                        Application.Run();
                 }
                 else
-                {
                     Application.Run();
-                }
             }
         }
     }
