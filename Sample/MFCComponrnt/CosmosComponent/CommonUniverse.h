@@ -1,5 +1,5 @@
 /********************************************************************************
- *           AIGC for Desktop Application - Version 1.0.1.202110220001
+ *           Web Runtime for Application - Version 1.0.1.202110220001
  ********************************************************************************
  * Copyright (C) 2002-2021 by Tangram Team.   All Rights Reserved.
  * There are Three Key Features of Webruntime:
@@ -713,6 +713,7 @@ namespace CommonUniverse {
 			m_bEnableHardwareAcceleration = true;
 			m_strAppID = _T("");
 			m_strNtpXml = _T("");
+			m_strWebRTVer = _T("");
 		}
 
 		virtual ~CWebRTImpl() {}
@@ -757,6 +758,7 @@ namespace CommonUniverse {
 		CString m_strAppKey;
 		CString m_strAppName;
 		CString m_strExeName;
+		CString m_strWebRTVer;
 		CString m_strAppPath;
 		CString m_strConfigDataFile;
 		CString m_strAppDataPath;
@@ -1255,7 +1257,7 @@ namespace CommonUniverse {
 		virtual IXobj* GetParentXobj() { return nullptr; }
 		virtual INucleus* GetNucleus() { return nullptr; }
 		virtual void OnCloudMsgReceived(CSession*) {}
-		virtual void ObserveViewport(CString strName, CString strXML) {};
+		virtual void ObserveViewport(CString strName, CString strXML) {}
 	};
 
 	class CChromeRendererFrameBase {
