@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Tangram
@@ -16,7 +13,7 @@ namespace Tangram
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            WebRT.WebRTLoader.Run(new Form1());
+            AIGC.AIGCApp.Run(new Form1());
         }
     }
 }

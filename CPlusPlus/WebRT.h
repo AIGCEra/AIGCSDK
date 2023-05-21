@@ -149,12 +149,12 @@ using namespace concurrency;
 
 namespace CommonUniverse
 {
-	class CAIGCWinApp :
+	class CAIGCApp :
 		public IUniverseAppProxy,
 		public IWindowProvider {
 	public:
-		CAIGCWinApp();
-		virtual ~CAIGCWinApp();
+		CAIGCApp();
+		virtual ~CAIGCApp();
 
 		CString m_strExeName;
 
@@ -209,8 +209,8 @@ namespace CommonUniverse
 	};
 
 	template <class T>
-	class ATL_NO_VTABLE CWebRTExeModuleT :
-		public CAIGCWinApp,
+	class ATL_NO_VTABLE CAIGCModuleT :
+		public CAIGCApp,
 		public CAtlExeModuleT<T>
 	{
 	public:

@@ -10,7 +10,7 @@
 using namespace ATL;
 
 
-class CATLAppModule : public CWebRTExeModuleT< CATLAppModule >
+class CATLAppModule : public CAIGCModuleT< CATLAppModule >
 {
 public:
 	DECLARE_LIBID(LIBID_ATLAppLib)

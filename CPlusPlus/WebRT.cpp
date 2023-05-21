@@ -243,19 +243,19 @@ namespace CommonUniverse {
 
 	CWebRTProxy theAppProxy;
 
-	CAIGCWinApp::CAIGCWinApp() {
+	CAIGCApp::CAIGCApp() {
 		m_strExeName = _T("");
 		m_strProviderID = _T("");
 	}
 
-	CAIGCWinApp::~CAIGCWinApp() {
+	CAIGCApp::~CAIGCApp() {
 		if (m_pSpaceTelescopeImpl) {
 			m_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
 			m_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
 		}
 	}
 
-	bool CAIGCWinApp::WebRTInit(CString strID) {
+	bool CAIGCApp::WebRTInit(CString strID) {
 		HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
 		if (hModule == nullptr)
 			hModule = ::LoadLibrary(L"WebRTProxy.dll");
@@ -324,7 +324,7 @@ namespace CommonUniverse {
 		return true;
 	}
 
-	CXobjProxy* CAIGCWinApp::OnXobjInit(IXobj* pNewNode) {
+	CXobjProxy* CAIGCApp::OnXobjInit(IXobj* pNewNode) {
 		CComBSTR bstrName("");
 		pNewNode->get_Name(&bstrName);
 		CComBSTR bstrName2("");
@@ -332,7 +332,7 @@ namespace CommonUniverse {
 		return nullptr;
 	}
 
-	CNucleusProxy* CAIGCWinApp::OnNucleusCreated(INucleus* pNewFrame) {
+	CNucleusProxy* CAIGCApp::OnNucleusCreated(INucleus* pNewFrame) {
 		__int64 h = 0;
 		pNewFrame->get_HWND(&h);
 		CComBSTR bstrName("");
@@ -340,7 +340,7 @@ namespace CommonUniverse {
 		return nullptr;
 	}
 
-	CNucleiProxy* CAIGCWinApp::OnNucleiCreated(INuclei* pNuclei) {
+	CNucleiProxy* CAIGCApp::OnNucleiCreated(INuclei* pNuclei) {
 		CNucleiProxy* pNucleiProxy = nullptr;
 		__int64 h = 0;
 		pNuclei->get_Handle(&h);
@@ -351,14 +351,14 @@ namespace CommonUniverse {
 		return pNucleiProxy;
 	}
 
-	BOOL CAIGCWinApp::InitApplication() {
+	BOOL CAIGCApp::InitApplication() {
 		if (WebRTInit(_T("")))
 			return ProcessAppType(m_bCrashReporting);
 		else
 			return false;
 	}
 
-	bool CAIGCWinApp::ProcessAppType(bool bCrashReporting) {
+	bool CAIGCApp::ProcessAppType(bool bCrashReporting) {
 		BOOL bWin32 =
 			(::PathFileExists(m_strExeName + _T(".app.html")) == false) &&
 			(::PathFileExists(m_strExeName + _T(".html")) == false);
@@ -410,7 +410,7 @@ namespace CommonUniverse {
 		return true;
 	}
 
-	BOOL CAIGCWinApp::IsBrowserModel(bool bCrashReporting) {
+	BOOL CAIGCApp::IsBrowserModel(bool bCrashReporting) {
 		BOOL bWin32 =
 			(::PathFileExists(m_strExeName + _T(".app.html")) == false) &&
 			(::PathFileExists(m_strExeName + _T(".html")) == false);

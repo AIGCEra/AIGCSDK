@@ -2,9 +2,9 @@
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace WebRT
+namespace AIGC
 {
-    static public class WebRTLoader
+    static public class AIGCApp
     {
         public static void Run(object StartObj)
         {
