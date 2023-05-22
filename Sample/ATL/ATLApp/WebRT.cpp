@@ -309,6 +309,7 @@ namespace CommonUniverse {
 			m_strProviderID += _T("host");
 			m_strProviderID.MakeLower();
 
+			m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			m_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
 			g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
 				static_cast<IUniverseAppProxy*>(this));
@@ -319,7 +320,6 @@ namespace CommonUniverse {
 				::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
 					(WPARAM)m_pSpaceTelescopeImpl->m_pWebRTDelegate,
 					g_pSpaceTelescopeImpl->m_nAppType);
-			m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 		}
 		return true;
 	}
