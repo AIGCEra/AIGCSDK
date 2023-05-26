@@ -11,7 +11,7 @@
 
 
 // CMFCMDIApp:
-// See MFCApplication3.cpp for the implementation of this class
+// See MFCMDIApp.cpp for the implementation of this class
 //
 
 class CMFCMDIApp : public CAIGCWinApp

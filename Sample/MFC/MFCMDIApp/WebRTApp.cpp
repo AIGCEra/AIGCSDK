@@ -481,21 +481,21 @@ bool CAIGCWinApp::WebRTInit(CString strID) {
       return false;
     }
   }
-  HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+  HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
   if (hModule == nullptr)
-      hModule = ::LoadLibrary(L"WebRTProxy.dll");
+      hModule = ::LoadLibrary(L"AIGCAgent.dll");
   if (hModule == nullptr) {
       TCHAR m_szBuffer[MAX_PATH];
       if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
           m_szBuffer) == S_OK) {
           CString strChromeRTFilePath = CString(m_szBuffer);
-          strChromeRTFilePath += _T("\\WebRT\\WebRTProxy.dll");
+          strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
           if (::PathFileExists(strChromeRTFilePath)) {
               hModule = ::LoadLibrary(strChromeRTFilePath);
           }
       }
       if (hModule == nullptr)
-          hModule = ::LoadLibrary(L"WebRTProxy.dll");
+          hModule = ::LoadLibrary(L"AIGCAgent.dll");
   }
   HMODULE hModule2 = hModule;
   if (hModule) {
@@ -1019,21 +1019,21 @@ bool CAIGCWinApp::ProcessAppType(bool bCrashReporting) {
 #endif
         }
         m_pSpaceTelescopeImpl->m_hMainWnd = NULL;
-        HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+        HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
         if (hModule == nullptr)
-          hModule = ::LoadLibrary(L"WebRTProxy.dll");
+          hModule = ::LoadLibrary(L"AIGCAgent.dll");
         if (hModule == nullptr) {
           TCHAR m_szBuffer[MAX_PATH];
           if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
                               m_szBuffer) == S_OK) {
             CString strChromeRTFilePath = CString(m_szBuffer);
-            strChromeRTFilePath += _T("\\WebRT\\WebRTProxy.dll");
+            strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
             if (::PathFileExists(strChromeRTFilePath)) {
               hModule = ::LoadLibrary(strChromeRTFilePath);
             }
           }
           if (hModule == nullptr)
-            hModule = ::LoadLibrary(L"WebRTProxy.dll");
+            hModule = ::LoadLibrary(L"AIGCAgent.dll");
         }
         if (hModule) {
           typedef int(__stdcall * _InitApp)(bool bSupportCrashReporting, void*);
@@ -1062,9 +1062,9 @@ BOOL CAIGCWinApp::IsBrowserModel(bool bCrashReporting) {
       (::PathFileExists(CString(m_pszExeName) + _T(".app.html")) == false) &&
       (::PathFileExists(CString(m_pszExeName) + _T(".html")) == false);
   if (bWin32 == false) {
-    HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+    HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
     if (hModule == nullptr)
-      hModule = ::LoadLibrary(L"WebRTProxy.dll");
+      hModule = ::LoadLibrary(L"AIGCAgent.dll");
     if (hModule) {
       m_bCrashReporting = bCrashReporting;
       FuncIsBrowserModel =
@@ -1213,21 +1213,21 @@ bool CAIGCWinAppEx::WebRTInit(CString strID) {
       return false;
     }
   }
-  HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+  HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
   if (hModule == nullptr)
-      hModule = ::LoadLibrary(L"WebRTProxy.dll");
+      hModule = ::LoadLibrary(L"AIGCAgent.dll");
   if (hModule == nullptr) {
       TCHAR m_szBuffer[MAX_PATH];
       if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
           m_szBuffer) == S_OK) {
           CString strChromeRTFilePath = CString(m_szBuffer);
-          strChromeRTFilePath += _T("\\WebRT\\WebRTProxy.dll");
+          strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
           if (::PathFileExists(strChromeRTFilePath)) {
               hModule = ::LoadLibrary(strChromeRTFilePath);
           }
       }
       if (hModule == nullptr)
-          hModule = ::LoadLibrary(L"WebRTProxy.dll");
+          hModule = ::LoadLibrary(L"AIGCAgent.dll");
   }
   HMODULE hModule2 = hModule;
   if (hModule) {
@@ -1812,9 +1812,9 @@ bool CAIGCWinAppEx::ProcessAppType(bool bCrashReporting) {
 #endif
         }
         m_pSpaceTelescopeImpl->m_hMainWnd = NULL;
-        HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+        HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
         if (hModule == nullptr)
-          hModule = ::LoadLibrary(L"WebRTProxy.dll");
+          hModule = ::LoadLibrary(L"AIGCAgent.dll");
         if (hModule) {
           typedef int(__stdcall * _InitApp)(bool bSupportCrashReporting, void*);
           _InitApp _pInitAppFunction;
@@ -1842,9 +1842,9 @@ BOOL CAIGCWinAppEx::IsBrowserModel(bool bCrashReporting) {
       (::PathFileExists(CString(m_pszExeName) + _T(".app.html")) == false) &&
       (::PathFileExists(CString(m_pszExeName) + _T(".html")) == false);
   if (bWin32 == false) {
-    HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+    HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
     if (hModule == nullptr)
-      hModule = ::LoadLibrary(L"WebRTProxy.dll");
+      hModule = ::LoadLibrary(L"AIGCAgent.dll");
     if (hModule) {
       m_bCrashReporting = bCrashReporting;
       FuncIsBrowserModel =

@@ -256,21 +256,21 @@ namespace CommonUniverse {
 	}
 
 	bool CAIGCApp::WebRTInit(CString strID) {
-		HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 		if (hModule == nullptr)
-			hModule = ::LoadLibrary(L"WebRTProxy.dll");
+			hModule = ::LoadLibrary(L"AIGCAgent.dll");
 		if (hModule == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
 			if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
 				m_szBuffer) == S_OK) {
 				CString strChromeRTFilePath = CString(m_szBuffer);
-				strChromeRTFilePath += _T("\\WebRT\\WebRTProxy.dll");
+				strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
 				if (::PathFileExists(strChromeRTFilePath)) {
 					hModule = ::LoadLibrary(strChromeRTFilePath);
 				}
 			}
 			if (hModule == nullptr)
-				hModule = ::LoadLibrary(L"WebRTProxy.dll");
+				hModule = ::LoadLibrary(L"AIGCAgent.dll");
 		}
 		if (hModule) {
 			BOOL isBrowserModel = false;
@@ -372,21 +372,21 @@ namespace CommonUniverse {
 			case APP_BROWSER:
 			case APP_BROWSER_ECLIPSE: {
 				m_pSpaceTelescopeImpl->m_hMainWnd = NULL;
-				HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
-					hModule = ::LoadLibrary(L"WebRTProxy.dll");
+					hModule = ::LoadLibrary(L"AIGCAgent.dll");
 				if (hModule == nullptr) {
 					TCHAR m_szBuffer[MAX_PATH];
 					if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
 						m_szBuffer) == S_OK) {
 						CString strChromeRTFilePath = CString(m_szBuffer);
-						strChromeRTFilePath += _T("\\WebRT\\WebRTProxy.dll");
+						strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
 						if (::PathFileExists(strChromeRTFilePath)) {
 							hModule = ::LoadLibrary(strChromeRTFilePath);
 						}
 					}
 					if (hModule == nullptr)
-						hModule = ::LoadLibrary(L"WebRTProxy.dll");
+						hModule = ::LoadLibrary(L"AIGCAgent.dll");
 				}
 				if (hModule) {
 					typedef int(__stdcall* _InitApp)(bool bSupportCrashReporting, void*);
@@ -415,9 +415,9 @@ namespace CommonUniverse {
 			(::PathFileExists(m_strExeName + _T(".app.html")) == false) &&
 			(::PathFileExists(m_strExeName + _T(".html")) == false);
 		if (bWin32 == false) {
-			HMODULE hModule = ::GetModuleHandle(L"WebRTProxy.dll");
+			HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 			if (hModule == nullptr)
-				hModule = ::LoadLibrary(L"WebRTProxy.dll");
+				hModule = ::LoadLibrary(L"AIGCAgent.dll");
 			if (hModule) {
 				m_bCrashReporting = bCrashReporting;
 				FuncIsBrowserModel =
