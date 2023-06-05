@@ -117,7 +117,8 @@
       <RegisterOutput>false</RegisterOutput>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>MFCApp.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -181,7 +182,8 @@
       <RegisterOutput>false</RegisterOutput>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>MFCApp.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
