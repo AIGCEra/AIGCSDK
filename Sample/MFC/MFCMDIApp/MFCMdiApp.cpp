@@ -1,5 +1,5 @@
 
-// MFCApplication3.cpp : Defines the class behaviors for the application.
+// MFCMDIApp.cpp : Defines the class behaviors for the application.
 //
 
 #include "pch.h"

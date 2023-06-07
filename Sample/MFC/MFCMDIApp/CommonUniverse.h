@@ -30,7 +30,6 @@ based
 #include <atlstr.h>
 #include <map>
 #include <string>
-#include "jniforchrome.h"
 #include "universe.h"
 
 #define TANGRAM_CONST_OPENFILE 19920612
@@ -957,20 +956,9 @@ namespace CommonUniverse {
 	class IWebRTDelegate {
 	public:
 		IWebRTDelegate() {
-			m_pJVM = nullptr;
-			m_pJVMenv = nullptr;
-			systemClass = nullptr;
-			exitMethod = nullptr;
-			loadMethod = nullptr;
 		}
 
 		virtual ~IWebRTDelegate() {}
-
-		JavaVM* m_pJVM;
-		JNIEnv* m_pJVMenv;
-		jclass systemClass;
-		jmethodID exitMethod;
-		jmethodID loadMethod;
 
 		virtual bool DoIdleWork() { return false; }
 		virtual bool OnAppIdle(BOOL& bIdle, LONG lCount) { return false; }

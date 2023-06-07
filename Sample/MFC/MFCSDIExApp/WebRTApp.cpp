@@ -167,32 +167,6 @@ class CWebRTProxy : public IWebRTDelegate {
  public:
   CWebRTProxy(){};
   virtual ~CWebRTProxy() {
-    if (m_pJVMenv) {
-      try {
-        OutputDebugString(
-            _T("\n\n***************For MFC Developer***************\n")
-            _T("***************Exit Eclipse JVM from MFC***************\n\n"));
-        m_pJVMenv->CallStaticVoidMethod(systemClass, exitMethod, 0);
-        OutputDebugString(
-            _T("\n\n***************For MFC Developer***************\n")
-            _T("***************end Exit Eclipse JVM from ")
-            _T("CLR***************\n\n"));
-      } catch (...) {
-        OutputDebugString(
-            _T("\n\n***************For MFC Developer catch***************\n")
-            _T("***************end Exit Eclipse JVM from ")
-            _T("MFC***************\n\n"));
-      }
-      if (m_pJVMenv->ExceptionOccurred()) {
-        OutputDebugString(
-            _T("\n\n***************For MFC Developer ")
-            _T("ExceptionOccurred***************\n")
-            _T("***************end Exit Eclipse JVM from ")
-            _T("MFC***************\n\n"));
-        m_pJVMenv->ExceptionDescribe();
-        m_pJVMenv->ExceptionClear();
-      }
-    }
   }
 
   // IWebRTDelegate:

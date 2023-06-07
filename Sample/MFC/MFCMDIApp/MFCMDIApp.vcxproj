@@ -119,6 +119,8 @@
     <Manifest>
       <AdditionalManifestFiles>
       </AdditionalManifestFiles>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <GenerateCategoryTags>false</GenerateCategoryTags>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
