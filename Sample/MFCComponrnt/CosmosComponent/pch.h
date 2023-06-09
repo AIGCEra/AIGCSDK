@@ -10,6 +10,6 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#include "CosmosApp.h"
+#include "WebRTApp.h"
 
 #endif //PCH_H

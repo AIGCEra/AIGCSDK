@@ -13,6 +13,7 @@
 // CMFCMDIApp:
 // See MFCMDIApp.cpp for the implementation of this class
 //
+#include "WebRTApp.h"
 
 class CMFCMDIApp : public CAIGCWinApp
 {
