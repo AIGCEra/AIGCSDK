@@ -84,7 +84,6 @@ namespace CommonUniverse
 		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
 
 		//IWindowProvider:
-		//virtual bool WebRTInit(CString strID);
 		virtual CString GetNames();
 		virtual CString GetTags(CString strName);
 		virtual HWND Create(HWND hParentWnd, IXobj* pGrid);
@@ -163,7 +162,7 @@ namespace CommonUniverse
 
 		DECLARE_DYNCREATE(CWebRTMDIFrame)
 
-		virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
+			virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
 		//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 

@@ -13,8 +13,6 @@
 #include "MFCMdiAppDoc.h"
 #include "MFCMdiAppView.h"
 
-#include "WebRTApp.cpp"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
