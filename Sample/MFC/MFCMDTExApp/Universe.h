@@ -149,11 +149,11 @@ typedef interface IBrowser IBrowser;
 #endif 	/* __IBrowser_FWD_DEFINED__ */
 
 
-#ifndef __IWebPage_FWD_DEFINED__
-#define __IWebPage_FWD_DEFINED__
-typedef interface IWebPage IWebPage;
+#ifndef __IWebView_FWD_DEFINED__
+#define __IWebView_FWD_DEFINED__
+typedef interface IWebView IWebView;
 
-#endif 	/* __IWebPage_FWD_DEFINED__ */
+#endif 	/* __IWebView_FWD_DEFINED__ */
 
 
 #ifndef __IOfficeObject_FWD_DEFINED__
@@ -1628,7 +1628,7 @@ EXTERN_C const IID IID_IXobj;
             /* [retval][out] */ BSTR *pVal) = 0;
         
         virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_WebPage( 
-            /* [retval][out] */ IWebPage **pVal) = 0;
+            /* [retval][out] */ IWebView **pVal) = 0;
         
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_NameAtWindowPage( 
             /* [retval][out] */ BSTR *pVal) = 0;
@@ -1946,7 +1946,7 @@ EXTERN_C const IID IID_IXobj;
         
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebPage )( 
             IXobj * This,
-            /* [retval][out] */ IWebPage **pVal);
+            /* [retval][out] */ IWebView **pVal);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_NameAtWindowPage )( 
             IXobj * This,
@@ -3266,7 +3266,7 @@ EXTERN_C const IID IID_INucleus;
             /* [retval][out] */ INuclei **pVal) = 0;
         
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_HostWebPage( 
-            /* [retval][out] */ IWebPage **ppChromeWebPage) = 0;
+            /* [retval][out] */ IWebView **ppChromeWebPage) = 0;
         
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_HostBrowser( 
             /* [retval][out] */ IBrowser **ppChromeWebBrowser) = 0;
@@ -3387,7 +3387,7 @@ EXTERN_C const IID IID_INucleus;
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostWebPage )( 
             INucleus * This,
-            /* [retval][out] */ IWebPage **ppChromeWebPage);
+            /* [retval][out] */ IWebView **ppChromeWebPage);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostBrowser )( 
             INucleus * This,
@@ -4483,19 +4483,19 @@ EXTERN_C const IID IID_IBrowser;
 #endif 	/* __IBrowser_INTERFACE_DEFINED__ */
 
 
-#ifndef __IWebPage_INTERFACE_DEFINED__
-#define __IWebPage_INTERFACE_DEFINED__
+#ifndef __IWebView_INTERFACE_DEFINED__
+#define __IWebView_INTERFACE_DEFINED__
 
-/* interface IWebPage */
+/* interface IWebView */
 /* [unique][nonextensible][dual][uuid][object] */ 
 
 
-EXTERN_C const IID IID_IWebPage;
+EXTERN_C const IID IID_IWebView;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
     
     MIDL_INTERFACE("19631222-1992-0612-1965-060120180903")
-    IWebPage : public IDispatch
+    IWebView : public IDispatch
     {
     public:
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_HostWnd( 
@@ -4523,34 +4523,34 @@ EXTERN_C const IID IID_IWebPage;
     
 #else 	/* C style interface */
 
-    typedef struct IWebPageVtbl
+    typedef struct IWebViewVtbl
     {
         BEGIN_INTERFACE
         
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
-            IWebPage * This,
+            IWebView * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
-            IWebPage * This);
+            IWebView * This);
         
         ULONG ( STDMETHODCALLTYPE *Release )( 
-            IWebPage * This);
+            IWebView * This);
         
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
-            IWebPage * This,
+            IWebView * This,
             /* [out] */ UINT *pctinfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
-            IWebPage * This,
+            IWebView * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
-            IWebPage * This,
+            IWebView * This,
             /* [in] */ REFIID riid,
             /* [size_is][in] */ LPOLESTR *rgszNames,
             /* [range][in] */ UINT cNames,
@@ -4558,7 +4558,7 @@ EXTERN_C const IID IID_IWebPage;
             /* [size_is][out] */ DISPID *rgDispId);
         
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
-            IWebPage * This,
+            IWebView * This,
             /* [annotation][in] */ 
             _In_  DISPID dispIdMember,
             /* [annotation][in] */ 
@@ -4577,36 +4577,36 @@ EXTERN_C const IID IID_IWebPage;
             _Out_opt_  UINT *puArgErr);
         
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostWnd )( 
-            IWebPage * This,
+            IWebView * This,
             /* [retval][out] */ LONGLONG *pVal);
         
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_HostWnd )( 
-            IWebPage * This,
+            IWebView * This,
             /* [in] */ LONGLONG newVal);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateForm )( 
-            IWebPage * This,
+            IWebView * This,
             BSTR bstrKey,
             LONGLONG hParent,
             /* [retval][out] */ IDispatch **pRetForm);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
-            IWebPage * This,
+            IWebView * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **pRetXobj);
         
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SendXmlMessage )( 
-            IWebPage * This,
+            IWebView * This,
             IXobj *sender,
             BSTR bstrXml);
         
         END_INTERFACE
-    } IWebPageVtbl;
+    } IWebViewVtbl;
 
-    interface IWebPage
+    interface IWebView
     {
-        CONST_VTBL struct IWebPageVtbl *lpVtbl;
+        CONST_VTBL struct IWebViewVtbl *lpVtbl;
     };
 
     
@@ -4614,42 +4614,42 @@ EXTERN_C const IID IID_IWebPage;
 #ifdef COBJMACROS
 
 
-#define IWebPage_QueryInterface(This,riid,ppvObject)	\
+#define IWebView_QueryInterface(This,riid,ppvObject)	\
     ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
 
-#define IWebPage_AddRef(This)	\
+#define IWebView_AddRef(This)	\
     ( (This)->lpVtbl -> AddRef(This) ) 
 
-#define IWebPage_Release(This)	\
+#define IWebView_Release(This)	\
     ( (This)->lpVtbl -> Release(This) ) 
 
 
-#define IWebPage_GetTypeInfoCount(This,pctinfo)	\
+#define IWebView_GetTypeInfoCount(This,pctinfo)	\
     ( (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo) ) 
 
-#define IWebPage_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+#define IWebView_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
     ( (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo) ) 
 
-#define IWebPage_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+#define IWebView_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
     ( (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId) ) 
 
-#define IWebPage_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+#define IWebView_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
     ( (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr) ) 
 
 
-#define IWebPage_get_HostWnd(This,pVal)	\
+#define IWebView_get_HostWnd(This,pVal)	\
     ( (This)->lpVtbl -> get_HostWnd(This,pVal) ) 
 
-#define IWebPage_put_HostWnd(This,newVal)	\
+#define IWebView_put_HostWnd(This,newVal)	\
     ( (This)->lpVtbl -> put_HostWnd(This,newVal) ) 
 
-#define IWebPage_CreateForm(This,bstrKey,hParent,pRetForm)	\
+#define IWebView_CreateForm(This,bstrKey,hParent,pRetForm)	\
     ( (This)->lpVtbl -> CreateForm(This,bstrKey,hParent,pRetForm) ) 
 
-#define IWebPage_Observe(This,bstrKey,bstrXml,pRetXobj)	\
+#define IWebView_Observe(This,bstrKey,bstrXml,pRetXobj)	\
     ( (This)->lpVtbl -> Observe(This,bstrKey,bstrXml,pRetXobj) ) 
 
-#define IWebPage_SendXmlMessage(This,sender,bstrXml)	\
+#define IWebView_SendXmlMessage(This,sender,bstrXml)	\
     ( (This)->lpVtbl -> SendXmlMessage(This,sender,bstrXml) ) 
 
 #endif /* COBJMACROS */
@@ -4660,7 +4660,7 @@ EXTERN_C const IID IID_IWebPage;
 
 
 
-#endif 	/* __IWebPage_INTERFACE_DEFINED__ */
+#endif 	/* __IWebView_INTERFACE_DEFINED__ */
 
 
 #ifndef __IOfficeObject_INTERFACE_DEFINED__

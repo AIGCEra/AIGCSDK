@@ -70,7 +70,7 @@ namespace CommonUniverse
 		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
 		virtual CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
 		virtual CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
-		virtual void OnIPCMsg(CWebPageImpl* pWebPageImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5) {};
+		virtual void OnIPCMsg(CWebViewImpl* pWebViewImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5) {};
 		virtual void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
 		virtual void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID) {};
 		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd) { return NULL; };

@@ -882,7 +882,7 @@ void CAIGCWinApp::OpenDocFile(CString strFileName,
   }
 }
 
-void CAIGCWinApp::OnIPCMsg(CWebPageImpl* pWebPageImpl,
+void CAIGCWinApp::OnIPCMsg(CWebViewImpl* pWebViewImpl,
                          CString strType,
                          CString strParam1,
                          CString strParam2,
@@ -1676,7 +1676,7 @@ void CAIGCWinAppEx::OpenDocFile(CString strFileName,
   }
 }
 
-void CAIGCWinAppEx::OnIPCMsg(CWebPageImpl* pWebPageImpl,
+void CAIGCWinAppEx::OnIPCMsg(CWebViewImpl* pWebViewImpl,
                            CString strType,
                            CString strParam1,
                            CString strParam2,

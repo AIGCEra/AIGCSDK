@@ -10,6 +10,7 @@ namespace AIGC
         {
             try
             {
+
                 Assembly am = Assembly.Load("cosmos");
                 Type t = am.GetType("Universe.WebRT");
                 t?.GetMethod("Run", BindingFlags.Public | BindingFlags.Static).Invoke(null, new object[] { StartObj });

@@ -778,7 +778,7 @@ namespace CommonUniverse {
 		}
 	}
 
-	void CAIGCWinApp::OnIPCMsg(CWebPageImpl* pWebPageImpl,
+	void CAIGCWinApp::OnIPCMsg(CWebViewImpl* pWebViewImpl,
 		CString strType,
 		CString strParam1,
 		CString strParam2,
@@ -1732,7 +1732,7 @@ namespace CommonUniverse {
 		}
 	}
 
-	void CAIGCWinAppEx::OnIPCMsg(CWebPageImpl* pWebPageImpl,
+	void CAIGCWinAppEx::OnIPCMsg(CWebViewImpl* pWebViewImpl,
 		CString strType,
 		CString strParam1,
 		CString strParam2,

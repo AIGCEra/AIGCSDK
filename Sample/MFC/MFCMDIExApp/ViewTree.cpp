@@ -61,11 +61,11 @@ void CViewTree::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 			pGalaxy->get_VisibleXobj(&pObj);
 			if (pObj)
 			{
-				IWebPage* pPage = nullptr;
+				IWebView* pPage = nullptr;
 				pObj->get_WebPage(&pPage);
 			}
 		}
-		CWebPageImpl* pImpl = g_pSpaceTelescopeImpl->GetWebPageImpl(m_hWnd);
+		CWebViewImpl* pImpl = g_pSpaceTelescopeImpl->GetWebPageImpl(m_hWnd);
 		CBrowserImpl* pBrowser = g_pSpaceTelescopeImpl->GetBrowserImpl(m_hWnd);
 		HWND hBrowser = nullptr;
 		if (pImpl)

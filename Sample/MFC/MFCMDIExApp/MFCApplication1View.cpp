@@ -139,7 +139,7 @@ LRESULT CMFCApplication1View::OnCloudMsgReceived(WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = CWnd::DefWindowProc(WM_CLOUDMSGRECEIVED, wParam, lParam);
 	CSession* pSession = (CSession*)lParam;
-	CWebPageImpl* m_pOwner = pSession->m_pOwner;
+	CWebViewImpl* m_pOwner = pSession->m_pOwner;
 	m_pChromeRenderFrameHost = m_pOwner->m_pChromeRenderFrameHost;
 	CString strMsgID = pSession->GetString(L"msgID");
 	pSession->InsertString(_T("msgID"), _T("TEST_MFC_MSG"));
@@ -198,7 +198,7 @@ void CMFCApplication1View::OnBnClickedButton1()
 	// TODO: Add your control notification handler code here
 	if (m_pChromeRenderFrameHost)
 	{
-		CWebPageImpl* pWebPageImpl = m_pChromeRenderFrameHost->m_pProxy;
+		CWebViewImpl* pWebViewImpl = m_pChromeRenderFrameHost->m_pProxy;
 
 	}
 	g_pSpaceTelescopeImpl->InsertMsgData(m_hWnd, _T("1"), _T("2xxx"));

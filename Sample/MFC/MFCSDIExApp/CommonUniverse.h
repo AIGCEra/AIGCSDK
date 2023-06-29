@@ -212,7 +212,7 @@ namespace CommonUniverse {
 	class CChromeWebContentProxyBase;
 	class CChromeRenderFrameHost;
 	class CChromeChildProcessHostImpl;
-	class CWebPageImpl;
+	class CWebViewImpl;
 	class IWindowProvider;
 	class CTabStatsTrackerDelegate;
 	class CosmosAppMessagePumpForUI;
@@ -315,7 +315,7 @@ namespace CommonUniverse {
 		bool m_bSZMode = false;
 		CString m_strData = _T("");
 		CString m_strDocTemplateID = _T("");
-		IWebPage* m_pWebPage = nullptr;
+		IWebView* m_pWebView = nullptr;
 		void* m_pDoc = nullptr;
 		void* m_pHostWnd = nullptr;
 		void* m_pDocTemplate = nullptr;
@@ -344,7 +344,7 @@ namespace CommonUniverse {
 		CSession() {}
 		virtual ~CSession() {}
 
-		CWebPageImpl* m_pOwner;
+		CWebViewImpl* m_pOwner;
 
 		virtual void InsertString(CString key, CString value) {}
 		virtual void InsertLong(CString key, long value) {}
@@ -580,12 +580,12 @@ namespace CommonUniverse {
 			return nullptr;
 		}
 		virtual HWND InitWebRTApp() { return NULL; }
-		virtual void OnWebAppData(CWebPageImpl*, CString strXml) {}
-		virtual HWND OnWinFormCreated(CWebPageImpl*, CString strXml) { return NULL; }
-		virtual CWebPageImpl* OnNewWebPage(CBrowserImpl*, CString strXml) {
+		virtual void OnWebAppData(CWebViewImpl*, CString strXml) {}
+		virtual HWND OnWinFormCreated(CWebViewImpl*, CString strXml) { return NULL; }
+		virtual CWebViewImpl* OnNewWebPage(CBrowserImpl*, CString strXml) {
 			return NULL;
 		}
-		virtual void OnIPCMsg(CWebPageImpl* pWebPageImpl,
+		virtual void OnIPCMsg(CWebViewImpl* pWebViewImpl,
 			CString strType,
 			CString strParam1,
 			CString strParam2,
@@ -622,8 +622,8 @@ namespace CommonUniverse {
 		virtual IDispatch* CreateObject(BSTR bstrObjID,
 			HWND hParent,
 			IXobj* pHostNode,
-			CWebPageImpl*,
-			IWebPage*) {
+			CWebViewImpl*,
+			IWebView*) {
 			return nullptr;
 		}
 		virtual int IsWinForm(HWND hWnd) { return 0; }
@@ -680,8 +680,8 @@ namespace CommonUniverse {
 			return nullptr;
 		}
 		virtual void OnWebPageCreated(HWND,
-			CWebPageImpl*,
-			IWebPage* pChromeWebContent,
+			CWebViewImpl*,
+			IWebView* pChromeWebContent,
 			int nState) {}
 		virtual bool PreWindowPosChanging(HWND hWnd, WINDOWPOS* lpwndpos, int nType) {
 			return false;
@@ -790,7 +790,7 @@ namespace CommonUniverse {
 		CMDIChildFormInfo* m_pCurMDIChildFormInfo;
 		IWebRTExtender* m_pExtender = nullptr;
 		IContainer* m_pCreatingWindow = nullptr;
-		CWebPageImpl* m_pMainWebPageImpl = nullptr;
+		CWebViewImpl* m_pMainWebPageImpl = nullptr;
 		IWebRTDelegate* m_pWebRTDelegate = nullptr;
 		CChromeBrowserBase* m_pActiveBrowser = nullptr;
 		CWebRTBrowserFactory* m_pBrowserFactory = nullptr;
@@ -814,10 +814,10 @@ namespace CommonUniverse {
 		map<CString, IWindowProvider*> m_mapWindowProvider;
 
 		map<HWND, IXobj*> m_mapXobj;
-		map<HWND, CWebPageImpl*> m_mapWebView;
+		map<HWND, CWebViewImpl*> m_mapWebView;
 		map<HWND, HWND> m_mapBrowserForm;
 		map<HWND, IBrowser*> m_mapBrowserWnd;
-		map<HWND, IWebPage*> m_mapFormWebPage;
+		map<HWND, IWebView*> m_mapFormWebPage;
 		map<HWND, IWorkBenchWindow*> m_mapWorkBenchWnd;
 		map<HWND, INuclei*> m_mapNuclei;
 		map<HWND, WebRTFrameWndInfo*> m_mapWebRTFrameWndInfo;
@@ -856,14 +856,14 @@ namespace CommonUniverse {
 		}
 		virtual bool IsMDIClientNucleusNode(IXobj*) { return false; }
 		virtual void InserttoDataMap(int nType, CString strKey, void* pData) {}
-		virtual IWebPage* GetWebPageFromForm(HWND) { return nullptr; }
+		virtual IWebView* GetWebPageFromForm(HWND) { return nullptr; }
 		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
-		virtual CSession* CreateCloudSession(CWebPageImpl*) { return nullptr; }
+		virtual CSession* CreateCloudSession(CWebViewImpl*) { return nullptr; }
 		virtual CSession* GetCloudSession(IXobj*) { return nullptr; }
 		virtual void SetMainWnd(HWND hMain) {}
 		virtual IXobj* GetXobj(HWND hWnd) { return nullptr; }
 		virtual INucleus* GetNucleus(HWND hWnd) { return nullptr; }
-		virtual CWebPageImpl* GetWebPageImpl(HWND hWnd) { return nullptr; }
+		virtual CWebViewImpl* GetWebPageImpl(HWND hWnd) { return nullptr; }
 		virtual CBrowserImpl* GetBrowserImpl(HWND hWnd) { return nullptr; }
 		virtual IXobj* ObserveXml(HWND hWnd, CString strKey, CString strXml) {
 			return nullptr;
@@ -1202,7 +1202,7 @@ namespace CommonUniverse {
 		}
 
 		bool m_bNTPFrame;
-		CWebPageImpl* m_pProxy;
+		CWebViewImpl* m_pProxy;
 		map<CString, IPCSession*> m_mapWebRTSession;
 		virtual void SetFocus(bool bFocus) {}
 		virtual void ShowWebPage(bool bShow) {}
@@ -1221,16 +1221,16 @@ namespace CommonUniverse {
 		virtual CString GetRenderFrameURL(int nType) { return _T(""); }
 	};
 
-	class CWebPageImpl {
+	class CWebViewImpl {
 	public:
-		CWebPageImpl() {
+		CWebViewImpl() {
 			m_pSession = nullptr;
 			m_pRemoteCosmos = nullptr;
 			m_pChromeRenderFrameHost = g_pSpaceTelescopeImpl->m_pCreatingChromeRenderFrameHostBase;
 			g_pSpaceTelescopeImpl->m_pCreatingChromeRenderFrameHostBase = nullptr;
 		}
 
-		virtual ~CWebPageImpl() {}
+		virtual ~CWebViewImpl() {}
 		CSession* m_pSession = nullptr;
 		IWebRT* m_pRemoteCosmos = nullptr;
 		CChromeRenderFrameHost* m_pChromeRenderFrameHost;
