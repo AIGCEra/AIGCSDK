@@ -282,7 +282,7 @@ extern "C"{
 typedef /* [helpstring] */ 
 enum BrowserWndOpenDisposition
     {
-        UNKNOWN	= 0,
+        UNKNOWN_TAB	= 0,
         CURRENT_TAB	= 0x1,
         SINGLETON_TAB	= 0x2,
         NEW_FOREGROUND_TAB	= 0x3,
@@ -1716,7 +1716,7 @@ EXTERN_C const IID IID_IXobj;
         virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_Key( 
             /* [retval][out] */ BSTR *pVal) = 0;
         
-        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_WebPage( 
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_WebView( 
             /* [retval][out] */ IWebView **pVal) = 0;
         
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_NameAtWindowPage( 
@@ -2065,8 +2065,8 @@ EXTERN_C const IID IID_IXobj;
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
-        DECLSPEC_XFGVIRT(IXobj, get_WebPage)
-        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebPage )( 
+        DECLSPEC_XFGVIRT(IXobj, get_WebView)
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebView )( 
             IXobj * This,
             /* [retval][out] */ IWebView **pVal);
         
@@ -2417,8 +2417,8 @@ EXTERN_C const IID IID_IXobj;
 #define IXobj_get_Key(This,pVal)	\
     ( (This)->lpVtbl -> get_Key(This,pVal) ) 
 
-#define IXobj_get_WebPage(This,pVal)	\
-    ( (This)->lpVtbl -> get_WebPage(This,pVal) ) 
+#define IXobj_get_WebView(This,pVal)	\
+    ( (This)->lpVtbl -> get_WebView(This,pVal) ) 
 
 #define IXobj_get_NameAtWindowPage(This,pVal)	\
     ( (This)->lpVtbl -> get_NameAtWindowPage(This,pVal) ) 
@@ -4824,6 +4824,9 @@ EXTERN_C const IID IID_IWebView;
         virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_HostWnd( 
             /* [in] */ LONGLONG newVal) = 0;
         
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_WebBrowser( 
+            /* [retval][out] */ IBrowser **ppWebBrowser) = 0;
+        
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CreateForm( 
             BSTR bstrKey,
             LONGLONG hParent,
@@ -4913,6 +4916,11 @@ EXTERN_C const IID IID_IWebView;
             IWebView * This,
             /* [in] */ LONGLONG newVal);
         
+        DECLSPEC_XFGVIRT(IWebView, get_WebBrowser)
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebBrowser )( 
+            IWebView * This,
+            /* [retval][out] */ IBrowser **ppWebBrowser);
+        
         DECLSPEC_XFGVIRT(IWebView, CreateForm)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateForm )( 
             IWebView * This,
@@ -4974,6 +4982,9 @@ EXTERN_C const IID IID_IWebView;
 
 #define IWebView_put_HostWnd(This,newVal)	\
     ( (This)->lpVtbl -> put_HostWnd(This,newVal) ) 
+
+#define IWebView_get_WebBrowser(This,ppWebBrowser)	\
+    ( (This)->lpVtbl -> get_WebBrowser(This,ppWebBrowser) ) 
 
 #define IWebView_CreateForm(This,bstrKey,hParent,pRetForm)	\
     ( (This)->lpVtbl -> CreateForm(This,bstrKey,hParent,pRetForm) ) 

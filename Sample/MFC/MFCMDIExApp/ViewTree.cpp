@@ -62,7 +62,7 @@ void CViewTree::OnTvnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 			if (pObj)
 			{
 				IWebView* pPage = nullptr;
-				pObj->get_WebPage(&pPage);
+				pObj->get_WebView(&pPage);
 			}
 		}
 		CWebViewImpl* pImpl = g_pSpaceTelescopeImpl->GetWebPageImpl(m_hWnd);

@@ -3,11 +3,11 @@
 /* this ALWAYS GENERATED file contains the definitions for the interfaces */
 
 
- /* File created by MIDL compiler version 8.01.0622 */
+ /* File created by MIDL compiler version 8.01.0628 */
 /* at Tue Jan 19 11:14:07 2038
  */
 /* Compiler settings for ..\CommonFile\Universe.idl:
-    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0622 
+    Oicf, W1, Zp8, env=Win64 (32b run), target_arch=AMD64 8.01.0628 
     protocol : all , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
     VC __declspec() decoration level: 
@@ -40,6 +40,14 @@
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
+#endif
+
+#ifndef DECLSPEC_XFGVIRT
+#if defined(_CONTROL_FLOW_GUARD_XFG)
+#define DECLSPEC_XFGVIRT(base, func) __declspec(xfg_virtual(base, func))
+#else
+#define DECLSPEC_XFGVIRT(base, func)
+#endif
 #endif
 
 /* Forward Declarations */ 
@@ -191,16 +199,16 @@ typedef interface _IWebRT _IWebRT;
 #endif 	/* ___IWebRT_FWD_DEFINED__ */
 
 
-#ifndef __Cosmos_FWD_DEFINED__
-#define __Cosmos_FWD_DEFINED__
+#ifndef __WebRT_FWD_DEFINED__
+#define __WebRT_FWD_DEFINED__
 
 #ifdef __cplusplus
-typedef class Cosmos Cosmos;
+typedef class WebRT WebRT;
 #else
-typedef struct Cosmos Cosmos;
+typedef struct WebRT WebRT;
 #endif /* __cplusplus */
 
-#endif 	/* __Cosmos_FWD_DEFINED__ */
+#endif 	/* __WebRT_FWD_DEFINED__ */
 
 
 #ifndef ___IXobjEvents_FWD_DEFINED__
@@ -224,16 +232,16 @@ typedef interface _IWebRTAppEvents _IWebRTAppEvents;
 #endif 	/* ___IWebRTAppEvents_FWD_DEFINED__ */
 
 
-#ifndef __CosmosCtrl_FWD_DEFINED__
-#define __CosmosCtrl_FWD_DEFINED__
+#ifndef __WebRTCtrl_FWD_DEFINED__
+#define __WebRTCtrl_FWD_DEFINED__
 
 #ifdef __cplusplus
-typedef class CosmosCtrl CosmosCtrl;
+typedef class WebRTCtrl WebRTCtrl;
 #else
-typedef struct CosmosCtrl CosmosCtrl;
+typedef struct WebRTCtrl WebRTCtrl;
 #endif /* __cplusplus */
 
-#endif 	/* __CosmosCtrl_FWD_DEFINED__ */
+#endif 	/* __WebRTCtrl_FWD_DEFINED__ */
 
 
 #ifndef __CosmosExtender_FWD_DEFINED__
@@ -274,7 +282,7 @@ extern "C"{
 typedef /* [helpstring] */ 
 enum BrowserWndOpenDisposition
     {
-        UNKNOWN	= 0,
+        UNKNOWN_TAB	= 0,
         CURRENT_TAB	= 0x1,
         SINGLETON_TAB	= 0x2,
         NEW_FOREGROUND_TAB	= 0x3,
@@ -377,28 +385,34 @@ EXTERN_C const IID IID_IWebRTExtender;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTExtender * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTExtender * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTExtender * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTExtender * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTExtender * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTExtender * This,
             /* [in] */ REFIID riid,
@@ -407,6 +421,7 @@ EXTERN_C const IID IID_IWebRTExtender;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTExtender * This,
             /* [annotation][in] */ 
@@ -426,9 +441,11 @@ EXTERN_C const IID IID_IWebRTExtender;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTExtender, Close)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Close )( 
             IWebRTExtender * This);
         
+        DECLSPEC_XFGVIRT(IWebRTExtender, get_ActiveWorkBenchWindow)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ActiveWorkBenchWindow )( 
             IWebRTExtender * This,
             BSTR bstrID,
@@ -511,28 +528,34 @@ EXTERN_C const IID IID_IEclipseExtender;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IEclipseExtender * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IEclipseExtender * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IEclipseExtender * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IEclipseExtender * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IEclipseExtender * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IEclipseExtender * This,
             /* [in] */ REFIID riid,
@@ -541,6 +564,7 @@ EXTERN_C const IID IID_IEclipseExtender;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IEclipseExtender * This,
             /* [annotation][in] */ 
@@ -560,9 +584,11 @@ EXTERN_C const IID IID_IEclipseExtender;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTExtender, Close)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Close )( 
             IEclipseExtender * This);
         
+        DECLSPEC_XFGVIRT(IWebRTExtender, get_ActiveWorkBenchWindow)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ActiveWorkBenchWindow )( 
             IEclipseExtender * This,
             BSTR bstrID,
@@ -669,28 +695,34 @@ EXTERN_C const IID IID_IOfficeExtender;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IOfficeExtender * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IOfficeExtender * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IOfficeExtender * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IOfficeExtender * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IOfficeExtender * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IOfficeExtender * This,
             /* [in] */ REFIID riid,
@@ -699,6 +731,7 @@ EXTERN_C const IID IID_IOfficeExtender;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IOfficeExtender * This,
             /* [annotation][in] */ 
@@ -718,20 +751,24 @@ EXTERN_C const IID IID_IOfficeExtender;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTExtender, Close)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Close )( 
             IOfficeExtender * This);
         
+        DECLSPEC_XFGVIRT(IWebRTExtender, get_ActiveWorkBenchWindow)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ActiveWorkBenchWindow )( 
             IOfficeExtender * This,
             BSTR bstrID,
             /* [retval][out] */ IWorkBenchWindow **pVal);
         
+        DECLSPEC_XFGVIRT(IOfficeExtender, AddVBAFormsScript)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *AddVBAFormsScript )( 
             IOfficeExtender * This,
             IDispatch *OfficeObject,
             BSTR bstrKey,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IOfficeExtender, InitVBAForm)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *InitVBAForm )( 
             IOfficeExtender * This,
             /* [in] */ IDispatch *newVal,
@@ -739,16 +776,19 @@ EXTERN_C const IID IID_IOfficeExtender;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IOfficeExtender, GetNucleusFromVBAForm)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetNucleusFromVBAForm )( 
             IOfficeExtender * This,
             IDispatch *pForm,
             /* [retval][out] */ INucleus **ppNucleus);
         
+        DECLSPEC_XFGVIRT(IOfficeExtender, GetActiveTopXobj)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetActiveTopXobj )( 
             IOfficeExtender * This,
             IDispatch *pForm,
             /* [retval][out] */ IXobj **WndXobj);
         
+        DECLSPEC_XFGVIRT(IOfficeExtender, GetObjectFromWnd)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetObjectFromWnd )( 
             IOfficeExtender * This,
             LONG hWnd,
@@ -847,28 +887,34 @@ EXTERN_C const IID IID_IWebRTTreeNode;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTTreeNode * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTTreeNode * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTTreeNode * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTTreeNode * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTTreeNode * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTTreeNode * This,
             /* [in] */ REFIID riid,
@@ -877,6 +923,7 @@ EXTERN_C const IID IID_IWebRTTreeNode;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTTreeNode * This,
             /* [annotation][in] */ 
@@ -991,28 +1038,34 @@ EXTERN_C const IID IID_IWebRTTreeViewCallBack;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTTreeViewCallBack * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTTreeViewCallBack * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTTreeViewCallBack * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTTreeViewCallBack * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTTreeViewCallBack * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTTreeViewCallBack * This,
             /* [in] */ REFIID riid,
@@ -1021,6 +1074,7 @@ EXTERN_C const IID IID_IWebRTTreeViewCallBack;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTTreeViewCallBack * This,
             /* [annotation][in] */ 
@@ -1040,32 +1094,39 @@ EXTERN_C const IID IID_IWebRTTreeViewCallBack;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, put_WndXobj)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_WndXobj )( 
             IWebRTTreeViewCallBack * This,
             IXobj *newVal);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, get_Pages)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Pages )( 
             IWebRTTreeViewCallBack * This,
             long *retVal);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, OnInitTreeView)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *OnInitTreeView )( 
             IWebRTTreeViewCallBack * This,
             IWebRTTreeView *pTangramTreeView,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, OnClick)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *OnClick )( 
             IWebRTTreeViewCallBack * This,
             BSTR bstrXml,
             BSTR bstrXmlData);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, OnInit)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *OnInit )( 
             IWebRTTreeViewCallBack * This,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, OnNewPage)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *OnNewPage )( 
             IWebRTTreeViewCallBack * This,
             int nNewPage);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeViewCallBack, CosmosAction)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosAction )( 
             IWebRTTreeViewCallBack * This,
             BSTR bstrXml,
@@ -1178,28 +1239,34 @@ EXTERN_C const IID IID_IWebRTTreeView;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTTreeView * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTTreeView * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTTreeView * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTTreeView * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTTreeView * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTTreeView * This,
             /* [in] */ REFIID riid,
@@ -1208,6 +1275,7 @@ EXTERN_C const IID IID_IWebRTTreeView;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTTreeView * This,
             /* [annotation][in] */ 
@@ -1227,20 +1295,24 @@ EXTERN_C const IID IID_IWebRTTreeView;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeView, put_TangramTreeViewCallBack)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_TangramTreeViewCallBack )( 
             IWebRTTreeView * This,
             BSTR bstrKey,
             /* [in] */ IWebRTTreeViewCallBack *newVal);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeView, get_FirstRoot)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_FirstRoot )( 
             IWebRTTreeView * This,
             /* [retval][out] */ long *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeView, AddTreeNode)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *AddTreeNode )( 
             IWebRTTreeView * This,
             long hItem,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IWebRTTreeView, InsertNode)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *InsertNode )( 
             IWebRTTreeView * This,
             BSTR bstrXml,
@@ -1363,28 +1435,34 @@ EXTERN_C const IID IID_IWebRTEventObj;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTEventObj * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTEventObj * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTEventObj * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTEventObj * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTEventObj * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTEventObj * This,
             /* [in] */ REFIID riid,
@@ -1393,6 +1471,7 @@ EXTERN_C const IID IID_IWebRTEventObj;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTEventObj * This,
             /* [annotation][in] */ 
@@ -1412,45 +1491,55 @@ EXTERN_C const IID IID_IWebRTEventObj;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, get_eventSource)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_eventSource )( 
             IWebRTEventObj * This,
             /* [retval][out] */ IDispatch **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, put_eventSource)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_eventSource )( 
             IWebRTEventObj * This,
             /* [in] */ IDispatch *eventSource);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, get_Index)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Index )( 
             IWebRTEventObj * This,
             /* [retval][out] */ int *nVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, put_Index)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Index )( 
             IWebRTEventObj * This,
             int newVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, get_EventName)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_EventName )( 
             IWebRTEventObj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, put_EventName)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_EventName )( 
             IWebRTEventObj * This,
             BSTR newVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, get_Object)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Object )( 
             IWebRTEventObj * This,
             int nIndex,
             /* [retval][out] */ IDispatch **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, put_Object)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Object )( 
             IWebRTEventObj * This,
             int nIndex,
             IDispatch *newVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, get_Value)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Value )( 
             IWebRTEventObj * This,
             int nIndex,
             /* [retval][out] */ VARIANT *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTEventObj, put_Value)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Value )( 
             IWebRTEventObj * This,
             int nIndex,
@@ -1627,7 +1716,7 @@ EXTERN_C const IID IID_IXobj;
         virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_Key( 
             /* [retval][out] */ BSTR *pVal) = 0;
         
-        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_WebPage( 
+        virtual /* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE get_WebView( 
             /* [retval][out] */ IWebView **pVal) = 0;
         
         virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_NameAtWindowPage( 
@@ -1791,28 +1880,34 @@ EXTERN_C const IID IID_IXobj;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IXobj * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IXobj * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IXobj * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IXobj * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IXobj * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IXobj * This,
             /* [in] */ REFIID riid,
@@ -1821,6 +1916,7 @@ EXTERN_C const IID IID_IXobj;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IXobj * This,
             /* [annotation][in] */ 
@@ -1840,230 +1936,286 @@ EXTERN_C const IID IID_IXobj;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IXobj, get_ChildNodes)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ChildNodes )( 
             IXobj * This,
             /* [retval][out] */ IXobjCollection **ppXobjColletion);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Rows)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Rows )( 
             IXobj * This,
             /* [retval][out] */ long *nRows);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Cols)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Cols )( 
             IXobj * This,
             /* [retval][out] */ long *nCols);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Row)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Row )( 
             IXobj * This,
             /* [retval][out] */ long *nRow);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Col)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Col )( 
             IXobj * This,
             /* [retval][out] */ long *nCol);
         
+        DECLSPEC_XFGVIRT(IXobj, get_XobjType)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_XobjType )( 
             IXobj * This,
             /* [retval][out] */ XobjType *nType);
         
+        DECLSPEC_XFGVIRT(IXobj, get_ParentXobj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ParentXobj )( 
             IXobj * This,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IXobj, get_URL)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_URL )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_URL)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_URL )( 
             IXobj * This,
             /* [in] */ BSTR newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Nuclei)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Nuclei )( 
             IXobj * This,
             /* [retval][out] */ INuclei **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_RootXobj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RootXobj )( 
             IXobj * This,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IXobj, get_XObject)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_XObject )( 
             IXobj * This,
             /* [retval][out] */ VARIANT *pVar);
         
+        DECLSPEC_XFGVIRT(IXobj, get_AxPlugIn)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_AxPlugIn )( 
             IXobj * This,
             /* [in] */ BSTR bstrPlugInName,
             /* [retval][out] */ IDispatch **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Caption)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Caption )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Caption)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Caption )( 
             IXobj * This,
             /* [in] */ BSTR bstrCaption);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Name)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Name)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Name )( 
             IXobj * This,
             /* [in] */ BSTR bstrName);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Objects)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Objects )( 
             IXobj * This,
             /* [in] */ long nType,
             /* [retval][out] */ IXobjCollection **ppXobjColletion);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Handle)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Handle )( 
             IXobj * This,
             /* [retval][out] */ LONGLONG *hWnd);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Attribute)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Attribute )( 
             IXobj * This,
             /* [in] */ BSTR bstrKey,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Attribute)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Attribute )( 
             IXobj * This,
             /* [in] */ BSTR bstrKey,
             /* [in] */ BSTR bstrVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Tag)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Tag )( 
             IXobj * This,
             /* [retval][out] */ VARIANT *pVar);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Tag)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Tag )( 
             IXobj * This,
             /* [in] */ VARIANT vVar);
         
+        DECLSPEC_XFGVIRT(IXobj, get_OuterXml)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_OuterXml )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Key)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Key )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
-        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebPage )( 
+        DECLSPEC_XFGVIRT(IXobj, get_WebView)
+        /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebView )( 
             IXobj * This,
             /* [retval][out] */ IWebView **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_NameAtWindowPage)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_NameAtWindowPage )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Width)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Width )( 
             IXobj * This,
             /* [retval][out] */ LONG *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Height)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Height )( 
             IXobj * This,
             /* [retval][out] */ LONG *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_WinNucleus)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WinNucleus )( 
             IXobj * This,
             /* [retval][out] */ INucleus **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_XML)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_XML )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Extender)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Extender )( 
             IXobj * This,
             /* [retval][out] */ IDispatch **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Extender)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Extender )( 
             IXobj * This,
             /* [in] */ IDispatch *newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_DocXml)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_DocXml )( 
             IXobj * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_rgbMiddle)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_rgbMiddle )( 
             IXobj * This,
             /* [retval][out] */ OLE_COLOR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_rgbMiddle)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_rgbMiddle )( 
             IXobj * This,
             /* [in] */ OLE_COLOR newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_rgbRightBottom)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_rgbRightBottom )( 
             IXobj * This,
             /* [retval][out] */ OLE_COLOR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_rgbRightBottom)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_rgbRightBottom )( 
             IXobj * This,
             /* [in] */ OLE_COLOR newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_rgbLeftTop)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_rgbLeftTop )( 
             IXobj * This,
             /* [retval][out] */ OLE_COLOR *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_rgbLeftTop)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_rgbLeftTop )( 
             IXobj * This,
             /* [in] */ OLE_COLOR newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Hmin)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Hmin )( 
             IXobj * This,
             /* [retval][out] */ int *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Hmin)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Hmin )( 
             IXobj * This,
             /* [in] */ int newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Hmax)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Hmax )( 
             IXobj * This,
             /* [retval][out] */ int *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Hmax)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Hmax )( 
             IXobj * This,
             /* [in] */ int newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Vmin)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Vmin )( 
             IXobj * This,
             /* [retval][out] */ int *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Vmin)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Vmin )( 
             IXobj * This,
             /* [in] */ int newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_Vmax)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Vmax )( 
             IXobj * This,
             /* [retval][out] */ int *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_Vmax)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Vmax )( 
             IXobj * This,
             /* [in] */ int newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_HostXobj)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostXobj )( 
             IXobj * This,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_HostXobj)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_HostXobj )( 
             IXobj * This,
             /* [in] */ IXobj *newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_ActivePage)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ActivePage )( 
             IXobj * This,
             /* [retval][out] */ int *pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, put_ActivePage)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_ActivePage )( 
             IXobj * This,
             /* [in] */ int newVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_HostGalaxy)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostGalaxy )( 
             IXobj * This,
             /* [retval][out] */ INucleus **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, get_OfficeObj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_OfficeObj )( 
             IXobj * This,
             /* [retval][out] */ IDispatch **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, ActiveTabPage)
         /* [hidden][id] */ HRESULT ( STDMETHODCALLTYPE *ActiveTabPage )( 
             IXobj * This,
             IXobj *pXobj);
         
+        DECLSPEC_XFGVIRT(IXobj, GetXobjs)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *GetXobjs )( 
             IXobj * This,
             /* [in] */ BSTR bstrName,
@@ -2071,18 +2223,21 @@ EXTERN_C const IID IID_IXobj;
             /* [out] */ IXobjCollection **ppXobjs,
             /* [retval][out] */ long *pCount);
         
+        DECLSPEC_XFGVIRT(IXobj, GetXobj)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *GetXobj )( 
             IXobj * This,
             /* [in] */ long nRow,
             /* [in] */ long nCol,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IXobj, GetCtrlByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetCtrlByName )( 
             IXobj * This,
             BSTR bstrName,
             VARIANT_BOOL bFindInChild,
             /* [retval][out] */ IDispatch **ppCtrlDisp);
         
+        DECLSPEC_XFGVIRT(IXobj, SendIPCMessage)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SendIPCMessage )( 
             IXobj * This,
             BSTR bstrTo,
@@ -2091,17 +2246,20 @@ EXTERN_C const IID IID_IXobj;
             BSTR bstrMsgId,
             /* [retval][out] */ BSTR *bstrRes);
         
+        DECLSPEC_XFGVIRT(IXobj, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             IXobj * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppRetXobj);
         
+        DECLSPEC_XFGVIRT(IXobj, LoadXML)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *LoadXML )( 
             IXobj * This,
             int nType,
             BSTR bstrXML);
         
+        DECLSPEC_XFGVIRT(IXobj, ObserveEx)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveEx )( 
             IXobj * This,
             int nRow,
@@ -2110,33 +2268,39 @@ EXTERN_C const IID IID_IXobj;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppRetXobj);
         
+        DECLSPEC_XFGVIRT(IXobj, GetXobjByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetXobjByName )( 
             IXobj * This,
             /* [in] */ BSTR bstrName,
             /* [retval][out] */ IXobjCollection **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, GetCtrlValueByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetCtrlValueByName )( 
             IXobj * This,
             BSTR bstrName,
             VARIANT_BOOL bFindInChild,
             /* [retval][out] */ BSTR *bstrVal);
         
+        DECLSPEC_XFGVIRT(IXobj, SetCtrlValueByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SetCtrlValueByName )( 
             IXobj * This,
             BSTR bstrName,
             VARIANT_BOOL bFindInChild,
             BSTR bstrVal);
         
+        DECLSPEC_XFGVIRT(IXobj, NavigateURL)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *NavigateURL )( 
             IXobj * This,
             BSTR bstrURL,
             IDispatch *dispObjforScript);
         
+        DECLSPEC_XFGVIRT(IXobj, GetChildXobjByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetChildXobjByName )( 
             IXobj * This,
             /* [in] */ BSTR bstrName,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IXobj, GetUIScript)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetUIScript )( 
             IXobj * This,
             /* [in] */ BSTR bstrCtrlName,
@@ -2253,8 +2417,8 @@ EXTERN_C const IID IID_IXobj;
 #define IXobj_get_Key(This,pVal)	\
     ( (This)->lpVtbl -> get_Key(This,pVal) ) 
 
-#define IXobj_get_WebPage(This,pVal)	\
-    ( (This)->lpVtbl -> get_WebPage(This,pVal) ) 
+#define IXobj_get_WebView(This,pVal)	\
+    ( (This)->lpVtbl -> get_WebView(This,pVal) ) 
 
 #define IXobj_get_NameAtWindowPage(This,pVal)	\
     ( (This)->lpVtbl -> get_NameAtWindowPage(This,pVal) ) 
@@ -2420,28 +2584,34 @@ EXTERN_C const IID IID_IAppExtender;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IAppExtender * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IAppExtender * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IAppExtender * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IAppExtender * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IAppExtender * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IAppExtender * This,
             /* [in] */ REFIID riid,
@@ -2450,6 +2620,7 @@ EXTERN_C const IID IID_IAppExtender;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IAppExtender * This,
             /* [annotation][in] */ 
@@ -2469,6 +2640,7 @@ EXTERN_C const IID IID_IAppExtender;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IAppExtender, ProcessNotify)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *ProcessNotify )( 
             IAppExtender * This,
             /* [in] */ BSTR bstrXmlNotify);
@@ -2745,28 +2917,34 @@ EXTERN_C const IID IID_IWebRT;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRT * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRT * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRT * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRT * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRT * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRT * This,
             /* [in] */ REFIID riid,
@@ -2775,6 +2953,7 @@ EXTERN_C const IID IID_IWebRT;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRT * This,
             /* [annotation][in] */ 
@@ -2794,53 +2973,65 @@ EXTERN_C const IID IID_IWebRT;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_HostChromeBrowserWnd)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostChromeBrowserWnd )( 
             IWebRT * This,
             /* [retval][out] */ IBrowser **ppChromeWebBrowser);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_AppKeyValue)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_AppKeyValue )( 
             IWebRT * This,
             BSTR bstrKey,
             /* [retval][out] */ VARIANT *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, put_AppKeyValue)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_AppKeyValue )( 
             IWebRT * This,
             BSTR bstrKey,
             /* [in] */ VARIANT newVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_RemoteHelperHWND)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RemoteHelperHWND )( 
             IWebRT * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, put_RemoteHelperHWND)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_RemoteHelperHWND )( 
             IWebRT * This,
             /* [in] */ LONGLONG newVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_RootNodes)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RootNodes )( 
             IWebRT * This,
             /* [retval][out] */ IXobjCollection **ppXobjColletion);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_Extender)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Extender )( 
             IWebRT * This,
             /* [retval][out] */ IWebRTExtender **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, put_Extender)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Extender )( 
             IWebRT * This,
             /* [in] */ IWebRTExtender *newVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_CurrentActiveXobj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_CurrentActiveXobj )( 
             IWebRT * This,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_CreatingXobj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_CreatingXobj )( 
             IWebRT * This,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, get_RemoteCosmos)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RemoteCosmos )( 
             IWebRT * This,
             BSTR bstrID,
             /* [retval][out] */ IWebRT **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, NavigateNode)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *NavigateNode )( 
             IWebRT * This,
             IXobj *pXobj,
@@ -2848,30 +3039,36 @@ EXTERN_C const IID IID_IWebRT;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateNucleusGroup)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateNucleusGroup )( 
             IWebRT * This,
             LONGLONG hWnd,
             /* [retval][out] */ INuclei **ppNucleusCluster);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateOfficeDocument)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateOfficeDocument )( 
             IWebRT * This,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateCLRObj)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CreateCLRObj )( 
             IWebRT * This,
             BSTR bstrObjID,
             /* [retval][out] */ IDispatch **ppDisp);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateApplication)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateApplication )( 
             IWebRT * This,
             BSTR bstrAppID,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetNucleus)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *GetNucleus )( 
             IWebRT * This,
             LONGLONG hHostWnd,
             /* [retval][out] */ INucleus **ppNucleus);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetItemText)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetItemText )( 
             IWebRT * This,
             IXobj *pXobj,
@@ -2879,16 +3076,19 @@ EXTERN_C const IID IID_IWebRT;
             LONG nMaxLengeh,
             /* [retval][out] */ BSTR *bstrRet);
         
+        DECLSPEC_XFGVIRT(IWebRT, SetItemText)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SetItemText )( 
             IWebRT * This,
             IXobj *pXobj,
             long nCtrlID,
             BSTR bstrText);
         
+        DECLSPEC_XFGVIRT(IWebRT, FireCosmosEventObj)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *FireCosmosEventObj )( 
             IWebRT * This,
             IWebRTEventObj *pWebRTEventObj);
         
+        DECLSPEC_XFGVIRT(IWebRT, MessageBox)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *MessageBox )( 
             IWebRT * This,
             LONGLONG hWnd,
@@ -2897,24 +3097,30 @@ EXTERN_C const IID IID_IWebRT;
             long nStyle,
             /* [retval][out] */ int *nRet);
         
+        DECLSPEC_XFGVIRT(IWebRT, DeletePage)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *DeletePage )( 
             IWebRT * This,
             LONGLONG PageHandle);
         
+        DECLSPEC_XFGVIRT(IWebRT, SetHostFocus)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *SetHostFocus )( 
             IWebRT * This);
         
+        DECLSPEC_XFGVIRT(IWebRT, UpdateXobj)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *UpdateXobj )( 
             IWebRT * This,
             IXobj *pXobj);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateCosmosEventObj)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateCosmosEventObj )( 
             IWebRT * This,
             /* [retval][out] */ IWebRTEventObj **ppWebRTEventObj);
         
+        DECLSPEC_XFGVIRT(IWebRT, InitEclipseApp)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *InitEclipseApp )( 
             IWebRT * This);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateOutLookObj)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CreateOutLookObj )( 
             IWebRT * This,
             BSTR bstrObjType,
@@ -2922,6 +3128,7 @@ EXTERN_C const IID IID_IWebRT;
             BSTR bstrURL,
             /* [retval][out] */ IDispatch **ppRetDisp);
         
+        DECLSPEC_XFGVIRT(IWebRT, ObserveNuclei)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveNuclei )( 
             IWebRT * This,
             LONGLONG hWnd,
@@ -2930,6 +3137,7 @@ EXTERN_C const IID IID_IWebRT;
             BSTR bstrXml,
             VARIANT_BOOL bSaveToConfigFile);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetCtrlByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetCtrlByName )( 
             IWebRT * This,
             IDispatch *pCtrl,
@@ -2937,11 +3145,13 @@ EXTERN_C const IID IID_IWebRT;
             VARIANT_BOOL bFindInChild,
             /* [retval][out] */ IDispatch **ppCtrlDisp);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetXobjFromHandle)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetXobjFromHandle )( 
             IWebRT * This,
             LONGLONG hWnd,
             /* [retval][out] */ IXobj **ppRetXobj);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetCtrlValueByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetCtrlValueByName )( 
             IWebRT * This,
             IDispatch *pCtrl,
@@ -2949,6 +3159,7 @@ EXTERN_C const IID IID_IWebRT;
             VARIANT_BOOL bFindInChild,
             /* [retval][out] */ BSTR *bstrVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, SetCtrlValueByName)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SetCtrlValueByName )( 
             IWebRT * This,
             IDispatch *pCtrl,
@@ -2956,20 +3167,24 @@ EXTERN_C const IID IID_IWebRT;
             VARIANT_BOOL bFindInChild,
             BSTR bstrVal);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateCosmosCtrl)
         /* [hidden][id] */ HRESULT ( STDMETHODCALLTYPE *CreateCosmosCtrl )( 
             IWebRT * This,
             BSTR bstrAppID,
             /* [retval][out] */ IWebRTCtrl **ppRetCtrl);
         
+        DECLSPEC_XFGVIRT(IWebRT, InitCLRApp)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *InitCLRApp )( 
             IWebRT * This,
             BSTR strInitXml,
             /* [retval][out] */ LONGLONG *llHandle);
         
+        DECLSPEC_XFGVIRT(IWebRT, DeleteGalaxy)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *DeleteGalaxy )( 
             IWebRT * This,
             INucleus *pGalaxy);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetWindowClientDefaultNode)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetWindowClientDefaultNode )( 
             IWebRT * This,
             IDispatch *pAddDisp,
@@ -2978,17 +3193,20 @@ EXTERN_C const IID IID_IWebRT;
             BSTR bstrGalaxyClusterName,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateBrowser)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CreateBrowser )( 
             IWebRT * This,
             ULONGLONG hParentWnd,
             BSTR strUrls,
             /* [retval][out] */ IBrowser **ppRet);
         
+        DECLSPEC_XFGVIRT(IWebRT, NewWorkBench)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *NewWorkBench )( 
             IWebRT * This,
             BSTR bstrCosmosDoc,
             /* [retval][out] */ IWorkBenchWindow **ppWorkBenchWindow);
         
+        DECLSPEC_XFGVIRT(IWebRT, CreateCLRObjRemote)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CreateCLRObjRemote )( 
             IWebRT * This,
             BSTR bstrObjID,
@@ -2996,44 +3214,53 @@ EXTERN_C const IID IID_IWebRT;
             LONGLONG hWnd,
             /* [retval][out] */ IDispatch **ppDisp);
         
+        DECLSPEC_XFGVIRT(IWebRT, DestroyCtrl)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *DestroyCtrl )( 
             IWebRT * This,
             LONGLONG hWnd);
         
+        DECLSPEC_XFGVIRT(IWebRT, GetRemoteHostViewRect)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetRemoteHostViewRect )( 
             IWebRT * This,
             LONGLONG hHostWnd,
             /* [retval][out] */ BSTR *strData);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosCommand)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosCommand )( 
             IWebRT * This,
             IDispatch *RibbonControl);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosGetImage)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosGetImage )( 
             IWebRT * This,
             BSTR strValue,
             /* [retval][out] */ IPictureDisp **ppdispImage);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosGetVisible)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosGetVisible )( 
             IWebRT * This,
             IDispatch *RibbonControl,
             /* [retval][out] */ VARIANT *varVisible);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosOnLoad)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosOnLoad )( 
             IWebRT * This,
             IDispatch *RibbonControl);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosGetItemCount)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosGetItemCount )( 
             IWebRT * This,
             IDispatch *RibbonControl,
             /* [retval][out] */ long *nCount);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosGetItemLabel)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosGetItemLabel )( 
             IWebRT * This,
             IDispatch *RibbonControl,
             long nIndex,
             /* [retval][out] */ BSTR *bstrLabel);
         
+        DECLSPEC_XFGVIRT(IWebRT, CosmosGetItemID)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *CosmosGetItemID )( 
             IWebRT * This,
             IDispatch *RibbonControl,
@@ -3311,28 +3538,34 @@ EXTERN_C const IID IID_INucleus;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             INucleus * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             INucleus * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             INucleus * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             INucleus * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             INucleus * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             INucleus * This,
             /* [in] */ REFIID riid,
@@ -3341,6 +3574,7 @@ EXTERN_C const IID IID_INucleus;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             INucleus * This,
             /* [annotation][in] */ 
@@ -3360,75 +3594,93 @@ EXTERN_C const IID IID_INucleus;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(INucleus, get_Xobj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Xobj )( 
             INucleus * This,
             /* [in] */ VARIANT vIndex,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(INucleus, get__NewEnum)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__NewEnum )( 
             INucleus * This,
             /* [retval][out] */ IUnknown **ppVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_HWND)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HWND )( 
             INucleus * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_VisibleXobj)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_VisibleXobj )( 
             INucleus * This,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_CurrentNavigateKey)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_CurrentNavigateKey )( 
             INucleus * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_Nuclei)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Nuclei )( 
             INucleus * This,
             /* [retval][out] */ INuclei **pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_HostWebPage)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostWebPage )( 
             INucleus * This,
             /* [retval][out] */ IWebView **ppChromeWebPage);
         
+        DECLSPEC_XFGVIRT(INucleus, get_HostBrowser)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostBrowser )( 
             INucleus * This,
             /* [retval][out] */ IBrowser **ppChromeWebBrowser);
         
+        DECLSPEC_XFGVIRT(INucleus, get_Count)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Count )( 
             INucleus * This,
             /* [retval][out] */ long *pCount);
         
+        DECLSPEC_XFGVIRT(INucleus, get_RootXobjs)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RootXobjs )( 
             INucleus * This,
             /* [retval][out] */ IXobjCollection **ppXobjColletion);
         
+        DECLSPEC_XFGVIRT(INucleus, get_GalaxyXML)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_GalaxyXML )( 
             INucleus * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_GalaxyType)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_GalaxyType )( 
             INucleus * This,
             /* [retval][out] */ GalaxyType *pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, get_Name)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Name )( 
             INucleus * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(INucleus, Detach)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *Detach )( 
             INucleus * This);
         
+        DECLSPEC_XFGVIRT(INucleus, Attach)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *Attach )( 
             INucleus * This);
         
+        DECLSPEC_XFGVIRT(INucleus, ModifyHost)
         /* [helpstring][id] */ HRESULT ( STDMETHODCALLTYPE *ModifyHost )( 
             INucleus * This,
             LONGLONG hHostWnd);
         
+        DECLSPEC_XFGVIRT(INucleus, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             INucleus * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppRetXobj);
         
+        DECLSPEC_XFGVIRT(INucleus, GetXml)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetXml )( 
             INucleus * This,
             BSTR bstrRootName,
@@ -3569,28 +3821,34 @@ EXTERN_C const IID IID_IXobjCollection;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IXobjCollection * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IXobjCollection * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IXobjCollection * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IXobjCollection * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IXobjCollection * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IXobjCollection * This,
             /* [in] */ REFIID riid,
@@ -3599,6 +3857,7 @@ EXTERN_C const IID IID_IXobjCollection;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IXobjCollection * This,
             /* [annotation][in] */ 
@@ -3618,15 +3877,18 @@ EXTERN_C const IID IID_IXobjCollection;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IXobjCollection, get_XobjCount)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_XobjCount )( 
             IXobjCollection * This,
             /* [retval][out] */ long *pCount);
         
+        DECLSPEC_XFGVIRT(IXobjCollection, get_Item)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Item )( 
             IXobjCollection * This,
             /* [in] */ long iIndex,
             /* [retval][out] */ IXobj **ppTopWindow);
         
+        DECLSPEC_XFGVIRT(IXobjCollection, get__NewEnum)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__NewEnum )( 
             IXobjCollection * This,
             /* [retval][out] */ IUnknown **ppVal);
@@ -3797,28 +4059,34 @@ EXTERN_C const IID IID_INuclei;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             INuclei * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             INuclei * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             INuclei * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             INuclei * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             INuclei * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             INuclei * This,
             /* [in] */ REFIID riid,
@@ -3827,6 +4095,7 @@ EXTERN_C const IID IID_INuclei;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             INuclei * This,
             /* [annotation][in] */ 
@@ -3846,66 +4115,81 @@ EXTERN_C const IID IID_INuclei;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(INuclei, get_WinNucleus)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WinNucleus )( 
             INuclei * This,
             /* [in] */ VARIANT vIndex,
             /* [retval][out] */ INucleus **ppNucleus);
         
+        DECLSPEC_XFGVIRT(INuclei, get__NewEnum)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__NewEnum )( 
             INuclei * This,
             /* [retval][out] */ IUnknown **ppVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_Count)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Count )( 
             INuclei * This,
             /* [retval][out] */ long *pCount);
         
+        DECLSPEC_XFGVIRT(INuclei, get_NucleiXML)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_NucleiXML )( 
             INuclei * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_Parent)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Parent )( 
             INuclei * This,
             /* [retval][out] */ INuclei **pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_Xobj)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Xobj )( 
             INuclei * This,
             BSTR bstrNodeName,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_XObject)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_XObject )( 
             INuclei * This,
             BSTR bstrName,
             /* [retval][out] */ IDispatch **pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_NucleusName)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_NucleusName )( 
             INuclei * This,
             LONGLONG hHwnd,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_Handle)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Handle )( 
             INuclei * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_Width)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Width )( 
             INuclei * This,
             /* [retval][out] */ long *pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, put_Width)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Width )( 
             INuclei * This,
             /* [in] */ long newVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_Height)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Height )( 
             INuclei * This,
             /* [retval][out] */ long *pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, put_Height)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Height )( 
             INuclei * This,
             /* [in] */ long newVal);
         
+        DECLSPEC_XFGVIRT(INuclei, get_XobjNames)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_XobjNames )( 
             INuclei * This,
             /* [retval][out] */ BSTR *pVal);
         
+        DECLSPEC_XFGVIRT(INuclei, CreateNucleus)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateNucleus )( 
             INuclei * This,
             VARIANT ParentObj,
@@ -3913,6 +4197,7 @@ EXTERN_C const IID IID_INuclei;
             BSTR bstrNucleusName,
             /* [retval][out] */ INucleus **pRetGalaxy);
         
+        DECLSPEC_XFGVIRT(INuclei, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             INuclei * This,
             IDispatch *Parent,
@@ -3922,6 +4207,7 @@ EXTERN_C const IID IID_INuclei;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppRetXobj);
         
+        DECLSPEC_XFGVIRT(INuclei, ObserveCtrl)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveCtrl )( 
             INuclei * This,
             VARIANT Ctrl,
@@ -3929,23 +4215,27 @@ EXTERN_C const IID IID_INuclei;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppRetXobj);
         
+        DECLSPEC_XFGVIRT(INuclei, GetXobj)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetXobj )( 
             INuclei * This,
             BSTR bstrNucleusName,
             BSTR bstrNodeName,
             /* [retval][out] */ IXobj **pRetNode);
         
+        DECLSPEC_XFGVIRT(INuclei, GetCtrlInXobj)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetCtrlInXobj )( 
             INuclei * This,
             BSTR NodeName,
             BSTR CtrlName,
             /* [retval][out] */ IDispatch **ppCtrl);
         
+        DECLSPEC_XFGVIRT(INuclei, GetNucleusFromCtrl)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *GetNucleusFromCtrl )( 
             INuclei * This,
             IDispatch *ctrl,
             /* [retval][out] */ INucleus **ppNucleus);
         
+        DECLSPEC_XFGVIRT(INuclei, ObserveNuclei)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveNuclei )( 
             INuclei * This,
             BSTR bstrGalaxys,
@@ -4130,28 +4420,34 @@ EXTERN_C const IID IID_IWorkBenchWindow;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWorkBenchWindow * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWorkBenchWindow * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWorkBenchWindow * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWorkBenchWindow * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWorkBenchWindow * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWorkBenchWindow * This,
             /* [in] */ REFIID riid,
@@ -4160,6 +4456,7 @@ EXTERN_C const IID IID_IWorkBenchWindow;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWorkBenchWindow * This,
             /* [annotation][in] */ 
@@ -4179,54 +4476,66 @@ EXTERN_C const IID IID_IWorkBenchWindow;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get_Ctrl)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Ctrl )( 
             IWorkBenchWindow * This,
             /* [in] */ VARIANT vIndex,
             /* [retval][out] */ IEclipseCtrl **ppCtrl);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get__NewEnum)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get__NewEnum )( 
             IWorkBenchWindow * This,
             /* [retval][out] */ IUnknown **ppVal);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get_Count)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Count )( 
             IWorkBenchWindow * This,
             /* [retval][out] */ long *pCount);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get_Handle)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Handle )( 
             IWorkBenchWindow * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get_CosmosCtrl)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_CosmosCtrl )( 
             IWorkBenchWindow * This,
             LONGLONG hWnd,
             /* [retval][out] */ IEclipseCtrl **pVal);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get_Nuclei)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Nuclei )( 
             IWorkBenchWindow * This,
             /* [retval][out] */ INuclei **pVal);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, get_WinNucleus)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WinNucleus )( 
             IWorkBenchWindow * This,
             /* [retval][out] */ INucleus **pVal);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, Active)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Active )( 
             IWorkBenchWindow * This);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, CloseTangramUI)
         /* [hidden][id] */ HRESULT ( STDMETHODCALLTYPE *CloseTangramUI )( 
             IWorkBenchWindow * This);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             IWorkBenchWindow * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, ObserveEx)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveEx )( 
             IWorkBenchWindow * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IWorkBenchWindow, ObserveinView)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveinView )( 
             IWorkBenchWindow * This,
             int nIndex,
@@ -4356,28 +4665,34 @@ EXTERN_C const IID IID_IBrowser;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IBrowser * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IBrowser * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IBrowser * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IBrowser * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IBrowser * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IBrowser * This,
             /* [in] */ REFIID riid,
@@ -4386,6 +4701,7 @@ EXTERN_C const IID IID_IBrowser;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IBrowser * This,
             /* [annotation][in] */ 
@@ -4405,14 +4721,17 @@ EXTERN_C const IID IID_IBrowser;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IBrowser, get_RemoteXobj)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_RemoteXobj )( 
             IBrowser * This,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IBrowser, put_RemoteXobj)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_RemoteXobj )( 
             IBrowser * This,
             /* [in] */ IXobj *newVal);
         
+        DECLSPEC_XFGVIRT(IBrowser, OpenURL)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *OpenURL )( 
             IBrowser * This,
             BSTR bstrURL,
@@ -4420,6 +4739,7 @@ EXTERN_C const IID IID_IBrowser;
             BSTR bstrKey,
             BSTR bstrXml);
         
+        DECLSPEC_XFGVIRT(IBrowser, AddURLs)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *AddURLs )( 
             IBrowser * This,
             BSTR bstrURLs);
@@ -4504,6 +4824,9 @@ EXTERN_C const IID IID_IWebView;
         virtual /* [id][propput] */ HRESULT STDMETHODCALLTYPE put_HostWnd( 
             /* [in] */ LONGLONG newVal) = 0;
         
+        virtual /* [id][propget] */ HRESULT STDMETHODCALLTYPE get_WebBrowser( 
+            /* [retval][out] */ IBrowser **ppWebBrowser) = 0;
+        
         virtual /* [id] */ HRESULT STDMETHODCALLTYPE CreateForm( 
             BSTR bstrKey,
             LONGLONG hParent,
@@ -4527,28 +4850,34 @@ EXTERN_C const IID IID_IWebView;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebView * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebView * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebView * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebView * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebView * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebView * This,
             /* [in] */ REFIID riid,
@@ -4557,6 +4886,7 @@ EXTERN_C const IID IID_IWebView;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebView * This,
             /* [annotation][in] */ 
@@ -4576,26 +4906,36 @@ EXTERN_C const IID IID_IWebView;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebView, get_HostWnd)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HostWnd )( 
             IWebView * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IWebView, put_HostWnd)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_HostWnd )( 
             IWebView * This,
             /* [in] */ LONGLONG newVal);
         
+        DECLSPEC_XFGVIRT(IWebView, get_WebBrowser)
+        /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WebBrowser )( 
+            IWebView * This,
+            /* [retval][out] */ IBrowser **ppWebBrowser);
+        
+        DECLSPEC_XFGVIRT(IWebView, CreateForm)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *CreateForm )( 
             IWebView * This,
             BSTR bstrKey,
             LONGLONG hParent,
             /* [retval][out] */ IDispatch **pRetForm);
         
+        DECLSPEC_XFGVIRT(IWebView, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             IWebView * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **pRetXobj);
         
+        DECLSPEC_XFGVIRT(IWebView, SendXmlMessage)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *SendXmlMessage )( 
             IWebView * This,
             IXobj *sender,
@@ -4642,6 +4982,9 @@ EXTERN_C const IID IID_IWebView;
 
 #define IWebView_put_HostWnd(This,newVal)	\
     ( (This)->lpVtbl -> put_HostWnd(This,newVal) ) 
+
+#define IWebView_get_WebBrowser(This,ppWebBrowser)	\
+    ( (This)->lpVtbl -> get_WebBrowser(This,ppWebBrowser) ) 
 
 #define IWebView_CreateForm(This,bstrKey,hParent,pRetForm)	\
     ( (This)->lpVtbl -> CreateForm(This,bstrKey,hParent,pRetForm) ) 
@@ -4697,28 +5040,34 @@ EXTERN_C const IID IID_IOfficeObject;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IOfficeObject * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IOfficeObject * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IOfficeObject * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IOfficeObject * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IOfficeObject * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IOfficeObject * This,
             /* [in] */ REFIID riid,
@@ -4727,6 +5076,7 @@ EXTERN_C const IID IID_IOfficeObject;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IOfficeObject * This,
             /* [annotation][in] */ 
@@ -4746,16 +5096,19 @@ EXTERN_C const IID IID_IOfficeObject;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IOfficeObject, Show)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Show )( 
             IOfficeObject * This,
             VARIANT_BOOL bShow);
         
+        DECLSPEC_XFGVIRT(IOfficeObject, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             IOfficeObject * This,
             BSTR bstrKey,
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IOfficeObject, UnloadCosmos)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *UnloadCosmos )( 
             IOfficeObject * This);
         
@@ -4851,28 +5204,34 @@ EXTERN_C const IID IID_IWebRTCtrl;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTCtrl * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTCtrl * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTCtrl * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTCtrl * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTCtrl * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTCtrl * This,
             /* [in] */ REFIID riid,
@@ -4881,6 +5240,7 @@ EXTERN_C const IID IID_IWebRTCtrl;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTCtrl * This,
             /* [annotation][in] */ 
@@ -4900,18 +5260,22 @@ EXTERN_C const IID IID_IWebRTCtrl;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_HWND)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HWND )( 
             IWebRTCtrl * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_Cosmos)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Cosmos )( 
             IWebRTCtrl * This,
             /* [retval][out] */ IWebRT **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_tag)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_tag )( 
             IWebRTCtrl * This,
             /* [retval][out] */ VARIANT *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, put_tag)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_tag )( 
             IWebRTCtrl * This,
             /* [in] */ VARIANT newVal);
@@ -5002,28 +5366,34 @@ EXTERN_C const IID IID_IWebRTAppCtrl;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IWebRTAppCtrl * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IWebRTAppCtrl * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IWebRTAppCtrl * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IWebRTAppCtrl * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IWebRTAppCtrl * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IWebRTAppCtrl * This,
             /* [in] */ REFIID riid,
@@ -5032,6 +5402,7 @@ EXTERN_C const IID IID_IWebRTAppCtrl;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IWebRTAppCtrl * This,
             /* [annotation][in] */ 
@@ -5051,22 +5422,27 @@ EXTERN_C const IID IID_IWebRTAppCtrl;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_HWND)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HWND )( 
             IWebRTAppCtrl * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_Cosmos)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Cosmos )( 
             IWebRTAppCtrl * This,
             /* [retval][out] */ IWebRT **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_tag)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_tag )( 
             IWebRTAppCtrl * This,
             /* [retval][out] */ VARIANT *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, put_tag)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_tag )( 
             IWebRTAppCtrl * This,
             /* [in] */ VARIANT newVal);
         
+        DECLSPEC_XFGVIRT(IWebRTAppCtrl, put_AppCtrl)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_AppCtrl )( 
             IWebRTAppCtrl * This,
             /* [in] */ VARIANT_BOOL newVal);
@@ -5203,28 +5579,34 @@ EXTERN_C const IID IID_IEclipseCtrl;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             IEclipseCtrl * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             IEclipseCtrl * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             IEclipseCtrl * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             IEclipseCtrl * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             IEclipseCtrl * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             IEclipseCtrl * This,
             /* [in] */ REFIID riid,
@@ -5233,6 +5615,7 @@ EXTERN_C const IID IID_IEclipseCtrl;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             IEclipseCtrl * This,
             /* [annotation][in] */ 
@@ -5252,61 +5635,75 @@ EXTERN_C const IID IID_IEclipseCtrl;
             /* [annotation][out] */ 
             _Out_opt_  UINT *puArgErr);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_HWND)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_HWND )( 
             IEclipseCtrl * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_Cosmos)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Cosmos )( 
             IEclipseCtrl * This,
             /* [retval][out] */ IWebRT **pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, get_tag)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_tag )( 
             IEclipseCtrl * This,
             /* [retval][out] */ VARIANT *pVal);
         
+        DECLSPEC_XFGVIRT(IWebRTCtrl, put_tag)
         /* [id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_tag )( 
             IEclipseCtrl * This,
             /* [in] */ VARIANT newVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, put_Handle)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_Handle )( 
             IEclipseCtrl * This,
             BSTR bstrHandleName,
             /* [in] */ LONGLONG newVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_EclipseViewHandle)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_EclipseViewHandle )( 
             IEclipseCtrl * This,
             /* [retval][out] */ LONGLONG *pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_Nuclei)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_Nuclei )( 
             IEclipseCtrl * This,
             /* [retval][out] */ INuclei **pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_WorkBenchWindow)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_WorkBenchWindow )( 
             IEclipseCtrl * This,
             /* [retval][out] */ IWorkBenchWindow **pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_TopNuclei)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_TopNuclei )( 
             IEclipseCtrl * This,
             /* [retval][out] */ INuclei **pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_TopGalaxy)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_TopGalaxy )( 
             IEclipseCtrl * This,
             /* [retval][out] */ INucleus **pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_ActiveTopXobj)
         /* [id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_ActiveTopXobj )( 
             IEclipseCtrl * This,
             /* [retval][out] */ IXobj **pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, get_AppKeyValue)
         /* [helpstring][id][propget] */ HRESULT ( STDMETHODCALLTYPE *get_AppKeyValue )( 
             IEclipseCtrl * This,
             BSTR bstrKey,
             /* [retval][out] */ VARIANT *pVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, put_AppKeyValue)
         /* [helpstring][id][propput] */ HRESULT ( STDMETHODCALLTYPE *put_AppKeyValue )( 
             IEclipseCtrl * This,
             BSTR bstrKey,
             /* [in] */ VARIANT newVal);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, Observe)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *Observe )( 
             IEclipseCtrl * This,
             BSTR bstrNucleusName,
@@ -5314,6 +5711,7 @@ EXTERN_C const IID IID_IEclipseCtrl;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, ObserveEx)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *ObserveEx )( 
             IEclipseCtrl * This,
             BSTR bstrNucleusName,
@@ -5321,6 +5719,7 @@ EXTERN_C const IID IID_IEclipseCtrl;
             BSTR bstrXml,
             /* [retval][out] */ IXobj **ppXobj);
         
+        DECLSPEC_XFGVIRT(IEclipseCtrl, InitCtrl)
         /* [id] */ HRESULT ( STDMETHODCALLTYPE *InitCtrl )( 
             IEclipseCtrl * This,
             BSTR bstrXml);
@@ -5453,28 +5852,34 @@ EXTERN_C const IID DIID__IWebRT;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             _IWebRT * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             _IWebRT * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             _IWebRT * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             _IWebRT * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             _IWebRT * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             _IWebRT * This,
             /* [in] */ REFIID riid,
@@ -5483,6 +5888,7 @@ EXTERN_C const IID DIID__IWebRT;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             _IWebRT * This,
             /* [annotation][in] */ 
@@ -5546,12 +5952,12 @@ EXTERN_C const IID DIID__IWebRT;
 #endif 	/* ___IWebRT_DISPINTERFACE_DEFINED__ */
 
 
-EXTERN_C const CLSID CLSID_Cosmos;
+EXTERN_C const CLSID CLSID_WebRT;
 
 #ifdef __cplusplus
 
 class DECLSPEC_UUID("19631222-1992-0612-1965-060119990606")
-Cosmos;
+WebRT;
 #endif
 
 #ifndef ___IXobjEvents_DISPINTERFACE_DEFINED__
@@ -5576,28 +5982,34 @@ EXTERN_C const IID DIID__IXobjEvents;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             _IXobjEvents * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             _IXobjEvents * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             _IXobjEvents * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             _IXobjEvents * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             _IXobjEvents * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             _IXobjEvents * This,
             /* [in] */ REFIID riid,
@@ -5606,6 +6018,7 @@ EXTERN_C const IID DIID__IXobjEvents;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             _IXobjEvents * This,
             /* [annotation][in] */ 
@@ -5691,28 +6104,34 @@ EXTERN_C const IID DIID__IWebRTObjEvents;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             _IWebRTObjEvents * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             _IWebRTObjEvents * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             _IWebRTObjEvents * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             _IWebRTObjEvents * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             _IWebRTObjEvents * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             _IWebRTObjEvents * This,
             /* [in] */ REFIID riid,
@@ -5721,6 +6140,7 @@ EXTERN_C const IID DIID__IWebRTObjEvents;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             _IWebRTObjEvents * This,
             /* [annotation][in] */ 
@@ -5806,28 +6226,34 @@ EXTERN_C const IID DIID__IWebRTAppEvents;
     {
         BEGIN_INTERFACE
         
+        DECLSPEC_XFGVIRT(IUnknown, QueryInterface)
         HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
             _IWebRTAppEvents * This,
             /* [in] */ REFIID riid,
             /* [annotation][iid_is][out] */ 
             _COM_Outptr_  void **ppvObject);
         
+        DECLSPEC_XFGVIRT(IUnknown, AddRef)
         ULONG ( STDMETHODCALLTYPE *AddRef )( 
             _IWebRTAppEvents * This);
         
+        DECLSPEC_XFGVIRT(IUnknown, Release)
         ULONG ( STDMETHODCALLTYPE *Release )( 
             _IWebRTAppEvents * This);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfoCount)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfoCount )( 
             _IWebRTAppEvents * This,
             /* [out] */ UINT *pctinfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetTypeInfo)
         HRESULT ( STDMETHODCALLTYPE *GetTypeInfo )( 
             _IWebRTAppEvents * This,
             /* [in] */ UINT iTInfo,
             /* [in] */ LCID lcid,
             /* [out] */ ITypeInfo **ppTInfo);
         
+        DECLSPEC_XFGVIRT(IDispatch, GetIDsOfNames)
         HRESULT ( STDMETHODCALLTYPE *GetIDsOfNames )( 
             _IWebRTAppEvents * This,
             /* [in] */ REFIID riid,
@@ -5836,6 +6262,7 @@ EXTERN_C const IID DIID__IWebRTAppEvents;
             /* [in] */ LCID lcid,
             /* [size_is][out] */ DISPID *rgDispId);
         
+        DECLSPEC_XFGVIRT(IDispatch, Invoke)
         /* [local] */ HRESULT ( STDMETHODCALLTYPE *Invoke )( 
             _IWebRTAppEvents * This,
             /* [annotation][in] */ 
@@ -5904,7 +6331,7 @@ EXTERN_C const CLSID CLSID_WebRTCtrl;
 #ifdef __cplusplus
 
 class DECLSPEC_UUID("19631222-1992-0612-1965-060120071001")
-CosmosCtrl;
+WebRTCtrl;
 #endif
 
 EXTERN_C const CLSID CLSID_CosmosExtender;
