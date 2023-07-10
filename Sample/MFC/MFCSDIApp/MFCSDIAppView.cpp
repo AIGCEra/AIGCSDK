@@ -59,7 +59,7 @@ void CMFCSDIAppView::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 	GetParentFrame()->RecalcLayout();
-	ResizeParentToFit();
+	//ResizeParentToFit();
 
 }
 

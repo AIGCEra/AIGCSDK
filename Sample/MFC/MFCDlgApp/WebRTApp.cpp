@@ -683,9 +683,9 @@ HWND CAIGCWinApp::QueryWndInfo(QueryType nType, HWND hWnd) {
               m_mapDOMObj[strName] = pClsInfo;
             bool bRet = g_pSpaceTelescopeImpl->SetFrameInfo(hWnd, hRetFrame, strInfo,
                                                    pDoc, pTemplate);
-            if (pWnd->IsKindOf(RUNTIME_CLASS(CScrollView)) &&
-                ::GetParent(hWnd) == hRetFrame)
-              ((CScrollView*)pWnd)->ResizeParentToFit();
+            //if (pWnd->IsKindOf(RUNTIME_CLASS(CScrollView)) &&
+            //    ::GetParent(hWnd) == hRetFrame)
+            //  ((CScrollView*)pWnd)->ResizeParentToFit();
             pWebRTFrameWndInfo = (WebRTFrameWndInfo*)::GetProp(
                 hRetFrame, _T("WebRTFrameWndInfo"));
             if (pWebRTFrameWndInfo == nullptr) {
@@ -1473,9 +1473,9 @@ HWND CAIGCWinAppEx::QueryWndInfo(QueryType nType, HWND hWnd) {
               m_mapDOMObj[strName] = pClsInfo;
             bool bRet = g_pSpaceTelescopeImpl->SetFrameInfo(hWnd, hRetFrame, strInfo,
                                                    pDoc, pTemplate);
-            if (pWnd->IsKindOf(RUNTIME_CLASS(CFormView)) &&
-                ::GetParent(hWnd) == hRetFrame)
-              ((CFormView*)pWnd)->ResizeParentToFit();
+            //if (pWnd->IsKindOf(RUNTIME_CLASS(CFormView)) &&
+            //    ::GetParent(hWnd) == hRetFrame)
+            //  ((CFormView*)pWnd)->ResizeParentToFit();
 
             pWebRTFrameWndInfo = (WebRTFrameWndInfo*)::GetProp(
                 hRetFrame, _T("WebRTFrameWndInfo"));
