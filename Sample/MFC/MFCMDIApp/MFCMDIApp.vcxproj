@@ -77,8 +77,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\..\..\output</OutDir>
-    <EmbedManifest>false</EmbedManifest>
+    <OutDir>..\..\..\output\</OutDir>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -121,7 +121,7 @@
     <Manifest>
       <AdditionalManifestFiles>
       </AdditionalManifestFiles>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <GenerateCategoryTags>false</GenerateCategoryTags>
     </Manifest>
   </ItemDefinitionGroup>

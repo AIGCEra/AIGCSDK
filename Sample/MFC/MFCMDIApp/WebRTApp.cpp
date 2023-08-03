@@ -139,6 +139,9 @@
 #include "WebRTApp.h"
 #include "TangramXmlParse.cpp"
 
+#ifdef CWinApp
+#undef CWinApp
+#endif
 IWebRT* g_pWebRT = nullptr;
 
 namespace CommonUniverse {
@@ -218,7 +221,7 @@ class CWebRTProxy : public IWebRTDelegate {
     // if (pMsg->message == WM_CHAR || pMsg->hwnd == nullptr)
     //	return TRUE;
     HWND hwnd = pMsg->hwnd;
-    CWinApp* pApp = AfxGetApp();
+    CWinApp* pApp = (CWinApp*)AfxGetApp();
     CWnd* pWnd = CWnd::FromHandlePermanent(hwnd);
     if (pWnd) {
       if (CMFCPopupMenu::GetActiveMenu() &&
@@ -1940,3 +1943,4 @@ BOOL CWebRTMDIFrame::OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) {
   return CMDIFrameWndEx::OnShowPopupMenu(pMenuPopup);
 }
 }  // namespace CommonUniverse
+#define CWinApp CAIGCWinApp

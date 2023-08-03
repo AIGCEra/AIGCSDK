@@ -253,7 +253,7 @@ namespace CommonUniverse
 
 		DECLARE_DYNCREATE(CWebRTMDIFrame)
 
-		virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
+			virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
 		//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -274,3 +274,9 @@ namespace CommonUniverse
 
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
+
+#ifndef CWinApp
+#define CWinApp CAIGCWinApp
+#define CWinAppEx CAIGCWinAppEx
+#define CMDIFrameWndEx CWebRTMDIFrame
+#endif // !CWinApp

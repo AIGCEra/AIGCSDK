@@ -14,7 +14,7 @@
 // See MFCSDIApp.cpp for the implementation of this class
 //
 
-class CMFCSDIApp : public CAIGCWinApp
+class CMFCSDIApp : public CWinApp
 {
 public:
 	CMFCSDIApp() noexcept;

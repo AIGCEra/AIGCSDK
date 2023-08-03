@@ -384,7 +384,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 		return FALSE;
 	}
 
-	CWinApp* pApp = AfxGetApp();
+	CWinApp* pApp = (CWinApp*)AfxGetApp();
 	if (pApp->m_pMainWnd == nullptr)
 		pApp->m_pMainWnd = this;
 

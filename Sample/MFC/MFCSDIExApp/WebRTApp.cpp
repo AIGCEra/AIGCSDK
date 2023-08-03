@@ -138,6 +138,10 @@
 
 #include "WebRTApp.h"
 #include "TangramXmlParse.cpp"
+#ifdef CWinApp
+#undef CWinApp
+#undef CWinAppEx
+#endif
 
 IWebRT* g_pWebRT = nullptr;
 
@@ -1940,3 +1944,7 @@ BOOL CWebRTMDIFrame::OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) {
   return CMDIFrameWndEx::OnShowPopupMenu(pMenuPopup);
 }
 }  // namespace CommonUniverse
+
+#define CWinApp CAIGCWinApp
+#define CWinAppEx CAIGCWinAppEx
+

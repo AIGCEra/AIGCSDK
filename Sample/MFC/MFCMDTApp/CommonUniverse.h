@@ -939,6 +939,7 @@ namespace CommonUniverse {
 		virtual CString GetNames() { return _T(""); }
 		virtual CString GetTags(CString strName) { return _T(""); }
 		virtual HWND Create(HWND hParentWnd, IXobj* pXobj) { return NULL; }
+		virtual IDispatch* CreateCtrl(CString strCtrlID) { return NULL; }
 	};
 
 	class IContainer {

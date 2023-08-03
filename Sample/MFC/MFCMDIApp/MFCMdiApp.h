@@ -13,8 +13,7 @@
 // CMFCMDIApp:
 // See MFCMDIApp.cpp for the implementation of this class
 //
-
-class CMFCMDIApp : public CAIGCWinApp
+class CMFCMDIApp : public CWinApp
 {
 public:
 	CMFCMDIApp() noexcept;

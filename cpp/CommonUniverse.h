@@ -1,5 +1,5 @@
 /********************************************************************************
- *           AIGC for Desktop Application - Version 1.0.0.202203120001
+ *           Web Runtime for Application - Version 1.0.1.202110220001
  ********************************************************************************
  * Copyright (C) 2002-2021 by Tangram Team.   All Rights Reserved.
  * There are Three Key Features of Webruntime:
@@ -939,6 +939,7 @@ namespace CommonUniverse {
 		virtual CString GetNames() { return _T(""); }
 		virtual CString GetTags(CString strName) { return _T(""); }
 		virtual HWND Create(HWND hParentWnd, IXobj* pXobj) { return NULL; }
+		virtual IDispatch* CreateCtrl(CString strCtrlID) { return NULL; }
 	};
 
 	class IContainer {

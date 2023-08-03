@@ -15,7 +15,7 @@
 //
 
 class CMFCMDTApp
-	: public CAIGCWinApp
+	: public CWinApp
 {
 public:
 	CMFCMDTApp() noexcept;

@@ -283,7 +283,7 @@ void CTangramMFCApp::OnFileNew()
 	if (pFrame == nullptr || pDoc == nullptr)
 	{
 		// if it's the first document, create as normal
-		CWinApp::OnFileNew();
+		CWinAppEx::OnFileNew();
 	}
 	else
 	{
