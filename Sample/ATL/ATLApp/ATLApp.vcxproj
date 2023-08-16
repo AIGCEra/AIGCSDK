@@ -118,7 +118,9 @@
       <RegisterOutput>false</RegisterOutput>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>app.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

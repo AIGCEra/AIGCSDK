@@ -1225,6 +1225,7 @@ namespace CommonUniverse {
 	class CWebViewImpl {
 	public:
 		CWebViewImpl() {
+			m_strURL = _T("");
 			m_pSession = nullptr;
 			m_pRemoteCosmos = nullptr;
 			m_pChromeRenderFrameHost = g_pSpaceTelescopeImpl->m_pCreatingChromeRenderFrameHostBase;
@@ -1232,6 +1233,7 @@ namespace CommonUniverse {
 		}
 
 		virtual ~CWebViewImpl() {}
+		CString m_strURL;
 		CSession* m_pSession = nullptr;
 		IWebRT* m_pRemoteCosmos = nullptr;
 		CChromeRenderFrameHost* m_pChromeRenderFrameHost;
