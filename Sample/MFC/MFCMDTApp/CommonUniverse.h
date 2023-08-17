@@ -1192,7 +1192,7 @@ namespace CommonUniverse {
 
 	class CChromeRenderFrameHost {
 	public:
-		CChromeRenderFrameHost() { m_bNTPFrame = false; m_pProxy = nullptr; }
+		CChromeRenderFrameHost() { m_pProxy = nullptr; }
 
 		virtual ~CChromeRenderFrameHost() {
 			for (auto& it : m_mapWebRTSession) {
@@ -1202,7 +1202,6 @@ namespace CommonUniverse {
 				m_mapWebRTSession.end());
 		}
 
-		bool m_bNTPFrame;
 		CWebViewImpl* m_pProxy;
 		map<CString, IPCSession*> m_mapWebRTSession;
 		virtual void SetFocus(bool bFocus) {}
@@ -1225,7 +1224,6 @@ namespace CommonUniverse {
 	class CWebViewImpl {
 	public:
 		CWebViewImpl() {
-			m_strURL = _T("");
 			m_pSession = nullptr;
 			m_pRemoteCosmos = nullptr;
 			m_pChromeRenderFrameHost = g_pSpaceTelescopeImpl->m_pCreatingChromeRenderFrameHostBase;
@@ -1233,7 +1231,6 @@ namespace CommonUniverse {
 		}
 
 		virtual ~CWebViewImpl() {}
-		CString m_strURL;
 		CSession* m_pSession = nullptr;
 		IWebRT* m_pRemoteCosmos = nullptr;
 		CChromeRenderFrameHost* m_pChromeRenderFrameHost;
