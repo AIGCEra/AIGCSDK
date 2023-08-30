@@ -274,7 +274,3 @@ namespace CommonUniverse
 
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
-
-#define CWinApp CAIGCWinApp
-#define CWinAppEx CAIGCWinAppEx
-

@@ -8,7 +8,7 @@
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 
-class CMainFrame : public CMDIFrameWndEx
+class CMainFrame : public CWebRTMDIFrame
 {
 	DECLARE_DYNAMIC(CMainFrame)
 public:
