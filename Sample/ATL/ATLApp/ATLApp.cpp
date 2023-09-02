@@ -9,8 +9,7 @@
 
 using namespace ATL;
 
-
-class CATLAppModule : public CAIGCModuleT< CATLAppModule >
+class CATLAppModule : public CAtlExeModuleT< CATLAppModule >
 {
 public:
 	DECLARE_LIBID(LIBID_ATLAppLib)

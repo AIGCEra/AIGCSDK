@@ -15,7 +15,7 @@
 // See MFCApplication4.cpp for the implementation of this class
 //
 
-class CMFCDlgApp : public CAIGCWinApp
+class CMFCDlgApp : public CWinApp
 {
 public:
 	CMFCDlgApp();

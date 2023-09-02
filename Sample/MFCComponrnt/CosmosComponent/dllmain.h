@@ -22,7 +22,7 @@
 // dllmain.h : Declaration of module class.
 //
 
-class CTangramApp : public CComponentApp
+class CTangramApp : public CWinApp
 {
 public:
 	// Overrides

@@ -227,3 +227,7 @@ namespace CommonUniverse
 
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
+
+#ifndef CAtlExeModuleT
+#define CAtlExeModuleT CAIGCModuleT
+#endif // !CWinApp

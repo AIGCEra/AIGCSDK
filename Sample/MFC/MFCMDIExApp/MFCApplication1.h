@@ -14,7 +14,7 @@
 // See MFCApplication1.cpp for the implementation of this class
 //
 
-class CMFCApp : public CAIGCWinAppEx
+class CMFCApp : public CWinAppEx
 {
 public:
 	CMFCApp() noexcept;

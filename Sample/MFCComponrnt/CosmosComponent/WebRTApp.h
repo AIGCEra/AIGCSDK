@@ -84,7 +84,6 @@ namespace CommonUniverse
 		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
 
 		//IWindowProvider:
-		//virtual bool WebRTInit(CString strID);
 		virtual CString GetNames();
 		virtual CString GetTags(CString strName);
 		virtual HWND Create(HWND hParentWnd, IXobj* pGrid);
@@ -184,3 +183,14 @@ namespace CommonUniverse
 
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
+
+#ifndef CMDIFrameWndEx
+#ifndef _WINDLL
+#define CWinApp CAIGCWinApp
+#else
+#define CWinApp CComponentApp
+#endif // !_AFXDLL
+
+#define CWinAppEx CAIGCWinAppEx
+#define CMDIFrameWndEx CWebRTMDIFrame
+#endif // !CMDIFrameWndEx
