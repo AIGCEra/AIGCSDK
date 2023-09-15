@@ -34,6 +34,7 @@
 #include <atlstr.h>
 #include <msxml2.h>
 #include <comdef.h>
+#include <ShellScalingApi.h>
 
 #ifdef _AFX
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
@@ -1265,6 +1266,19 @@ namespace CommonUniverse
 		std::map<std::wstring, __int64> m_mapint64;
 		std::map<std::wstring, float> m_mapFloat;
 	} IPCSession;
+
+	class DpiUtil
+	{
+	public:
+		static void SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT dpiAwarenessContext);
+		static int GetDpiForWindow(HWND window);
+
+	private:
+		static HMODULE GetUser32Module();
+		static HMODULE GetShcoreModule();
+		static PROCESS_DPI_AWARENESS ProcessDpiAwarenessFromDpiAwarenessContext(
+			DPI_AWARENESS_CONTEXT dpiAwarenessContext);
+	};
 
 	class CTangramXmlParse
 	{

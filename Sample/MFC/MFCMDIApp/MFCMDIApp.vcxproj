@@ -121,7 +121,7 @@
     <Manifest>
       <AdditionalManifestFiles>
       </AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
       <GenerateCategoryTags>false</GenerateCategoryTags>
     </Manifest>
   </ItemDefinitionGroup>
