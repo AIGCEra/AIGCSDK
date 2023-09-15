@@ -1,4 +1,4 @@
-#include "AIGCBase.h"
+#include "AIGC.h"
 
 #ifdef CMDIFrameWndEx
 #undef CWinApp

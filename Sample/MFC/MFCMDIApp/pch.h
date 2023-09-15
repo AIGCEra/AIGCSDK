@@ -10,6 +10,6 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
-#include "AIGCBase.h"
+#include "AIGC.h"
 
 #endif //PCH_H

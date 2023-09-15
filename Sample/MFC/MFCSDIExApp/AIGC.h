@@ -29,6 +29,7 @@
 #include <ppltasks.h>
 #include <agents.h>
 #include <shlobj.h>
+#include <atlbase.h>
 #include <atlctl.h>
 #include <atlstr.h>
 #include <msxml2.h>
