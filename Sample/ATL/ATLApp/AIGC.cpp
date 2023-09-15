@@ -1,5 +1,7 @@
 #include "AIGC.h"
 
+
+
 #ifdef CMDIFrameWndEx
 #undef CWinApp
 #undef CWinAppEx
@@ -3094,3 +3096,4 @@ namespace CommonUniverse {
 #define CWinAppEx CAIGCWinAppEx
 #define CMDIFrameWndEx CWebRTMDIFrame
 #endif // !CMDIFrameWndEx
+
