@@ -11,4 +11,4 @@
 #include "framework.h"
 
 #endif //PCH_H
-#include "AIGCBase.h"
+#include "AIGC.h"
