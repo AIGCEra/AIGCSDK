@@ -48,25 +48,6 @@ namespace CommonUniverse {
 		}
 	}
 
-	int DpiUtil::GetDpiForWindow(HWND window)
-	{
-		static auto GetDpiForMonitorFunc = []() {
-			return reinterpret_cast<decltype(&::GetDpiForMonitor)>(
-				::GetProcAddress(GetShcoreModule(), "GetDpiForMonitor"));
-		}();
-		if (GetDpiForMonitorFunc)
-		{
-			UINT dpi_x, dpi_y;
-			HMONITOR monitor = ::MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST);
-			GetDpiForMonitorFunc(monitor, MDT_EFFECTIVE_DPI, &dpi_x, &dpi_y);
-			return dpi_x;
-		}
-		else
-		{
-			return GetDeviceCaps(GetDC(nullptr), LOGPIXELSX);
-		}
-	}
-
 	HMODULE DpiUtil::GetUser32Module()
 	{
 		static HMODULE user32Module = nullptr;
@@ -1621,6 +1602,12 @@ namespace CommonUniverse {
 				pParentFrame = pParent->GetParentFrame();
 			if (pParentFrame) {
 				CCreateContext* pContext = (CCreateContext*)lpInfo;
+				CRuntimeClass* pViewInfo = pContext->m_pNewViewClass;
+				CString strName = CString(pViewInfo->m_lpszClassName);
+				strName.MakeLower();
+				auto it = m_mapDOMObj.find(strName);
+				if (it == m_mapDOMObj.end())
+					m_mapDOMObj[strName] = pViewInfo;
 				CDocument* pDoc = pContext->m_pCurrentDoc;
 				CDocTemplate* pTemplate =
 					pDoc->GetDocTemplate();  // pContext->m_pNewDocTemplate;
@@ -2578,6 +2565,12 @@ namespace CommonUniverse {
 				pParentFrame = pParent->GetParentFrame();
 			if (pParentFrame) {
 				CCreateContext* pContext = (CCreateContext*)lpInfo;
+				CRuntimeClass* pViewInfo = pContext->m_pNewViewClass;
+				CString strName = CString(pViewInfo->m_lpszClassName);
+				strName.MakeLower();
+				auto it = m_mapDOMObj.find(strName);
+				if (it == m_mapDOMObj.end())
+					m_mapDOMObj[strName] = pViewInfo;
 				CDocument* pDoc = pContext->m_pCurrentDoc;
 				CDocTemplate* pTemplate = pContext->m_pNewDocTemplate;
 				CString strExt = _T("");

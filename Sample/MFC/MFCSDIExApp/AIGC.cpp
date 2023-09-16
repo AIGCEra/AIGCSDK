@@ -48,25 +48,6 @@ namespace CommonUniverse {
 		}
 	}
 
-	int DpiUtil::GetDpiForWindow(HWND window)
-	{
-		static auto GetDpiForMonitorFunc = []() {
-			return reinterpret_cast<decltype(&::GetDpiForMonitor)>(
-				::GetProcAddress(GetShcoreModule(), "GetDpiForMonitor"));
-		}();
-		if (GetDpiForMonitorFunc)
-		{
-			UINT dpi_x, dpi_y;
-			HMONITOR monitor = ::MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST);
-			GetDpiForMonitorFunc(monitor, MDT_EFFECTIVE_DPI, &dpi_x, &dpi_y);
-			return dpi_x;
-		}
-		else
-		{
-			return GetDeviceCaps(GetDC(nullptr), LOGPIXELSX);
-		}
-	}
-
 	HMODULE DpiUtil::GetUser32Module()
 	{
 		static HMODULE user32Module = nullptr;
