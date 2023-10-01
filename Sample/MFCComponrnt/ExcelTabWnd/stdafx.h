@@ -16,11 +16,6 @@
 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
 
-#include <afxwin.h>
-#include <afxpriv.h>
-#include "resource.h"
-#include <atlbase.h>
+#include "framework.h"
 
-using namespace ATL;
-#include "CommonUniverse.h"
-using namespace CommonUniverse;
+#include "AIGC.h"

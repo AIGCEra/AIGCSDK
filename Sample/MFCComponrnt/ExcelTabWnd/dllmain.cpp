@@ -7,11 +7,6 @@
 #include "OutLookStyleView.h"
 
 
-namespace CommonUniverse
-{
-	CWebRTImpl* g_pSpaceTelescopeImpl = nullptr;
-}
-
 CTangramApp theApp;
 
 CTangramApp::CTangramApp()
@@ -26,7 +21,7 @@ CTangramApp::~CTangramApp()
 BOOL CTangramApp::InitInstance()
 {
 	m_strContainer = _T(",exceltab,outlooktabwndh,outlooktabwndv,");
-	WebRTInit(_T("tangramexceltabwnd.tab"));
+	WebRTInit(_T(""));
 	return __super::InitInstance();
 }
 

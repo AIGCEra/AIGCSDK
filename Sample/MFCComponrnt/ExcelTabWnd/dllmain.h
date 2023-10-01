@@ -1,8 +1,7 @@
 // dllmain.h : Declaration of module class.
 
 class CTangramApp : 
-	public CWinApp, 
-	public IWindowProvider
+	public CWinApp
 {
 public:
 	CTangramApp();
