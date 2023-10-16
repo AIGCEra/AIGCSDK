@@ -22,30 +22,30 @@ namespace CommonUniverse {
 		static auto SetProcessDpiAwarenessContextFunc = []() {
 			return reinterpret_cast<decltype(&::SetProcessDpiAwarenessContext)>(
 				::GetProcAddress(GetUser32Module(), "SetProcessDpiAwarenessContext"));
-		}();
-		if (SetProcessDpiAwarenessContextFunc)
-		{
-			// Windows 10 1703+: SetProcessDpiAwarenessContext
-			SetProcessDpiAwarenessContextFunc(dpiAwarenessContext);
-		}
-		else
-		{
-			static auto SetProcessDpiAwarenessFunc = []() {
-				return reinterpret_cast<decltype(&::SetProcessDpiAwareness)>(
-					::GetProcAddress(GetShcoreModule(), "SetProcessDpiAwareness"));
 			}();
-			if (SetProcessDpiAwarenessFunc)
+			if (SetProcessDpiAwarenessContextFunc)
 			{
-				// Windows 8.1+: SetProcessDpiAwareness
-				SetProcessDpiAwarenessFunc(
-					ProcessDpiAwarenessFromDpiAwarenessContext(dpiAwarenessContext));
+				// Windows 10 1703+: SetProcessDpiAwarenessContext
+				SetProcessDpiAwarenessContextFunc(dpiAwarenessContext);
 			}
-			else if (dpiAwarenessContext != DPI_AWARENESS_CONTEXT_UNAWARE)
+			else
 			{
-				// Windows 7+: SetProcessDPIAware
-				::SetProcessDPIAware();
+				static auto SetProcessDpiAwarenessFunc = []() {
+					return reinterpret_cast<decltype(&::SetProcessDpiAwareness)>(
+						::GetProcAddress(GetShcoreModule(), "SetProcessDpiAwareness"));
+					}();
+					if (SetProcessDpiAwarenessFunc)
+					{
+						// Windows 8.1+: SetProcessDpiAwareness
+						SetProcessDpiAwarenessFunc(
+							ProcessDpiAwarenessFromDpiAwarenessContext(dpiAwarenessContext));
+					}
+					else if (dpiAwarenessContext != DPI_AWARENESS_CONTEXT_UNAWARE)
+					{
+						// Windows 7+: SetProcessDPIAware
+						::SetProcessDPIAware();
+					}
 			}
-		}
 	}
 
 	HMODULE DpiUtil::GetUser32Module()
@@ -1200,6 +1200,8 @@ namespace CommonUniverse {
 			default:
 				break;
 			}
+			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			if (IsBrowserModel(false)) {
 				m_bBuiltInBrowser = true;
 				return false;
@@ -1223,8 +1225,6 @@ namespace CommonUniverse {
 		}
 		HMODULE hModule2 = hModule;
 		if (hModule) {
-			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			BOOL isBrowserModel = false;
 			FuncIsBrowserModel =
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
@@ -1602,12 +1602,6 @@ namespace CommonUniverse {
 				pParentFrame = pParent->GetParentFrame();
 			if (pParentFrame) {
 				CCreateContext* pContext = (CCreateContext*)lpInfo;
-				CRuntimeClass* pViewInfo = pContext->m_pNewViewClass;
-				CString strName = CString(pViewInfo->m_lpszClassName);
-				strName.MakeLower();
-				auto it = m_mapDOMObj.find(strName);
-				if (it == m_mapDOMObj.end())
-					m_mapDOMObj[strName] = pViewInfo;
 				CDocument* pDoc = pContext->m_pCurrentDoc;
 				CDocTemplate* pTemplate =
 					pDoc->GetDocTemplate();  // pContext->m_pNewDocTemplate;
@@ -1852,8 +1846,13 @@ namespace CommonUniverse {
 #endif
 			}
 			strID.Trim();
-			CString strName = g_pAppBase->m_pszAppName;
-			m_strProviderID = strName + strID;
+			if (strID == _T(""))
+				strID = _T("views");
+			if (m_strProviderID == _T(""))
+			{
+				CString strName = g_pAppBase->m_pszAppName;
+				m_strProviderID = strName + _T(".") + strID;
+			}
 			if (m_strProviderID != _T(""))
 			{
 				m_strProviderID.MakeLower();
@@ -2095,6 +2094,8 @@ namespace CommonUniverse {
 			default:
 				break;
 			}
+			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			if (IsBrowserModel(false)) {
 				m_bBuiltInBrowser = true;
 				return false;
@@ -2118,8 +2119,6 @@ namespace CommonUniverse {
 		}
 		HMODULE hModule2 = hModule;
 		if (hModule) {
-			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			BOOL isBrowserModel = false;
 			FuncIsBrowserModel =
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
@@ -2560,12 +2559,6 @@ namespace CommonUniverse {
 				pParentFrame = pParent->GetParentFrame();
 			if (pParentFrame) {
 				CCreateContext* pContext = (CCreateContext*)lpInfo;
-				CRuntimeClass* pViewInfo = pContext->m_pNewViewClass;
-				CString strName = CString(pViewInfo->m_lpszClassName);
-				strName.MakeLower();
-				auto it = m_mapDOMObj.find(strName);
-				if (it == m_mapDOMObj.end())
-					m_mapDOMObj[strName] = pViewInfo;
 				CDocument* pDoc = pContext->m_pCurrentDoc;
 				CDocTemplate* pTemplate = pContext->m_pNewDocTemplate;
 				CString strExt = _T("");
@@ -2951,6 +2944,8 @@ namespace CommonUniverse {
 	}
 
 	bool CAIGCApp::WebRTInit(CString strID) {
+		DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+		DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 		if (hModule == nullptr)
 			hModule = ::LoadLibrary(L"AIGCAgent.dll");
@@ -2968,8 +2963,6 @@ namespace CommonUniverse {
 				hModule = ::LoadLibrary(L"AIGCAgent.dll");
 		}
 		if (hModule) {
-			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			BOOL isBrowserModel = false;
 			FuncIsBrowserModel =
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");

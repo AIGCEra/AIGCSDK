@@ -2530,7 +2530,6 @@ namespace CommonUniverse
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
 
-#ifdef _AFX
 #ifndef CMDIFrameWndEx
 #ifndef _WINDLL
 #define CWinApp CAIGCWinApp
@@ -2540,21 +2539,7 @@ extern IWebRT* g_pWebRT;
 
 #define CWinAppEx CAIGCWinAppEx
 #define CMDIFrameWndEx CWebRTMDIFrame
-
-#define ResizeParentToFit()									\
-if (GetParentFrame()) {										\
-	CRuntimeClass* pclsinfo = GetRuntimeClass();			\
-	CString strName = CString(pclsinfo->m_lpszClassName);	\
-	strName.MakeLower();									\
-	auto it = theApp.m_mapDOMObj.find(strName);				\
-	if (it == theApp.m_mapDOMObj.end())						\
-		theApp.m_mapDOMObj[strName] = pclsinfo;				\
-	CScrollView::ResizeParentToFit();						\
-	GetParentFrame()->RecalcLayout();						\
-}
-
 #endif // !CMDIFrameWndEx
-#endif // !_AFX
 
 #ifndef CAtlExeModuleT
 #define CAtlExeModuleT CAIGCModuleT
