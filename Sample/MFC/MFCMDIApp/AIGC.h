@@ -41,6 +41,8 @@
 #include <afxcview.h>
 #endif
 
+#define WebRTDefault
+
 #define TANGRAM_CONST_OPENFILE 19920612
 #define TANGRAM_CONST_NEWDOC 19631222
 #define TANGRAM_CHROME_APP_INIT 20190501
@@ -2530,6 +2532,8 @@ namespace CommonUniverse
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
 
+#ifdef WebRTDefault
+
 #ifndef CMDIFrameWndEx
 #ifndef _WINDLL
 #define CWinApp CAIGCWinApp
@@ -2544,3 +2548,6 @@ extern IWebRT* g_pWebRT;
 #ifndef CAtlExeModuleT
 #define CAtlExeModuleT CAIGCModuleT
 #endif // !CAtlExeModuleT
+
+#endif // WebRTDefault
+
