@@ -119,9 +119,8 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <AdditionalManifestFiles>app.manifest</AdditionalManifestFiles>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
       <GenerateCategoryTags>false</GenerateCategoryTags>
     </Manifest>
   </ItemDefinitionGroup>
