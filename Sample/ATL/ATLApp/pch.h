@@ -13,4 +13,3 @@
 #include "AIGC.h"
 
 #endif //PCH_H
-#include "AIGC.h"
