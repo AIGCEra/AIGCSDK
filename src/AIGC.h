@@ -1942,7 +1942,8 @@ namespace CommonUniverse
 		virtual void OnNewSurfaceWnd(HWND hWnd, HWND hSurfaceWnd) {}
 		virtual void OnExitMainMsgPump() {}
 		virtual void OnBatteryChanged() {}
-	};
+		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
+};
 
 	class IWindowProvider {
 	public:

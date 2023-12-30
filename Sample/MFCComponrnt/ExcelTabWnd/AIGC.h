@@ -41,6 +41,8 @@
 #include <afxcview.h>
 #endif
 
+#define WebRTDefault
+
 #define TANGRAM_CONST_OPENFILE 19920612
 #define TANGRAM_CONST_NEWDOC 19631222
 #define TANGRAM_CHROME_APP_INIT 20190501
@@ -1940,7 +1942,8 @@ namespace CommonUniverse
 		virtual void OnNewSurfaceWnd(HWND hWnd, HWND hSurfaceWnd) {}
 		virtual void OnExitMainMsgPump() {}
 		virtual void OnBatteryChanged() {}
-	};
+		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
+};
 
 	class IWindowProvider {
 	public:
@@ -2530,7 +2533,8 @@ namespace CommonUniverse
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
 
-#ifdef _AFX
+#ifdef WebRTDefault
+
 #ifndef CMDIFrameWndEx
 #ifndef _WINDLL
 #define CWinApp CAIGCWinApp
@@ -2540,22 +2544,11 @@ extern IWebRT* g_pWebRT;
 
 #define CWinAppEx CAIGCWinAppEx
 #define CMDIFrameWndEx CWebRTMDIFrame
-
-#define ResizeParentToFit()									\
-if (GetParentFrame()) {										\
-	CRuntimeClass* pclsinfo = GetRuntimeClass();			\
-	CString strName = CString(pclsinfo->m_lpszClassName);	\
-	strName.MakeLower();									\
-	auto it = theApp.m_mapDOMObj.find(strName);				\
-	if (it == theApp.m_mapDOMObj.end())						\
-		theApp.m_mapDOMObj[strName] = pclsinfo;				\
-	CScrollView::ResizeParentToFit();						\
-	GetParentFrame()->RecalcLayout();						\
-}
-
 #endif // !CMDIFrameWndEx
-#endif // !_AFX
 
 #ifndef CAtlExeModuleT
 #define CAtlExeModuleT CAIGCModuleT
 #endif // !CAtlExeModuleT
+
+#endif // WebRTDefault
+
