@@ -1732,6 +1732,7 @@ namespace CommonUniverse
 		virtual void OnCloudMsgReceived(CSession*) {}
 		virtual void ConnectXobjToWebPage(IXobj*, bool) {}
 		virtual void ProcessFormWorkState(HWND hForm, int nState) {}
+		virtual int GetCLRObjType(CString bstrObjID) { return 1000; }
 	};
 
 	class CWebRTImpl {

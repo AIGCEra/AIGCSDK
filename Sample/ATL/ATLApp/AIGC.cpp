@@ -1,11 +1,11 @@
 #include "AIGC.h"
 
-
-
+#ifdef WebRTDefault
 #ifdef CMDIFrameWndEx
 #undef CWinApp
 #undef CWinAppEx
 #undef CMDIFrameWndEx
+#endif
 #endif
 
 IWebRT* g_pWebRT = nullptr;
@@ -22,30 +22,30 @@ namespace CommonUniverse {
 		static auto SetProcessDpiAwarenessContextFunc = []() {
 			return reinterpret_cast<decltype(&::SetProcessDpiAwarenessContext)>(
 				::GetProcAddress(GetUser32Module(), "SetProcessDpiAwarenessContext"));
-		}();
-		if (SetProcessDpiAwarenessContextFunc)
-		{
-			// Windows 10 1703+: SetProcessDpiAwarenessContext
-			SetProcessDpiAwarenessContextFunc(dpiAwarenessContext);
-		}
-		else
-		{
-			static auto SetProcessDpiAwarenessFunc = []() {
-				return reinterpret_cast<decltype(&::SetProcessDpiAwareness)>(
-					::GetProcAddress(GetShcoreModule(), "SetProcessDpiAwareness"));
 			}();
-			if (SetProcessDpiAwarenessFunc)
+			if (SetProcessDpiAwarenessContextFunc)
 			{
-				// Windows 8.1+: SetProcessDpiAwareness
-				SetProcessDpiAwarenessFunc(
-					ProcessDpiAwarenessFromDpiAwarenessContext(dpiAwarenessContext));
+				// Windows 10 1703+: SetProcessDpiAwarenessContext
+				SetProcessDpiAwarenessContextFunc(dpiAwarenessContext);
 			}
-			else if (dpiAwarenessContext != DPI_AWARENESS_CONTEXT_UNAWARE)
+			else
 			{
-				// Windows 7+: SetProcessDPIAware
-				::SetProcessDPIAware();
+				static auto SetProcessDpiAwarenessFunc = []() {
+					return reinterpret_cast<decltype(&::SetProcessDpiAwareness)>(
+						::GetProcAddress(GetShcoreModule(), "SetProcessDpiAwareness"));
+					}();
+					if (SetProcessDpiAwarenessFunc)
+					{
+						// Windows 8.1+: SetProcessDpiAwareness
+						SetProcessDpiAwarenessFunc(
+							ProcessDpiAwarenessFromDpiAwarenessContext(dpiAwarenessContext));
+					}
+					else if (dpiAwarenessContext != DPI_AWARENESS_CONTEXT_UNAWARE)
+					{
+						// Windows 7+: SetProcessDPIAware
+						::SetProcessDPIAware();
+					}
 			}
-		}
 	}
 
 	HMODULE DpiUtil::GetUser32Module()
@@ -1200,6 +1200,8 @@ namespace CommonUniverse {
 			default:
 				break;
 			}
+			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			if (IsBrowserModel(false)) {
 				m_bBuiltInBrowser = true;
 				return false;
@@ -1223,8 +1225,6 @@ namespace CommonUniverse {
 		}
 		HMODULE hModule2 = hModule;
 		if (hModule) {
-			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			BOOL isBrowserModel = false;
 			FuncIsBrowserModel =
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
@@ -2094,6 +2094,8 @@ namespace CommonUniverse {
 			default:
 				break;
 			}
+			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			if (IsBrowserModel(false)) {
 				m_bBuiltInBrowser = true;
 				return false;
@@ -2117,8 +2119,6 @@ namespace CommonUniverse {
 		}
 		HMODULE hModule2 = hModule;
 		if (hModule) {
-			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			BOOL isBrowserModel = false;
 			FuncIsBrowserModel =
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
@@ -2944,6 +2944,8 @@ namespace CommonUniverse {
 	}
 
 	bool CAIGCApp::WebRTInit(CString strID) {
+		DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+		DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 		if (hModule == nullptr)
 			hModule = ::LoadLibrary(L"AIGCAgent.dll");
@@ -2961,8 +2963,6 @@ namespace CommonUniverse {
 				hModule = ::LoadLibrary(L"AIGCAgent.dll");
 		}
 		if (hModule) {
-			DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-			DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 			BOOL isBrowserModel = false;
 			FuncIsBrowserModel =
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
@@ -3167,6 +3167,7 @@ namespace CommonUniverse {
 #endif
 }  // namespace CommonUniverse
 
+#ifdef WebRTDefault
 #ifndef CMDIFrameWndEx
 #ifndef _WINDLL
 #define CWinApp CAIGCWinApp
@@ -3177,4 +3178,5 @@ namespace CommonUniverse {
 #define CWinAppEx CAIGCWinAppEx
 #define CMDIFrameWndEx CWebRTMDIFrame
 #endif // !CMDIFrameWndEx
+#endif
 

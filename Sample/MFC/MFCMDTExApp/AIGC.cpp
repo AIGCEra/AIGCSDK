@@ -1,11 +1,11 @@
 #include "AIGC.h"
 
-
-
+#ifdef WebRTDefault
 #ifdef CMDIFrameWndEx
 #undef CWinApp
 #undef CWinAppEx
 #undef CMDIFrameWndEx
+#endif
 #endif
 
 IWebRT* g_pWebRT = nullptr;
@@ -3167,6 +3167,7 @@ namespace CommonUniverse {
 #endif
 }  // namespace CommonUniverse
 
+#ifdef WebRTDefault
 #ifndef CMDIFrameWndEx
 #ifndef _WINDLL
 #define CWinApp CAIGCWinApp
@@ -3177,4 +3178,5 @@ namespace CommonUniverse {
 #define CWinAppEx CAIGCWinAppEx
 #define CMDIFrameWndEx CWebRTMDIFrame
 #endif // !CMDIFrameWndEx
+#endif
 
