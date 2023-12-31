@@ -12,9 +12,9 @@ namespace AIGC
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void InitWebRT(IntPtr IUnkPtr);
+        private delegate void InitWebRT(IntPtr IUnkPtr, IntPtr IUnkWndPtr);
 
-        public static bool InitCosmos(object StartObj)
+        public static bool InitCosmos(object StartObj, object MainWndObj)
         {
             IntPtr initDll = LoadLibrary(@"universe.DLL");
             if (initDll != IntPtr.Zero)
@@ -23,7 +23,10 @@ namespace AIGC
                 if (fnInitWebRT != IntPtr.Zero)
                 {
                     InitWebRT InitWebRT = (InitWebRT)Marshal.GetDelegateForFunctionPointer(fnInitWebRT, typeof(InitWebRT));
-                    InitWebRT(Marshal.GetIUnknownForObject(StartObj));
+                    if (MainWndObj != null)
+                        InitWebRT(Marshal.GetIUnknownForObject(StartObj), Marshal.GetIUnknownForObject(MainWndObj));
+                    else
+                        InitWebRT(Marshal.GetIUnknownForObject(StartObj), IntPtr.Zero);
                     return true;
                 }
             }

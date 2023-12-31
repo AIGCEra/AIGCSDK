@@ -17,7 +17,7 @@ namespace TangramMDI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form startForm = new MDIParent();
-            if (!AIGC.AIGCApp.InitCosmos(startForm))
+            if (!AIGC.AIGCApp.InitCosmos(startForm, 0))
                 Application.Run(startForm);
         }
     }
