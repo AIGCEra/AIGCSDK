@@ -16,8 +16,10 @@ namespace AIGC
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void InitWebRT(IntPtr IUnkPtr);
 
-        public static void Run(System.Windows.Application app)
+        public static void Run(System.Windows.Application app, System.Windows.Window winobj)
         {
+            if (app == null)
+                return;
             IntPtr pDll = LoadLibrary(@"universe.DLL");
             if (pDll != IntPtr.Zero)
             {
@@ -30,10 +32,10 @@ namespace AIGC
             }
             else
             {
-                if (app != null)
-                {
+                if (winobj)
+                    app.Run(winobj);
+                else
                     app.Run();
-                }
             }
         }
     }
