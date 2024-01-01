@@ -23,7 +23,8 @@ namespace AIGC
                 if (fnInitWebRT != IntPtr.Zero)
                 {
                     InitWebRT InitWebRT = (InitWebRT)Marshal.GetDelegateForFunctionPointer(fnInitWebRT, typeof(InitWebRT));
-                    InitWebRT((StartObj != null) ? Marshal.GetIUnknownForObject(StartObj) : IntPtr.Zero, (MainWndObj!=null) ? Marshal.GetIUnknownForObject(MainWndObj): IntPtr.Zero);
+                    InitWebRT((StartObj != null) ? Marshal.GetIUnknownForObject(StartObj) : IntPtr.Zero,
+                        (MainWndObj != null) ? Marshal.GetIUnknownForObject(MainWndObj) : IntPtr.Zero);
                     return true;
                 }
             }
