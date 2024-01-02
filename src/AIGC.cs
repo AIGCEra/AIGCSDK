@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 
 namespace AIGC
 {
@@ -14,7 +16,7 @@ namespace AIGC
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void InitWebRT(IntPtr IUnkPtr, IntPtr IUnkWndPtr);
 
-        public static bool InitCosmos(object StartObj, object MainWndObj)
+        public static bool InitCosmos(object StartObj, object MainWndObj = null)
         {
             IntPtr initDll = LoadLibrary(@"universe.DLL");
             if (initDll != IntPtr.Zero)
@@ -23,8 +25,7 @@ namespace AIGC
                 if (fnInitWebRT != IntPtr.Zero)
                 {
                     InitWebRT InitWebRT = (InitWebRT)Marshal.GetDelegateForFunctionPointer(fnInitWebRT, typeof(InitWebRT));
-                    InitWebRT((StartObj != null) ? Marshal.GetIUnknownForObject(StartObj) : IntPtr.Zero,
-                        (MainWndObj != null) ? Marshal.GetIUnknownForObject(MainWndObj) : IntPtr.Zero);
+                    InitWebRT((StartObj != null) ? Marshal.GetIUnknownForObject(StartObj) : IntPtr.Zero, (MainWndObj != null) ? Marshal.GetIUnknownForObject(MainWndObj) : IntPtr.Zero);
                     return true;
                 }
             }

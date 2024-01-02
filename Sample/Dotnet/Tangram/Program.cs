@@ -14,7 +14,7 @@ namespace Tangram
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Form startForm = new Form1();
-            if (!AIGC.AIGCApp.InitCosmos(startForm, 0))
+            if (!AIGC.AIGCApp.InitCosmos(startForm))
                 Application.Run(startForm);
         }
     }
