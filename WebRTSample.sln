@@ -53,9 +53,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SDK", "SDK", "{051D5B0D-8A8
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCMDTExApp", "Sample\MFC\MFCMDTExApp\MFCMDTExApp.vcxproj", "{26BA5D7A-A2E2-471A-BDA5-136A34469EF1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BrowserApp", "Sample\Win32\BrowserApp\BrowserApp.vcxproj", "{E4A6078A-5621-4D7A-A275-FBA78DA95093}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BrowserApp", "Sample\SDK\BrowserApp\BrowserApp.vcxproj", "{E4A6078A-5621-4D7A-A275-FBA78DA95093}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorWindow", "Sample\Win32\ColorWindow\ColorWindow.vcxproj", "{883FB30E-E7BD-4B42-8D12-EF1ECF70085D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColorWindow", "Sample\SDK\ColorWindow\ColorWindow.vcxproj", "{883FB30E-E7BD-4B42-8D12-EF1ECF70085D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ATLSample", "ATLSample", "{203539CC-7886-42A3-AA7A-BBC117C3A492}"
 EndProject
@@ -63,7 +63,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ATLApp", "Sample\ATL\ATLApp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CoreComp", "CoreComp", "{7B009A57-8DBF-4521-A2D0-5553601682A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testFormLib", "Sample\DotnetComponent\testFormLib\testFormLib.csproj", "{E96DC23C-303A-4D39-8873-FA7431F5F334}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testFormLib", "Sample\DotnetComponent\testFormLib\testFormLib.csproj", "{E96DC23C-303A-4D39-8873-FA7431F5F334}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
