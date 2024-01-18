@@ -272,7 +272,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LoadStringW(hInstance, IDC_BROWSERAPP, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 	// Perform application initialization:
-	if (!theApp.InitApplication() || !InitInstance(hInstance, nCmdShow))
+	if (!InitInstance(hInstance, nCmdShow))
 	{
 		return FALSE;
 	}
@@ -332,6 +332,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance; // Store instance handle in our global variable
+
+	if (!theApp.InitApplication())
+		return false;
 
 	HWND hWnd = theApp.m_hMainWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
