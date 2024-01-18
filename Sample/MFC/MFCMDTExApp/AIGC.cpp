@@ -3011,8 +3011,6 @@ namespace CommonUniverse {
 					(WPARAM)m_pSpaceTelescopeImpl->m_pWebRTDelegate,
 					g_pSpaceTelescopeImpl->m_nAppType);
 		}
-		else
-			return false;
 		return true;
 	}
 
