@@ -1547,6 +1547,7 @@ namespace CommonUniverse
 	class IUniverseAppProxy {
 	public:
 		IUniverseAppProxy() {
+			m_bWebRTInit = TRUE;
 			m_bAutoDelete = TRUE;
 			m_hMainWnd = nullptr;
 			m_hClosingFrame = m_hCreatingView = nullptr;
@@ -1568,6 +1569,7 @@ namespace CommonUniverse
 
 		int m_nShellCmd = -1;
 		int m_nFrameIndex;
+		BOOL m_bWebRTInit;
 		BOOL m_bAutoDelete;
 		BOOL m_bCreatingNewFrame;
 		HWND m_hMainWnd;
