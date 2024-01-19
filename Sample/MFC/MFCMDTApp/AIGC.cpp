@@ -2930,10 +2930,13 @@ namespace CommonUniverse {
 	};
 
 	CWebRTProxy theAppProxy;
+	HHOOK	m_hCBTHook = NULL;
 
 	CAIGCApp::CAIGCApp() {
 		m_strExeName = _T("");
 		m_strProviderID = _T("");
+
+		m_bWebRTInit = InitApplication();
 	}
 
 	CAIGCApp::~CAIGCApp() {
@@ -2941,6 +2944,24 @@ namespace CommonUniverse {
 			m_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
 			m_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
 		}
+		if (m_hCBTHook) {
+			::UnhookWindowsHookEx(m_hCBTHook);
+		}
+	}
+
+	LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam)
+	{
+		LRESULT hr = CallNextHookEx(m_hCBTHook, nCode, wParam, lParam);
+		HWND hWnd = (HWND)wParam;
+		switch (nCode)
+		{
+		case HCBT_CREATEWND:
+		{
+			return 1000;
+		}
+		break;
+		}
+		return hr;
 	}
 
 	bool CAIGCApp::WebRTInit(CString strID) {
@@ -2968,8 +2989,10 @@ namespace CommonUniverse {
 				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
 			if (FuncIsBrowserModel != NULL) {
 				isBrowserModel = FuncIsBrowserModel(false, this);
-				if (isBrowserModel)
+				if (isBrowserModel) {
+					m_hCBTHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, ::GetCurrentThreadId());
 					return false;
+				}
 			}
 		}
 

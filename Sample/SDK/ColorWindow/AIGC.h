@@ -2456,7 +2456,7 @@ namespace CommonUniverse
 		void OnHubbleEvent(IWebRTEventObj* NotifyObj) {};
 	};
 #else
-	class CAIGCApp :
+class CAIGCApp :
 		public IUniverseAppProxy,
 		public IWindowProvider {
 	public:
