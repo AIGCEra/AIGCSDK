@@ -20,7 +20,7 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 
 class CBrowserApp :
-	public CAIGCApp
+	public CAIGCAppEx
 {
 public:
 	CBrowserApp() {

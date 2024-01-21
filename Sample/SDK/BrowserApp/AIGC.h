@@ -1946,7 +1946,7 @@ namespace CommonUniverse
 		virtual void OnExitMainMsgPump() {}
 		virtual void OnBatteryChanged() {}
 		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
-};
+	};
 
 	class IWindowProvider {
 	public:
@@ -2438,7 +2438,7 @@ namespace CommonUniverse
 
 		DECLARE_DYNCREATE(CWebRTMDIFrame)
 
-			virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
+		virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
 		//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -2456,7 +2456,7 @@ namespace CommonUniverse
 		void OnHubbleEvent(IWebRTEventObj* NotifyObj) {};
 	};
 #else
-class CAIGCApp :
+	class CAIGCApp :
 		public IUniverseAppProxy,
 		public IWindowProvider {
 	public:
@@ -2499,6 +2499,18 @@ class CAIGCApp :
 		virtual CString GetTags(CString strName) { return _T(""); };
 		virtual HWND Create(HWND hParentWnd, IXobj* pXobj) { return NULL; };
 		virtual IDispatch* CreateCtrl(CString strCtrlID) { return NULL; }
+	};
+
+	class CAIGCAppEx :
+		public CAIGCApp
+	{
+	public:
+		CAIGCAppEx();
+		virtual ~CAIGCAppEx();
+
+		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
+	private:
+		virtual bool WebRTInit(CString strID);
 	};
 
 	class CWebRTWindowProviderApp :
