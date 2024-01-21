@@ -2508,8 +2508,8 @@ namespace CommonUniverse
 		CAIGCAppEx();
 		virtual ~CAIGCAppEx();
 
-		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
 	private:
+		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
 		virtual bool WebRTInit(CString strID);
 	};
 
