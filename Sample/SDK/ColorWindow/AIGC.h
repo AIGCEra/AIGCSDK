@@ -1648,6 +1648,13 @@ namespace CommonUniverse
 		virtual void OnCustomizedMainWindowElement(HWND hMainWnd, CString strXml) {}
 	};
 
+	class IWinAppProxyImpl {
+	public:
+		IWinAppProxyImpl() {}
+		virtual ~IWinAppProxyImpl() {}
+		virtual DWORD ExecCmd(const CString cmd, const BOOL setCurrentDirectory) { return 0; }
+	};
+
 	class IWebRTCLRImpl {
 	public:
 		IWebRTCLRImpl() {}
@@ -1755,7 +1762,7 @@ namespace CommonUniverse
 			m_pWebRTAppProxy = nullptr;
 			m_pUniverseAppProxy = nullptr;
 			m_pCurMDIChildFormInfo = nullptr;
-			m_bEnableHardwareAcceleration = true;
+			m_bEnableHardwareAcceleration = false;
 			m_strAppID = _T("");
 			m_strNtpXml = _T("");
 			m_strWebRTVer = _T("");
@@ -1839,10 +1846,12 @@ namespace CommonUniverse
 		CWebViewImpl* m_pMainWebPageImpl = nullptr;
 		IWebRTDelegate* m_pWebRTDelegate = nullptr;
 		CChromeBrowserBase* m_pActiveBrowser = nullptr;
+		IWinAppProxyImpl* m_pWinAppProxyImpl = nullptr;
 		CWebRTBrowserFactory* m_pBrowserFactory = nullptr;
 		CosmosAppMessagePumpForUI* m_pMessagePumpForUI = nullptr;
 		OmniboxViewViewsProxy* m_pCreatingOmniboxViewViews = nullptr;
 		CChromeRenderFrameHost* m_pCreatingChromeRenderFrameHostBase = nullptr;
+
 
 		map<HWND, CString> m_mapUIData;
 		map<HWND, CString> m_mapCtrlTag;
@@ -2508,8 +2517,8 @@ namespace CommonUniverse
 		CAIGCAppEx();
 		virtual ~CAIGCAppEx();
 
-		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
 	private:
+		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
 		virtual bool WebRTInit(CString strID);
 	};
 

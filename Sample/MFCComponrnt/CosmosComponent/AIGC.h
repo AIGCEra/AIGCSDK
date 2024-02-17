@@ -1648,6 +1648,13 @@ namespace CommonUniverse
 		virtual void OnCustomizedMainWindowElement(HWND hMainWnd, CString strXml) {}
 	};
 
+	class IWinAppProxyImpl {
+	public:
+		IWinAppProxyImpl() {}
+		virtual ~IWinAppProxyImpl() {}
+		virtual DWORD ExecCmd(const CString cmd, const BOOL setCurrentDirectory) { return 0; }
+	};
+
 	class IWebRTCLRImpl {
 	public:
 		IWebRTCLRImpl() {}
@@ -1755,7 +1762,7 @@ namespace CommonUniverse
 			m_pWebRTAppProxy = nullptr;
 			m_pUniverseAppProxy = nullptr;
 			m_pCurMDIChildFormInfo = nullptr;
-			m_bEnableHardwareAcceleration = true;
+			m_bEnableHardwareAcceleration = false;
 			m_strAppID = _T("");
 			m_strNtpXml = _T("");
 			m_strWebRTVer = _T("");
@@ -1839,10 +1846,12 @@ namespace CommonUniverse
 		CWebViewImpl* m_pMainWebPageImpl = nullptr;
 		IWebRTDelegate* m_pWebRTDelegate = nullptr;
 		CChromeBrowserBase* m_pActiveBrowser = nullptr;
+		IWinAppProxyImpl* m_pWinAppProxyImpl = nullptr;
 		CWebRTBrowserFactory* m_pBrowserFactory = nullptr;
 		CosmosAppMessagePumpForUI* m_pMessagePumpForUI = nullptr;
 		OmniboxViewViewsProxy* m_pCreatingOmniboxViewViews = nullptr;
 		CChromeRenderFrameHost* m_pCreatingChromeRenderFrameHostBase = nullptr;
+
 
 		map<HWND, CString> m_mapUIData;
 		map<HWND, CString> m_mapCtrlTag;
@@ -1946,7 +1955,7 @@ namespace CommonUniverse
 		virtual void OnExitMainMsgPump() {}
 		virtual void OnBatteryChanged() {}
 		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
-};
+	};
 
 	class IWindowProvider {
 	public:
@@ -2438,7 +2447,7 @@ namespace CommonUniverse
 
 		DECLARE_DYNCREATE(CWebRTMDIFrame)
 
-			virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
+		virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
 		//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -2499,6 +2508,18 @@ namespace CommonUniverse
 		virtual CString GetTags(CString strName) { return _T(""); };
 		virtual HWND Create(HWND hParentWnd, IXobj* pXobj) { return NULL; };
 		virtual IDispatch* CreateCtrl(CString strCtrlID) { return NULL; }
+	};
+
+	class CAIGCAppEx :
+		public CAIGCApp
+	{
+	public:
+		CAIGCAppEx();
+		virtual ~CAIGCAppEx();
+
+	private:
+		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
+		virtual bool WebRTInit(CString strID);
 	};
 
 	class CWebRTWindowProviderApp :
