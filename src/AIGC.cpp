@@ -1,10 +1,9 @@
 #include "AIGC.h"
 
 #ifdef WebRTDefault
-#ifdef CMDIFrameWndEx
+#ifdef CWinApp
 #undef CWinApp
 #undef CWinAppEx
-#undef CMDIFrameWndEx
 #endif
 #endif
 
@@ -1704,10 +1703,6 @@ namespace CommonUniverse {
 			CWnd* pWnd = CWnd::FromHandlePermanent((HWND)h);
 			if (pWnd == NULL)
 				return NULL;
-			// if (pWnd->IsKindOf(RUNTIME_CLASS(CWebRTMDIFrame)))
-			//{
-			//	pNucleiProxy = (CNucleiProxy*)(CWebRTMDIFrame*)pWnd;
-			// }
 			if (pNucleiProxy)
 				pNucleiProxy->m_bAutoDelete = false;
 		}
@@ -2236,10 +2231,52 @@ namespace CommonUniverse {
 	}
 
 	HWND CAIGCWinAppEx::QueryWndInfo(QueryType nType, HWND hWnd) {
+		if (m_pMainWnd == NULL) {
+			m_pMainWnd = CWnd::FromHandlePermanent(g_pSpaceTelescopeImpl->m_hMainWnd);
+			m_hMainWnd = g_pSpaceTelescopeImpl->m_hMainWnd;
+			m_pDockingManager = GetDockingManager(m_pMainWnd);
+			if (m_pDockingManager) {
+				HWND hClient = ::GetDlgItem(m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
+				if (hClient)
+				{
+					CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
+					if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
+						m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
+					}
+				}
+				POSITION pos = NULL;
+				CObList list;
+				m_pDockingManager->GetPaneList(list, TRUE);
+
+				for (pos = list.GetHeadPosition(); pos != NULL;)
+				{
+					CBasePane* pBar = (CBasePane*)list.GetNext(pos);
+					ASSERT_VALID(pBar);
+					if (pBar->IsKindOf(RUNTIME_CLASS(CDockablePane)))
+					{
+						g_pSpaceTelescopeImpl->DockablePaneCreated(m_pMainWnd->m_hWnd, pBar->m_hWnd);
+					}
+				}
+			}
+		}
+		else if (!m_pDockingManager && m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIChildWndEx))) {
+			m_pDockingManager = GetDockingManager(m_pMainWnd);
+			if (m_pDockingManager) {
+				HWND hClient = ::GetDlgItem(m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
+				if (hClient)
+				{
+					CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
+					if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
+						m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
+					}
+				}
+			}
+		}
 		CWnd* pWnd = CWnd::FromHandlePermanent(hWnd);
 		if (pWnd) {
 			if (pWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
 				BOOL bMDIClient = true;
+				m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pWnd;
 				if (nType == RecalcLayout) {
 					CFrameWnd* pFrame = pWnd->GetParentFrame();
 					if (pFrame) {
@@ -2273,6 +2310,33 @@ namespace CommonUniverse {
 		case MainWnd:
 			if (m_pMainWnd) {
 				pWnd = m_pMainWnd;
+				if (m_pDockingManager == NULL && m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
+					m_pDockingManager = GetDockingManager(m_pMainWnd);
+					if (m_pDockingManager) {
+						HWND hClient = ::GetDlgItem(m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
+						if (hClient)
+						{
+							CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
+							if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
+								m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
+							}
+						}
+						//POSITION pos = NULL;
+						//CObList list;
+						//m_pDockingManager->GetPaneList(list, TRUE);
+
+						//for (pos = list.GetHeadPosition(); pos != NULL;)
+						//{
+						//	CBasePane* pBar = (CBasePane*)list.GetNext(pos);
+						//	ASSERT_VALID(pBar);
+						//	if (pBar->IsKindOf(RUNTIME_CLASS(CDockablePane)))
+						//	{
+						//		g_pSpaceTelescopeImpl->DockablePaneCreated(m_pMainWnd->m_hWnd, pBar->m_hWnd);
+						//	}
+						//}
+					}
+				}
+
 				if (pWnd) {
 					WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
 					HANDLE hHandle = ::GetProp(pWnd->m_hWnd, _T("WebRTFrameWndInfo"));
@@ -2660,9 +2724,9 @@ namespace CommonUniverse {
 			CWnd* pWnd = CWnd::FromHandlePermanent((HWND)h);
 			if (pWnd == NULL)
 				return NULL;
-			if (pWnd->IsKindOf(RUNTIME_CLASS(CWebRTMDIFrame))) {
-				pNucleiProxy = (CNucleiProxy*)(CWebRTMDIFrame*)pWnd;
-			}
+			//if (pWnd->IsKindOf(RUNTIME_CLASS(CWebRTMDIFrame))) {
+			//	pNucleiProxy = (CNucleiProxy*)(CWebRTMDIFrame*)pWnd;
+			//}
 			if (pNucleiProxy)
 				pNucleiProxy->m_bAutoDelete = false;
 		}
@@ -2756,112 +2820,101 @@ namespace CommonUniverse {
 		return false;
 	};
 
-	IMPLEMENT_DYNCREATE(CWebRTMDIFrame, CMDIFrameWndEx)
-
-	BEGIN_MESSAGE_MAP(CWebRTMDIFrame, CMDIFrameWndEx)
-	END_MESSAGE_MAP()
-
-	// BOOL CWebRTMDIFrame::OnCommand(WPARAM wParam, LPARAM lParam)
-	//{
-	//	HWND hWndCtrl = (HWND)lParam;
-	//	UINT nID = LOWORD(wParam);
-	//	CFrameWnd* pFrameWnd = this;
-	//	ENSURE_VALID(pFrameWnd);
-	//	if (pFrameWnd->m_bHelpMode && hWndCtrl == NULL &&
-	//		nID != ID_HELP && nID != ID_DEFAULT_HELP && nID !=
-	// ID_CONTEXT_HELP)
-	//	{
-	//		// route as help
-	//		if (!SendMessage(WM_COMMANDHELP, 0, HID_BASE_COMMAND + nID))
-	//			SendMessage(WM_COMMAND, ID_DEFAULT_HELP);
-	//		return TRUE;
-	//	}
-
-	//	// route as normal command
-	//	return CMDIFrameWndEx::OnCommand(wParam, lParam);
-	//}
-
-	LRESULT CWebRTMDIFrame::WindowProc(UINT message, WPARAM wp, LPARAM lp) {
-		switch (message) {
-		case WM_NCACTIVATE: {
-			CMFCRibbonBar* pBar = GetRibbonBar();
-			if (pBar && ::IsWindow(pBar->m_hWnd) == NULL)
-				return CMDIFrameWnd::WindowProc(message, wp, lp);
-			return CMDIFrameWndEx::WindowProc(message, wp, lp);
-		} break;
-		case WM_QUERYAPPPROXY: {
-			if (lp) {
-				switch (lp) {
-				case 20210214: {
-					if (bAdjustClient) {
-						bAdjustClient = false;
-						CRect rc = m_dockManager.GetClientAreaBounds();
-						::SendMessage(m_hWndMDIClient, WM_QUERYAPPPROXY,
-							(WPARAM)(LPRECT)rc, 19651965);
-						m_wndClientArea.CalcWindowRectForMDITabbedGroups(rc, 0);
-					}
-				} break;
-				case 20210215: {
-					bAdjustClient = false;
-					CRect rc = m_dockManager.GetClientAreaBounds();
-					::SendMessage(m_hWndMDIClient, WM_QUERYAPPPROXY, (WPARAM)(LPRECT)rc,
-						19651965);
-					m_wndClientArea.CalcWindowRectForMDITabbedGroups(rc, 0);
-				} break;
-				case 19651965:
-					RecalcLayout();
-					break;
-				case 19631992:
-					AfxGetApp()->m_pMainWnd = this;
-					break;
-				case 19921989:
-					if (wp) {
-						LPRECT lpRC = (LPRECT)wp;
-						*lpRC = m_dockManager.GetClientAreaBounds();
-						return lp;
-					}
-					break;
-				}
+	HWND CAIGCWinAppEx::GetDockablePane(HWND hFrame, int nID) {
+		CWnd* pWnd = CWnd::FromHandlePermanent(hFrame);
+		if (pWnd) {
+			if (pWnd->IsKindOf(RUNTIME_CLASS(CFrameWndEx))) {
+				CFrameWndEx* pFrame = (CFrameWndEx*)pWnd;
+				CBasePane* pPane = pFrame->GetPane(nID);
+				if (pPane)
+					return pPane->m_hWnd;
 			}
-			return CMDIFrameWndEx::WindowProc(message, wp, lp);
-		} break;
+			if (pWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
+				CMDIFrameWndEx* pFrame = (CMDIFrameWndEx*)pWnd;
+				CBasePane* pPane = pFrame->GetPane(nID);
+				if (pPane)
+					return pPane->m_hWnd;
+			}
 		}
-		return CMDIFrameWndEx::WindowProc(message, wp, lp);
+		return NULL;
 	}
 
-	void CWebRTMDIFrame::AdjustClientArea() {
-		if (bAdjustClient == false) {
-			bAdjustClient = true;
-			::PostMessage(m_hWnd, WM_QUERYAPPPROXY, 0, 20210214);
+	LPARAM CAIGCWinAppEx::OnQueryProxy(HWND hMainWnd, UINT message, WPARAM wp, LPARAM lp) {
+		if (m_pMainWnd && m_hMainWnd == hMainWnd)
+		{
+			CMDIFrameWndEx* pMainWnd = (CMDIFrameWndEx*)m_pMainWnd;
+			CAIGCWinAppEx* pAppEx = (CAIGCWinAppEx*)g_pAppBase;
+			switch (message) {
+				//case WM_NCACTIVATE: {
+				//	CMFCRibbonBar* pBar = pMainWnd->GetRibbonBar();
+				//	if (pBar && ::IsWindow(pBar->m_hWnd) == NULL)
+				//		return ;
+				//	return CMDIFrameWndEx::WindowProc(message, wp, lp);
+				//} break;
+			case WM_QUERYAPPPROXY: {
+				if (!pAppEx->m_pDockingManager) {
+					pAppEx->m_pDockingManager = pAppEx->GetDockingManager(pAppEx->m_pMainWnd);
+					if (pAppEx->m_pDockingManager) {
+						HWND hClient = ::GetDlgItem(pAppEx->m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
+						if (hClient)
+						{
+							CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
+							if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
+								pAppEx->m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
+							}
+						}
+					}
+				}
+
+				if (lp && pAppEx->m_pDockingManager) {
+					switch (lp) {
+					case 20210214: {
+						if (bAdjustClient) {
+							bAdjustClient = false;
+							CRect rc = pAppEx->m_pDockingManager->GetClientAreaBounds();
+							if (pAppEx->m_pMDIClientAreaWnd) {
+								::SendMessage(pMainWnd->m_hWndMDIClient, WM_QUERYAPPPROXY,
+									(WPARAM)(LPRECT)rc, 19651965);
+								pAppEx->m_pMDIClientAreaWnd->CalcWindowRectForMDITabbedGroups(rc, 0);
+							}
+						}
+					} break;
+					case 20210215: {
+						bAdjustClient = false;
+						if (pAppEx->m_pDockingManager) {
+							if (pAppEx->m_pMDIClientAreaWnd) {
+								CRect rc = pAppEx->m_pDockingManager->GetClientAreaBounds();
+								::SendMessage(pMainWnd->m_hWndMDIClient, WM_QUERYAPPPROXY, (WPARAM)(LPRECT)rc,
+									19651965);
+								pAppEx->m_pMDIClientAreaWnd->CalcWindowRectForMDITabbedGroups(rc, 0);
+							}
+						}
+					} break;
+					case 19651965:
+					{
+						pMainWnd->RecalcLayout();
+						if (bAdjustClient == false) {
+							bAdjustClient = true;
+							::PostMessage(pMainWnd->m_hWnd, WM_QUERYAPPPROXY, 0, 20210214);
+						}
+					}
+					break;
+					case 19631992:
+						pAppEx->m_pMainWnd = m_pMainWnd;
+						break;
+					case 19921989:
+						if (wp) {
+							LPRECT lpRC = (LPRECT)wp;
+							*lpRC = pAppEx->m_pDockingManager->GetClientAreaBounds();
+							return lp;
+						}
+						break;
+					}
+				}
+			} break;
+			}
 		}
-		CMDIFrameWndEx::AdjustClientArea();
-	}
-
-	void CWebRTMDIFrame::OnTabChange(IXobj* sender, LONG ActivePage, LONG OldPage) {
-		__int64 h = 0;
-		sender->get_Handle(&h);
-		IXobj* pActiveNode = nullptr;
-		sender->GetXobj(0, ActivePage, &pActiveNode);
-		CComBSTR bstrName("");
-		pActiveNode->get_Name(&bstrName);
-		CComBSTR bstrName2("");
-		pActiveNode->get_NameAtWindowPage(&bstrName2);
-	}
-
-	void CWebRTMDIFrame::OnClrControlCreated(IXobj* Node,
-		IDispatch* Ctrl,
-		CString CtrlName,
-		HWND CtrlHandle) {
-		CComBSTR bstrName("");
-		Node->get_Name(&bstrName);
-		CComBSTR bstrName2("");
-		Node->get_NameAtWindowPage(&bstrName2);
-	}
-
-	BOOL CWebRTMDIFrame::OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) {
-		if (pMenuPopup == nullptr || ::IsWindow(pMenuPopup->m_hWnd) == false)
-			return false;
-		return CMDIFrameWndEx::OnShowPopupMenu(pMenuPopup);
+		return 0;
 	}
 #else
 	class CWebRTProxy : public IWebRTDelegate {
@@ -3261,7 +3314,7 @@ namespace CommonUniverse {
 }  // namespace CommonUniverse
 
 #ifdef WebRTDefault
-#ifndef CMDIFrameWndEx
+#ifndef CWinApp
 #ifndef _WINDLL
 #define CWinApp CAIGCWinApp
 #else
@@ -3269,7 +3322,6 @@ namespace CommonUniverse {
 #endif // !_WINDLL
 
 #define CWinAppEx CAIGCWinAppEx
-#define CMDIFrameWndEx CWebRTMDIFrame
-#endif // !CMDIFrameWndEx
+#endif // !CWinApp
 #endif
 
