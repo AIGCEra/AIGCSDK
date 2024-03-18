@@ -14,7 +14,7 @@
 // See TangramMFC.cpp for the implementation of this class
 //
 
-class CTangramMFCApp : public CWinAppEx
+class CTangramMFCApp : public CAIGCWinAppEx
 {
 public:
 	CTangramMFCApp() noexcept;

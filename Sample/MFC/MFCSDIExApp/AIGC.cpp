@@ -1068,9 +1068,9 @@ namespace CommonUniverse {
 
 	CAIGCWinApp::~CAIGCWinApp() {
 		TRACE(_T("\n**********************delete CAIGCWinApp**********************\n"));
-		if (m_pSpaceTelescopeImpl) {
-			m_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
-			m_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
+		if (g_pSpaceTelescopeImpl) {
+			g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
+			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
 		}
 		CMFCVisualManager* pCMFCVisualManager = CMFCVisualManager::GetInstance();
 		if (pCMFCVisualManager) {
@@ -1252,13 +1252,13 @@ namespace CommonUniverse {
 			}
 			GetWebRTImpl _pWebRTImplFunction;
 			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
-			g_pSpaceTelescopeImpl = m_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
 			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hModule2;
 			if (!afxContextIsDLL) {
 				m_strProviderID += _T("host");
 				m_strProviderID.MakeLower();
 
-				m_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+				g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
 				g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
 					static_cast<IUniverseAppProxy*>(this));
 				g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
@@ -1266,9 +1266,9 @@ namespace CommonUniverse {
 				if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
 					g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
 					::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
-						(WPARAM)m_pSpaceTelescopeImpl->m_pWebRTDelegate,
+						(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
 						g_pSpaceTelescopeImpl->m_nAppType);
-				m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
 			else {
 				strID.Trim();
@@ -1288,7 +1288,7 @@ namespace CommonUniverse {
 					g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
 						static_cast<IWindowProvider*>(this));
 				}
-				m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
 		}
 		return true;
@@ -1730,14 +1730,14 @@ namespace CommonUniverse {
 			(::PathFileExists(CString(m_pszExeName) + _T(".html")) == false);
 		if (bWin32)
 			return true;
-		if (m_pSpaceTelescopeImpl) {
-			switch (m_pSpaceTelescopeImpl->m_nAppType) {
+		if (g_pSpaceTelescopeImpl) {
+			switch (g_pSpaceTelescopeImpl->m_nAppType) {
 			case APP_WIN32:
 				return true;
 				break;
 			case APP_BROWSER:
 			case APP_BROWSER_ECLIPSE: {
-				if (m_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER_ECLIPSE) {
+				if (g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER_ECLIPSE) {
 #ifdef _AFXDLL
 #ifdef _DEBUG
 					::MessageBox(NULL,
@@ -1749,7 +1749,7 @@ namespace CommonUniverse {
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
 				}
-				m_pSpaceTelescopeImpl->m_hMainWnd = NULL;
+				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
 					hModule = ::LoadLibrary(L"AIGCAgent.dll");
@@ -1772,13 +1772,13 @@ namespace CommonUniverse {
 					_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
 					if (_pInitAppFunction != NULL) {
 						m_bBuiltInBrowser = true;
-						_pInitAppFunction(bCrashReporting, m_pSpaceTelescopeImpl->m_pWebRTDelegate);
+						_pInitAppFunction(bCrashReporting, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
 						return false;
 					}
 				}
 			} break;
 			case APP_ECLIPSE:
-				if (g_pWebRT && !m_pSpaceTelescopeImpl->m_bIsEclipseInit) {
+				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
@@ -1966,9 +1966,9 @@ namespace CommonUniverse {
 	}
 
 	CAIGCWinAppEx::~CAIGCWinAppEx() {
-		if (m_pSpaceTelescopeImpl) {
-			m_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
-			m_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
+		if (g_pSpaceTelescopeImpl) {
+			g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
+			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
 		}
 	}
 
@@ -2141,14 +2141,14 @@ namespace CommonUniverse {
 			}
 			GetWebRTImpl _pWebRTImplFunction;
 			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
-			g_pSpaceTelescopeImpl = m_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
 			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hModule2;
 
 			if (!afxContextIsDLL) {
 				m_strProviderID += _T("host");
 				m_strProviderID.MakeLower();
 
-				m_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+				g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
 				g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
 					static_cast<IUniverseAppProxy*>(this));
 				g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
@@ -2156,9 +2156,9 @@ namespace CommonUniverse {
 				if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
 					g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
 					::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
-						(WPARAM)m_pSpaceTelescopeImpl->m_pWebRTDelegate,
+						(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
 						g_pSpaceTelescopeImpl->m_nAppType);
-				m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
 			else {
 				strID.Trim();
@@ -2175,7 +2175,7 @@ namespace CommonUniverse {
 					g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
 						static_cast<IWindowProvider*>(this));
 				}
-				m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
 		}
 		return true;
@@ -2754,14 +2754,14 @@ namespace CommonUniverse {
 			(::PathFileExists(CString(m_pszExeName) + _T(".html")) == false);
 		if (bWin32)
 			return true;
-		if (m_pSpaceTelescopeImpl) {
-			switch (m_pSpaceTelescopeImpl->m_nAppType) {
+		if (g_pSpaceTelescopeImpl) {
+			switch (g_pSpaceTelescopeImpl->m_nAppType) {
 			case APP_WIN32:
 				return true;
 				break;
 			case APP_BROWSER:
 			case APP_BROWSER_ECLIPSE: {
-				if (m_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER_ECLIPSE) {
+				if (g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER_ECLIPSE) {
 #ifdef _AFXDLL
 #ifdef _DEBUG
 					::MessageBox(NULL,
@@ -2773,7 +2773,7 @@ namespace CommonUniverse {
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
 				}
-				m_pSpaceTelescopeImpl->m_hMainWnd = NULL;
+				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
 					hModule = ::LoadLibrary(L"AIGCAgent.dll");
@@ -2783,13 +2783,13 @@ namespace CommonUniverse {
 					_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
 					if (_pInitAppFunction != NULL) {
 						m_bBuiltInBrowser = true;
-						_pInitAppFunction(bCrashReporting, m_pSpaceTelescopeImpl->m_pWebRTDelegate);
+						_pInitAppFunction(bCrashReporting, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
 						return false;
 					}
 				}
 			} break;
 			case APP_ECLIPSE:
-				if (g_pWebRT && !m_pSpaceTelescopeImpl->m_bIsEclipseInit) {
+				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
@@ -2839,82 +2839,17 @@ namespace CommonUniverse {
 		return NULL;
 	}
 
-	LPARAM CAIGCWinAppEx::OnQueryProxy(HWND hMainWnd, UINT message, WPARAM wp, LPARAM lp) {
-		if (m_pMainWnd && m_hMainWnd == hMainWnd)
-		{
-			CMDIFrameWndEx* pMainWnd = (CMDIFrameWndEx*)m_pMainWnd;
-			CAIGCWinAppEx* pAppEx = (CAIGCWinAppEx*)g_pAppBase;
-			switch (message) {
-				//case WM_NCACTIVATE: {
-				//	CMFCRibbonBar* pBar = pMainWnd->GetRibbonBar();
-				//	if (pBar && ::IsWindow(pBar->m_hWnd) == NULL)
-				//		return ;
-				//	return CMDIFrameWndEx::WindowProc(message, wp, lp);
-				//} break;
-			case WM_QUERYAPPPROXY: {
-				if (!pAppEx->m_pDockingManager) {
-					pAppEx->m_pDockingManager = pAppEx->GetDockingManager(pAppEx->m_pMainWnd);
-					if (pAppEx->m_pDockingManager) {
-						HWND hClient = ::GetDlgItem(pAppEx->m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
-						if (hClient)
-						{
-							CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
-							if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
-								pAppEx->m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
-							}
-						}
-					}
-				}
+	RECT CAIGCWinAppEx::GetClientAreaBounds()
+	{
+		if (m_pDockingManager)
+			return m_pDockingManager->GetClientAreaBounds();
+		return CRect(0, 0, 0, 0);
+	}
 
-				if (lp && pAppEx->m_pDockingManager) {
-					switch (lp) {
-					case 20210214: {
-						if (bAdjustClient) {
-							bAdjustClient = false;
-							CRect rc = pAppEx->m_pDockingManager->GetClientAreaBounds();
-							if (pAppEx->m_pMDIClientAreaWnd) {
-								::SendMessage(pMainWnd->m_hWndMDIClient, WM_QUERYAPPPROXY,
-									(WPARAM)(LPRECT)rc, 19651965);
-								pAppEx->m_pMDIClientAreaWnd->CalcWindowRectForMDITabbedGroups(rc, 0);
-							}
-						}
-					} break;
-					case 20210215: {
-						bAdjustClient = false;
-						if (pAppEx->m_pDockingManager) {
-							if (pAppEx->m_pMDIClientAreaWnd) {
-								CRect rc = pAppEx->m_pDockingManager->GetClientAreaBounds();
-								::SendMessage(pMainWnd->m_hWndMDIClient, WM_QUERYAPPPROXY, (WPARAM)(LPRECT)rc,
-									19651965);
-								pAppEx->m_pMDIClientAreaWnd->CalcWindowRectForMDITabbedGroups(rc, 0);
-							}
-						}
-					} break;
-					case 19651965:
-					{
-						pMainWnd->RecalcLayout();
-						if (bAdjustClient == false) {
-							bAdjustClient = true;
-							::PostMessage(pMainWnd->m_hWnd, WM_QUERYAPPPROXY, 0, 20210214);
-						}
-					}
-					break;
-					case 19631992:
-						pAppEx->m_pMainWnd = m_pMainWnd;
-						break;
-					case 19921989:
-						if (wp) {
-							LPRECT lpRC = (LPRECT)wp;
-							*lpRC = pAppEx->m_pDockingManager->GetClientAreaBounds();
-							return lp;
-						}
-						break;
-					}
-				}
-			} break;
-			}
-		}
-		return 0;
+	void CAIGCWinAppEx::CalcWindowRectForMDITabbedGroups(LPRECT rc)
+	{
+		if (m_pMDIClientAreaWnd)
+			((CMDIClientAreaWnd*)m_pMDIClientAreaWnd)->CalcWindowRectForMDITabbedGroups(rc, 0);
 	}
 #else
 	class CWebRTProxy : public IWebRTDelegate {
@@ -2990,9 +2925,9 @@ namespace CommonUniverse {
 	}
 
 	CAIGCApp::~CAIGCApp() {
-		if (m_pSpaceTelescopeImpl) {
-			m_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
-			m_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
+		if (g_pSpaceTelescopeImpl) {
+			g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID, nullptr);
+			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, nullptr);
 		}
 	}
 
@@ -3047,14 +2982,14 @@ namespace CommonUniverse {
 			}
 			GetWebRTImpl _pWebRTImplFunction;
 			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
-			g_pSpaceTelescopeImpl = m_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
 			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hModule2;
 
 			m_strProviderID += _T("host");
 			m_strProviderID.MakeLower();
 
-			m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
-			m_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+			g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+			g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
 			g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
 				static_cast<IUniverseAppProxy*>(this));
 			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
@@ -3062,7 +2997,7 @@ namespace CommonUniverse {
 			if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
 				g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
 				::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
-					(WPARAM)m_pSpaceTelescopeImpl->m_pWebRTDelegate,
+					(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
 					g_pSpaceTelescopeImpl->m_nAppType);
 		}
 		return true;
@@ -3108,14 +3043,14 @@ namespace CommonUniverse {
 			(::PathFileExists(m_strExeName + _T(".html")) == false);
 		if (bWin32)
 			return true;
-		if (m_pSpaceTelescopeImpl) {
-			switch (m_pSpaceTelescopeImpl->m_nAppType) {
+		if (g_pSpaceTelescopeImpl) {
+			switch (g_pSpaceTelescopeImpl->m_nAppType) {
 			case APP_WIN32:
 				return true;
 				break;
 			case APP_BROWSER:
 			case APP_BROWSER_ECLIPSE: {
-				m_pSpaceTelescopeImpl->m_hMainWnd = NULL;
+				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
 					hModule = ::LoadLibrary(L"AIGCAgent.dll");
@@ -3138,13 +3073,13 @@ namespace CommonUniverse {
 					_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
 					if (_pInitAppFunction != NULL) {
 						m_bBuiltInBrowser = true;
-						_pInitAppFunction(bCrashReporting, m_pSpaceTelescopeImpl->m_pWebRTDelegate);
+						_pInitAppFunction(bCrashReporting, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
 						return true;
 					}
 				}
 			} break;
 			case APP_ECLIPSE:
-				if (g_pWebRT && !m_pSpaceTelescopeImpl->m_bIsEclipseInit) {
+				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
@@ -3248,14 +3183,14 @@ namespace CommonUniverse {
 			}
 			GetWebRTImpl _pWebRTImplFunction;
 			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
-			g_pSpaceTelescopeImpl = m_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
 			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hModule2;
 
 			m_strProviderID += _T("host");
 			m_strProviderID.MakeLower();
 
-			m_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
-			m_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+			g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+			g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
 			g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
 				static_cast<IUniverseAppProxy*>(this));
 			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
@@ -3263,7 +3198,7 @@ namespace CommonUniverse {
 			if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
 				g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
 				::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
-					(WPARAM)m_pSpaceTelescopeImpl->m_pWebRTDelegate,
+					(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
 					g_pSpaceTelescopeImpl->m_nAppType);
 		}
 		return true;

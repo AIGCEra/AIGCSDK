@@ -1553,6 +1553,7 @@ namespace CommonUniverse
 			m_hClosingFrame = m_hCreatingView = nullptr;
 			m_pvoid = nullptr;
 			m_pCurDocProxy = nullptr;
+			m_pMDIClientAreaWnd = nullptr;
 			m_strProxyName = _T("");
 			m_strProxyID = _T("");
 			m_strClosingFrameID = _T("");
@@ -1585,8 +1586,8 @@ namespace CommonUniverse
 		CString m_strStartOpenFile = _T("");
 
 		void* m_pvoid;
+		void* m_pMDIClientAreaWnd = NULL;
 		CWebRTDocProxy* m_pCurDocProxy;
-		CWebRTImpl* m_pSpaceTelescopeImpl;
 
 		virtual BOOL InitWebRT(void* pVoid) { return TRUE; }
 		virtual BOOL CosmosSaveAllModified() { return TRUE; }
@@ -1646,8 +1647,10 @@ namespace CommonUniverse
 		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo) { return _T(""); }
 		virtual HWND GetFrameWnd(HWND hWnd, int& nType) { return NULL; }
 		virtual void OnCustomizedMainWindowElement(HWND hMainWnd, CString strXml) {}
-		virtual LPARAM OnQueryProxy(HWND hMainWnd, UINT message, WPARAM wp, LPARAM lp) { return 0; }
-		virtual HWND GetDockablePane(HWND hFrame, int nID) { return 0; };
+		virtual HWND GetDockablePane(HWND hFrame, int nID) { return NULL; }
+		virtual HWND GetFrameClientHandle(HWND hFrame, CString strScript) { return NULL; }
+		virtual RECT GetClientAreaBounds() { return RECT{ 0, 0, 0, 0 }; }
+		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc) {}
 	};
 
 	class IWinAppProxyImpl {
@@ -2408,7 +2411,6 @@ namespace CommonUniverse
 		virtual ~CAIGCWinAppEx();
 
 		CDockingManager* m_pDockingManager = NULL;
-		CMDIClientAreaWnd* m_pMDIClientAreaWnd = NULL;
 
 		CString GetDocTemplateID(CDocument* pDoc);
 
@@ -2443,8 +2445,9 @@ namespace CommonUniverse
 		virtual bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
 		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo);
 		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
-		virtual LPARAM OnQueryProxy(HWND hMainWnd, UINT message, WPARAM wp, LPARAM lp);
 		virtual HWND GetDockablePane(HWND hFrame, int nID);
+		virtual RECT GetClientAreaBounds();
+		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc);
 
 		//IWindowProvider:
 		//virtual bool WebRTInit(CString strID);
@@ -2545,20 +2548,3 @@ namespace CommonUniverse
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
 
-#ifdef WebRTDefault
-
-#ifndef CWinApp
-#ifndef _WINDLL
-#define CWinApp CAIGCWinApp
-#else
-#define CWinApp CComponentApp
-#endif // !_WINDLL
-
-#define CWinAppEx CAIGCWinAppEx
-#endif // !CWinApp
-
-#ifndef CAtlExeModuleT
-#define CAtlExeModuleT CAIGCModuleT
-#endif // !CAtlExeModuleT
-
-#endif // WebRTDefault
