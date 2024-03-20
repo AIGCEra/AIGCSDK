@@ -294,10 +294,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 	{
-		if (theProvider.m_hModule == NULL) {
-			theProvider.m_hModule = hModule;
-			theProvider.WebRTInit(_T(""));
-		}
+		theProvider.m_hModule = hModule;
+		theProvider.WebRTInit(_T(""));
 	}
 	break;
 	case DLL_THREAD_ATTACH:

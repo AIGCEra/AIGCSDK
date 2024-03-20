@@ -1,12 +1,5 @@
 #include "AIGC.h"
 
-#ifdef WebRTDefault
-#ifdef CWinApp
-#undef CWinApp
-#undef CWinAppEx
-#endif
-#endif
-
 IWebRT* g_pWebRT = nullptr;
 
 namespace CommonUniverse {
@@ -1840,19 +1833,9 @@ namespace CommonUniverse {
 				TRACE(_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support MFC Share Dll********\r\n\r\n"));
 #endif
 			}
-			strID.Trim();
-			if (strID == _T(""))
-				strID = _T("views");
-			if (m_strProviderID == _T(""))
-			{
-				CString strName = g_pAppBase->m_pszAppName;
-				m_strProviderID = strName + _T(".") + strID;
-			}
-			if (m_strProviderID != _T(""))
-			{
-				m_strProviderID.MakeLower();
-				g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, static_cast<IWindowProvider*>(this));
-			}
+			m_strProviderID = g_pAppBase->m_pszAppName;
+			m_strProviderID.MakeLower();
+			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, static_cast<IWindowProvider*>(this));
 		}
 		return true;
 	}
@@ -3216,9 +3199,6 @@ namespace CommonUniverse {
 	}
 
 	bool CWebRTWindowProviderApp::WebRTInit(CString strID) {
-		strID.Trim();
-		if (strID == _T(""))
-			strID = _T("views");
 		if (g_pSpaceTelescopeImpl == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
 			TCHAR szDriver[MAX_PATH] = { 0 };
@@ -3227,8 +3207,7 @@ namespace CommonUniverse {
 			TCHAR szFile2[MAX_PATH] = { 0 };
 			::GetModuleFileName(m_hModule, m_szBuffer, MAX_PATH);
 			_tsplitpath_s(m_szBuffer, szDriver, szDir, szFile2, szExt);
-			CString strDllName = szFile2;
-			m_strProviderID = strDllName + _T(".") + strID;
+			m_strProviderID = szFile2;
 			HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
 			if (hModule) {
 				typedef CWebRTImpl* (__stdcall* GetWebRTImpl)(IWebRT**);
@@ -3247,16 +3226,3 @@ namespace CommonUniverse {
 	}
 #endif
 }  // namespace CommonUniverse
-
-#ifdef WebRTDefault
-#ifndef CWinApp
-#ifndef _WINDLL
-#define CWinApp CAIGCWinApp
-#else
-#define CWinApp CComponentApp
-#endif // !_WINDLL
-
-#define CWinAppEx CAIGCWinAppEx
-#endif // !CWinApp
-#endif
-
