@@ -34,11 +34,14 @@
 #include <atlstr.h>
 #include <msxml2.h>
 #include <comdef.h>
+#include <ShellScalingApi.h>
 
 #ifdef _AFX
 #include <afxcontrolbars.h>     // MFC support for ribbons and control bars
 #include <afxcview.h>
 #endif
+
+#define WebRTDefault
 
 #define TANGRAM_CONST_OPENFILE 19920612
 #define TANGRAM_CONST_NEWDOC 19631222
@@ -1266,6 +1269,18 @@ namespace CommonUniverse
 		std::map<std::wstring, float> m_mapFloat;
 	} IPCSession;
 
+	class DpiUtil
+	{
+	public:
+		static void SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT dpiAwarenessContext);
+
+	private:
+		static HMODULE GetUser32Module();
+		static HMODULE GetShcoreModule();
+		static PROCESS_DPI_AWARENESS ProcessDpiAwarenessFromDpiAwarenessContext(
+			DPI_AWARENESS_CONTEXT dpiAwarenessContext);
+	};
+
 	class CTangramXmlParse
 	{
 	public:
@@ -1532,11 +1547,13 @@ namespace CommonUniverse
 	class IUniverseAppProxy {
 	public:
 		IUniverseAppProxy() {
+			m_bWebRTInit = TRUE;
 			m_bAutoDelete = TRUE;
 			m_hMainWnd = nullptr;
 			m_hClosingFrame = m_hCreatingView = nullptr;
 			m_pvoid = nullptr;
 			m_pCurDocProxy = nullptr;
+			m_pMDIClientAreaWnd = nullptr;
 			m_strProxyName = _T("");
 			m_strProxyID = _T("");
 			m_strClosingFrameID = _T("");
@@ -1553,6 +1570,7 @@ namespace CommonUniverse
 
 		int m_nShellCmd = -1;
 		int m_nFrameIndex;
+		BOOL m_bWebRTInit;
 		BOOL m_bAutoDelete;
 		BOOL m_bCreatingNewFrame;
 		HWND m_hMainWnd;
@@ -1568,8 +1586,10 @@ namespace CommonUniverse
 		CString m_strStartOpenFile = _T("");
 
 		void* m_pvoid;
+		void* m_pMDIClientAreaWnd = NULL;
 		CWebRTDocProxy* m_pCurDocProxy;
-		CWebRTImpl* m_pSpaceTelescopeImpl;
+
+		RECT m_ClientRect;
 
 		virtual BOOL InitWebRT(void* pVoid) { return TRUE; }
 		virtual BOOL CosmosSaveAllModified() { return TRUE; }
@@ -1629,6 +1649,25 @@ namespace CommonUniverse
 		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo) { return _T(""); }
 		virtual HWND GetFrameWnd(HWND hWnd, int& nType) { return NULL; }
 		virtual void OnCustomizedMainWindowElement(HWND hMainWnd, CString strXml) {}
+		virtual HWND GetDockablePane(HWND hFrame, int nID) { return NULL; }
+		virtual HWND GetFrameClientHandle(HWND hFrame, CString strScript) { return NULL; }
+		virtual RECT GetClientAreaBounds() { return RECT{ 0, 0, 0, 0 }; }
+		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc) {}
+	};
+
+	class ITabClientAreaProxy {
+	public:
+		ITabClientAreaProxy() {}
+		virtual ~ITabClientAreaProxy() {}
+		virtual RECT GetClientAreaBounds() { return RECT{ 0, 0, 0, 0 }; }
+		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc) {}
+	};
+
+	class IWinAppProxyImpl {
+	public:
+		IWinAppProxyImpl() {}
+		virtual ~IWinAppProxyImpl() {}
+		virtual DWORD ExecCmd(CString cmd, CString strInfo, bool setCurrentDirectory) { return 0; }
 	};
 
 	class IWebRTCLRImpl {
@@ -1717,6 +1756,8 @@ namespace CommonUniverse
 		virtual void OnCloudMsgReceived(CSession*) {}
 		virtual void ConnectXobjToWebPage(IXobj*, bool) {}
 		virtual void ProcessFormWorkState(HWND hForm, int nState) {}
+		virtual int GetCLRObjType(CString bstrObjID) { return 1000; }
+		virtual void ResetMenuStripState(HWND hForm) {}
 	};
 
 	class CWebRTImpl {
@@ -1737,7 +1778,7 @@ namespace CommonUniverse
 			m_pWebRTAppProxy = nullptr;
 			m_pUniverseAppProxy = nullptr;
 			m_pCurMDIChildFormInfo = nullptr;
-			m_bEnableHardwareAcceleration = true;
+			m_bEnableHardwareAcceleration = false;
 			m_strAppID = _T("");
 			m_strNtpXml = _T("");
 			m_strWebRTVer = _T("");
@@ -1745,86 +1786,91 @@ namespace CommonUniverse
 
 		virtual ~CWebRTImpl() {}
 
-		bool m_bHostMsgLoop;
-		bool m_bChromeNeedClosed;
-		bool m_bCreatingDevTool;
-		bool m_bOMNIBOXPOPUPVISIBLE;
+		bool m_bHostMsgLoop = false;
+		bool m_bChromeNeedClosed = false;
+		bool m_bCreatingDevTool = false;
+		bool m_bOMNIBOXPOPUPVISIBLE = false;
 		bool m_b64bitSystem = false;
 		bool m_bOfficeApp = false;
 		bool m_bEclipse = false;
 		bool m_bIsDlgApp = false;
 		bool m_bIsNoWebRT = false;
-		bool m_bCanClose;
-		bool m_bWinFormActived;
-		bool m_bEnableProcessFormTabKey;
-		bool m_bDeleteNuclei;
+		bool m_bCanClose = false;
+		bool m_bWinFormActived = false;
+		bool m_bEnableProcessFormTabKey = false;
+		bool m_bDeleteNuclei = false;
 		bool m_bIsSupportCrashReporting = false;
 		bool m_bIsEclipseInit = false;
 		bool m_bIsCreatingWPFCtrl = false;
 		bool m_bEnableHardwareAcceleration;
 
-		DWORD m_dwThreadID;
-		DWORD m_nAppType;
+		DWORD m_dwThreadID = 0;
+		DWORD m_nAppType = 0;
 		HWND m_hFirstView = nullptr;
-		HWND m_hActiveWnd;
-		HWND m_hEclipseHideWnd;
-		HWND m_hMainWnd;
-		HWND m_hCosmosWnd;
-		HWND m_hFormNodeWnd;
-		HWND m_hParent;
-		HWND m_hHostBrowserWnd;
+		HWND m_hActiveWnd = NULL;
+		HWND m_hEclipseHideWnd = NULL;
+		HWND m_hMainWnd = NULL;
+		HWND m_hCosmosWnd = NULL;
+		HWND m_hFormNodeWnd = NULL;
+		HWND m_hParent = NULL;
+		HWND m_hHostBrowserWnd = NULL;
 		HWND m_hTempBrowserWnd = NULL;
 		HWND m_hWaitTabWebPageWnd = NULL;
 
-		HMODULE m_hWebRTProxyModel;
+		HMODULE m_hWebRTProxyModel = NULL;
 
-		HICON m_hLargeIcon;
-		HICON m_hSmallIcon;
+		HICON m_hLargeIcon = NULL;
+		HICON m_hSmallIcon = NULL;
 
 		CString m_strAppID = _T("");
-		CString m_strAppKey;
-		CString m_strAppName;
-		CString m_strExeName;
-		CString m_strWebRTVer;
-		CString m_strAppPath;
-		CString m_strConfigDataFile;
-		CString m_strAppDataPath;
-		CString m_strCurrentAppID;
-		CString m_strProgramFilePath;
-		CString m_strAppCommonDocPath;
-		CString m_strStartView;
-		CString m_strNtpXml;
-		CString m_strAppXml;
-		CString m_strMainWndXml;
-		CString m_strDefaultWorkBenchXml;
+		CString m_strAppKey = _T("");
+		CString m_strAppName = _T("");
+		CString m_strExeName = _T("");
+		CString m_strWebRTVer = _T("");
+		CString m_strAppPath = _T("");
+		CString m_strConfigDataFile = _T("");
+		CString m_strAppDataPath = _T("");
+		CString m_strCurrentAppID = _T("");
+		CString m_strProgramFilePath = _T("");
+		CString m_strAppCommonDocPath = _T("");
+		CString m_strStartView = _T("");
+		CString m_strNtpXml = _T("");
+		CString m_strAppXml = _T("");
+		CString m_strCosmosDllMD5 = _T("");
+		CString m_strUniverseDllMD5 = _T("");
+		CString m_strMainWndXml = _T("");
+		CString m_strDefaultWorkBenchXml = _T("");
 
-		CString m_strConfigFile;
+		CString m_strConfigFile = _T("");
 
-		CString m_strCurrentKey;
-		CString m_strWorkBenchStrs;
+		CString m_strCurrentKey = _T("");
+		CString m_strWorkBenchStrs = _T("");
 		CString m_strStartupURL = _T("");
-		CString m_strCurrentEclipsePagePath;
-		CString m_strDefaultXml;
+		CString m_strCurrentEclipsePagePath = _T("");
+		CString m_strDefaultXml = _T("");
 
-		CStringA m_strBridgeJavaClass;
-		CString m_strStartJarPath;
+		CStringA m_strBridgeJavaClass = "";
+		CString m_strStartJarPath = _T("");
 
-		CSession* m_pSession;
-		IPCMsg* m_pCurrentIPCMsg;
-		IWebRTCLRImpl* m_pCLRProxy;
-		IUniverseAppProxy* m_pActiveAppProxy;
-		IUniverseAppProxy* m_pUniverseAppProxy;
-		IUniverseAppProxy* m_pWebRTAppProxy;
-		CMDIChildFormInfo* m_pCurMDIChildFormInfo;
+		CSession* m_pSession = NULL;
+		IPCMsg* m_pCurrentIPCMsg = NULL;
+		IWebRTCLRImpl* m_pCLRProxy = NULL;
+		IUniverseAppProxy* m_pActiveAppProxy = NULL;
+		IUniverseAppProxy* m_pUniverseAppProxy = NULL;
+		IUniverseAppProxy* m_pWebRTAppProxy = NULL;
+		CMDIChildFormInfo* m_pCurMDIChildFormInfo = NULL;
 		IWebRTExtender* m_pExtender = nullptr;
 		IContainer* m_pCreatingWindow = nullptr;
 		CWebViewImpl* m_pMainWebPageImpl = nullptr;
 		IWebRTDelegate* m_pWebRTDelegate = nullptr;
 		CChromeBrowserBase* m_pActiveBrowser = nullptr;
+		IWinAppProxyImpl* m_pWinAppProxyImpl = nullptr;
 		CWebRTBrowserFactory* m_pBrowserFactory = nullptr;
+		CWebRTMainDllLoader* m_pWebRTMainDllLoader = nullptr;
 		CosmosAppMessagePumpForUI* m_pMessagePumpForUI = nullptr;
 		OmniboxViewViewsProxy* m_pCreatingOmniboxViewViews = nullptr;
 		CChromeRenderFrameHost* m_pCreatingChromeRenderFrameHostBase = nullptr;
+
 
 		map<HWND, CString> m_mapUIData;
 		map<HWND, CString> m_mapCtrlTag;
@@ -1927,6 +1973,10 @@ namespace CommonUniverse
 		virtual void OnNewSurfaceWnd(HWND hWnd, HWND hSurfaceWnd) {}
 		virtual void OnExitMainMsgPump() {}
 		virtual void OnBatteryChanged() {}
+		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
+		virtual CString GetFileMD5(CString strSRC) { return _T(""); }
+		virtual HWND GetMainWnd(int nChildID, CString strAppProxy) { return NULL; }
+		virtual void AttachMDIChild(HWND hFrame, HWND hMDIChild, HWND hChildClient) { }
 	};
 
 	class IWindowProvider {
@@ -2364,77 +2414,58 @@ namespace CommonUniverse
 
 	class CAIGCWinAppEx :
 		public CWinAppEx,
+		public CGlobalUtils,
 		public IUniverseAppProxy,
 		public IWindowProvider {
 	public:
 		CAIGCWinAppEx();
 		virtual ~CAIGCWinAppEx();
+
+		CDockingManager* m_pDockingManager = NULL;
+
 		CString GetDocTemplateID(CDocument* pDoc);
 
 		//IWindowProvider:
 		virtual bool WebRTInit(CString strID);
 
 	private:
+		bool bAdjustClient = false;
 		bool m_bBuiltInBrowser = false;
 		bool m_bCrashReporting = false;
 		bool m_bNoDefaultMainWnd = false;
 		map<CView*, CDocument*> m_mapViewDoc;
 		BOOL IsBrowserModel(bool bCrashReporting);
 		bool ProcessAppType(bool bCrashReporting);
-		virtual int Run();
-		virtual BOOL InitApplication();
-		virtual HWND GetActivePopupMenu(HWND hWnd);
+		int Run();
+		BOOL InitApplication();
+		HWND GetActivePopupMenu(HWND hWnd);
+		void AttachCDockablePane(CDockablePane* pDockablePane, WebRTFrameWndInfo* pWebRTFrameWndInfo);
 
 		//IUniverseAppProxy:
-		virtual void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
-		virtual void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
-		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
-		virtual CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
-		virtual CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
-		virtual void OnIPCMsg(CWebViewImpl* pWebViewImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
-		virtual void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
-		virtual void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID);
-		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd);
-		virtual CString QueryWndClassName(HWND hWnd);
-		virtual CString QueryDocType(HWND hWnd);
-		virtual bool EclipseAppInit() { return false; };
-		virtual bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
-		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo);
-		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
+		void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
+		void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
+		CXobjProxy* OnXobjInit(IXobj* pNewNode);
+		CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
+		CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
+		void OnIPCMsg(CWebViewImpl* pWebViewImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
+		void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
+		void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID);
+		HWND QueryWndInfo(QueryType nType, HWND hWnd);
+		CString QueryWndClassName(HWND hWnd);
+		CString QueryDocType(HWND hWnd);
+		bool EclipseAppInit() { return false; };
+		bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
+		CString QueryParentInfo(HWND hPWnd, void* lpInfo);
+		HWND GetFrameWnd(HWND hWnd, int& nType);
+		HWND GetDockablePane(HWND hFrame, int nID);
+		RECT GetClientAreaBounds();
+		void CalcWindowRectForMDITabbedGroups(LPRECT rc);
 
 		//IWindowProvider:
 		//virtual bool WebRTInit(CString strID);
 		virtual CString GetNames();
 		virtual CString GetTags(CString strName);
 		virtual HWND Create(HWND hParentWnd, IXobj* pGrid);
-	};
-
-	class CWebRTMDIFrame :
-		public CMDIFrameWndEx,
-		public CNucleiProxy
-	{
-	public:
-		CWebRTMDIFrame() {};
-		virtual ~CWebRTMDIFrame() {};
-
-		DECLARE_DYNCREATE(CWebRTMDIFrame)
-
-			virtual BOOL OnShowPopupMenu(CMFCPopupMenu* /*pMenuPopup*/);
-		//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-		virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
-
-	protected:
-		DECLARE_MESSAGE_MAP()
-
-	private:
-		bool bAdjustClient = false;
-
-		void AdjustClientArea();
-		void OnTabChange(IXobj* sender, LONG ActivePage, LONG OldPage);
-		void OnClrControlCreated(IXobj* Node, IDispatch* Ctrl, CString CtrlName, HWND CtrlHandle);
-		void OnEvent(IDispatch* sender, IDispatch* EventArg) {};
-		void OnControlNotify(IXobj* sender, LONG NotifyCode, LONG CtrlID, HWND CtrlHandle, CString CtrlClassName) {};
-		void OnHubbleEvent(IWebRTEventObj* NotifyObj) {};
 	};
 #else
 	class CAIGCApp :
@@ -2482,6 +2513,18 @@ namespace CommonUniverse
 		virtual IDispatch* CreateCtrl(CString strCtrlID) { return NULL; }
 	};
 
+	class CAIGCAppEx :
+		public CAIGCApp
+	{
+	public:
+		CAIGCAppEx();
+		virtual ~CAIGCAppEx();
+
+	private:
+		static LRESULT CALLBACK CBTProc(int nCode, WPARAM wParam, LPARAM lParam);
+		virtual bool WebRTInit(CString strID);
+	};
+
 	class CWebRTWindowProviderApp :
 		public IWindowProvider {
 	public:
@@ -2517,17 +2560,3 @@ namespace CommonUniverse
 using namespace CommonUniverse;
 extern IWebRT* g_pWebRT;
 
-#ifndef CMDIFrameWndEx
-#ifndef _WINDLL
-#define CWinApp CAIGCWinApp
-#else
-#define CWinApp CComponentApp
-#endif // !_WINDLL
-
-#define CWinAppEx CAIGCWinAppEx
-#define CMDIFrameWndEx CWebRTMDIFrame
-#endif // !CMDIFrameWndEx
-
-#ifndef CAtlExeModuleT
-#define CAtlExeModuleT CAIGCModuleT
-#endif // !CAtlExeModuleT

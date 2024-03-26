@@ -1589,6 +1589,8 @@ namespace CommonUniverse
 		void* m_pMDIClientAreaWnd = NULL;
 		CWebRTDocProxy* m_pCurDocProxy;
 
+		RECT m_ClientRect;
+
 		virtual BOOL InitWebRT(void* pVoid) { return TRUE; }
 		virtual BOOL CosmosSaveAllModified() { return TRUE; }
 
@@ -1653,11 +1655,19 @@ namespace CommonUniverse
 		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc) {}
 	};
 
+	class ITabClientAreaProxy {
+	public:
+		ITabClientAreaProxy() {}
+		virtual ~ITabClientAreaProxy() {}
+		virtual RECT GetClientAreaBounds() { return RECT{ 0, 0, 0, 0 }; }
+		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc) {}
+	};
+
 	class IWinAppProxyImpl {
 	public:
 		IWinAppProxyImpl() {}
 		virtual ~IWinAppProxyImpl() {}
-		virtual DWORD ExecCmd(const CString cmd, const BOOL setCurrentDirectory) { return 0; }
+		virtual DWORD ExecCmd(CString cmd, CString strInfo, bool setCurrentDirectory) { return 0; }
 	};
 
 	class IWebRTCLRImpl {
@@ -1747,6 +1757,7 @@ namespace CommonUniverse
 		virtual void ConnectXobjToWebPage(IXobj*, bool) {}
 		virtual void ProcessFormWorkState(HWND hForm, int nState) {}
 		virtual int GetCLRObjType(CString bstrObjID) { return 1000; }
+		virtual void ResetMenuStripState(HWND hForm) {}
 	};
 
 	class CWebRTImpl {
@@ -1965,7 +1976,7 @@ namespace CommonUniverse
 		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
 		virtual CString GetFileMD5(CString strSRC) { return _T(""); }
 		virtual HWND GetMainWnd(int nChildID, CString strAppProxy) { return NULL; }
-		virtual void DockablePaneCreated(HWND hFrame, HWND hDockBar) { }
+		virtual void AttachMDIChild(HWND hFrame, HWND hMDIChild, HWND hChildClient) { }
 	};
 
 	class IWindowProvider {
@@ -2425,29 +2436,30 @@ namespace CommonUniverse
 		map<CView*, CDocument*> m_mapViewDoc;
 		BOOL IsBrowserModel(bool bCrashReporting);
 		bool ProcessAppType(bool bCrashReporting);
-		virtual int Run();
-		virtual BOOL InitApplication();
-		virtual HWND GetActivePopupMenu(HWND hWnd);
+		int Run();
+		BOOL InitApplication();
+		HWND GetActivePopupMenu(HWND hWnd);
+		void AttachCDockablePane(CDockablePane* pDockablePane, WebRTFrameWndInfo* pWebRTFrameWndInfo);
 
 		//IUniverseAppProxy:
-		virtual void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
-		virtual void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
-		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
-		virtual CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
-		virtual CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
-		virtual void OnIPCMsg(CWebViewImpl* pWebViewImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
-		virtual void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
-		virtual void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID);
-		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd);
-		virtual CString QueryWndClassName(HWND hWnd);
-		virtual CString QueryDocType(HWND hWnd);
-		virtual bool EclipseAppInit() { return false; };
-		virtual bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
-		virtual CString QueryParentInfo(HWND hPWnd, void* lpInfo);
-		virtual HWND GetFrameWnd(HWND hWnd, int& nType);
-		virtual HWND GetDockablePane(HWND hFrame, int nID);
-		virtual RECT GetClientAreaBounds();
-		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc);
+		void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
+		void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
+		CXobjProxy* OnXobjInit(IXobj* pNewNode);
+		CNucleusProxy* OnNucleusCreated(INucleus* pNewFrame);
+		CNucleiProxy* OnNucleiCreated(INuclei* pNewContentLoaderManager);
+		void OnIPCMsg(CWebViewImpl* pWebViewImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5);
+		void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
+		void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID);
+		HWND QueryWndInfo(QueryType nType, HWND hWnd);
+		CString QueryWndClassName(HWND hWnd);
+		CString QueryDocType(HWND hWnd);
+		bool EclipseAppInit() { return false; };
+		bool SetFrameCaption(HWND hWnd, CString strCaption, CString strAppName);
+		CString QueryParentInfo(HWND hPWnd, void* lpInfo);
+		HWND GetFrameWnd(HWND hWnd, int& nType);
+		HWND GetDockablePane(HWND hFrame, int nID);
+		RECT GetClientAreaBounds();
+		void CalcWindowRectForMDITabbedGroups(LPRECT rc);
 
 		//IWindowProvider:
 		//virtual bool WebRTInit(CString strID);

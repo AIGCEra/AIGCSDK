@@ -1,12 +1,5 @@
 #include "AIGC.h"
 
-#ifdef WebRTDefault
-#ifdef CWinApp
-#undef CWinApp
-#undef CWinAppEx
-#endif
-#endif
-
 IWebRT* g_pWebRT = nullptr;
 
 namespace CommonUniverse {
@@ -1840,19 +1833,9 @@ namespace CommonUniverse {
 				TRACE(_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support MFC Share Dll********\r\n\r\n"));
 #endif
 			}
-			strID.Trim();
-			if (strID == _T(""))
-				strID = _T("views");
-			if (m_strProviderID == _T(""))
-			{
-				CString strName = g_pAppBase->m_pszAppName;
-				m_strProviderID = strName + _T(".") + strID;
-			}
-			if (m_strProviderID != _T(""))
-			{
-				m_strProviderID.MakeLower();
-				g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, static_cast<IWindowProvider*>(this));
-			}
+			m_strProviderID = g_pAppBase->m_pszAppName;
+			m_strProviderID.MakeLower();
+			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, static_cast<IWindowProvider*>(this));
 		}
 		return true;
 	}
@@ -2230,141 +2213,87 @@ namespace CommonUniverse {
 		return NULL;
 	}
 
-	HWND CAIGCWinAppEx::QueryWndInfo(QueryType nType, HWND hWnd) {
-		if (m_pMainWnd == NULL) {
-			m_pMainWnd = CWnd::FromHandlePermanent(g_pSpaceTelescopeImpl->m_hMainWnd);
-			m_hMainWnd = g_pSpaceTelescopeImpl->m_hMainWnd;
-			m_pDockingManager = GetDockingManager(m_pMainWnd);
-			if (m_pDockingManager) {
-				HWND hClient = ::GetDlgItem(m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
-				if (hClient)
+	void CAIGCWinAppEx::AttachCDockablePane(CDockablePane* pDockablePane, WebRTFrameWndInfo* pWebRTFrameWndInfo)
+	{
+		if (pDockablePane->IsKindOf(RUNTIME_CLASS(CTabbedPane)))
+		{
+			CTabbedPane* pTabbedPane = (CTabbedPane*)pDockablePane;
+			POSITION pos = NULL;
+			CObList _list;
+			pTabbedPane->GetPaneList(_list);
+			for (pos = _list.GetHeadPosition(); pos != NULL;) {
+				CBasePane* _pBar = (CBasePane*)_list.GetNext(pos);
+				if (_pBar->IsKindOf(RUNTIME_CLASS(CTabbedPane)))
 				{
-					CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
-					if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
-						m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
-					}
+					CDockablePane* pDockablePane = (CDockablePane*)_pBar;
+					AttachCDockablePane(pDockablePane, pWebRTFrameWndInfo);
 				}
-				POSITION pos = NULL;
-				CObList list;
-				m_pDockingManager->GetPaneList(list, TRUE);
+				else
+					pWebRTFrameWndInfo->m_mapCtrlBarWnd[::GetWindowLong(_pBar->m_hWnd, GWL_ID)] = _pBar->m_hWnd;
+			}
+		}
+	}
 
-				for (pos = list.GetHeadPosition(); pos != NULL;)
-				{
-					CBasePane* pBar = (CBasePane*)list.GetNext(pos);
-					ASSERT_VALID(pBar);
-					if (pBar->IsKindOf(RUNTIME_CLASS(CDockablePane)))
-					{
-						g_pSpaceTelescopeImpl->DockablePaneCreated(m_pMainWnd->m_hWnd, pBar->m_hWnd);
-					}
-				}
-			}
-		}
-		else if (!m_pDockingManager && m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIChildWndEx))) {
-			m_pDockingManager = GetDockingManager(m_pMainWnd);
-			if (m_pDockingManager) {
-				HWND hClient = ::GetDlgItem(m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
-				if (hClient)
-				{
-					CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
-					if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
-						m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
-					}
-				}
-			}
-		}
+	HWND CAIGCWinAppEx::QueryWndInfo(QueryType nType, HWND hWnd) {
 		CWnd* pWnd = CWnd::FromHandlePermanent(hWnd);
-		if (pWnd) {
-			if (pWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
-				BOOL bMDIClient = true;
-				m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pWnd;
-				if (nType == RecalcLayout) {
-					CFrameWnd* pFrame = pWnd->GetParentFrame();
-					if (pFrame) {
-						pFrame->RecalcLayout();
-					}
-				}
-				return ::GetParent(hWnd);
-			}
-			// if (pWnd->IsKindOf(RUNTIME_CLASS(CDockablePane)))
-			//{
-			//	if (nType == RecalcCtrlBarLayout)
-			//	{
-			//		CDockablePane* pDockablePane = (CDockablePane*)pWnd;
-			//		if (pDockablePane)
-			//		{
-			//			if (pDockablePane->IsFloating())
-			//			{
-			//				pDockablePane->RecalcLayout();
-			//				pDockablePane->GetParentMiniFrame(true)->RedrawAll();
-			//			}
-			//			if (pDockablePane->IsDocked())
-			//			{
-			//				pDockablePane->GetParentFrame()->RecalcLayout();
-			//			}
-			//		}
-			//	}
-			//	return ::GetParent(hWnd);
-			// }
-		}
 		switch (nType) {
 		case MainWnd:
 			if (m_pMainWnd) {
-				pWnd = m_pMainWnd;
-				if (m_pDockingManager == NULL && m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
+				if (m_hMainWnd == NULL)
+					m_hMainWnd = g_pSpaceTelescopeImpl->m_hMainWnd;
+				if (!m_pDockingManager) {
 					m_pDockingManager = GetDockingManager(m_pMainWnd);
 					if (m_pDockingManager) {
-						HWND hClient = ::GetDlgItem(m_pMainWnd->m_hWnd, AFX_IDW_PANE_FIRST);
-						if (hClient)
-						{
-							CWnd* pClientWnd = CWnd::FromHandlePermanent(hClient);
-							if (pClientWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
-								m_pMDIClientAreaWnd = (CMDIClientAreaWnd*)pClientWnd;
-							}
+						if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+							CMDIFrameWnd* pMDIFrame = (CMDIFrameWnd*)m_pMainWnd;
+							m_pMDIClientAreaWnd = CWnd::FromHandlePermanent(pMDIFrame->m_hWndMDIClient);
 						}
+					}
+				}
+				WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
+				HANDLE hHandle = ::GetProp(m_pMainWnd->m_hWnd, _T("WebRTFrameWndInfo"));
+				if (hHandle) {
+					pWebRTFrameWndInfo = (WebRTFrameWndInfo*)hHandle;
+					if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+						pWebRTFrameWndInfo->m_nFrameType = 2;
 						//POSITION pos = NULL;
 						//CObList list;
 						//m_pDockingManager->GetPaneList(list, TRUE);
-
 						//for (pos = list.GetHeadPosition(); pos != NULL;)
 						//{
 						//	CBasePane* pBar = (CBasePane*)list.GetNext(pos);
 						//	ASSERT_VALID(pBar);
 						//	if (pBar->IsKindOf(RUNTIME_CLASS(CDockablePane)))
 						//	{
-						//		g_pSpaceTelescopeImpl->DockablePaneCreated(m_pMainWnd->m_hWnd, pBar->m_hWnd);
+						//		CDockablePane* pDockablePane = (CDockablePane*)pBar;
+
+						//		if (pBar->IsKindOf(RUNTIME_CLASS(CTabbedPane)))
+						//			AttachCDockablePane(pDockablePane, pWebRTFrameWndInfo);
+						//		else
+						//			pWebRTFrameWndInfo->m_mapCtrlBarWnd[::GetWindowLong(pBar->m_hWnd, GWL_ID)] = pBar->m_hWnd;
 						//	}
 						//}
 					}
-				}
-
-				if (pWnd) {
-					WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
-					HANDLE hHandle = ::GetProp(pWnd->m_hWnd, _T("WebRTFrameWndInfo"));
-					if (hHandle) {
-						pWebRTFrameWndInfo = (WebRTFrameWndInfo*)hHandle;
-						if (pWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd)))
-							pWebRTFrameWndInfo->m_nFrameType = 2;
-						else {
-							POSITION nPos = GetFirstDocTemplatePosition();
-							while (nPos) {
-								CDocTemplate* pTemplate = GetNextDocTemplate(nPos);
-								POSITION pos = pTemplate->GetFirstDocPosition();
-								while (pos != NULL) {
-									CDocument* pDoc = pTemplate->GetNextDoc(pos);
-									POSITION pos2 = pDoc->GetFirstViewPosition();
-									while (pos2 != NULL) {
-										CView* pView = pDoc->GetNextView(pos2);
-										ASSERT_VALID(pView);
-										CFrameWnd* pFrame = pView->GetParentFrame();
-										if (m_pMainWnd == pFrame) {
-											if (pTemplate->IsKindOf(
-												RUNTIME_CLASS(CMultiDocTemplate))) {
-												if (!pFrame->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd)))
-													pWebRTFrameWndInfo->m_nFrameType = 1;
-												return pWnd->m_hWnd;
-											}
-											break;
+					else {
+						POSITION nPos = GetFirstDocTemplatePosition();
+						while (nPos) {
+							CDocTemplate* pTemplate = GetNextDocTemplate(nPos);
+							POSITION pos = pTemplate->GetFirstDocPosition();
+							while (pos != NULL) {
+								CDocument* pDoc = pTemplate->GetNextDoc(pos);
+								POSITION pos2 = pDoc->GetFirstViewPosition();
+								while (pos2 != NULL) {
+									CView* pView = pDoc->GetNextView(pos2);
+									ASSERT_VALID(pView);
+									CFrameWnd* pFrame = pView->GetParentFrame();
+									if (m_pMainWnd == pFrame) {
+										if (pTemplate->IsKindOf(
+											RUNTIME_CLASS(CMultiDocTemplate))) {
+											if (!pFrame->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd)))
+												pWebRTFrameWndInfo->m_nFrameType = 1;
+											return m_pMainWnd->m_hWnd;
 										}
+										break;
 									}
 								}
 							}
@@ -2506,7 +2435,6 @@ namespace CommonUniverse {
 			m_mapViewDoc.erase(m_mapViewDoc.begin(), m_mapViewDoc.end());
 		} break;
 		case RecalcLayout: {
-			CWnd* pWnd = CWnd::FromHandle(hWnd);
 			CFrameWnd* pFrame = pWnd->GetParentFrame();
 			if (pFrame) {
 				pFrame->RecalcLayout();
@@ -2526,12 +2454,6 @@ namespace CommonUniverse {
 				m_pMainWnd = nullptr;
 			}
 		} break;
-		default:
-			if (pWnd && pWnd->IsKindOf(RUNTIME_CLASS(CMDIClientAreaWnd))) {
-				BOOL bMDIClient = true;
-				return ::GetParent(hWnd);
-			}
-			break;
 		}
 		return NULL;
 	}
@@ -2772,7 +2694,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-				}
+			}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -2794,10 +2716,10 @@ namespace CommonUniverse {
 					return false;
 				}
 				break;
-			}
 		}
-		return true;
 	}
+		return true;
+}
 
 	BOOL CAIGCWinAppEx::IsBrowserModel(bool bCrashReporting) {
 		BOOL bWin32 =
@@ -3216,9 +3138,6 @@ namespace CommonUniverse {
 	}
 
 	bool CWebRTWindowProviderApp::WebRTInit(CString strID) {
-		strID.Trim();
-		if (strID == _T(""))
-			strID = _T("views");
 		if (g_pSpaceTelescopeImpl == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
 			TCHAR szDriver[MAX_PATH] = { 0 };
@@ -3227,8 +3146,7 @@ namespace CommonUniverse {
 			TCHAR szFile2[MAX_PATH] = { 0 };
 			::GetModuleFileName(m_hModule, m_szBuffer, MAX_PATH);
 			_tsplitpath_s(m_szBuffer, szDriver, szDir, szFile2, szExt);
-			CString strDllName = szFile2;
-			m_strProviderID = strDllName + _T(".") + strID;
+			m_strProviderID = szFile2;
 			HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
 			if (hModule) {
 				typedef CWebRTImpl* (__stdcall* GetWebRTImpl)(IWebRT**);
@@ -3246,17 +3164,4 @@ namespace CommonUniverse {
 		return false;
 	}
 #endif
-}  // namespace CommonUniverse
-
-#ifdef WebRTDefault
-#ifndef CWinApp
-#ifndef _WINDLL
-#define CWinApp CAIGCWinApp
-#else
-#define CWinApp CComponentApp
-#endif // !_WINDLL
-
-#define CWinAppEx CAIGCWinAppEx
-#endif // !CWinApp
-#endif
-
+	}  // namespace CommonUniverse
