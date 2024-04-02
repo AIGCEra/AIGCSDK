@@ -1653,6 +1653,7 @@ namespace CommonUniverse
 		virtual HWND GetFrameClientHandle(HWND hFrame, CString strScript) { return NULL; }
 		virtual RECT GetClientAreaBounds() { return RECT{ 0, 0, 0, 0 }; }
 		virtual void CalcWindowRectForMDITabbedGroups(LPRECT rc) {}
+		virtual bool AttachWebRT() { return false; }
 	};
 
 	class ITabClientAreaProxy {
@@ -2374,6 +2375,7 @@ namespace CommonUniverse
 		virtual HWND GetActivePopupMenu(HWND hWnd);
 
 		//IUniverseAppProxy:
+		virtual bool AttachWebRT();
 		virtual void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
 		virtual void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
 		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
@@ -2442,6 +2444,7 @@ namespace CommonUniverse
 		void AttachCDockablePane(CDockablePane* pDockablePane, WebRTFrameWndInfo* pWebRTFrameWndInfo);
 
 		//IUniverseAppProxy:
+		bool AttachWebRT();
 		void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
 		void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
 		CXobjProxy* OnXobjInit(IXobj* pNewNode);

@@ -6,8 +6,12 @@ namespace CommonUniverse {
 	typedef IWebRT* (__stdcall* GetWebRT)();
 	typedef CWebRTImpl* (__stdcall* GetWebRTImpl)(IWebRT**);
 	typedef bool(__stdcall* _IsBrowserModel)(bool bSupportCrashReporting, void*);
+
+	HHOOK	g_hCBTHook = NULL;
+
 	_IsBrowserModel FuncIsBrowserModel;
 	CWebRTImpl* g_pSpaceTelescopeImpl = nullptr;
+
 	void DpiUtil::SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT dpiAwarenessContext)
 	{
 		// Call the latest DPI awareness function possible
@@ -889,6 +893,7 @@ namespace CommonUniverse {
 
 #ifdef _AFX
 	CWinApp* g_pAppBase = nullptr;
+
 	class CTangramHelperWnd : public CWnd {
 	public:
 		CTangramHelperWnd() {}
@@ -899,10 +904,58 @@ namespace CommonUniverse {
 		}
 
 	protected:
+		afx_msg LRESULT AFX_MSG_CALL OnAttach(WPARAM wParam, LPARAM lParam) {
+			if (wParam == 19921963) {
+				CWinApp* pApp = AfxGetApp();
+				if (pApp && pApp->m_pMainWnd) {
+					HWND hPWnd = (HWND)lParam;
+					if (hPWnd == pApp->m_pMainWnd->m_hWnd) {
+						if (UnhookWindowsHookEx(g_hCBTHook)) {
+							IUniverseAppProxy* pAppProxy = NULL;
+							if (pApp->m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWndEx)) || pApp->m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
+								pAppProxy = static_cast<IUniverseAppProxy*>((CAIGCWinAppEx*)pApp);
+							}
+							else {
+								pAppProxy = static_cast<IUniverseAppProxy*>((CAIGCWinApp*)pApp);
+							}
+							if(pAppProxy)
+								::SetWindowLongPtr(m_hWnd,GWLP_USERDATA, (LONG_PTR)pAppProxy);
+						}
+					}
+				}
+			}
+
+			return 0;
+		};
 		DECLARE_MESSAGE_MAP()
 	};
 	BEGIN_MESSAGE_MAP(CTangramHelperWnd, CWnd)
+		ON_MESSAGE(WM_COSMOSMSG, &CTangramHelperWnd::OnAttach)
 	END_MESSAGE_MAP()
+
+	LRESULT WebRTCBTProc(int nCode, WPARAM wParam, LPARAM lParam)
+	{
+		LRESULT hr = CallNextHookEx(g_hCBTHook, nCode, wParam, lParam);
+		HWND hWnd = (HWND)wParam;
+		if (nCode == HCBT_CREATEWND) {
+			CBT_CREATEWND* pCreateWnd = (CBT_CREATEWND*)lParam;
+			LPCTSTR lpszName = pCreateWnd->lpcs->lpszName;
+			HWND hPWnd = pCreateWnd->lpcs->hwndParent;
+			if (hPWnd) {
+				DWORD dwID = (DWORD)pCreateWnd->lpcs->hMenu;
+				if (dwID == AFX_IDW_PANE_FIRST) {
+					CWinApp* pApp = AfxGetApp();
+					if (pApp) {
+						CTangramHelperWnd* pHelperWnd = new CTangramHelperWnd();
+						if (pHelperWnd->CreateEx(NULL, NULL, L"", WS_CHILD, RECT{}, CWnd::FromHandle(hPWnd), 19921963, 0)) {
+							::PostMessage(pHelperWnd->m_hWnd, WM_COSMOSMSG, 19921963, (LPARAM)hPWnd);
+						}
+					}
+				}
+			}
+		}
+		return hr;
+	}
 
 	class CWebRTProxy : public IWebRTDelegate {
 	public:
@@ -1283,6 +1336,9 @@ namespace CommonUniverse {
 				}
 				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
+		}
+		if (hModule == NULL || hModule2 == NULL) {
+			g_hCBTHook = SetWindowsHookEx(WH_CBT, WebRTCBTProc, NULL, ::GetCurrentThreadId());
 		}
 		return true;
 	}
@@ -1717,6 +1773,64 @@ namespace CommonUniverse {
 		return _T("");
 	}
 
+	bool CAIGCWinApp::AttachWebRT() {
+		HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
+		if (hModule) {
+			if (m_strContainer != _T("")) {
+				m_strContainer = _T(",") + m_strContainer + _T(",");
+				m_strContainer.Replace(_T(",,"), _T(","));
+			}
+			GetWebRTImpl _pWebRTImplFunction;
+			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+		}
+		if (g_pSpaceTelescopeImpl)
+		{
+			HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
+			if (hModule == nullptr) {
+				TCHAR m_szBuffer[MAX_PATH];
+				CString _strAIGCAgentPath = _T("");
+				::GetModuleFileName(::GetModuleHandle(_T("universe.dll")), m_szBuffer, MAX_PATH);
+				_strAIGCAgentPath = CString(m_szBuffer);
+				int nPos = _strAIGCAgentPath.ReverseFind('\\');
+				_strAIGCAgentPath = _strAIGCAgentPath.Left(nPos + 1) + _T("AIGCAgent.dll");
+				if (::PathFileExists(_strAIGCAgentPath)) {
+					g_pSpaceTelescopeImpl->m_hWebRTProxyModel = ::LoadLibrary(_strAIGCAgentPath);
+					{
+						if (!afxContextIsDLL) {
+							DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+							DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
+						}
+						if (m_strContainer != _T("")) {
+							m_strContainer = _T(",") + m_strContainer + _T(",");
+							m_strContainer.Replace(_T(",,"), _T(","));
+						}
+
+						if (g_pSpaceTelescopeImpl->m_pWebRTDelegate == NULL) {
+							m_strProviderID += _T("host");
+							m_strProviderID.MakeLower();
+
+							g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+							g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
+								static_cast<IUniverseAppProxy*>(this));
+							g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
+								static_cast<IWindowProvider*>(this));
+							if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
+								g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
+								::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
+									(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
+									g_pSpaceTelescopeImpl->m_nAppType);
+							g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+							m_bBuiltInBrowser = true;
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	bool CAIGCWinApp::ProcessAppType(bool bCrashReporting) {
 		BOOL bWin32 =
 			(::PathFileExists(CString(m_pszExeName) + _T(".app.html")) == false) &&
@@ -1741,7 +1855,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-				}
+			}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -1769,15 +1883,15 @@ namespace CommonUniverse {
 						return false;
 					}
 				}
-			} break;
+		} break;
 			case APP_ECLIPSE:
 				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
 				break;
-			}
-		}
+	}
+}
 		return true;
 	}
 
@@ -2097,14 +2211,14 @@ namespace CommonUniverse {
 		}
 		HMODULE hModule2 = hModule;
 		if (hModule) {
-			BOOL isBrowserModel = false;
-			FuncIsBrowserModel =
-				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
-			if (FuncIsBrowserModel != NULL) {
-				isBrowserModel = FuncIsBrowserModel(false, this);
-				if (isBrowserModel)
-					return false;
-			}
+			//BOOL isBrowserModel = false;
+			//FuncIsBrowserModel =
+			//	(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
+			//if (FuncIsBrowserModel != NULL) {
+			//	isBrowserModel = FuncIsBrowserModel(false, this);
+			//	if (isBrowserModel)
+			//		return false;
+			//}
 		}
 		TCHAR m_szBuffer[MAX_PATH];
 		TCHAR szDriver[MAX_PATH] = { 0 };
@@ -2160,6 +2274,9 @@ namespace CommonUniverse {
 				}
 				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
+		}
+		if (hModule == NULL || hModule2 == NULL) {
+			g_hCBTHook = SetWindowsHookEx(WH_CBT, WebRTCBTProc, NULL, ::GetCurrentThreadId());
 		}
 		return true;
 	}
@@ -2670,6 +2787,64 @@ namespace CommonUniverse {
 		return _T("");
 	}
 
+	bool CAIGCWinAppEx::AttachWebRT() {
+		HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
+		if (hModule) {
+			if (m_strContainer != _T("")) {
+				m_strContainer = _T(",") + m_strContainer + _T(",");
+				m_strContainer.Replace(_T(",,"), _T(","));
+			}
+			GetWebRTImpl _pWebRTImplFunction;
+			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+		}
+		if (g_pSpaceTelescopeImpl)
+		{
+			HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
+			if (hModule == nullptr) {
+				TCHAR m_szBuffer[MAX_PATH];
+				CString _strAIGCAgentPath = _T("");
+				::GetModuleFileName(::GetModuleHandle(_T("universe.dll")), m_szBuffer, MAX_PATH);
+				_strAIGCAgentPath = CString(m_szBuffer);
+				int nPos = _strAIGCAgentPath.ReverseFind('\\');
+				_strAIGCAgentPath = _strAIGCAgentPath.Left(nPos + 1) + _T("AIGCAgent.dll");
+				if (::PathFileExists(_strAIGCAgentPath)) {
+					g_pSpaceTelescopeImpl->m_hWebRTProxyModel = ::LoadLibrary(_strAIGCAgentPath);
+					{
+						if (!afxContextIsDLL) {
+							DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+							DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
+						}
+						if (m_strContainer != _T("")) {
+							m_strContainer = _T(",") + m_strContainer + _T(",");
+							m_strContainer.Replace(_T(",,"), _T(","));
+						}
+
+						if (g_pSpaceTelescopeImpl->m_pWebRTDelegate == NULL) {
+							m_strProviderID += _T("host");
+							m_strProviderID.MakeLower();
+
+							g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+							g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
+								static_cast<IUniverseAppProxy*>(this));
+							g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
+								static_cast<IWindowProvider*>(this));
+							if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
+								g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
+								::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
+									(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
+									g_pSpaceTelescopeImpl->m_nAppType);
+							g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+							m_bBuiltInBrowser = true;
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	bool CAIGCWinAppEx::ProcessAppType(bool bCrashReporting) {
 		BOOL bWin32 =
 			(::PathFileExists(CString(m_pszExeName) + _T(".app.html")) == false) &&
@@ -2702,24 +2877,24 @@ namespace CommonUniverse {
 				if (hModule) {
 					typedef int(__stdcall* _InitApp)(bool bSupportCrashReporting, void*);
 					_InitApp _pInitAppFunction;
-					_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
+					_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp2");
 					if (_pInitAppFunction != NULL) {
 						m_bBuiltInBrowser = true;
 						_pInitAppFunction(bCrashReporting, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
 						return false;
 					}
 				}
-			} break;
+		} break;
 			case APP_ECLIPSE:
 				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
 				break;
-		}
 	}
+		}
 		return true;
-}
+	}
 
 	BOOL CAIGCWinAppEx::IsBrowserModel(bool bCrashReporting) {
 		BOOL bWin32 =
@@ -3032,20 +3207,19 @@ namespace CommonUniverse {
 		return false;
 	};
 
-	HHOOK	m_hCBTHook = NULL;
 	CAIGCAppEx::CAIGCAppEx() {
 		m_bWebRTInit = InitApplication();
 	}
 
 	CAIGCAppEx::~CAIGCAppEx() {
-		if (m_hCBTHook) {
-			::UnhookWindowsHookEx(m_hCBTHook);
+		if (g_hCBTHook) {
+			::UnhookWindowsHookEx(g_hCBTHook);
 		}
 	}
 
 	LRESULT CAIGCAppEx::CBTProc(int nCode, WPARAM wParam, LPARAM lParam)
 	{
-		LRESULT hr = CallNextHookEx(m_hCBTHook, nCode, wParam, lParam);
+		LRESULT hr = CallNextHookEx(g_hCBTHook, nCode, wParam, lParam);
 		HWND hWnd = (HWND)wParam;
 		if (nCode == HCBT_CREATEWND) {
 			return 1000;
@@ -3079,7 +3253,7 @@ namespace CommonUniverse {
 			if (FuncIsBrowserModel != NULL) {
 				isBrowserModel = FuncIsBrowserModel(false, this);
 				if (isBrowserModel) {
-					m_hCBTHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, ::GetCurrentThreadId());
+					g_hCBTHook = SetWindowsHookEx(WH_CBT, CBTProc, NULL, ::GetCurrentThreadId());
 					return false;
 				}
 			}
@@ -3164,4 +3338,4 @@ namespace CommonUniverse {
 		return false;
 	}
 #endif
-	}  // namespace CommonUniverse
+}  // namespace CommonUniverse
