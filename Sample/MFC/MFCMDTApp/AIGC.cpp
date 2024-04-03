@@ -918,8 +918,10 @@ namespace CommonUniverse {
 							else {
 								pAppProxy = static_cast<IUniverseAppProxy*>((CAIGCWinApp*)pApp);
 							}
-							if(pAppProxy)
-								::SetWindowLongPtr(m_hWnd,GWLP_USERDATA, (LONG_PTR)pAppProxy);
+							if (pAppProxy) {
+								pAppProxy->m_hMainWnd = hPWnd;
+								::SetWindowLongPtr(m_hWnd, GWLP_USERDATA, (LONG_PTR)pAppProxy);
+							}
 						}
 					}
 				}
@@ -933,7 +935,7 @@ namespace CommonUniverse {
 		ON_MESSAGE(WM_COSMOSMSG, &CTangramHelperWnd::OnAttach)
 	END_MESSAGE_MAP()
 
-	LRESULT WebRTCBTProc(int nCode, WPARAM wParam, LPARAM lParam)
+	static LRESULT WebRTCBTProc(int nCode, WPARAM wParam, LPARAM lParam)
 	{
 		LRESULT hr = CallNextHookEx(g_hCBTHook, nCode, wParam, lParam);
 		HWND hWnd = (HWND)wParam;
@@ -1393,6 +1395,105 @@ namespace CommonUniverse {
 	}
 
 	HWND CAIGCWinApp::QueryWndInfo(QueryType nType, HWND hWnd) {
+		CWinApp* pApp = AfxGetApp();
+		CWnd* m_pMainWnd = AfxGetMainWnd();
+		if (hWnd == NULL && g_pSpaceTelescopeImpl == NULL && m_pMainWnd) {
+			if (g_pSpaceTelescopeImpl == NULL) {
+				HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
+				if (hModule) {
+					GetWebRTImpl _pWebRTImplFunction;
+					_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+					g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+				}
+			}
+			m_hMainWnd = m_pMainWnd->m_hWnd;
+			CCommandLineInfo cmdInfo;
+			pApp->ParseCommandLine(cmdInfo);
+			m_nShellCmd = cmdInfo.m_nShellCommand;
+			if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd))) {
+				WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
+				HANDLE hHandle = ::GetProp(m_pMainWnd->m_hWnd, _T("WebRTFrameWndInfo"));
+				if (hHandle == 0)
+				{
+					pWebRTFrameWndInfo = new WebRTFrameWndInfo();
+					hHandle = pWebRTFrameWndInfo;
+					::SetProp(m_hMainWnd, _T("WebRTFrameWndInfo"), pWebRTFrameWndInfo);
+					g_pSpaceTelescopeImpl->m_mapWebRTFrameWndInfo[m_hMainWnd] = pWebRTFrameWndInfo;
+				}
+				else
+				{
+					pWebRTFrameWndInfo = (WebRTFrameWndInfo*)hHandle;
+
+				}
+
+				if (pWebRTFrameWndInfo) {
+					if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd)))
+					{
+						POSITION nPos = pApp->GetFirstDocTemplatePosition();
+						while (nPos) {
+							CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+							POSITION pos = pTemplate->GetFirstDocPosition();
+							while (pos != NULL) {
+								CDocument* pDoc = pTemplate->GetNextDoc(pos);
+								POSITION pos2 = pDoc->GetFirstViewPosition();
+								while (pos2 != NULL) {
+									CView* pView = pDoc->GetNextView(pos2);
+									ASSERT_VALID(pView);
+									if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+										if (pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate))) {
+											pWebRTFrameWndInfo->m_nFrameType = 2;
+										}
+									}
+									else
+									{
+										CFrameWnd* pFrame = pView->GetParentFrame();
+										if (m_pMainWnd == pFrame) {
+											g_pSpaceTelescopeImpl->m_hFirstView = pView->m_hWnd;
+											if (pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate)))
+												pWebRTFrameWndInfo->m_nFrameType = 1;
+											else
+												pWebRTFrameWndInfo->m_nFrameType = 4;
+										}
+									}
+								}
+							}
+						}
+						CFrameWnd* pFrame = (CFrameWnd*)m_pMainWnd;
+						if (pFrame) {
+							if (pFrame->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+								pWebRTFrameWndInfo->m_nFrameType = 2;
+								pWebRTFrameWndInfo->m_hClient = ((CMDIFrameWnd*)pFrame)->m_hWndMDIClient;
+								POSITION nPos = pApp->GetFirstDocTemplatePosition();
+								while (nPos) {
+									CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+									POSITION pos = pTemplate->GetFirstDocPosition();
+									CDocument* pDoc = pTemplate->GetNextDoc(pos);
+									POSITION pos2 = pDoc->GetFirstViewPosition();
+									while (pos2 != NULL) {
+										CView* pView = pDoc->GetNextView(pos2);
+										ASSERT_VALID(pView);
+										g_pSpaceTelescopeImpl->AttachMDIChild(m_hMainWnd, pView->GetParentFrame()->m_hWnd, pView->m_hWnd);
+									}
+								}
+							}
+							else {
+								if (pWebRTFrameWndInfo->m_pDoc == NULL) {
+									CDocument* m_pDoc = pFrame->GetActiveDocument();
+									if (m_pDoc) {
+										pWebRTFrameWndInfo->m_hClient = pFrame->GetActiveView()->m_hWnd;
+										pWebRTFrameWndInfo->m_pDoc = m_pDoc;
+										CDocTemplate* pTemplate = m_pDoc->GetDocTemplate();
+										pWebRTFrameWndInfo->m_pDocTemplate = pTemplate;
+										pWebRTFrameWndInfo->m_nFrameType = pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate)) ? 1 : 4;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return m_hMainWnd;
+		}
 		CWnd* pWnd = CWnd::FromHandlePermanent(hWnd);
 		switch (nType) {
 		case MainWnd:
@@ -1855,7 +1956,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-			}
+				}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -1883,15 +1984,15 @@ namespace CommonUniverse {
 						return false;
 					}
 				}
-		} break;
+			} break;
 			case APP_ECLIPSE:
 				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
 				break;
-	}
-}
+			}
+		}
 		return true;
 	}
 
@@ -2352,6 +2453,130 @@ namespace CommonUniverse {
 	}
 
 	HWND CAIGCWinAppEx::QueryWndInfo(QueryType nType, HWND hWnd) {
+		CWinApp* pApp = AfxGetApp();
+		CWnd* m_pMainWnd = AfxGetMainWnd();
+		if (hWnd == NULL && g_pSpaceTelescopeImpl == NULL && m_pMainWnd) {
+			if (g_pSpaceTelescopeImpl == NULL) {
+				HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
+				if (hModule) {
+					GetWebRTImpl _pWebRTImplFunction;
+					_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+					g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
+				}
+			}
+			m_hMainWnd = m_pMainWnd->m_hWnd;
+			CCommandLineInfo cmdInfo;
+			pApp->ParseCommandLine(cmdInfo);
+			m_nShellCmd = cmdInfo.m_nShellCommand;
+			if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd))) {
+				WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
+				HANDLE hHandle = ::GetProp(m_pMainWnd->m_hWnd, _T("WebRTFrameWndInfo"));
+				if (hHandle == 0)
+				{
+					pWebRTFrameWndInfo = new WebRTFrameWndInfo();
+					hHandle = pWebRTFrameWndInfo;
+					::SetProp(m_hMainWnd, _T("WebRTFrameWndInfo"), pWebRTFrameWndInfo);
+					g_pSpaceTelescopeImpl->m_mapWebRTFrameWndInfo[m_hMainWnd] = pWebRTFrameWndInfo;
+				}
+				else
+				{
+					pWebRTFrameWndInfo = (WebRTFrameWndInfo*)hHandle;
+
+				}
+				m_pDockingManager = GetDockingManager(m_pMainWnd);
+				if (m_pDockingManager) {
+					if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+						CMDIFrameWnd* pMDIFrame = (CMDIFrameWnd*)m_pMainWnd;
+						m_pMDIClientAreaWnd = CWnd::FromHandlePermanent(pMDIFrame->m_hWndMDIClient);
+						m_pvoid = m_pMDIClientAreaWnd;
+					}
+					POSITION pos = NULL;
+					CObList list;
+					m_pDockingManager->GetPaneList(list, TRUE);
+					for (pos = list.GetHeadPosition(); pos != NULL;)
+					{
+						CBasePane* pBar = (CBasePane*)list.GetNext(pos);
+						ASSERT_VALID(pBar);
+						if (pBar->IsKindOf(RUNTIME_CLASS(CDockablePane)))
+						{
+							CDockablePane* pDockablePane = (CDockablePane*)pBar;
+
+							if (pBar->IsKindOf(RUNTIME_CLASS(CTabbedPane)))
+								AttachCDockablePane(pDockablePane, pWebRTFrameWndInfo);
+							else
+								pWebRTFrameWndInfo->m_mapCtrlBarWnd[::GetWindowLong(pBar->m_hWnd, GWL_ID)] = pBar->m_hWnd;
+						}
+					}
+				}
+
+				if (pWebRTFrameWndInfo) {
+					if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd)))
+					{
+						POSITION nPos = pApp->GetFirstDocTemplatePosition();
+						while (nPos) {
+							CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+							POSITION pos = pTemplate->GetFirstDocPosition();
+							while (pos != NULL) {
+								CDocument* pDoc = pTemplate->GetNextDoc(pos);
+								POSITION pos2 = pDoc->GetFirstViewPosition();
+								while (pos2 != NULL) {
+									CView* pView = pDoc->GetNextView(pos2);
+									ASSERT_VALID(pView);
+									if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+										if (pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate))) {
+											pWebRTFrameWndInfo->m_nFrameType = 2;
+										}
+									}
+									else
+									{
+										CFrameWnd* pFrame = pView->GetParentFrame();
+										if (m_pMainWnd == pFrame) {
+											g_pSpaceTelescopeImpl->m_hFirstView = pView->m_hWnd;
+											if (pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate)))
+												pWebRTFrameWndInfo->m_nFrameType = 1;
+											else
+												pWebRTFrameWndInfo->m_nFrameType = 4;
+										}
+									}
+								}
+							}
+						}
+						CFrameWnd* pFrame = (CFrameWnd*)m_pMainWnd;
+						if (pFrame) {
+							if (pFrame->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
+								pWebRTFrameWndInfo->m_nFrameType = 2;
+								pWebRTFrameWndInfo->m_hClient = ((CMDIFrameWnd*)pFrame)->m_hWndMDIClient;
+								POSITION nPos = pApp->GetFirstDocTemplatePosition();
+								while (nPos) {
+									CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+									POSITION pos = pTemplate->GetFirstDocPosition();
+									CDocument* pDoc = pTemplate->GetNextDoc(pos);
+									POSITION pos2 = pDoc->GetFirstViewPosition();
+									while (pos2 != NULL) {
+										CView* pView = pDoc->GetNextView(pos2);
+										ASSERT_VALID(pView);
+										g_pSpaceTelescopeImpl->AttachMDIChild(m_hMainWnd, pView->GetParentFrame()->m_hWnd, pView->m_hWnd);
+									}
+								}
+							}
+							else {
+								if (pWebRTFrameWndInfo->m_pDoc == NULL) {
+									CDocument* m_pDoc = pFrame->GetActiveDocument();
+									if (m_pDoc) {
+										pWebRTFrameWndInfo->m_hClient = pFrame->GetActiveView()->m_hWnd;
+										pWebRTFrameWndInfo->m_pDoc = m_pDoc;
+										CDocTemplate* pTemplate = m_pDoc->GetDocTemplate();
+										pWebRTFrameWndInfo->m_pDocTemplate = pTemplate;
+										pWebRTFrameWndInfo->m_nFrameType = pTemplate->IsKindOf(RUNTIME_CLASS(CMultiDocTemplate)) ? 1 : 4;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return m_hMainWnd;
+		}
 		CWnd* pWnd = CWnd::FromHandlePermanent(hWnd);
 		switch (nType) {
 		case MainWnd:
@@ -2869,7 +3094,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-			}
+				}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -2884,14 +3109,14 @@ namespace CommonUniverse {
 						return false;
 					}
 				}
-		} break;
+			} break;
 			case APP_ECLIPSE:
 				if (g_pWebRT && !g_pSpaceTelescopeImpl->m_bIsEclipseInit) {
 					g_pWebRT->InitEclipseApp();
 					return false;
 				}
 				break;
-	}
+			}
 		}
 		return true;
 	}
