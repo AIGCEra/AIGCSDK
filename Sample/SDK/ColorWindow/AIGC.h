@@ -2372,6 +2372,7 @@ namespace CommonUniverse
 		bool ProcessAppType(bool bCrashReporting);
 		virtual int Run();
 		virtual BOOL InitApplication();
+		virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 		virtual HWND GetActivePopupMenu(HWND hWnd);
 
 		//IUniverseAppProxy:
@@ -2438,8 +2439,9 @@ namespace CommonUniverse
 		map<CView*, CDocument*> m_mapViewDoc;
 		BOOL IsBrowserModel(bool bCrashReporting);
 		bool ProcessAppType(bool bCrashReporting);
-		int Run();
-		BOOL InitApplication();
+		virtual int Run();
+		virtual BOOL InitApplication();
+		virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 		HWND GetActivePopupMenu(HWND hWnd);
 		void AttachCDockablePane(CDockablePane* pDockablePane, WebRTFrameWndInfo* pWebRTFrameWndInfo);
 

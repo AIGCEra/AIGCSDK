@@ -1794,6 +1794,18 @@ namespace CommonUniverse {
 		}
 	}
 
+	BOOL CAIGCWinApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+	{
+		switch (nID) {
+		case ID_FILE_NEW:
+		case ID_FILE_OPEN:
+			AfxSetResourceHandle(m_hInstance);
+			break;
+		}
+
+		return CWinApp::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+	}
+
 	void CAIGCWinApp::OnIPCMsg(CWebViewImpl* pWebViewImpl,
 		CString strType,
 		CString strParam1,
@@ -1802,6 +1814,7 @@ namespace CommonUniverse {
 		CString strParam4,
 		CString strParam5) {
 		if (strType.CompareNoCase(_T("COSMOS_CREATE_DOC")) == 0) {
+			AfxSetResourceHandle(m_hInstance);
 			int nCount = 0;
 			m_strCreatingDOCID = _T("");
 			CDocTemplate* pTemplate = nullptr;
@@ -1957,7 +1970,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-			}
+				}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -1992,10 +2005,10 @@ namespace CommonUniverse {
 					return false;
 				}
 				break;
+			}
 		}
-	}
 		return true;
-}
+	}
 
 	BOOL CAIGCWinApp::IsBrowserModel(bool bCrashReporting) {
 		BOOL bWin32 =
@@ -2048,11 +2061,11 @@ namespace CommonUniverse {
 #endif 
 				TRACE(_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support MFC Share Dll********\r\n\r\n"));
 #endif
-		}
+			}
 			m_strProviderID = g_pAppBase->m_pszAppName;
 			m_strProviderID.MakeLower();
 			g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID, static_cast<IWindowProvider*>(this));
-	}
+		}
 		return true;
 	}
 
@@ -2931,6 +2944,18 @@ namespace CommonUniverse {
 		}
 	}
 
+	BOOL CAIGCWinAppEx::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+	{
+		switch (nID) {
+		case ID_FILE_NEW:
+		case ID_FILE_OPEN:
+			AfxSetResourceHandle(m_hInstance);
+			break;
+		}
+
+		return CWinAppEx::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+	}
+
 	void CAIGCWinAppEx::OnIPCMsg(CWebViewImpl* pWebViewImpl,
 		CString strType,
 		CString strParam1,
@@ -2939,6 +2964,7 @@ namespace CommonUniverse {
 		CString strParam4,
 		CString strParam5) {
 		if (strType.CompareNoCase(_T("COSMOS_CREATE_DOC")) == 0) {
+			AfxSetResourceHandle(m_hInstance);
 			int nCount = 0;
 			m_strCreatingDOCID = _T("");
 			CDocTemplate* pTemplate = nullptr;
@@ -3097,7 +3123,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-			}
+				}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -3119,8 +3145,8 @@ namespace CommonUniverse {
 					return false;
 				}
 				break;
+			}
 		}
-	}
 		return true;
 	}
 
