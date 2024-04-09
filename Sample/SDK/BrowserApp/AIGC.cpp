@@ -1395,8 +1395,6 @@ namespace CommonUniverse {
 	}
 
 	HWND CAIGCWinApp::QueryWndInfo(QueryType nType, HWND hWnd) {
-		CWinApp* pApp = AfxGetApp();
-		CWnd* m_pMainWnd = AfxGetMainWnd();
 		if (hWnd == NULL && m_pMainWnd) {
 			if (g_pSpaceTelescopeImpl == NULL) {
 				HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
@@ -1409,7 +1407,7 @@ namespace CommonUniverse {
 			if (m_hMainWnd == NULL) {
 				m_hMainWnd = m_pMainWnd->m_hWnd;
 				CCommandLineInfo cmdInfo;
-				pApp->ParseCommandLine(cmdInfo);
+				ParseCommandLine(cmdInfo);
 				m_nShellCmd = cmdInfo.m_nShellCommand;
 				if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd))) {
 					WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
@@ -1429,9 +1427,9 @@ namespace CommonUniverse {
 					if (pWebRTFrameWndInfo) {
 						if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd)))
 						{
-							POSITION nPos = pApp->GetFirstDocTemplatePosition();
+							POSITION nPos = GetFirstDocTemplatePosition();
 							while (nPos) {
-								CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+								CDocTemplate* pTemplate = GetNextDocTemplate(nPos);
 								POSITION pos = pTemplate->GetFirstDocPosition();
 								while (pos != NULL) {
 									CDocument* pDoc = pTemplate->GetNextDoc(pos);
@@ -1463,9 +1461,9 @@ namespace CommonUniverse {
 								if (pFrame->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
 									pWebRTFrameWndInfo->m_nFrameType = 2;
 									pWebRTFrameWndInfo->m_hClient = ((CMDIFrameWnd*)pFrame)->m_hWndMDIClient;
-									POSITION nPos = pApp->GetFirstDocTemplatePosition();
+									POSITION nPos = GetFirstDocTemplatePosition();
 									while (nPos) {
-										CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+										CDocTemplate* pTemplate = GetNextDocTemplate(nPos);
 										POSITION pos = pTemplate->GetFirstDocPosition();
 										CDocument* pDoc = pTemplate->GetNextDoc(pos);
 										POSITION pos2 = pDoc->GetFirstViewPosition();
@@ -1626,7 +1624,7 @@ namespace CommonUniverse {
 			}
 		} break;
 		case QueryDestroy: {
-			if (::GetParent(hWnd) == NULL)  // && m_pMainWnd && m_pMainWnd != pWnd)
+			if (::IsWindow(hWnd)) 
 			{
 				m_pMainWnd = pWnd;
 				return pWnd->m_hWnd;
@@ -2467,8 +2465,6 @@ namespace CommonUniverse {
 	}
 
 	HWND CAIGCWinAppEx::QueryWndInfo(QueryType nType, HWND hWnd) {
-		CWinApp* pApp = AfxGetApp();
-		CWnd* m_pMainWnd = AfxGetMainWnd();
 		if (hWnd == NULL && m_pMainWnd) {
 			if (g_pSpaceTelescopeImpl == NULL) {
 				HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
@@ -2481,7 +2477,7 @@ namespace CommonUniverse {
 			if (m_hMainWnd == NULL) {
 				m_hMainWnd = m_pMainWnd->m_hWnd;
 				CCommandLineInfo cmdInfo;
-				pApp->ParseCommandLine(cmdInfo);
+				ParseCommandLine(cmdInfo);
 				m_nShellCmd = cmdInfo.m_nShellCommand;
 				if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd))) {
 					WebRTFrameWndInfo* pWebRTFrameWndInfo = nullptr;
@@ -2527,9 +2523,9 @@ namespace CommonUniverse {
 					if (pWebRTFrameWndInfo) {
 						if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CFrameWnd)))
 						{
-							POSITION nPos = pApp->GetFirstDocTemplatePosition();
+							POSITION nPos = GetFirstDocTemplatePosition();
 							while (nPos) {
-								CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+								CDocTemplate* pTemplate = GetNextDocTemplate(nPos);
 								POSITION pos = pTemplate->GetFirstDocPosition();
 								while (pos != NULL) {
 									CDocument* pDoc = pTemplate->GetNextDoc(pos);
@@ -2561,9 +2557,9 @@ namespace CommonUniverse {
 								if (pFrame->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
 									pWebRTFrameWndInfo->m_nFrameType = 2;
 									pWebRTFrameWndInfo->m_hClient = ((CMDIFrameWnd*)pFrame)->m_hWndMDIClient;
-									POSITION nPos = pApp->GetFirstDocTemplatePosition();
+									POSITION nPos = GetFirstDocTemplatePosition();
 									while (nPos) {
-										CDocTemplate* pTemplate = pApp->GetNextDocTemplate(nPos);
+										CDocTemplate* pTemplate = GetNextDocTemplate(nPos);
 										POSITION pos = pTemplate->GetFirstDocPosition();
 										CDocument* pDoc = pTemplate->GetNextDoc(pos);
 										POSITION pos2 = pDoc->GetFirstViewPosition();
@@ -2780,7 +2776,7 @@ namespace CommonUniverse {
 			}
 		} break;
 		case QueryDestroy: {
-			if (::GetParent(hWnd) == NULL)  // && m_pMainWnd && m_pMainWnd != pWnd)
+			if (::IsWindow(hWnd))
 			{
 				m_pMainWnd = pWnd;
 				return pWnd->m_hWnd;
