@@ -1624,7 +1624,7 @@ namespace CommonUniverse {
 			}
 		} break;
 		case QueryDestroy: {
-			if (::IsWindow(hWnd)) 
+			if (::IsWindow(hWnd))
 			{
 				m_pMainWnd = pWnd;
 				return pWnd->m_hWnd;
@@ -1794,11 +1794,18 @@ namespace CommonUniverse {
 
 	BOOL CAIGCWinApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 	{
-		switch (nID) {
-		case ID_FILE_NEW:
-		case ID_FILE_OPEN:
-			AfxSetResourceHandle(m_hInstance);
-			break;
+		BOOL bCmdProcess = (nCode == 0 && pExtra == NULL && pHandlerInfo == NULL && g_pSpaceTelescopeImpl && ::IsWindow(g_pSpaceTelescopeImpl->m_hCosmosWnd));
+		if (bCmdProcess)
+		{
+			switch (nID) {
+			case ID_FILE_OPEN:
+			case ID_FILE_NEW:
+			case ID_FILE_NEW_FRAME:
+				AfxSetResourceHandle(m_hInstance);
+				break;
+			default:
+				break;
+			}
 		}
 
 		return CWinApp::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
@@ -2942,14 +2949,51 @@ namespace CommonUniverse {
 
 	BOOL CAIGCWinAppEx::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 	{
-		switch (nID) {
-		case ID_FILE_NEW:
-		case ID_FILE_OPEN:
-			AfxSetResourceHandle(m_hInstance);
-			break;
+		//switch (nCode)
+		//{
+		//case CN_COMMAND:
+		//{
+		//	CCmdUI* pCmdUI = (CCmdUI*)pExtra;
+		//	if (pCmdUI)
+		//	{
+		//		switch (pCmdUI->m_nID) {
+		//		case ID_FILE_OPEN:
+		//		case ID_FILE_NEW:
+		//		case ID_FILE_NEW_FRAME:
+		//			OutputDebugString(_T("ID_FILE_OPEN"));
+		//			AfxSetResourceHandle(m_hInstance);
+		//			break;
+		//		default:
+		//			break;
+		//		}
+		//	}
+		//}
+		//break;
+		//case CN_EVENT:
+		//	break;
+		//case CN_UPDATE_COMMAND_UI:
+		//	break;
+		//case CN_OLECOMMAND:
+		//	break;
+		//case CN_OLE_UNREGISTER:
+		//	break;
+		//}
+		BOOL bCmdProcess = (nCode == CN_COMMAND && pExtra == NULL && pHandlerInfo == NULL && g_pSpaceTelescopeImpl && ::IsWindow(g_pSpaceTelescopeImpl->m_hCosmosWnd));
+		if (bCmdProcess)
+		{
+			switch (nID) {
+			case ID_FILE_OPEN:
+			case ID_FILE_NEW:
+			case ID_FILE_NEW_FRAME:
+				AfxSetResourceHandle(m_hInstance);
+				break;
+			default:
+				break;
+			}
 		}
 
-		return CWinAppEx::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+		BOOL bRet = CWinAppEx::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+		return bRet;
 	}
 
 	void CAIGCWinAppEx::OnIPCMsg(CWebViewImpl* pWebViewImpl,
