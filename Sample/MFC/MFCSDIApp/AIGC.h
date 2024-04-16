@@ -2495,6 +2495,7 @@ namespace CommonUniverse
 		virtual HWND GetActivePopupMenu(HWND hWnd) { return NULL; };
 
 		//IUniverseAppProxy:
+		virtual bool AttachWebRT();
 		virtual void OnWebRTEvent(IWebRTEventObj* NotifyObj) {};
 		virtual void OnObserveComplete(HWND hContentLoaderWnd, CString strUrl, IXobj* pRootNode) {};
 		virtual CXobjProxy* OnXobjInit(IXobj* pNewNode);
