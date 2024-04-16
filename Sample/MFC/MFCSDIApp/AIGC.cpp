@@ -919,7 +919,6 @@ namespace CommonUniverse {
 			::GetClassName(hWnd, m_szBuffer, MAX_PATH);
 			CString strClassName = m_szBuffer;
 			if (strClassName == _T("Tangram Message Window Class")) {
-
 				CWinApp* pApp = AfxGetApp();
 				IUniverseAppProxy* pAppProxy = NULL;
 				if (pApp && pApp->m_pMainWnd) {
@@ -3144,54 +3143,45 @@ namespace CommonUniverse {
 	bool CAIGCWinAppEx::AttachWebRT() {
 		HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
 		if (hModule) {
-			if (m_strContainer != _T("")) {
-				m_strContainer = _T(",") + m_strContainer + _T(",");
-				m_strContainer.Replace(_T(",,"), _T(","));
-			}
 			GetWebRTImpl _pWebRTImplFunction;
 			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
 			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
 		}
 		if (g_pSpaceTelescopeImpl)
 		{
-			HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
-			if (hModule == nullptr) {
+			HMODULE hAIGCAgentModule = ::GetModuleHandle(L"AIGCAgent.dll");
+			if (hAIGCAgentModule == nullptr) {
 				TCHAR m_szBuffer[MAX_PATH];
 				CString _strAIGCAgentPath = _T("");
-				::GetModuleFileName(::GetModuleHandle(_T("universe.dll")), m_szBuffer, MAX_PATH);
+				::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
 				_strAIGCAgentPath = CString(m_szBuffer);
 				int nPos = _strAIGCAgentPath.ReverseFind('\\');
 				_strAIGCAgentPath = _strAIGCAgentPath.Left(nPos + 1) + _T("AIGCAgent.dll");
 				if (::PathFileExists(_strAIGCAgentPath)) {
 					g_pSpaceTelescopeImpl->m_hWebRTProxyModel = ::LoadLibrary(_strAIGCAgentPath);
 					{
-						if (!afxContextIsDLL) {
-							DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-							DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
-						}
+						DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
+						DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
+						g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
 						if (m_strContainer != _T("")) {
 							m_strContainer = _T(",") + m_strContainer + _T(",");
 							m_strContainer.Replace(_T(",,"), _T(","));
 						}
+						m_strProviderID += _T("host");
+						m_strProviderID.MakeLower();
 
-						if (g_pSpaceTelescopeImpl->m_pWebRTDelegate == NULL) {
-							m_strProviderID += _T("host");
-							m_strProviderID.MakeLower();
-
-							g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
-							g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
-								static_cast<IUniverseAppProxy*>(this));
-							g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
-								static_cast<IWindowProvider*>(this));
-							if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
-								g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
-								::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
-									(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
-									g_pSpaceTelescopeImpl->m_nAppType);
-							g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
-							m_bBuiltInBrowser = true;
-							return true;
-						}
+						g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
+							static_cast<IUniverseAppProxy*>(this));
+						g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
+							static_cast<IWindowProvider*>(this));
+						if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
+							g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
+							::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
+								(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
+								g_pSpaceTelescopeImpl->m_nAppType);
+						g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+						m_bBuiltInBrowser = true;
+						return true;
 					}
 				}
 			}
@@ -3314,14 +3304,16 @@ namespace CommonUniverse {
 			::GetClassName(hWnd, m_szBuffer, MAX_PATH);
 			CString strClassName = m_szBuffer;
 			if (strClassName == _T("Tangram Message Window Class")) {
-				IUniverseAppProxy* pAppProxy = static_cast<IUniverseAppProxy*>(g_pAIGCApp);
-				::SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pAppProxy);
-				::PostMessage(hWnd, WM_COSMOSMSG, (WPARAM)pAppProxy, 20240415);
-				::PostMessage(hWnd, WM_COSMOSMSG, (WPARAM)g_hCBTHook, 20240414);
+				if (UnhookWindowsHookEx(g_hCBTHook)) {
+					IUniverseAppProxy* pAppProxy = static_cast<IUniverseAppProxy*>(g_pAIGCApp);
+					//pAppProxy->m_hMainWnd = pApp->m_pMainWnd->m_hWnd;
+					::SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pAppProxy);
+				}
 			}
 		}
 		return hr;
 	}
+
 	class CWebRTProxy : public IWebRTDelegate {
 	public:
 		CWebRTProxy() {};
@@ -3504,6 +3496,13 @@ namespace CommonUniverse {
 		return pNucleiProxy;
 	}
 
+	HWND CAIGCApp::QueryWndInfo(QueryType nType, HWND hWnd)
+	{
+		if (nType == MainWnd && ::IsWindow(m_hMainWnd) && hWnd == NULL)
+			return m_hMainWnd;
+		return NULL;
+	};
+
 	bool CAIGCApp::AttachWebRT() {
 		HMODULE hModule = ::GetModuleHandle(_T("universe.dll"));
 		if (hModule) {
@@ -3517,53 +3516,55 @@ namespace CommonUniverse {
 		}
 		if (g_pSpaceTelescopeImpl)
 		{
-			HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
-			if (hModule == nullptr) {
+			HMODULE hAgentModule = ::GetModuleHandle(L"AIGCAgent.dll");
+			if (hAgentModule == nullptr) {
 				TCHAR m_szBuffer[MAX_PATH];
 				CString _strAIGCAgentPath = _T("");
-				::GetModuleFileName(::GetModuleHandle(_T("universe.dll")), m_szBuffer, MAX_PATH);
+				::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
 				_strAIGCAgentPath = CString(m_szBuffer);
 				int nPos = _strAIGCAgentPath.ReverseFind('\\');
 				_strAIGCAgentPath = _strAIGCAgentPath.Left(nPos + 1) + _T("AIGCAgent.dll");
 				if (::PathFileExists(_strAIGCAgentPath)) {
-					g_pSpaceTelescopeImpl->m_hWebRTProxyModel = ::LoadLibrary(_strAIGCAgentPath);
-					{
-						DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
-						DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
-						if (m_strContainer != _T("")) {
-							m_strContainer = _T(",") + m_strContainer + _T(",");
-							m_strContainer.Replace(_T(",,"), _T(","));
+					hAgentModule = g_pSpaceTelescopeImpl->m_hWebRTProxyModel = ::LoadLibrary(_strAIGCAgentPath);
+					if (g_pSpaceTelescopeImpl->m_pWebRTDelegate == NULL) {
+						m_strProviderID += _T("host");
+						m_strProviderID.MakeLower();
+
+						g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
+						g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
+							static_cast<IUniverseAppProxy*>(this));
+						g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
+							static_cast<IWindowProvider*>(this));
+						if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
+							g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
+							::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
+								(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
+								g_pSpaceTelescopeImpl->m_nAppType);
+						g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
+						m_bBuiltInBrowser = true;
+						if (hAgentModule) {
+							typedef int(__stdcall* _InitApp)(bool bSupportCrashReporting, void*);
+							_InitApp _pInitAppFunction;
+							_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
+							if (_pInitAppFunction != NULL) {
+								m_bBuiltInBrowser = true;
+								_pInitAppFunction(false, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
+								return true;
+							}
 						}
 
-						if (g_pSpaceTelescopeImpl->m_pWebRTDelegate == NULL) {
-							m_strProviderID += _T("host");
-							m_strProviderID.MakeLower();
-
-							g_pSpaceTelescopeImpl->m_pWebRTDelegate = (IWebRTDelegate*)&theAppProxy;
-							g_pSpaceTelescopeImpl->InserttoDataMap(0, m_strProviderID,
-								static_cast<IUniverseAppProxy*>(this));
-							g_pSpaceTelescopeImpl->InserttoDataMap(1, m_strProviderID,
-								static_cast<IWindowProvider*>(this));
-							if (g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER &&
-								g_pSpaceTelescopeImpl->m_nAppType != APP_BROWSER_ECLIPSE)
-								::PostAppMessage(::GetCurrentThreadId(), WM_CHROMEAPPINIT,
-									(WPARAM)g_pSpaceTelescopeImpl->m_pWebRTDelegate,
-									g_pSpaceTelescopeImpl->m_nAppType);
-							g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
-							m_bBuiltInBrowser = true;
-							//HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
-							//if (hModule) {
-							//	typedef int(__stdcall* _InitApp)(bool bSupportCrashReporting, void*);
-							//	_InitApp _pInitAppFunction;
-							//	_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
-							//	if (_pInitAppFunction != NULL) {
-							//		m_bBuiltInBrowser = true;
-							//		_pInitAppFunction(false, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
-							//		return true;
-							//	}
-							//}
-							return true;
-						}
+						//HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
+						//if (hModule) {
+						//	typedef int(__stdcall* _InitApp)(bool bSupportCrashReporting, void*);
+						//	_InitApp _pInitAppFunction;
+						//	_pInitAppFunction = (_InitApp)GetProcAddress(hModule, "InitApp");
+						//	if (_pInitAppFunction != NULL) {
+						//		m_bBuiltInBrowser = true;
+						//		_pInitAppFunction(false, g_pSpaceTelescopeImpl->m_pWebRTDelegate);
+						//		return true;
+						//	}
+						//}
+						return true;
 					}
 				}
 			}

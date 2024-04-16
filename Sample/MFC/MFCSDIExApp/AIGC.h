@@ -2504,7 +2504,7 @@ namespace CommonUniverse
 		virtual void OnIPCMsg(CWebViewImpl* pWebViewImpl, CString strType, CString strParam1, CString strParam2, CString strParam3, CString strParam4, CString strParam5) {};
 		virtual void CustomizedDOMElement(HWND hWnd, CString strRuleName, CString strHTML) {};
 		virtual void OpenDocFile(CString strFileName, CString strExt, CString strCreatingDOCID) {};
-		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd) { return NULL; };
+		virtual HWND QueryWndInfo(QueryType nType, HWND hWnd);
 		virtual CString QueryWndClassName(HWND hWnd) { return _T(""); };
 		virtual CString QueryDocType(HWND hWnd) { return _T(""); };
 		virtual bool EclipseAppInit() { return false; };

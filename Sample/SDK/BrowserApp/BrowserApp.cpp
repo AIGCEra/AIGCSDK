@@ -3,6 +3,8 @@
 
 #include "framework.h"
 #include "BrowserApp.h"
+
+#include "AIGC.h"
 #include "AIGC.cpp"
 
 #define MAX_LOADSTRING 100
@@ -76,6 +78,7 @@ public:
 		m_mapStyle[_T("ES_READONLY")] = 0x0800L;
 		m_mapStyle[_T("ES_WANTRETURN")] = 0x1000L;
 		m_mapStyle[_T("ES_NUMBER")] = 0x2000L;
+
 	}
 
 	HWND m_hMainClientWnd;
@@ -91,10 +94,10 @@ public:
 			{
 				CString strWndCls = m_Parse.attr(_T("winbkcolor"), _T("RGB(128,255,255)"));
 				int nID = m_Parse.attrInt(_T("ctrlid"), 0);
-				RegisterColorWindowClass(strWndCls);
+				RegisterColorWindowClass(strWndCls, WndProc);
 				RECT rc;
 				::GetClientRect(g_pSpaceTelescopeImpl->m_hMainWnd, &rc);
-				m_hMainClientWnd = CreateWindowW(LPCTSTR(strWndCls), szTitle, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+				m_hMainClientWnd = CreateWindowW(LPCTSTR(strWndCls), _T(""), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 					CW_USEDEFAULT, 0, rc.right, rc.bottom, g_pSpaceTelescopeImpl->m_hMainWnd, (HMENU)nID, hInst, nullptr);
 				hWnd = m_hMainClientWnd;
 
@@ -170,7 +173,7 @@ public:
 		}
 	}
 
-	ATOM RegisterColorWindowClass(CString strColor)
+	ATOM RegisterColorWindowClass(CString strColor, WNDPROC lpfnWndProc)
 	{
 		if (strColor.Find(_T("RGB(")) == -1)
 			return NULL;
@@ -187,16 +190,16 @@ public:
 			WNDCLASSEXW wcex;
 			wcex.cbSize = sizeof(WNDCLASSEX);
 			wcex.style = CS_HREDRAW | CS_VREDRAW;
-			wcex.lpfnWndProc = WndProc;
+			wcex.lpfnWndProc = lpfnWndProc;
 			wcex.cbClsExtra = 0;
 			wcex.cbWndExtra = 0;
 			wcex.hInstance = hInst;
-			wcex.hIcon = LoadIcon(hInst, MAKEINTRESOURCE(IDI_BROWSERAPP));
+			wcex.hIcon = NULL;
 			wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 			wcex.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r, g, b));
-			wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_BROWSERAPP);
+			wcex.lpszMenuName = NULL;
 			wcex.lpszClassName = LPCTSTR(strColor);
-			wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+			wcex.hIconSm = NULL;
 			return RegisterClassExW(&wcex);
 		}
 		return NULL;
@@ -234,7 +237,7 @@ private:
 					CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, hParentWnd, (HMENU)0, hInst, nullptr);
 			}
 			else {
-				RegisterColorWindowClass(strWndCls);
+				RegisterColorWindowClass(strWndCls, WndProc);
 				CString _strIndex = _T(",");
 				_strIndex += strWndCls;
 				_strIndex += _T("");
@@ -265,14 +268,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
-
 	// TODO: Place code here.
-		// Initialize global strings
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadStringW(hInstance, IDC_BROWSERAPP, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
+
 	// Perform application initialization:
-	if (!InitInstance(hInstance, nCmdShow))
+	if (!theApp.InitApplication() || !InitInstance(hInstance, nCmdShow))
 	{
 		return FALSE;
 	}
@@ -331,16 +333,16 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-	hInst = hInstance; // Store instance handle in our global variable
+	hInst = hInstance; // Store instance handle in our global variable 
 
-	theApp.InitApplication();
-	HWND hWnd = theApp.m_hMainWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	HWND hWnd =theApp.m_hMainWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, (HMENU)0, hInstance, nullptr);
 
 	if (!hWnd)
 	{
 		return FALSE;
 	}
+
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
