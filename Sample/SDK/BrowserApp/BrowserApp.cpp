@@ -335,7 +335,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance; // Store instance handle in our global variable 
 
-	HWND hWnd =theApp.m_hMainWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+	HWND hWnd = theApp.m_hMainWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, (HMENU)0, hInstance, nullptr);
 
 	if (!hWnd)
@@ -469,6 +469,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 	}
 	break;
+	case WM_DPICHANGED:
+	{
+		RECT* const prcNewWindow = (RECT*)lParam;
+		::SetWindowPos(hWnd,
+			NULL,
+			prcNewWindow->left,
+			prcNewWindow->top,
+			prcNewWindow->right - prcNewWindow->left,
+			prcNewWindow->bottom - prcNewWindow->top,
+			SWP_NOZORDER | SWP_NOACTIVATE | SWP_DRAWFRAME);
+		::RedrawWindow(hWnd, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);//| RDW_UPDATENOW ;
+	}break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
