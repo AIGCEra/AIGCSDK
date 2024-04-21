@@ -1978,6 +1978,7 @@ namespace CommonUniverse
 		virtual CString GetFileMD5(CString strSRC) { return _T(""); }
 		virtual HWND GetMainWnd(int nChildID, CString strAppProxy) { return NULL; }
 		virtual void AttachMDIChild(HWND hFrame, HWND hMDIChild, HWND hChildClient) { }
+		virtual CString BuildConfigDataFile(CString strExeName, CString strProductName, CString strCompanyPathName) { return _T(""); }
 	};
 
 	class IWindowProvider {

@@ -1,4 +1,8 @@
-#include "AIGC.h"
+﻿#include "AIGC.h"
+#include <wincrypt.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 IWebRT* g_pWebRT = nullptr;
 
@@ -11,6 +15,117 @@ namespace CommonUniverse {
 
 	_IsBrowserModel FuncIsBrowserModel;
 	CWebRTImpl* g_pSpaceTelescopeImpl = nullptr;
+
+	int CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString& MD5)
+	{
+		HCRYPTPROV hProv = NULL;
+		DWORD dw = 0;
+		// Acquire a cryptographic provider context handle.
+		if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0))
+		{
+			HCRYPTHASH hHash;
+			// Create the hash object.
+			if (CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+			{
+				// Compute the cryptographic hash of the buffer.
+				if (CryptHashData(hHash, pBuffer, BufferSize, 0))
+				{
+					DWORD dwCount = 16;
+					unsigned char digest[16];
+					CryptGetHashParam(hHash, HP_HASHVAL, digest, &dwCount, 0);
+
+					if (hHash)
+						CryptDestroyHash(hHash);
+
+					// Release the provider handle.
+					if (hProv)
+						CryptReleaseContext(hProv, 0);
+
+					unsigned char b;
+					char c;
+					char* Value = new char[1024];
+					int k = 0;
+					for (int i = 0; i < 16; i++)
+					{
+						b = digest[i];
+						for (int j = 4; j >= 0; j -= 4)
+						{
+							c = ((char)(b >> j) & 0x0F);
+							if (c < 10) c += '0';
+							else c = ('a' + (c - 10));
+							Value[k] = c;
+							k++;
+						}
+					}
+					Value[k] = '\0';
+					MD5 = CString(Value);
+					delete Value;
+				}
+			}
+		}
+		else
+		{
+			dw = GetLastError();
+			if (dw == NTE_BAD_KEYSET)
+			{
+				if (CryptAcquireContext(
+					&hProv,
+					NULL,
+					NULL,
+					PROV_RSA_FULL,
+					CRYPT_NEWKEYSET))
+				{
+					_tprintf(TEXT("CryptAcquireContext succeeded.\n"));
+				}
+				else
+				{
+					_tprintf(TEXT("CryptAcquireContext falied.\n"));
+				}
+			}
+		}
+
+		return 1;
+	}
+
+	CString ComputeHash(CString source)
+	{
+		std::string strSrc = (LPCSTR)CW2A(source, CP_UTF8);
+		int nSrcLen = strSrc.length();
+		CString strRet = _T("");
+		CalculateByteMD5((BYTE*)strSrc.c_str(), nSrcLen, strRet);
+		return strRet;
+	}
+
+	CString BuildConfigDataFile(CString strExeName, CString strProductName, CString strCompanyPathName)
+	{
+		TCHAR m_szBuffer[MAX_PATH];
+		HRESULT hr = SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, m_szBuffer);
+		CString _strProductName = strProductName;
+		CString _strCompanyPathName = strCompanyPathName;
+		_strProductName.MakeLower();
+		_strCompanyPathName.MakeLower();
+		CString _strAppKey = _T("");
+		CString _strAppDataPath = _T("");
+		CString _strConfigDataFile = _T("");
+		_strAppDataPath = m_szBuffer;
+		_strAppDataPath += _T("\\");
+		_strAppDataPath.Replace(_T("\\\\"), _T("\\"));
+		_strAppDataPath += _T("TangramData\\");
+		_strAppDataPath += strExeName;
+		_strAppDataPath += _T("\\");
+		_strAppDataPath.MakeLower();
+		if (!::PathIsDirectory(_strAppDataPath))
+			CreateDirectory(_strAppDataPath, NULL);
+		_strAppKey = ComputeHash(_strAppDataPath + _T("@") + _strCompanyPathName + _T("@") + _strProductName);
+		_strAppDataPath += _strAppKey;
+		_strAppDataPath += _T("\\");
+		if (!::PathIsDirectory(_strAppDataPath))
+			CreateDirectory(_strAppDataPath, NULL);
+		_strConfigDataFile = _strAppDataPath;
+		_strConfigDataFile += strExeName;
+		_strConfigDataFile += _T(".tangram");
+		return _strConfigDataFile;
+	}
 
 	void DpiUtil::SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT dpiAwarenessContext)
 	{
@@ -787,7 +902,7 @@ namespace CommonUniverse {
 		return _T("");
 	}
 
-	//����
+	//新增
 	DWORD CTangramXmlParse::vall() const
 	{
 		USES_CONVERSION;
@@ -1233,34 +1348,54 @@ namespace CommonUniverse {
 				return false;
 			}
 		}
-		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
-		if (hModule == nullptr)
-			hModule = ::LoadLibrary(L"AIGCAgent.dll");
-		if (hModule == nullptr) {
-			TCHAR m_szBuffer[MAX_PATH];
-			if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
-				m_szBuffer) == S_OK) {
-				CString strChromeRTFilePath = CString(m_szBuffer);
-				strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
-				if (::PathFileExists(strChromeRTFilePath)) {
-					hModule = ::LoadLibrary(strChromeRTFilePath);
-				}
+		CString strData = _T("");
+		CString strChromeRTFilePath = _T("");
+		CString strUniverseFilePath = _T("");
+		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile))
+		{
+			wifstream fin(strCfgDataFile, wifstream::binary);
+			std::wstringstream stream;
+			stream << fin.rdbuf();
+			strData = stream.str().c_str();
+			fin.close();
+			int nPos = strData.Find(_T("Universe"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 8);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strUniverseFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strUniverseFilePath) == false)
+					strUniverseFilePath = _T("");
 			}
-			if (hModule == nullptr)
-				hModule = ::LoadLibrary(L"AIGCAgent.dll");
-		}
-		HMODULE hModule2 = hModule;
-		if (hModule) {
-			BOOL isBrowserModel = false;
-			FuncIsBrowserModel =
-				(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
-			if (FuncIsBrowserModel != NULL) {
-				isBrowserModel = FuncIsBrowserModel(false, this);
-				if (isBrowserModel)
-					return false;
+			nPos = strData.Find(_T("AIGCAgent"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 9);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strChromeRTFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strChromeRTFilePath) == false)
+					strChromeRTFilePath = _T("");
 			}
 		}
 
+		HMODULE hAIGCAgentModule = ::LoadLibrary(L"AIGCAgent.dll");
+		if (hAIGCAgentModule == nullptr && strChromeRTFilePath != _T("")) {
+			hAIGCAgentModule = ::LoadLibrary(strChromeRTFilePath);
+		}
+		if (hAIGCAgentModule == nullptr) {
+			TCHAR m_szBuffer[MAX_PATH];
+			if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
+				m_szBuffer) == S_OK) {
+				strChromeRTFilePath = CString(m_szBuffer);
+				strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
+				if (::PathFileExists(strChromeRTFilePath)) {
+					hAIGCAgentModule = ::LoadLibrary(strChromeRTFilePath);
+				}
+			}
+		}
 		TCHAR m_szBuffer[MAX_PATH];
 		TCHAR szDriver[MAX_PATH] = { 0 };
 		TCHAR szDir[MAX_PATH] = { 0 };
@@ -1271,16 +1406,19 @@ namespace CommonUniverse {
 		CString strTangramDll = szDriver;
 		strTangramDll += szDir;
 		strTangramDll += _T("universe.dll");
-		hModule = ::LoadLibrary(strTangramDll);
-		if (hModule) {
+		HMODULE hUniverseModule = ::LoadLibrary(strTangramDll);
+		if (hUniverseModule == NULL && strUniverseFilePath != _T(""))
+			hUniverseModule = ::LoadLibrary(strUniverseFilePath);
+		if (hUniverseModule) {
 			if (m_strContainer != _T("")) {
 				m_strContainer = _T(",") + m_strContainer + _T(",");
 				m_strContainer.Replace(_T(",,"), _T(","));
 			}
 			GetWebRTImpl _pWebRTImplFunction;
-			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hUniverseModule, "GetWebRTImpl");
 			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
-			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hModule2;
+			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hAIGCAgentModule;
+
 			if (!afxContextIsDLL) {
 				m_strProviderID += _T("host");
 				m_strProviderID.MakeLower();
@@ -1303,10 +1441,7 @@ namespace CommonUniverse {
 					strID = _T("component");
 				if (m_strProviderID == _T("")) {
 					CString strName = AfxGetApp()->m_pszAppName;
-					if (strName.CompareNoCase(_T("cosmoshelper")) == 0)
-						m_strProviderID = _T("host");
-					else
-						m_strProviderID = strName + _T(".") + strID;
+					m_strProviderID = strName + _T(".") + strID;
 				}
 				if (m_strProviderID != _T("")) {
 					m_strProviderID.MakeLower();
@@ -1318,7 +1453,7 @@ namespace CommonUniverse {
 				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
 		}
-		if (hModule == NULL || hModule2 == NULL) {
+		if (hUniverseModule == NULL || hAIGCAgentModule == NULL) {
 			g_hCBTHook = SetWindowsHookEx(WH_CBT, WebRTCBTProc, NULL, ::GetCurrentThreadId());
 		}
 		return true;
@@ -2394,32 +2529,53 @@ namespace CommonUniverse {
 				return false;
 			}
 		}
-		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
-		if (hModule == nullptr)
-			hModule = ::LoadLibrary(L"AIGCAgent.dll");
-		if (hModule == nullptr) {
+		CString strData = _T("");
+		CString strChromeRTFilePath = _T("");
+		CString strUniverseFilePath = _T("");
+		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile))
+		{
+			wifstream fin(strCfgDataFile, wifstream::binary);
+			std::wstringstream stream;
+			stream << fin.rdbuf();
+			strData = stream.str().c_str();
+			fin.close();
+			int nPos = strData.Find(_T("Universe"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 8);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strUniverseFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strUniverseFilePath) == false)
+					strUniverseFilePath = _T("");
+			}
+			nPos = strData.Find(_T("AIGCAgent"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 9);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strChromeRTFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strChromeRTFilePath) == false)
+					strChromeRTFilePath = _T("");
+			}
+		}
+
+		HMODULE hAIGCAgentModule = ::LoadLibrary(L"AIGCAgent.dll");
+		if (hAIGCAgentModule == nullptr && strChromeRTFilePath != _T("")) {
+			hAIGCAgentModule = ::LoadLibrary(strChromeRTFilePath);
+		}
+		if (hAIGCAgentModule == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
 			if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
 				m_szBuffer) == S_OK) {
-				CString strChromeRTFilePath = CString(m_szBuffer);
+				strChromeRTFilePath = CString(m_szBuffer);
 				strChromeRTFilePath += _T("\\AIGCAssistant\\AIGCAgent.dll");
 				if (::PathFileExists(strChromeRTFilePath)) {
-					hModule = ::LoadLibrary(strChromeRTFilePath);
+					hAIGCAgentModule = ::LoadLibrary(strChromeRTFilePath);
 				}
 			}
-			if (hModule == nullptr)
-				hModule = ::LoadLibrary(L"AIGCAgent.dll");
-		}
-		HMODULE hModule2 = hModule;
-		if (hModule) {
-			//BOOL isBrowserModel = false;
-			//FuncIsBrowserModel =
-			//	(_IsBrowserModel)GetProcAddress(hModule, "IsBrowserModel");
-			//if (FuncIsBrowserModel != NULL) {
-			//	isBrowserModel = FuncIsBrowserModel(false, this);
-			//	if (isBrowserModel)
-			//		return false;
-			//}
 		}
 		TCHAR m_szBuffer[MAX_PATH];
 		TCHAR szDriver[MAX_PATH] = { 0 };
@@ -2431,16 +2587,18 @@ namespace CommonUniverse {
 		CString strTangramDll = szDriver;
 		strTangramDll += szDir;
 		strTangramDll += _T("universe.dll");
-		hModule = ::LoadLibrary(strTangramDll);
-		if (hModule) {
+		HMODULE hUniverseModule = ::LoadLibrary(strTangramDll);
+		if (hUniverseModule == NULL && strUniverseFilePath != _T(""))
+			hUniverseModule = ::LoadLibrary(strUniverseFilePath);
+		if (hUniverseModule) {
 			if (m_strContainer != _T("")) {
 				m_strContainer = _T(",") + m_strContainer + _T(",");
 				m_strContainer.Replace(_T(",,"), _T(","));
 			}
 			GetWebRTImpl _pWebRTImplFunction;
-			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+			_pWebRTImplFunction = (GetWebRTImpl)GetProcAddress(hUniverseModule, "GetWebRTImpl");
 			g_pSpaceTelescopeImpl = _pWebRTImplFunction(&g_pWebRT);
-			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hModule2;
+			g_pSpaceTelescopeImpl->m_hWebRTProxyModel = hAIGCAgentModule;
 
 			if (!afxContextIsDLL) {
 				m_strProviderID += _T("host");
@@ -2476,7 +2634,7 @@ namespace CommonUniverse {
 				g_pSpaceTelescopeImpl->m_pUniverseAppProxy = this;
 			}
 		}
-		if (hModule == NULL || hModule2 == NULL) {
+		if (hUniverseModule == NULL || hAIGCAgentModule == NULL) {
 			g_hCBTHook = SetWindowsHookEx(WH_CBT, WebRTCBTProc, NULL, ::GetCurrentThreadId());
 		}
 		return true;
@@ -3395,11 +3553,45 @@ namespace CommonUniverse {
 	}
 
 	bool CAIGCApp::WebRTInit(CString strID) {
+		CString strData = _T("");
+		CString strChromeRTFilePath = _T("");
+		CString strUniverseFilePath = _T("");
+		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile))
+		{
+			wifstream fin(strCfgDataFile, wifstream::binary);
+			std::wstringstream stream;
+			stream << fin.rdbuf();
+			strData = stream.str().c_str();
+			fin.close();
+			int nPos = strData.Find(_T("Universe"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 8);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strUniverseFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strUniverseFilePath) == false)
+					strUniverseFilePath = _T("");
+			}
+			nPos = strData.Find(_T("AIGCAgent"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 9);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strChromeRTFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strChromeRTFilePath) == false)
+					strChromeRTFilePath = _T("");
+			}
+		}
 		DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
 		DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 		if (hModule == nullptr)
 			hModule = ::LoadLibrary(L"AIGCAgent.dll");
+		if (hModule == nullptr && strChromeRTFilePath != _T(""))
+			hModule = ::LoadLibrary(strChromeRTFilePath);
 		if (hModule == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
 			if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
@@ -3410,8 +3602,6 @@ namespace CommonUniverse {
 					hModule = ::LoadLibrary(strChromeRTFilePath);
 				}
 			}
-			if (hModule == nullptr)
-				hModule = ::LoadLibrary(L"AIGCAgent.dll");
 		}
 		if (hModule) {
 			BOOL isBrowserModel = false;
@@ -3438,6 +3628,8 @@ namespace CommonUniverse {
 		strTangramDll += _T("universe.dll");
 		HMODULE hModule2 = hModule;
 		hModule = ::LoadLibrary(strTangramDll);
+		if (hModule == NULL && strUniverseFilePath != _T(""))
+			hModule = ::LoadLibrary(strUniverseFilePath);
 		if (hModule) {
 			if (m_strContainer != _T("")) {
 				m_strContainer = _T(",") + m_strContainer + _T(",");
@@ -3673,11 +3865,45 @@ namespace CommonUniverse {
 	}
 
 	bool CAIGCAppEx::WebRTInit(CString strID) {
+		CString strData = _T("");
+		CString strChromeRTFilePath = _T("");
+		CString strUniverseFilePath = _T("");
+		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile))
+		{
+			wifstream fin(strCfgDataFile, wifstream::binary);
+			std::wstringstream stream;
+			stream << fin.rdbuf();
+			strData = stream.str().c_str();
+			fin.close();
+			int nPos = strData.Find(_T("Universe"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 8);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strUniverseFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strUniverseFilePath) == false)
+					strUniverseFilePath = _T("");
+			}
+			nPos = strData.Find(_T("AIGCAgent"));
+			if (nPos != -1) {
+				CString strTemp = strData.Mid(nPos + 9);
+				nPos = strTemp.Find(_T(".dll"));
+				strTemp = strTemp.Left(nPos + 4);
+				nPos = strTemp.Find(_T(":"));
+				strChromeRTFilePath = strTemp.Mid(nPos - 1);
+				if (::PathFileExists(strChromeRTFilePath) == false)
+					strChromeRTFilePath = _T("");
+			}
+		}
 		DPI_AWARENESS_CONTEXT dpiAwarenessContext = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2;
 		DpiUtil::SetProcessDpiAwarenessContext(dpiAwarenessContext);
 		HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 		if (hModule == nullptr)
 			hModule = ::LoadLibrary(L"AIGCAgent.dll");
+		if (hModule == nullptr && strChromeRTFilePath != _T(""))
+			hModule = ::LoadLibrary(strChromeRTFilePath);
 		if (hModule == nullptr) {
 			TCHAR m_szBuffer[MAX_PATH];
 			if (SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0,
@@ -3717,6 +3943,8 @@ namespace CommonUniverse {
 		strTangramDll += _T("universe.dll");
 		HMODULE hModule2 = hModule;
 		hModule = ::LoadLibrary(strTangramDll);
+		if (hModule == nullptr && strUniverseFilePath != _T(""))
+			hModule = ::LoadLibrary(strUniverseFilePath);
 		if (hModule) {
 			if (m_strContainer != _T("")) {
 				m_strContainer = _T(",") + m_strContainer + _T(",");
