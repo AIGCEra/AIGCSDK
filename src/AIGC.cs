@@ -16,15 +16,15 @@ namespace AIGC
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate void InitWebRT(IntPtr IUnkPtr, IntPtr IUnkWndPtr);
-        static string BuildConfigDataFile(string strExeName, string strProductName, string strCompanyPathName)
+        delegate void InitWebRT(IntPtr IUnkPtr, IntPtr IUnkWndPtr);
+        private static string BuildConfigDataFile(string strExeName, string strProductName, string strCompanyPathName)
         {
             string _strProductName = strProductName.ToLower();
             string _strCompanyPathName = strCompanyPathName.ToLower();
             StringBuilder sb = new StringBuilder();
             sb.Append(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)).Append("\\TangramData\\").Append(strExeName).Append("\\");
             string _strConfigDataFile = sb.ToString().ToLower();
-            if (!Directory.Exists(_strConfigDataFile))
+            if (Directory.Exists(_strConfigDataFile) == false)
                 Directory.CreateDirectory(_strConfigDataFile);
             using (var md5 = MD5.Create())
             {
@@ -34,7 +34,7 @@ namespace AIGC
                 _strConfigDataFile += BitConverter.ToString(result).Replace("-", "");
             }
             _strConfigDataFile += "\\";
-            if (!Directory.Exists(_strConfigDataFile))
+            if (Directory.Exists(_strConfigDataFile) == false)
                 Directory.CreateDirectory(_strConfigDataFile);
             _strConfigDataFile += strExeName;
             _strConfigDataFile += ".tangram";
@@ -43,34 +43,20 @@ namespace AIGC
 
         public static bool InitCosmos(object StartObj, object MainWndObj = null)
         {
-            string strCfgDataFile = BuildConfigDataFile("aigcbrowser", "aigcbrowser", "Tangram Team");
-            string strData = File.ReadAllText(strCfgDataFile);
-            string strUniverseFilePath = "";
-            //string strChromeRTFilePath = "";
-            int nPos = strData.IndexOf("Universe");
-            if (nPos != -1)
-            {
-                String strTemp = strData.Substring(nPos + 8);
-                nPos = strTemp.IndexOf(".dll");
-                strTemp = strTemp.Substring(0, nPos + 4);
-                nPos = strTemp.IndexOf(":");
-                strUniverseFilePath = strTemp.Substring(nPos - 1);
-                if (!File.Exists(strUniverseFilePath)) { strUniverseFilePath = ""; }
-            }
-            //nPos = strData.IndexOf("AIGCAgent");
-            //if (nPos != -1)
-            //{
-            //    String strTemp = strData.Substring(nPos + 9);
-            //    nPos = strTemp.IndexOf(".dll");
-            //    strTemp = strTemp.Substring(0, nPos + 4);
-            //    nPos = strTemp.IndexOf(":");
-            //    strChromeRTFilePath = strTemp.Substring(nPos - 1);
-            //    if (!File.Exists(strChromeRTFilePath)) { strChromeRTFilePath = ""; }
-            //}
             initDll = LoadLibrary(@"universe.DLL");
-            if (initDll == IntPtr.Zero && strUniverseFilePath != "")
+            if (initDll == IntPtr.Zero)
             {
-                initDll = LoadLibrary(strUniverseFilePath);
+                String strCfgFile = BuildConfigDataFile("aigcbrowser", "aigcbrowser", "Tangram Team");
+                if (File.Exists(strCfgFile) == false)
+                    strCfgFile = BuildConfigDataFile("aigcbrowser", "aigcbrowser.109", "Tangram Team");
+                string strData = File.ReadAllText(strCfgFile);
+                String strTemp = strData.Substring(strData.IndexOf("Universe") + 8);
+                if (String.IsNullOrEmpty(strTemp) == false)
+                {
+                    strTemp = strTemp.Substring(0, strTemp.IndexOf(".dll") + 4);
+                    initDll = LoadLibrary(strTemp.Substring(strTemp.IndexOf(":") - 1));
+                }
+
             }
             if (initDll != IntPtr.Zero)
             {

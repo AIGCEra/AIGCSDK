@@ -1352,6 +1352,10 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile) == false)
+		{
+			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
+		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
@@ -2533,6 +2537,10 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile) == false)
+		{
+			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
+		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
@@ -3371,7 +3379,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-				}
+			}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -3393,10 +3401,10 @@ namespace CommonUniverse {
 					return false;
 				}
 				break;
-			}
 		}
-		return true;
 	}
+		return true;
+}
 
 	BOOL CAIGCWinAppEx::IsBrowserModel(bool bCrashReporting) {
 		BOOL bWin32 =
@@ -3557,6 +3565,10 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile) == false)
+		{
+			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
+		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
@@ -3869,6 +3881,10 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
+		if (::PathFileExists(strCfgDataFile) == false)
+		{
+			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
+		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
