@@ -1352,10 +1352,6 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
-		if (::PathFileExists(strCfgDataFile) == false)
-		{
-			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
-		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
@@ -1532,10 +1528,8 @@ namespace CommonUniverse {
 					HANDLE hHandle = ::GetProp(m_pMainWnd->m_hWnd, _T("WebRTFrameWndInfo"));
 					if (hHandle == 0)
 					{
-						pWebRTFrameWndInfo = new WebRTFrameWndInfo();
+						pWebRTFrameWndInfo = g_pSpaceTelescopeImpl->InsertWebRTFrameWndInfo(m_hMainWnd);
 						hHandle = pWebRTFrameWndInfo;
-						::SetProp(m_hMainWnd, _T("WebRTFrameWndInfo"), pWebRTFrameWndInfo);
-						g_pSpaceTelescopeImpl->m_mapWebRTFrameWndInfo[m_hMainWnd] = pWebRTFrameWndInfo;
 					}
 					else
 					{
@@ -2082,10 +2076,8 @@ namespace CommonUniverse {
 								HANDLE hHandle = ::GetProp(m_pMainWnd->m_hWnd, _T("WebRTFrameWndInfo"));
 								if (hHandle == 0)
 								{
-									pWebRTFrameWndInfo = new WebRTFrameWndInfo();
+									pWebRTFrameWndInfo = g_pSpaceTelescopeImpl->InsertWebRTFrameWndInfo(m_hMainWnd);
 									hHandle = pWebRTFrameWndInfo;
-									::SetProp(m_hMainWnd, _T("WebRTFrameWndInfo"), pWebRTFrameWndInfo);
-									g_pSpaceTelescopeImpl->m_mapWebRTFrameWndInfo[m_hMainWnd] = pWebRTFrameWndInfo;
 								}
 								else
 								{
@@ -2537,10 +2529,6 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
-		if (::PathFileExists(strCfgDataFile) == false)
-		{
-			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
-		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
@@ -2713,7 +2701,7 @@ namespace CommonUniverse {
 					AttachCDockablePane(pDockablePane, pWebRTFrameWndInfo);
 				}
 				else
-					pWebRTFrameWndInfo->m_mapCtrlBarWnd[::GetWindowLong(_pBar->m_hWnd, GWL_ID)] = _pBar->m_hWnd;
+					g_pSpaceTelescopeImpl->AttachControlBar(pWebRTFrameWndInfo, _pBar->m_hWnd);
 			}
 		}
 	}
@@ -2738,10 +2726,8 @@ namespace CommonUniverse {
 					HANDLE hHandle = ::GetProp(m_pMainWnd->m_hWnd, _T("WebRTFrameWndInfo"));
 					if (hHandle == 0)
 					{
-						pWebRTFrameWndInfo = new WebRTFrameWndInfo();
+						pWebRTFrameWndInfo = g_pSpaceTelescopeImpl->InsertWebRTFrameWndInfo(m_hMainWnd);
 						hHandle = pWebRTFrameWndInfo;
-						::SetProp(m_hMainWnd, _T("WebRTFrameWndInfo"), pWebRTFrameWndInfo);
-						g_pSpaceTelescopeImpl->m_mapWebRTFrameWndInfo[m_hMainWnd] = pWebRTFrameWndInfo;
 					}
 					else
 					{
@@ -2769,7 +2755,7 @@ namespace CommonUniverse {
 								if (pBar->IsKindOf(RUNTIME_CLASS(CTabbedPane)))
 									AttachCDockablePane(pDockablePane, pWebRTFrameWndInfo);
 								else
-									pWebRTFrameWndInfo->m_mapCtrlBarWnd[::GetWindowLong(pBar->m_hWnd, GWL_ID)] = pBar->m_hWnd;
+									g_pSpaceTelescopeImpl->AttachControlBar(pWebRTFrameWndInfo, pBar->m_hWnd);
 							}
 						}
 					}
@@ -2864,23 +2850,6 @@ namespace CommonUniverse {
 					pWebRTFrameWndInfo = (WebRTFrameWndInfo*)hHandle;
 					if (m_pMainWnd->IsKindOf(RUNTIME_CLASS(CMDIFrameWnd))) {
 						pWebRTFrameWndInfo->m_nFrameType = 2;
-						//POSITION pos = NULL;
-						//CObList list;
-						//m_pDockingManager->GetPaneList(list, TRUE);
-						//for (pos = list.GetHeadPosition(); pos != NULL;)
-						//{
-						//	CBasePane* pBar = (CBasePane*)list.GetNext(pos);
-						//	ASSERT_VALID(pBar);
-						//	if (pBar->IsKindOf(RUNTIME_CLASS(CDockablePane)))
-						//	{
-						//		CDockablePane* pDockablePane = (CDockablePane*)pBar;
-
-						//		if (pBar->IsKindOf(RUNTIME_CLASS(CTabbedPane)))
-						//			AttachCDockablePane(pDockablePane, pWebRTFrameWndInfo);
-						//		else
-						//			pWebRTFrameWndInfo->m_mapCtrlBarWnd[::GetWindowLong(pBar->m_hWnd, GWL_ID)] = pBar->m_hWnd;
-						//	}
-						//}
 					}
 					else {
 						POSITION nPos = GetFirstDocTemplatePosition();
@@ -3379,7 +3348,7 @@ namespace CommonUniverse {
 						_T("\r\n\r\n********Chrome-Eclipse-CLR Mix-Model is not support ")
 						_T("MFC Share Dll********\r\n\r\n"));
 #endif
-			}
+				}
 				g_pSpaceTelescopeImpl->m_hMainWnd = NULL;
 				HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
 				if (hModule == nullptr)
@@ -3401,10 +3370,10 @@ namespace CommonUniverse {
 					return false;
 				}
 				break;
+			}
 		}
-	}
 		return true;
-}
+	}
 
 	BOOL CAIGCWinAppEx::IsBrowserModel(bool bCrashReporting) {
 		BOOL bWin32 =
@@ -3565,10 +3534,6 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
-		if (::PathFileExists(strCfgDataFile) == false)
-		{
-			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
-		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);
@@ -3881,10 +3846,6 @@ namespace CommonUniverse {
 		CString strChromeRTFilePath = _T("");
 		CString strUniverseFilePath = _T("");
 		CString strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser"), _T("Tangram Team"));
-		if (::PathFileExists(strCfgDataFile) == false)
-		{
-			strCfgDataFile = BuildConfigDataFile(_T("aigcbrowser"), _T("aigcbrowser.109"), _T("Tangram Team"));
-		}
 		if (::PathFileExists(strCfgDataFile))
 		{
 			wifstream fin(strCfgDataFile, wifstream::binary);

@@ -1979,6 +1979,8 @@ namespace CommonUniverse
 		virtual HWND GetMainWnd(int nChildID, CString strAppProxy) { return NULL; }
 		virtual void AttachMDIChild(HWND hFrame, HWND hMDIChild, HWND hChildClient) { }
 		virtual CString BuildConfigDataFile(CString strExeName, CString strProductName, CString strCompanyPathName) { return _T(""); }
+		virtual void AttachControlBar(WebRTFrameWndInfo* pInfo, HWND hCtrlBar) { }
+		virtual WebRTFrameWndInfo* InsertWebRTFrameWndInfo(HWND hWnd) { return NULL; }
 	};
 
 	class IWindowProvider {
