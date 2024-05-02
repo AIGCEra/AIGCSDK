@@ -1779,7 +1779,6 @@ namespace CommonUniverse
 			m_pWebRTAppProxy = nullptr;
 			m_pUniverseAppProxy = nullptr;
 			m_pCurMDIChildFormInfo = nullptr;
-			m_bEnableHardwareAcceleration = false;
 			m_strAppID = _T("");
 			m_strNtpXml = _T("");
 			m_strWebRTVer = _T("");
@@ -1803,7 +1802,6 @@ namespace CommonUniverse
 		bool m_bIsSupportCrashReporting = false;
 		bool m_bIsEclipseInit = false;
 		bool m_bIsCreatingWPFCtrl = false;
-		bool m_bEnableHardwareAcceleration;
 
 		DWORD m_dwThreadID = 0;
 		DWORD m_nAppType = 0;
@@ -1872,32 +1870,35 @@ namespace CommonUniverse
 		OmniboxViewViewsProxy* m_pCreatingOmniboxViewViews = nullptr;
 		CChromeRenderFrameHost* m_pCreatingChromeRenderFrameHostBase = nullptr;
 
+		map<HWND, CString>						m_mapUIData;
+		map<HWND, CString>						m_mapCtrlTag;
+		map<DWORD, IWebRT*>						m_mapRemoteTangramApp;
+		map<CString, IDispatch*>				m_mapObjDic;
+		map<CString, CComVariant>				m_mapValInfo;
+		map<CString, IWebRT*>					m_mapRemoteCosmos;
+		map<CString, CString>					m_mapDocAppName;
+		map<CString, CString>					m_mapDocTemplate;
+		map<CString, CString>					m_mapDocDefaultName;
+		map<CString, CString>					m_mapJavaNativeInfo;
+		map<CString, CString>					m_mapCreatingWorkBenchInfo;
+		map<CString, HWND>						m_mapSingleWndApp;
+		map<CString, IUniverseAppProxy*>		m_mapWebRTAppProxy;
+		map<CString, IWindowProvider*>			m_mapWindowProvider;
 
-		map<HWND, CString> m_mapUIData;
-		map<HWND, CString> m_mapCtrlTag;
-		map<DWORD, IWebRT*> m_mapRemoteTangramApp;
-		map<CString, IDispatch*> m_mapObjDic;
-		map<CString, CComVariant> m_mapValInfo;
-		map<CString, IWebRT*> m_mapRemoteCosmos;
-		map<CString, CString> m_mapDocAppName;
-		map<CString, CString> m_mapDocTemplate;
-		map<CString, CString> m_mapDocDefaultName;
-		map<CString, CString> m_mapJavaNativeInfo;
-		map<CString, CString> m_mapCreatingWorkBenchInfo;
-		map<CString, HWND> m_mapSingleWndApp;
-		map<CString, IUniverseAppProxy*> m_mapWebRTAppProxy;
-		map<CString, IWindowProvider*> m_mapWindowProvider;
-
-		map<HWND, IXobj*> m_mapXobj;
-		map<HWND, CWebViewImpl*> m_mapWebView;
-		map<HWND, HWND> m_mapBrowserForm;
-		map<HWND, IBrowser*> m_mapBrowserWnd;
-		map<HWND, IWebView*> m_mapFormWebPage;
-		map<HWND, IWorkBenchWindow*> m_mapWorkBenchWnd;
-		map<HWND, INuclei*> m_mapNuclei;
-		map<HWND, WebRTFrameWndInfo*> m_mapWebRTFrameWndInfo;
-		map<void*, IUnknown*> m_mapObjects;
-		map<IDispatch*, CString> m_mapObjEventDic;
+		map<HWND, IXobj*>						m_mapXobj;
+		map<HWND, CWebViewImpl*>				m_mapWebView;
+		map<HWND, HWND>							m_mapBrowserForm;
+		map<HWND, IBrowser*>					m_mapBrowserWnd;
+		map<HWND, IWebView*>					m_mapFormWebPage;
+		map<HWND, IWorkBenchWindow*>			m_mapWorkBenchWnd;
+		map<HWND, INuclei*>						m_mapNuclei;
+		map<HWND, WebRTFrameWndInfo*>			m_mapWebRTFrameWndInfo;
+		map<void*, IUnknown*>					m_mapObjects;
+		map<IDispatch*, CString>				m_mapObjEventDic;
+		//map<DWORD, LPPROCESSENTRY32>			m_mapProcessInfo;
+		map<DWORD, DWORD>						m_mapProcessInfo2;
+		map<CString, HWND>						m_mapProcessBindInfo;
+		map<CString, CString>					m_mapProcessConfig;
 
 		virtual void Run() {}
 		virtual void BrowserAppStart() {}
@@ -1931,7 +1932,7 @@ namespace CommonUniverse
 		virtual CString BuildConfigDataFile(CString strExeName, CString strProductName, CString strCompanyPathName) { return _T(""); }
 		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
 		virtual bool IsMDIClientNucleusNode(IXobj*) { return false; }
-		virtual bool GetbEnableHardwareAcceleration() { return false; }
+		virtual bool GetEnableHardwareAcceleration() { return false; }
 		virtual bool SetFrameInfo(HWND hWnd, HWND hFrame, CString strTemplateID, void* pDoc, void* pDocTemplate) { return false; }
 		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
 		virtual long GetMsgLong(HWND hXobj, CString strKey) { return 0; }
