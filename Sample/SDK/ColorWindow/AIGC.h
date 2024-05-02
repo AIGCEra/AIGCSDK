@@ -1901,85 +1901,58 @@ namespace CommonUniverse
 
 		virtual void Run() {}
 		virtual void BrowserAppStart() {}
-		virtual INucleus* ConnectNuclei(HWND,
-			HWND,
-			CString,
-			INuclei* pNuclei,
-			NucleusInfo*) {
-			return nullptr;
-		}
+		virtual void WebRTInit() {}
+		virtual void OnCLRHostExit() {}
+		virtual void OnBatteryChanged() {}
+		virtual void OnExitMainMsgPump() {}
+		virtual void SetMainWnd(HWND hMain) {}
+		virtual void ConnectMsgLoop(HWND hMsg) {}
+		virtual void AttachXobj(void* pXobjEvents) {}
+		virtual void ChromeTabCreated(CChromeTab* pTab) {}
+		virtual void SendIPCMsg(HWND hXobj, CString strMsgID) {}
+		virtual void OnNewSurfaceWnd(HWND hWnd, HWND hSurfaceWnd) {}
 		virtual void OnSubBrowserWndCreated(HWND hParent, HWND hBrowser) {}
 		virtual void OnRenderProcessCreated(CChromeRenderProcess* pProcess) {}
-		virtual void OnDocumentOnLoadCompleted(CChromeRenderFrameHost*,
-			HWND hHtmlWnd,
-			void*) {}
-		virtual void ChromeTabCreated(CChromeTab* pTab) {}
-		virtual CString GetProcessPath(const char* _ver, CString process_type) {
-			return _T("");
-		}
-		virtual CString GetSchemeBaseName() { return _T(""); }
-		virtual HICON GetAppIcon(int nIndex) { return NULL; }
-		virtual CChromeBrowserBase* GetChromeBrowserBase(HWND) { return nullptr; }
-		virtual IBrowser* GetHostBrowser(HWND hNodeWnd) { return nullptr; }
-		virtual void AttachXobj(void* pXobjEvents) {}
-		virtual void WebRTInit() {}
-		virtual INuclei* Observe(HWND, CString strName, CString strKey) {
-			return nullptr;
-		}
-		virtual IXobj* ObserveCtrl(__int64 handle, CString name, CString NodeTag) {
-			return nullptr;
-		}
-		virtual bool IsMDIClientNucleusNode(IXobj*) { return false; }
-		virtual void InserttoDataMap(int nType, CString strKey, void* pData) {}
-		virtual IWebView* GetWebPageFromForm(HWND) { return nullptr; }
-		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
-		virtual CSession* CreateCloudSession(CWebViewImpl*) { return nullptr; }
-		virtual CSession* GetCloudSession(IXobj*) { return nullptr; }
-		virtual void SetMainWnd(HWND hMain) {}
-		virtual IXobj* GetXobj(HWND hWnd) { return nullptr; }
-		virtual INucleus* GetNucleus(HWND hWnd) { return nullptr; }
-		virtual CWebViewImpl* GetWebPageImpl(HWND hWnd) { return nullptr; }
-		virtual CBrowserImpl* GetBrowserImpl(HWND hWnd) { return nullptr; }
-		virtual IXobj* ObserveXml(HWND hWnd, CString strKey, CString strXml) {
-			return nullptr;
-		}
-		virtual void SendIPCMsg(HWND hXobj, CString strMsgID) {}
-		virtual void InsertMsgData(HWND hXobj, CString strKey, CString strVal) {}
-		virtual void InsertMsgData(HWND hXobj, CString strKey, __int64 llVal) {}
 		virtual void InsertMsgData(HWND hXobj, CString strKey, long lVal) {}
 		virtual void InsertMsgData(HWND hXobj, CString strKey, float fVal) {}
-		virtual CString GetMsgStringData(HWND hXobj, CString strKey) {
-			return _T("");
-		}
-		virtual __int64 GetMsgInt64(HWND hXobj, CString strKey) { return 0; }
+		virtual void InsertMsgData(HWND hXobj, CString strKey, __int64 llVal) {}
+		virtual void InsertMsgData(HWND hXobj, CString strKey, CString strVal) {}
+		virtual void InserttoDataMap(int nType, CString strKey, void* pData) {}
+		virtual void AttachControlBar(WebRTFrameWndInfo* pInfo, HWND hCtrlBar) { }
+		virtual void OnUpdateParent(HWND hPWnd, HWND hWnd, int DeviceScaleFactor) {}
+		virtual void AttachMDIChild(HWND hFrame, HWND hMDIChild, HWND hChildClient) { }
+		virtual void OnNetworkChangeNotify(int ConnectType, __int64 NetworkHandle) {}
+		virtual void OnDocumentOnLoadCompleted(CChromeRenderFrameHost*, HWND hHtmlWnd, void*) {}
+		virtual void OnWebRTMessage(HWND hWnd, CChromeRenderFrameHost*, CommonUniverse::IPCMsg* pIPCInfo) {}
+		virtual CString GetFileMD5(CString strSRC) { return _T(""); }
+		virtual CString GetProcessPath(const char* _ver, CString process_type) { return _T(""); }
+		virtual CString GetSchemeBaseName() { return _T(""); }
+		virtual CString GetMsgStringData(HWND hXobj, CString strKey) { return _T(""); }
+		virtual CString BuildConfigDataFile(CString strExeName, CString strProductName, CString strCompanyPathName) { return _T(""); }
+		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
+		virtual bool IsMDIClientNucleusNode(IXobj*) { return false; }
+		virtual bool GetbEnableHardwareAcceleration() { return false; }
+		virtual bool SetFrameInfo(HWND hWnd, HWND hFrame, CString strTemplateID, void* pDoc, void* pDocTemplate) { return false; }
+		virtual long GetIPCMsgIndex(CString strMsgID) { return 0; }
 		virtual long GetMsgLong(HWND hXobj, CString strKey) { return 0; }
 		virtual float GetMsgFloat(HWND hXobj, CString strKey) { return 0.0f; }
-		virtual bool SetFrameInfo(HWND hWnd,
-			HWND hFrame,
-			CString strTemplateID,
-			void* pDoc,
-			void* pDocTemplate) {
-			return false;
-		}
-		virtual CTabStatsTrackerDelegate* SetTabStatsTrackerDelegate() {
-			return nullptr;
-		}
-		virtual void OnNetworkChangeNotify(int ConnectType, __int64 NetworkHandle) {}
-		virtual void OnWebRTMessage(HWND hWnd,
-			CChromeRenderFrameHost*,
-			CommonUniverse::IPCMsg* pIPCInfo) {}
-		virtual void OnCLRHostExit() {}
-		virtual void ConnectMsgLoop(HWND hMsg) {}
-		virtual void OnUpdateParent(HWND hPWnd, HWND hWnd, int DeviceScaleFactor) {}
-		virtual void OnNewSurfaceWnd(HWND hWnd, HWND hSurfaceWnd) {}
-		virtual void OnExitMainMsgPump() {}
-		virtual void OnBatteryChanged() {}
-		virtual wstring Json2Xml(wstring strJson, bool bJsonstr) { return L""; }
-		virtual CString GetFileMD5(CString strSRC) { return _T(""); }
+		virtual __int64 GetMsgInt64(HWND hXobj, CString strKey) { return 0; }
+		virtual HICON GetAppIcon(int nIndex) { return NULL; }
 		virtual HWND GetMainWnd(int nChildID, CString strAppProxy) { return NULL; }
-		virtual void AttachMDIChild(HWND hFrame, HWND hMDIChild, HWND hChildClient) { }
-		virtual CString BuildConfigDataFile(CString strExeName, CString strProductName, CString strCompanyPathName) { return _T(""); }
-		virtual void AttachControlBar(WebRTFrameWndInfo* pInfo, HWND hCtrlBar) { }
+		virtual IXobj* ObserveCtrl(__int64 handle, CString name, CString NodeTag) { return nullptr; }
+		virtual IXobj* GetXobj(HWND hWnd) { return nullptr; }
+		virtual IXobj* ObserveXml(HWND hWnd, CString strKey, CString strXml) { return nullptr; }
+		virtual INucleus* ConnectNuclei(HWND, HWND, CString, INuclei* pNuclei, NucleusInfo*) { return nullptr; }
+		virtual INucleus* GetNucleus(HWND hWnd) { return nullptr; }
+		virtual INuclei* Observe(HWND, CString strName, CString strKey) { return nullptr; }
+		virtual IWebView* GetWebPageFromForm(HWND) { return nullptr; }
+		virtual IBrowser* GetHostBrowser(HWND hNodeWnd) { return nullptr; }
+		virtual CChromeBrowserBase* GetChromeBrowserBase(HWND) { return nullptr; }
+		virtual CSession* CreateCloudSession(CWebViewImpl*) { return nullptr; }
+		virtual CSession* GetCloudSession(IXobj*) { return nullptr; }
+		virtual CWebViewImpl* GetWebPageImpl(HWND hWnd) { return nullptr; }
+		virtual CBrowserImpl* GetBrowserImpl(HWND hWnd) { return nullptr; }
+		virtual CTabStatsTrackerDelegate* SetTabStatsTrackerDelegate() { return nullptr; }
 		virtual WebRTFrameWndInfo* InsertWebRTFrameWndInfo(HWND hWnd) { return NULL; }
 	};
 
