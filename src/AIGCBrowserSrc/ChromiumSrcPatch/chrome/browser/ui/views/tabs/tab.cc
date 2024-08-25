@@ -718,9 +718,6 @@ std::u16string Tab::GetTooltipText(const gfx::Point& p) const {
 }
 
 void Tab::GetAccessibleNodeData(ui::AXNodeData* node_data) {
-  node_data->AddBoolAttribute(ax::mojom::BoolAttribute::kSelected,
-                              IsSelected());
-
   std::u16string name = controller_->GetAccessibleTabName(this);
   if (!name.empty()) {
     node_data->SetNameChecked(name);
@@ -886,14 +883,11 @@ void Tab::AlertStateChanged() {
 
 void Tab::SelectedStateChanged() {
   UpdateForegroundColors();
+  GetViewAccessibility().SetIsSelected(IsSelected());
 }
 
 bool Tab::IsSelected() const {
   return controller_->IsTabSelected(this);
-}
-
-bool Tab::IsDiscarded() const {
-  return data().is_tab_discarded;
 }
 
 bool Tab::HasThumbnail() const {

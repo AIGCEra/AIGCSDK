@@ -300,8 +300,8 @@
 #include "ash/constants/ash_switches.h"
 #include "ash/public/cpp/accelerators.h"
 #include "ash/public/cpp/metrics_util.h"
+#include "ash/wm/window_properties.h"
 #include "chrome/browser/ash/crosapi/browser_util.h"
-#include "chrome/browser/ui/ash/window_properties.h"
 #include "chrome/grit/chrome_unscaled_resources.h"
 #include "ui/compositor/throughput_tracker.h"
 #else
@@ -917,7 +917,8 @@ BrowserView::BrowserView(std::unique_ptr<Browser> browser)
       browser_->tab_strip_model(), this, std::move(tab_menu_model_factory));
   BrowserTabStripController* tabstrip_controller_ptr =
       tabstrip_controller.get();
-  auto tabstrip = std::make_unique<TabStrip>(std::move(tabstrip_controller));
+  auto tabstrip = std::make_unique<TabStrip>(std::move(tabstrip_controller),
+                                             browser_->tab_strip_model());
   tabstrip_ = tabstrip.get();
   tabstrip_controller_ptr->InitFromModel(tabstrip_);
   top_container_ = AddChildView(std::make_unique<TopContainerView>(this));
@@ -3929,7 +3930,7 @@ ui::ImageModel BrowserView::GetWindowIcon() {
   }
   auto* window = GetNativeWindow();
   int override_window_icon_resource_id =
-      window ? window->GetProperty(kOverrideWindowIconResourceIdKey) : -1;
+      window ? window->GetProperty(ash::kOverrideWindowIconResourceIdKey) : -1;
   if (override_window_icon_resource_id >= 0)
     return ui::ImageModel::FromImage(
         rb.GetImageNamed(override_window_icon_resource_id));

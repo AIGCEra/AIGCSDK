@@ -4033,11 +4033,11 @@ void RenderFrameHostImpl::RenderFrameCreated() {
 
   delegate_->RenderFrameCreated(this);
 
-  if (enabled_bindings_) {
-    GetFrameBindingsControl()->AllowBindings(enabled_bindings_);
+  if (!enabled_bindings_.empty()) {
+    GetFrameBindingsControl()->AllowBindings(enabled_bindings_.ToEnumBitmask());
   }
 
-  if (web_ui_ && enabled_bindings_ & BINDINGS_POLICY_WEB_UI) {
+  if (web_ui_ && enabled_bindings_.Has(BindingsPolicyValue::kWebUi)) {
     web_ui_->SetUpMojoConnection();
   }
 }
@@ -6983,22 +6983,24 @@ WebUI* RenderFrameHostImpl::GetWebUI() {
   return web_ui();
 }
 
-void RenderFrameHostImpl::AllowBindings(int bindings_flags) {
+void RenderFrameHostImpl::AllowBindings(BindingsPolicySet bindings) {
   // Never grant any bindings to browser plugin guests.
   if (GetProcess()->IsForGuestsOnly()) {
     NOTREACHED_IN_MIGRATION() << "Never grant bindings to a guest process.";
     return;
   }
   TRACE_EVENT2("navigation", "RenderFrameHostImpl::AllowBindings",
-               "render_frame_host", this, "bindings_flags", bindings_flags);
+               "render_frame_host", this, "bindings_flags",
+               bindings.ToEnumBitmask());
 
-  int webui_bindings = bindings_flags & kWebUIBindingsPolicyMask;
+  BindingsPolicySet webui_bindings =
+      Intersection(bindings, kWebUIBindingsPolicySet);
 
   // Ensure callers that specify non-zero WebUI bindings are doing so on a
   // RenderFrameHost that has WebUI associated with it. If we run the renderer
   // code in-process, the security invariant cannot be enforced, therefore it
   // should be skipped in that case.
-  if (webui_bindings != BINDINGS_POLICY_NONE &&
+  if (!webui_bindings.empty() &&
       !RenderProcessHost::run_renderer_in_process()) {
     ProcessLock process_lock = GetProcess()->GetProcessLock();
     if (!process_lock.is_locked_to_site() ||
@@ -7019,7 +7021,7 @@ void RenderFrameHostImpl::AllowBindings(int bindings_flags) {
 
   // Ensure we aren't granting WebUI bindings to a process that has already been
   // used to host other content.
-  if (webui_bindings && GetProcess()->IsInitializedAndNotDead() &&
+  if (!webui_bindings.empty() && GetProcess()->IsInitializedAndNotDead() &&
       !ChildProcessSecurityPolicyImpl::GetInstance()->HasWebUIBindings(
           GetProcess()->GetID())) {
     // This process has no bindings yet. Make sure it does not have any frames
@@ -7043,22 +7045,22 @@ void RenderFrameHostImpl::AllowBindings(int bindings_flags) {
     }
   }
 
-  if (webui_bindings) {
+  if (!webui_bindings.empty()) {
     ChildProcessSecurityPolicyImpl::GetInstance()->GrantWebUIBindings(
         GetProcess()->GetID(), webui_bindings);
   }
 
-  enabled_bindings_ |= bindings_flags;
+  enabled_bindings_.PutAll(bindings);
 
   if (is_render_frame_created()) {
-    GetFrameBindingsControl()->AllowBindings(enabled_bindings_);
-    if (web_ui_ && enabled_bindings_ & BINDINGS_POLICY_WEB_UI) {
+    GetFrameBindingsControl()->AllowBindings(enabled_bindings_.ToEnumBitmask());
+    if (web_ui_ && enabled_bindings_.Has(BindingsPolicyValue::kWebUi)) {
       web_ui_->SetUpMojoConnection();
     }
   }
 }
 
-int RenderFrameHostImpl::GetEnabledBindings() {
+BindingsPolicySet RenderFrameHostImpl::GetEnabledBindings() {
   return enabled_bindings_;
 }
 
@@ -7073,7 +7075,7 @@ void RenderFrameHostImpl::SetWebUIProperty(const std::string& name,
   // It could lie and send the corresponding IPC messages anyway, but we will
   // not act on them if enabled_bindings_ doesn't agree. If we get here without
   // WebUI bindings, terminate the renderer process.
-  if (enabled_bindings_ & BINDINGS_POLICY_WEB_UI) {
+  if (enabled_bindings_.Has(BindingsPolicyValue::kWebUi)) {
     web_ui_->SetProperty(name, value);
   } else {
     ReceivedBadMessage(GetProcess(), bad_message::RVH_WEB_UI_BINDINGS_MISMATCH);
@@ -7782,6 +7784,12 @@ void RenderFrameHostImpl::DocumentOnLoadCompleted() {
   }
 
   GetPage().set_is_on_load_completed_in_main_document(true);
+
+  // This may be called when the main frame document is replaced with the empty
+  // document during discard. Suppress document load notifications in this case.
+  if (was_discarded_) {
+    return;
+  }
 
   // Don't dispatch DocumentOnLoadCompletedInPrimaryMainFrame for non-primary
   // main frames. As most of the observers are interested only in the onload
@@ -9215,6 +9223,19 @@ void RenderFrameHostImpl::CreateNewWindow(
   bool wait_for_debugger =
       devtools_instrumentation::ShouldWaitForDebuggerInWindowOpen();
 
+  // We must send access information relative to the popin opener in order for
+  // the renderer to properly conduct checks.
+  // See https://explainers-by-googlers.github.io/partitioned-popins/
+  blink::mojom::PartitionedPopinParamsPtr partitioned_popin_params = nullptr;
+  RenderFrameHostImpl* partitioned_popin_opener =
+      new_main_rfh->delegate()->PartitionedPopinOpener();
+  if (partitioned_popin_opener && !IsNestedWithinFencedFrame()) {
+    partitioned_popin_params = blink::mojom::PartitionedPopinParams::New(
+        partitioned_popin_opener->ComputeTopFrameOrigin(
+            partitioned_popin_opener->GetLastCommittedOrigin()),
+        partitioned_popin_opener->ComputeSiteForCookies());
+  }
+
   mojom::CreateNewWindowReplyPtr reply = mojom::CreateNewWindowReply::New(
       new_main_rfh->GetFrameToken(), new_main_rfh->GetRoutingID(),
       std::move(pending_frame_receiver), std::move(widget_params),
@@ -9226,7 +9247,8 @@ void RenderFrameHostImpl::CreateNewWindow(
       blink::BrowsingContextGroupInfo(
           new_main_rfh->GetSiteInstance()->browsing_instance_token(),
           new_main_rfh->GetSiteInstance()->coop_related_group_token()),
-      delegate_->GetColorProviderColorMaps());
+      delegate_->GetColorProviderColorMaps(),
+      std::move(partitioned_popin_params));
 
   std::move(callback).Run(mojom::CreateNewWindowStatus::kSuccess,
                           std::move(reply));
@@ -9305,6 +9327,22 @@ void RenderFrameHostImpl::DestroyFencedFrame(FencedFrame& fenced_frame) {
   auto it = base::ranges::find_if(fenced_frames_,
                                   base::MatchesUniquePtr(&fenced_frame));
   CHECK(it != fenced_frames_.end());
+
+  RenderFrameHostImpl* inner_root = (*it)->GetInnerRoot();
+  std::optional<FencedFrameProperties> root_properties =
+      inner_root->frame_tree_node()->GetFencedFrameProperties(
+          FencedFramePropertiesNodeSource::kFrameTreeRoot);
+  if (root_properties.has_value() &&
+      root_properties->HasDisabledNetworkForCurrentFrameTree()) {
+    // When a fenced frame is removed, any nonces used to revoke the frame's
+    // network access no longer need to be tracked.
+    StoragePartitionImpl* storage_partition = inner_root->GetStoragePartition();
+    storage_partition->ClearNoncesInNetworkContextAfterDelay({
+        root_properties->partition_nonce()->GetValueIgnoringVisibility(),
+        inner_root->GetPage().credentialless_iframes_nonce(),
+    });
+  }
+
   fenced_frames_.erase(it);
   // An ancestor's network revocation status could've changed as a result of
   // this fenced frame being removed.
@@ -10229,6 +10267,16 @@ void RenderFrameHostImpl::BeginNavigation(
             DisallowActivationReasonId::kBeginNavigation)) {
       return;
     }
+  }
+
+  //  TODO(crbug.com/40496584):Resolved an issue where creating RPHI would cause
+  //  a crash when the browser context was shut down. We are actively exploring
+  //  the appropriate long-term solution. Please remove this condition once the
+  //  final fix is implemented.
+  BrowserContext* browser_context =
+      frame_tree_node()->navigator().controller().GetBrowserContext();
+  if (browser_context->ShutdownStarted()) {
+    return;
   }
 
   // See `owner_` invariants about `lifecycle_state_`.
@@ -11487,7 +11535,7 @@ void RenderFrameHostImpl::CommitNavigation(
       // network loader for security reasons.
       // http://crbug.com/829412: make an exception for a small whitelist
       // of WebUIs that need to be fixed to not make network requests in JS.
-      if ((enabled_bindings_ & kWebUIBindingsPolicyMask) &&
+      if ((enabled_bindings_.HasAny(kWebUIBindingsPolicySet)) &&
           !GetContentClient()->browser()->IsWebUIAllowedToMakeNetworkRequests(
               subresource_loader_factories_config.origin())) {
         pending_default_factory = std::move(factory_for_webui);
@@ -11937,6 +11985,14 @@ void RenderFrameHostImpl::HandleRendererDebugURL(const GURL& url) {
   GetProcess()->SetIsUsed();
 }
 
+void RenderFrameHostImpl::DiscardFrame() {
+  was_discarded_ = true;
+  BackForwardCache::DisableForRenderFrameHost(
+      this, BackForwardCacheDisable::DisabledReason(
+                BackForwardCacheDisable::DisabledReasonId::kDiscarded));
+  GetAssociatedLocalMainFrame()->Discard();
+}
+
 void RenderFrameHostImpl::CreateBroadcastChannelProvider(
     mojo::PendingAssociatedReceiver<blink::mojom::BroadcastChannelProvider>
         receiver) {
@@ -12034,7 +12090,7 @@ void RenderFrameHostImpl::SetWebUI(NavigationRequest& request) {
 
   // Since this is new WebUI instance, this RenderFrameHostImpl should not
   // have had any bindings. Verify that and grant the required bindings.
-  DCHECK_EQ(BINDINGS_POLICY_NONE, GetEnabledBindings());
+  DCHECK(GetEnabledBindings().empty());
   AllowBindings(web_ui_->GetBindings());
 }
 
@@ -14908,20 +14964,6 @@ void RenderFrameHostImpl::OnSameDocumentCommitProcessed(
   same_document_navigation_requests_.erase(navigation_token);
 }
 
-bool IsDocumentPolicyIncludeJSCallStacksInCrashReportsEnabled(
-    content::RenderFrameHost* rfh) {
-  if (std::optional<bool> state = base::FeatureList::GetStateIfOverridden(
-          blink::features::kDocumentPolicyIncludeJSCallStacksInCrashReports);
-      state.has_value()) {
-    return state.value();
-  }
-  content::RuntimeFeatureStateDocumentData* document_data =
-      content::RuntimeFeatureStateDocumentData::GetForCurrentDocument(rfh);
-  CHECK(document_data);
-  return document_data->runtime_feature_state_read_context()
-      .IsDocumentPolicyIncludeJSCallStacksInCrashReportsEnabled();
-}
-
 void RenderFrameHostImpl::MaybeGenerateCrashReport(
     base::TerminationStatus status,
     int exit_code) {
@@ -14973,8 +15015,9 @@ void RenderFrameHostImpl::MaybeGenerateCrashReport(
   if (!reason.empty()) {
     body.Set("reason", reason);
     if (reason == "unresponsive" &&
-        IsDocumentPolicyIncludeJSCallStacksInCrashReportsEnabled(
-            FromFrameToken(GetProcess()->GetID(), GetFrameToken()))) {
+        base::FeatureList::IsEnabled(
+            blink::features::
+                kDocumentPolicyIncludeJSCallStacksInCrashReports)) {
       RenderProcessHostImpl* rph =
           static_cast<RenderProcessHostImpl*>(GetProcess());
       const std::string& unresponsive_document_javascript_call_stack =
@@ -14982,11 +15025,12 @@ void RenderFrameHostImpl::MaybeGenerateCrashReport(
       const blink::LocalFrameToken& unresponsive_document_token =
           rph->GetUnresponsiveDocumentToken();
 
-      if (!unresponsive_document_javascript_call_stack.empty() &&
-          unresponsive_document_token == GetFrameToken()) {
-        body.Set("stack", unresponsive_document_javascript_call_stack);
-      } else {
-        body.Set("stack", "Unable to collect JS call stack.");
+      if (!unresponsive_document_javascript_call_stack.empty()) {
+        if (unresponsive_document_token == GetFrameToken()) {
+          body.Set("stack", unresponsive_document_javascript_call_stack);
+        } else {
+          body.Set("stack", "Unable to collect JS call stack.");
+        }
       }
     }
   }
@@ -17457,11 +17501,6 @@ void RenderFrameHostImpl::GetSandboxedFileSystemForBucket(
       bucket.ToBucketLocator(), directory_path_components, std::move(callback));
 }
 
-GlobalRenderFrameHostId RenderFrameHostImpl::GetAssociatedRenderFrameHostId()
-    const {
-  return GetGlobalId();
-}
-
 // begin Add by TangramTeam
 void RenderFrameHostImpl::SetFocus(bool bFocus) {
   RenderWidgetHostImpl* rwhi = GetRenderWidgetHost();
@@ -17771,8 +17810,9 @@ void RenderFrameHostImpl::SendCosmosMessage(CommonUniverse::IPCMsg* pMsg) {
 }
 // end Add by TangramTeam
 
-base::UnguessableToken RenderFrameHostImpl::GetDevToolsToken() const {
-  return devtools_frame_token();
+storage::BucketClientInfo RenderFrameHostImpl::GetBucketClientInfo() const {
+  return storage::BucketClientInfo{GetProcess()->GetID(), GetFrameToken(),
+                                   GetDocumentToken()};
 }
 
 std::ostream& operator<<(std::ostream& o,
@@ -17833,6 +17873,11 @@ void RenderFrameHostImpl::BindFileBackedBlobFactory(
 
 bool RenderFrameHostImpl::ShouldChangeRenderFrameHostOnSameSiteNavigation()
     const {
+  // Reloading from a discarded state will result in a same-site navigation. In
+  // these cases we should always create a new RFH for the navigation.
+  if (was_discarded_) {
+    return true;
+  }
   return ShouldCreateNewRenderFrameHostOnSameSiteNavigation(
              is_main_frame(), is_local_root(), has_committed_any_navigation(),
              must_be_replaced()) &&

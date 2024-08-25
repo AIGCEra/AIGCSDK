@@ -568,8 +568,8 @@ class CONTENT_EXPORT RenderFrameHostImpl
   void SendInterventionReport(const std::string& id,
                               const std::string& message) override;
   WebUI* GetWebUI() override;
-  void AllowBindings(int binding_flags) override;
-  int GetEnabledBindings() override;
+  void AllowBindings(BindingsPolicySet bindings) override;
+  BindingsPolicySet GetEnabledBindings() override;
   void SetWebUIProperty(const std::string& name,
                         const std::string& value) override;
   void DisableBeforeUnloadHangMonitorForTesting() override;
@@ -1635,6 +1635,10 @@ class CONTENT_EXPORT RenderFrameHostImpl
 
   // Sends a renderer-debug URL to the renderer process for handling.
   void HandleRendererDebugURL(const GURL& url);
+
+  // Requests that the renderer discard the frame associated with this host,
+  // freeing up as many resources as possible.
+  void DiscardFrame();
 
   // BEGIN IPC REVIEW BOUNDARY: to enforce security review for IPC, these
   // methods are defined in render_frame_host_impl_interface_bindings.cc.
@@ -2963,8 +2967,7 @@ class CONTENT_EXPORT RenderFrameHostImpl
       const storage::BucketInfo& bucket,
       const std::vector<std::string>& directory_path_components,
       blink::mojom::BucketHost::GetDirectoryCallback callback) override;
-  GlobalRenderFrameHostId GetAssociatedRenderFrameHostId() const override;
-  base::UnguessableToken GetDevToolsToken() const override;
+  storage::BucketClientInfo GetBucketClientInfo() const override;
 
   // Returns false if this document not the initial empty document, or if the
   // current document's input stream has been opened with document.open(),
@@ -4574,7 +4577,8 @@ class CONTENT_EXPORT RenderFrameHostImpl
   std::unique_ptr<input::TimeoutMonitor> close_timeout_;
 
   // Returns whether the tab was previously discarded.
-  // This is passed to CommitNavigationParams in NavigationRequest.
+  // This is passed to CommitNavigationParams in NavigationRequest or is set on
+  // the outermost main frame when its tree has been discarded.
   bool was_discarded_ = false;
 
   // Indicates whether this RenderFrameHost is in the process of loading a
@@ -4786,9 +4790,9 @@ class CONTENT_EXPORT RenderFrameHostImpl
   std::unique_ptr<blink::AssociatedInterfaceProvider>
       remote_associated_interfaces_;
 
-  // A bitwise OR of bindings types that have been enabled for this RenderFrame.
+  // The set of bindings types that have been enabled for this RenderFrame.
   // See BindingsPolicy for details.
-  int enabled_bindings_ = 0;
+  BindingsPolicySet enabled_bindings_;
 
   // Parsed permissions policy header. It is parsed from blink, received during
   // DidCommitProvisionalLoad. This is constant during the whole lifetime of

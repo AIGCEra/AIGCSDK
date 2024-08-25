@@ -1965,10 +1965,6 @@ ChromeContentBrowserClient::GetStoragePartitionConfigForSite(
 std::unique_ptr<content::WebContentsViewDelegate>
 ChromeContentBrowserClient::GetWebContentsViewDelegate(
     content::WebContents* web_contents) {
-  if (auto* registry =
-          performance_manager::PerformanceManagerRegistry::GetInstance()) {
-    registry->MaybeCreatePageNodeForWebContents(web_contents);
-  }
   return CreateWebContentsViewDelegate(web_contents);
 }
 
@@ -3917,11 +3913,21 @@ bool ShouldDisableForcedColorsForWebContent(content::WebContents* contents,
   return false;
 }
 
-bool IsForcedColorsEnabledForWebContent(content::WebContents* contents,
-                                        const ui::NativeTheme* native_theme) {
-  return native_theme->InForcedColorsMode() &&
-         !ShouldDisableForcedColorsForWebContent(contents,
-                                                 /*in_forced_colors=*/true);
+bool UpdateForcedColorsForWebContent(WebPreferences* web_prefs,
+                                     WebContents* web_contents,
+                                     const ui::NativeTheme* native_theme) {
+  auto old_in_forced_colors = web_prefs->in_forced_colors;
+  auto old_forced_colors_disabled = web_prefs->is_forced_colors_disabled;
+  bool in_forced_colors = native_theme->InForcedColorsMode();
+  bool should_disable_forced_colors =
+      ShouldDisableForcedColorsForWebContent(web_contents, in_forced_colors);
+
+  web_prefs->in_forced_colors =
+      in_forced_colors && !should_disable_forced_colors;
+  web_prefs->is_forced_colors_disabled = should_disable_forced_colors;
+
+  return old_in_forced_colors != web_prefs->in_forced_colors ||
+         old_forced_colors_disabled != web_prefs->is_forced_colors_disabled;
 }
 
 #if !BUILDFLAG(IS_ANDROID)
@@ -4596,11 +4602,7 @@ void ChromeContentBrowserClient::OverrideWebkitPrefs(
       break;
   }
 
-  web_prefs->in_forced_colors =
-      IsForcedColorsEnabledForWebContent(web_contents, GetWebTheme());
-
-  web_prefs->is_forced_colors_disabled = ShouldDisableForcedColorsForWebContent(
-      web_contents, GetWebTheme()->InForcedColorsMode());
+  UpdateForcedColorsForWebContent(web_prefs, web_contents, GetWebTheme());
 
   UpdatePreferredColorScheme(
       web_prefs,
@@ -4688,16 +4690,8 @@ bool ChromeContentBrowserClient::OverrideWebPreferencesAfterNavigation(
         parts->OverrideWebPreferencesAfterNavigation(web_contents, web_prefs);
   }
 
-  const bool in_forced_colors =
-      IsForcedColorsEnabledForWebContent(web_contents, GetWebTheme());
-  prefs_changed |= (web_prefs->in_forced_colors != in_forced_colors);
-  web_prefs->in_forced_colors = in_forced_colors;
-
-  const bool is_forced_colors_disabled = ShouldDisableForcedColorsForWebContent(
-      web_contents, GetWebTheme()->InForcedColorsMode());
   prefs_changed |=
-      (web_prefs->is_forced_colors_disabled != is_forced_colors_disabled);
-  web_prefs->is_forced_colors_disabled = is_forced_colors_disabled;
+      UpdateForcedColorsForWebContent(web_prefs, web_contents, GetWebTheme());
 
   prefs_changed |=
       UpdatePreferredColorScheme(web_prefs, web_contents->GetLastCommittedURL(),

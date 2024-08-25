@@ -1391,7 +1391,7 @@ void DevToolsWindow::ActivateContents(WebContents* contents) {
   }
 }
 
-void DevToolsWindow::AddNewContents(
+WebContents* DevToolsWindow::AddNewContents(
     WebContents* source,
     std::unique_ptr<WebContents> new_contents,
     const GURL& target_url,
@@ -1412,7 +1412,7 @@ void DevToolsWindow::AddNewContents(
       toolbox_web_contents_->GetRenderWidgetHostView()->SetSize(size);
     }
     UpdateBrowserWindow();
-    return;
+    return nullptr;
   }
 
   WebContents* inspected_web_contents = GetInspectedWebContents();
@@ -1421,6 +1421,7 @@ void DevToolsWindow::AddNewContents(
         source, std::move(new_contents), target_url, disposition,
         window_features, user_gesture, was_blocked);
   }
+  return nullptr;
 }
 
 void DevToolsWindow::WebContentsCreated(WebContents* source_contents,

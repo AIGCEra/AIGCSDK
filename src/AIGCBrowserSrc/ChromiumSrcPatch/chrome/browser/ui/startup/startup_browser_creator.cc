@@ -574,7 +574,6 @@ void RecordIncognitoForcedStart(bool should_launch_incognito,
 //    const std::vector<GURL>& first_run_urls,
 //    chrome::startup::IsProcessStartup process_startup,
 //    chrome::startup::IsFirstRun is_first_run,
-//    std::unique_ptr<OldLaunchModeRecorder> launch_mode_recorder,
 //    bool proceed) {
 //  if (!proceed)
 //    return;
@@ -582,8 +581,7 @@ void RecordIncognitoForcedStart(bool should_launch_incognito,
 //  StartupBrowserCreator browser_creator;
 //  browser_creator.AddFirstRunTabs(first_run_urls);
 //  browser_creator.LaunchBrowser(command_line, profile, cur_dir, process_startup,
-//                                is_first_run, std::move(launch_mode_recorder),
-//                                /*restore_tabbed_browser=*/true);
+//                                is_first_run, /*restore_tabbed_browser=*/true);
 //}
 #endif  // BUILDFLAG(IS_CHROMEOS_LACROS) || BUILDFLAG(ENABLE_DICE_SUPPORT)
 
@@ -688,7 +686,6 @@ void StartupBrowserCreator::LaunchBrowser(
     const base::FilePath& cur_dir,
     chrome::startup::IsProcessStartup process_startup,
     chrome::startup::IsFirstRun is_first_run,
-    std::unique_ptr<OldLaunchModeRecorder> launch_mode_recorder,
     bool restore_tabbed_browser) {
   TRACE_EVENT0("ui", "StartupBrowserCreator::LaunchBrowser");
   SCOPED_UMA_HISTOGRAM_TIMER("Startup.StartupBrowserCreator.LaunchBrowser");
@@ -705,7 +702,7 @@ void StartupBrowserCreator::LaunchBrowser(
       command_line, {profile, StartupProfileMode::kBrowserWindow});
 
   if (!IsSilentLaunchEnabled(command_line, profile)) {
-      // begin add by TangramTeam
+  // begin add by TangramTeam
 //#if BUILDFLAG(IS_CHROMEOS_LACROS) || BUILDFLAG(ENABLE_DICE_SUPPORT)
 //    auto* fre_service = FirstRunServiceFactory::GetForBrowserContext(profile);
 //    if (fre_service && fre_service->ShouldOpenFirstRun()) {
@@ -716,18 +713,17 @@ void StartupBrowserCreator::LaunchBrowser(
 //          FirstRunService::EntryPoint::kProcessStartup,
 //          base::BindOnce(&OpenNewWindowForFirstRun, command_line, profile,
 //                         cur_dir, first_run_tabs_, process_startup,
-//                         is_first_run, std::move(launch_mode_recorder)));
+//                         is_first_run));
 //      return;
 //    }
 //#endif
-      // end add by TangramTeam
-
+    // end add by TangramTeam
     StartupBrowserCreatorImpl lwp(cur_dir, command_line, this, is_first_run);
     lwp.Launch(profile,
                in_synchronous_profile_launch_
                    ? chrome::startup::IsProcessStartup::kYes
                    : chrome::startup::IsProcessStartup::kNo,
-               std::move(launch_mode_recorder), restore_tabbed_browser);
+               restore_tabbed_browser);
   }
   in_synchronous_profile_launch_ = false;
   profile_launch_observer.Get().AddLaunched(profile);
@@ -805,8 +801,7 @@ void StartupBrowserCreator::LaunchBrowserForLastProfiles(
       }
 #endif
       LaunchBrowser(command_line, profile_to_open, cur_dir, process_startup,
-                    is_first_run, std::make_unique<OldLaunchModeRecorder>(),
-                    restore_tabbed_browser);
+                    is_first_run, restore_tabbed_browser);
       return;
     }
 
@@ -1262,8 +1257,6 @@ bool StartupBrowserCreator::ProcessCmdLineImpl(
   // Delegate to the notification system; do not open a browser window here.
   if (command_line.HasSwitch(switches::kNotificationLaunchId)) {
     if (NotificationPlatformBridgeWin::HandleActivation(command_line)) {
-      OldLaunchModeRecorder().SetLaunchMode(
-          OldLaunchMode::kWinPlatformNotification);
       return true;
     }
     return false;
@@ -1292,8 +1285,6 @@ bool StartupBrowserCreator::ProcessCmdLineImpl(
     if (!StartGCPWSignin(command_line, incognito_profile))
       return false;
 
-    OldLaunchModeRecorder().SetLaunchMode(
-        OldLaunchMode::kCredentialProviderSignIn);
     return true;
   }
 #endif  // BUILDFLAG(IS_WIN)
@@ -1420,9 +1411,6 @@ void StartupBrowserCreator::ProcessLastOpenedProfiles(
     LaunchBrowser((profile == last_used_profile) ? command_line
                                                  : command_line_without_urls,
                   profile, cur_dir, process_startup, is_first_run,
-                  profile == last_used_profile
-                      ? std::make_unique<OldLaunchModeRecorder>()
-                      : nullptr,
                   /*restore_tabbed_browser=*/true);
     // We've launched at least one browser.
     process_startup = chrome::startup::IsProcessStartup::kNo;
