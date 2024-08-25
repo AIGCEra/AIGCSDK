@@ -1,0 +1,26 @@
+HKCR
+{
+	Tangram.TangramJava.1 = s 'TangramJava class'
+	{
+		CLSID = s '{19631222-1992-0612-1965-060120190303}'
+	}
+	Tangram.TangramJava = s 'TangramJava class'
+	{		
+		CurVer = s 'Tangram.TangramJava.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {19631222-1992-0612-1965-060120190303} = s 'TangramJava class'
+		{
+			ProgID = s 'Tangram.TangramJava.1'
+			VersionIndependentProgID = s 'Tangram.TangramJava'
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{19631222-1992-0612-1965-060119820911}'
+			Version = s '1.0'
+		}
+	}
+}

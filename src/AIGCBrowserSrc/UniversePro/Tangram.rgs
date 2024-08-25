@@ -1,0 +1,78 @@
+HKCR
+{
+	Universe.Cosmos.1 = s 'Universe Class'
+	{
+		CLSID = s '{19631222-1992-0612-1965-060119990606}'
+	}
+	Universe.Cosmos = s 'Universe Class'
+	{
+		CLSID = s '{19631222-1992-0612-1965-060119990606}'
+		CurVer = s 'Universe.Cosmos.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {19631222-1992-0612-1965-060119990606} = s 'Universe Class'
+		{
+			ProgID = s 'Universe.Cosmos.1'
+			VersionIndependentProgID = s 'Universe.Cosmos'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{19631222-1992-0612-1965-060119820911}'
+		}
+	}
+}
+HKLM
+{
+    Software
+    {
+        Microsoft
+        {
+            Office
+            {
+                Outlook
+                {
+                    Addins
+                    {
+                        'Universe.Cosmos'
+                        {
+                            val FriendlyName = s 'OutLook Plus Addin'
+                            val Description = s 'Tangram OutLook Addin'
+                            val LoadBehavior = d '00000003'
+                            val RequireShutdownNotification = d '00000001'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Word
+                {
+                    Addins
+                    {
+                        'Universe.Cosmos'
+                        {
+                            val FriendlyName = s 'Word Plus Addin'
+                            val Description = s 'Tangram Word Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Excel
+                {
+                    Addins
+                    {
+                        'Universe.Cosmos'
+                        {
+                            val FriendlyName = s 'Excel Plus Addin'
+                            val Description = s 'Tangram Excel Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

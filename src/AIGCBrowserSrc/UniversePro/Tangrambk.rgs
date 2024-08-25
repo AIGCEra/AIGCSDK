@@ -1,0 +1,136 @@
+HKCR
+{
+	Tangram.Tangram.1 = s 'Tangram Class'
+	{
+		CLSID = s '{19631222-1992-0612-1965-060119822002}'
+	}
+	Tangram.Tangram = s 'Tangram Class'
+	{
+		CLSID = s '{19631222-1992-0612-1965-060119822002}'
+		CurVer = s 'Tangram.Tangram.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {19631222-1992-0612-1965-060119822002} = s 'Tangram Class'
+		{
+			ProgID = s 'Tangram.Tangram.1'
+			VersionIndependentProgID = s 'Tangram.Tangram'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{19631222-1992-0612-1965-060119820911}'
+			'Implemented Categories' = s '' 
+			{ 
+				{59FB2056-D625-48D0-A944-1A85B5AB2640} = s '' 
+				{ 
+				} 
+			}
+		}
+	}
+}
+HKCU
+{
+    Software
+    {
+        Microsoft
+        {
+            Office
+            {
+                Project
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'Project Plus Addin'
+                            val Description = s 'Tangram Project Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Visio
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'Visio Plus Addin'
+                            val Description = s 'Tangram Visio Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Access
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'Access Plus Addin'
+                            val Description = s 'Tangram Access Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                PowerPoint
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'PowerPoint Plus Addin'
+                            val Description = s 'Tangram PowerPoint Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Outlook
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'OutLook Plus Addin'
+                            val Description = s 'Tangram OutLook Addin'
+                            val LoadBehavior = d '00000003'
+                            val RequireShutdownNotification = d '00000001'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Word
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'Word Plus Addin'
+                            val Description = s 'Tangram Word Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+                Excel
+                {
+                    Addins
+                    {
+                        'Tangram.Tangram'
+                        {
+                            val FriendlyName = s 'Excel Plus Addin'
+                            val Description = s 'Tangram Excel Addin'
+                            val LoadBehavior = d '00000003'
+                            val CommandLineSafe = d '00000000' 
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

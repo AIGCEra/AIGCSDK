@@ -1,0 +1,9 @@
+﻿<resourceview>
+    <window>
+    <node id="grid" name="Grid" rows="2" cols="1" height="287,831," width ="300,">
+      <node name="classview" id="nucleus"/>
+      <node name="classviewhost">
+      </node>
+    </node>
+  </window>
+</resourceview>

@@ -1,0 +1,164 @@
+﻿<html>
+
+<script>
+    function WndPage_OnPageLoaded(SourceWindow, URL) {
+        if (SourceWindow == window) {
+            var AppName = Tangram.AppKeyValue("appname");
+            WndPage.EnableSinkCLRCtrlCreatedEvent = true;
+            if (AppName == "devenv")
+            {
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlStartupDoc"));
+            }
+            else if(AppName == "excel")
+            {
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlExcelToolBar"));
+            }
+            else if (AppName == "outlook") {
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlOutLookToolBar"));
+            }
+            else if (AppName == "winword") {
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlWinWordToolBar"));
+            }
+            else if (AppName == "powerpnt") {
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlPowerPntToolBar"));
+            }
+            else if (AppName == "powerpnt") {
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlPowerPntToolBar"));
+            }
+            else{
+                WndPage.ExtendCtrl(0, "Default", WndPage.xtml("xtmlStartupDoc"));
+            }
+        }
+    }
+     function WndPage_OnClrControlCreated(Node, Ctrl, CtrlName, CtrlHandle) {
+        //alert(CtrlName);
+    }
+</script>
+
+<body>
+    <xml id="xtmlStartupDoc">
+        <tangramdesignertoolbar>
+            <window>
+                <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tabbedwnd" style="29">
+                    <node id="grid" name="TangramCommonDocument" caption="Tangram Application" rows="2" cols="1" height="350,250," width="500," middlecolor="RGB(255,224,192)">
+                        <node name="TangramTemplate" id="TangramTabCtrl" cnnid="tabbedwnd" tabstyle="18">
+                            <node name="TangramList" id="TangramListView" caption="Create New Document"></node>
+                        </node>
+                        <node name="TangramToolPane2" id="TangramTabCtrl" cnnid="tabbedwnd" tabstyle="18">
+                            <node name="DocumentTemplate" id="TabCtrl" caption="DocumentTemplate" cnnid="" relationnode="TangramList"></node>
+                        </node>
+                    </node>
+                    <node id="grid" name="TangramCLRPrj" caption=".NET Projects at Current Solution" rows="2" cols="1" height="350,250," width="500," middlecolor="RGB(255,224,192)">
+                        <node name="TangramCLRSolution" id="TangramTabCtrl" cnnid="tabbedwnd" tabstyle="18">
+                            <node name="TangramListCLR" id="TangramListView" caption=".NET Projects at Current Solution" style="1"></node>
+                        </node>
+                        <node name="TangramToolPane3" id="TangramTabCtrl" cnnid="tabbedwnd" tabstyle="18">
+                            <node name="DocumentTemplate" id="TabCtrl" caption="Detail Information for Selected .NET Project" cnnid="" relationnode="TangramListCLR"></node>
+                        </node>
+                    </node>
+                    <node id="grid" name="grid" caption="Tangram Designer" style="0" rows="2" cols="1" height="550,250," width="500," middlecolor="RGB(255,224,192)">
+                        <node name="TangramToolPane1" id="TangramTabCtrl" cnnid="tabbedwnd" style="18" activepage="0">
+                            <node name="grid" id="ClrCtrl" cnnid="TangramDesigner.SplitterDesigner,TangramCLR" caption="Create Grid Window" />
+                            <node name="nucleus" id="ClrCtrl" cnnid="TangramDesigner.HostViewDesigner,TangramCLR" caption="Create HostX View" />
+                            <node name="tabbedwnd" id="ClrCtrl" cnnid="TangramDesigner.TabWndDesigner,TangramCLR" caption="Create Tabbed Window" />
+                            <node name="axctrl" id="ClrCtrl" cnnid="TangramDesigner.AXCtrlDesigner,TangramCLR" caption="Create ActiveX Controls" />
+                            <node name="clrctrl" id="ClrCtrl" cnnid="TangramDesigner.CLRCtrlDesigner,TangramCLR" caption="Create .NET Controls" />
+                            <node name="wpfctrl" id="ClrCtrl" cnnid="TangramDesigner.WPFCtrlDesigner,TangramCLR" caption="Create WPF Controls" />
+                            <node name="cpp" id="ClrCtrl" cnnid="TangramDesigner.CppDesigner,TangramCLR" caption="C++ Components" />
+                            <node name="TangramEditor" id="TreeView" SetHtml="1" doctype="designer" tag="designer" caption="Tangram DOM Model">
+                                <TreeNode />
+                            </node>
+                        </node>
+                        <node name="TangramToolPane2" id="TangramTabCtrl" cnnid="tabbedwnd" style="18">
+                            <node name="TangramPropertyGrid" caption="Property Editor" id="ClrCtrl" cnnid="system.windows.forms.propertygrid,tangram" />
+                        </node>
+                    </node>
+                    <node name="winform" caption="WinForm Developer" id="ClrCtrl" cnnid="tangramdotnetlib.TangramforClr, tangramdotnetlib, version=1.0.0.0, culture=neutral, publickeytoken=90f9467f8999d660" />
+                    <node name="mfc" caption="MFC/C++" id="ActiveX" cnnid="about:blank" />
+                    <node name="eclipse" caption="Eclipse" id="ClrCtrl" cnnid="tangramdotnetlib.EclipsePlusCtrl, tangramdotnetlib, version=1.0.0.0, culture=neutral, publickeytoken=90f9467f8999d660" />
+                    <node name="AboutTangram" caption="About Tangram" id="ActiveX" cnnid="http://tangramdesigner.com/tangramdesigner/abouttangram.htm" />
+                </node>
+            </window>
+        </tangramdesignertoolbar>
+    </xml>
+    <xml id="xtmlExcelToolBar">
+        <tangramdesignertoolbar>
+            <window>
+                <node id="tangramtabctrl" name="tangramtabctrl" cnnid="tabbedwnd" style="29">
+                    <node id="grid" name="TangramCommonDocument" caption="Tangram Application" rows="2" cols="1" height="350,250," width="500," middlecolor="RGB(255,224,192)">
+                        <node name="TangramTemplate" id="TangramTabCtrl" cnnid="tabbedwnd" tabstyle="18">
+                            <node name="TangramList" id="TangramListView" caption="Create New Document"></node>
+                        </node>
+                        <node name="TangramToolPane2" id="TangramTabCtrl" cnnid="tabbedwnd" tabstyle="18">
+                            <node name="DocumentTemplate" id="TabCtrl" caption="DocumentTemplate" cnnid="" relationnode="TangramList"></node>
+                        </node>
+                    </node>
+                    <node id="grid" name="grid" caption="Tangram Designer" style="0" rows="2" cols="1" height="550,250," width="500," middlecolor="RGB(255,224,192)">
+                        <node name="TangramToolPane1" id="TangramTabCtrl" cnnid="tabbedwnd" style="18" activepage="0">
+                            <node name="grid" id="ClrCtrl" cnnid="TangramDesigner.SplitterDesigner,TangramCLR" caption="Create Grid Window" />
+                            <node name="nucleus" id="ClrCtrl" cnnid="TangramDesigner.HostViewDesigner,TangramCLR" caption="Create HostX View" />
+                            <node name="tabbedwnd" id="ClrCtrl" cnnid="TangramDesigner.TabWndDesigner,TangramCLR" caption="Create Tabbed Window" />
+                            <node name="axctrl" id="ClrCtrl" cnnid="TangramDesigner.AXCtrlDesigner,TangramCLR" caption="Create ActiveX Controls" />
+                            <node name="clrctrl" id="ClrCtrl" cnnid="TangramDesigner.CLRCtrlDesigner,TangramCLR" caption="Create .NET Controls" />
+                            <node name="wpfctrl" id="ClrCtrl" cnnid="TangramDesigner.WPFCtrlDesigner,TangramCLR" caption="Create WPF Controls" />
+                            <node name="cpp" id="ClrCtrl" cnnid="TangramDesigner.CppDesigner,TangramCLR" caption="C++ Components" />
+                            <node name="TangramEditor" id="TreeView" SetHtml="1" doctype="designer" tag="designer" caption="Tangram DOM Model">
+                                <TreeNode />
+                            </node>
+                        </node>
+                        <node name="TangramToolPane2" id="TangramTabCtrl" cnnid="tabbedwnd" style="18">
+                            <node name="TangramPropertyGrid" caption="Property Editor" id="ClrCtrl" cnnid="system.windows.forms.propertygrid,tangram" />
+                        </node>
+                    </node>
+                    <node name="Excel" caption="Tangram for Excel" id="ActiveX" cnnid="about:blank" />
+                    <node name="AboutTangram" caption="About Tangram" id="ActiveX" cnnid="http://tangramdesigner.com/tangramdesigner/abouttangram.htm" />
+                </node>
+            </window>
+        </tangramdesignertoolbar>
+    </xml>
+    <xml id="xtmlOutLookToolBar">
+        <tangramdesignertoolbar>
+            <window>
+                <node id="grid" name="grid" caption="Tangram Designer" style="0" rows="2" cols="1" height="550,250," width="500," middlecolor="RGB(255,224,192)">
+                    <node name="TangramToolPane1" id="TangramTabCtrl" cnnid="tabbedwnd" style="18" activepage="0">
+                        <node name="nucleus" id="ClrCtrl" cnnid="TangramDesigner.HostViewDesigner,TangramCLR" caption="Create Host View" />
+                        <node name="grid" id="ClrCtrl" cnnid="TangramDesigner.SplitterDesigner,TangramCLR" caption="Create Grid Window" />
+                        <node name="tabbedwnd" id="ClrCtrl" cnnid="TangramDesigner.TabWndDesigner,TangramCLR" caption="Create Tabbed Window" />
+                        <node name="axctrl" id="ClrCtrl" cnnid="TangramDesigner.AXCtrlDesigner,TangramCLR" caption="Create ActiveX Controls" />
+                        <node name="clrctrl" id="ClrCtrl" cnnid="TangramDesigner.CLRCtrlDesigner,TangramCLR" caption="Create .NET Controls" />
+                        <node name="cpp" id="ClrCtrl" cnnid="TangramDesigner.CppDesigner,TangramCLR" caption="C++ Components" />
+                        <node name="TangramEditor" id="TreeView" SetHtml="1" doctype="designer" tag="designer" caption="Tangram DOM Model">
+                            <TreeNode />
+                        </node>
+                    </node>
+                    <node name="TangramToolPane2" id="TangramTabCtrl" cnnid="tabbedwnd" style="18">
+                        <node name="TangramPropertyGrid" caption="Property Editor" id="ClrCtrl" cnnid="system.windows.forms.propertygrid,tangram" />
+                    </node>
+                </node>
+            </window>
+        </tangramdesignertoolbar>
+    </xml>
+    <xml id="xtmlWinWordToolBar">
+        <tangramdesignertoolbar>
+            <window>
+                <node id="grid" name="grid" caption="Tangram Designer" style="0" rows="2" cols="1" height="550,250," width="500," middlecolor="RGB(255,224,192)">
+                    <node name="TangramToolPane1" id="TangramTabCtrl" cnnid="tabbedwnd" style="18" activepage="0">
+                        <node name="nucleus" id="ClrCtrl" cnnid="TangramDesigner.HostViewDesigner,TangramCLR" caption="Create Host View" />
+                        <node name="grid" id="ClrCtrl" cnnid="TangramDesigner.SplitterDesigner,TangramCLR" caption="Create Grid Window" />
+                        <node name="tabbedwnd" id="ClrCtrl" cnnid="TangramDesigner.TabWndDesigner,TangramCLR" caption="Create Tabbed Window" />
+                        <node name="axctrl" id="ClrCtrl" cnnid="TangramDesigner.AXCtrlDesigner,TangramCLR" caption="Create ActiveX Controls" />
+                        <node name="clrctrl" id="ClrCtrl" cnnid="TangramDesigner.CLRCtrlDesigner,TangramCLR" caption="Create .NET Controls" />
+                        <node name="cpp" id="ClrCtrl" cnnid="TangramDesigner.CppDesigner,TangramCLR" caption="C++ Components" />
+                        <node name="TangramEditor" id="TreeView" SetHtml="1" doctype="designer" tag="designer" caption="Tangram DOM Model">
+                            <TreeNode />
+                        </node>
+                    </node>
+                    <node name="TangramToolPane2" id="TangramTabCtrl" cnnid="tabbedwnd" style="18">
+                        <node name="TangramPropertyGrid" caption="Property Editor" id="ClrCtrl" cnnid="system.windows.forms.propertygrid,tangram" />
+                    </node>
+                </node>
+            </window>
+        </tangramdesignertoolbar>
+    </xml>
+</body>
+</html>

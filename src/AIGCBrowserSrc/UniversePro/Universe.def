@@ -1,0 +1,11 @@
+; Universe.def : Declares the module parameters.
+
+LIBRARY      "Universe.DLL"
+
+EXPORTS
+	InitAIGCAgent					PRIVATE
+	InitWebRT						PRIVATE
+	FreeCLR							PRIVATE
+	GetWebRT						PRIVATE
+	GetWebRTImpl					PRIVATE
+	JNI_OnLoad						PRIVATE

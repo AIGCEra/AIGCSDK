@@ -1,0 +1,8 @@
+; TangramChromeCore.def : Declares the module parameters.
+
+LIBRARY      "WebRT.DLL"
+
+EXPORTS
+	InitApp			PRIVATE
+	InitApp2		PRIVATE
+	IsBrowserModel	PRIVATE

@@ -1,0 +1,730 @@
+/********************************************************************************
+ *           Web Runtime for Application - Version 1.0.1.202110220001           *
+ ********************************************************************************
+ * Copyright (C) 2002-2021 by Tangram Team.   All Rights Reserved.
+ *
+ * Web Runtime is a new, subversive and Internet Oriented Development Technology
+ * for Windows Desktop Software. Its core idea is that, relying on the open-source
+ * project of Chromium, developers are allowed to use their familiar software
+ * development technology to realize the Main Process of their application system
+ * as the Browser Process of Modern Web Browser. Because the Main Process is realized
+ * by the developers themselves, the application system developed in this way is
+ * completely different from modern web browser. This kind of application will
+ * integrate the infrastructure of modern web browser as a part of the system model,
+ * the application system contains not only the browser window inherent in the browser,
+ * but also other desktop elements oriented to the application, such as WinForms, Java
+ * and other mature software elements.
+ *
+ * There are Three Key Features of Webruntime:
+ * 1. Built-in Modern Web Browser: Independent Browser Window and Browser Window
+ *    as sub windows of other windows are supported in the application process;
+ * 2. DOM Plus: DOMPlus is a natural extension of the standard DOM system.
+ *    It allows the application system to support a kind of generalized web pages,
+ *    which are composed of standard DOM elements and binary components supported
+ *    by the application system;
+ * 3. JavaScript for Application: Similar to VBA in MS office, JavaScript will
+ *    become a built-in programmable language in the application system, so that
+ *    the application system can be expanded and developed for the Internet based
+ *    on modern javscript/Web technology.
+ *
+ * Built-in Full-Featured Modern Web Browser Subsystem
+ *		Since the main process of the application system is essentially a Browser
+ * Process, the application system can naturally create a new browser window. The
+ * difference with standard browsers is that we allow the browser window to be a child
+ * window of other windows. in sub-window model, we see a brand-new scene: a multi-tab
+ * browser sub-window, we think this structure is more suitable for organizing specific
+ * applications. Of course, the application system fully supports the creation of an
+ * independent browser window as a part of the complete application system, and the browser
+ * window serves as a natural extension of the ecological chain to ensure the richness
+ * and diversity of the application system content.
+ * DOM Plus:
+ *		Because a large number of mature binary components that conform to industry
+ * standards have formed a wealth of software asset accumulation, web runtime allows
+ * developers to regard these existing accumulation as new DOM elements and then become
+ * a part of web pages, this starting point eventually forms "DOM Plus". DOM plus is a
+ * natural extension of standard DOM for desktop applications, similar to the extension
+ * from "real number system" to "complex number system" in mathematical theory. Undoubtedly,
+ * for the development of mathematics, from "real number system" to "complex number system"
+ * is a huge leap, which can be said to be a decisive change in the development of modern
+ * mathematics. We hope that the evolution from "DOM" to "DOM plus" will have a similar
+ * effect, which is bound to be a huge change from desktop software to Internet desktop software.
+ *		Different from earlier IE, based on the sandbox mechanism of Modern Web Browser,
+ * we let these binary elements run in the Browser Process, completely isolated from the
+ * Browser's Renderer Process. This makes full use of the security mechanisms of modern
+ * browsers and also takes into account the accumulation of mature software component
+ * technologies. Based on such considerations, existing development technologies such as
+ * .NET, COM, Java, etc. can be fully applied to Internet software development.
+ *
+ * Use of this source code is governed by a BSD-style license that
+ * can be found in the LICENSE file.
+ *
+ * CONTACT INFORMATION:
+ * mailto:tangramteam@outlook.com or mailto:sunhuizlz@yeah.net
+ * https://www.webruntime.com
+ *******************************************************************************/
+
+// Universe.idl : IDL source for Universe
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Universe.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+interface INuclei;
+interface IXobj;
+interface INucleus;
+interface IWebRT;
+interface IWebRTCtrl;
+interface IWorkBenchWindow;
+interface IWebRTTreeView;
+interface IEclipseCtrl;
+interface IWebView;
+interface IBrowser;
+interface IXobjCollection;
+
+typedef
+[
+	helpstring("Open URL for Chromium Based WebBrowser")
+]
+enum BrowserWndOpenDisposition {
+	UNKNOWN_TAB = 0x00000000,
+	CURRENT_TAB = 0x00000001,
+	// Indicates that only one tab with the url should exist in the same window.
+	SINGLETON_TAB = 0x00000002,
+	NEW_FOREGROUND_TAB = 0x00000003,
+	NEW_BACKGROUND_TAB = 0x00000004,
+	NEW_POPUP = 0x00000005,
+	NEW_WINDOW = 0x00000006,
+	SAVE_TO_DISK = 0x00000007,
+	OFF_THE_RECORD = 0x00000008,
+	IGNORE_ACTION = 0x00000009,
+	// Activates an existing tab containing the url, rather than navigating.
+	// This is similar to SINGLETON_TAB, but searches across all windows from
+	// the current profile and anonymity (instead of just the current one);
+	// closes the current tab on switching if the current tab was the NTP with
+	// no session history; and behaves like CURRENT_TAB instead of
+	// NEW_FOREGROUND_TAB when no existing tab is found.
+	SWITCH_TO_TAB = 0x0000000a
+	// Update when adding a new disposition.
+}BrowserWndOpenDisposition;
+
+typedef
+[
+	helpstring("")
+]
+enum GalaxyType
+{
+	MDIClientGalaxy = 0x00000000,
+	MDIChildGalaxy = 0x00000001,
+	SDIGalaxy = 0x00000002,
+	CtrlBarGalaxy = 0x00000003,
+	WinFormMDIClientGalaxy = 0x00000004,
+	WinFormMDIChildGalaxy = 0x00000005,
+	WinFormGalaxy = 0x00000006,
+	EclipseWorkBenchGalaxy = 0x00000007,
+	EclipseViewGalaxy = 0x00000008,
+	EclipseSWTGalaxy = 0x00000009,
+	WinFormControlGalaxy = 0x0000000a,
+	WebPageGalaxy = 0x0000000b,
+	NOGalaxy = 0x0000000c
+}GalaxyType;
+
+typedef
+[
+	helpstring("")
+]
+enum ObjEventType
+{
+	TangramNode = 0x00000000,
+	CosmosDocEvent = 0x00000001,
+	TangramNodeAllChildNode = 0x00000002,
+	CosmosDocAllGalaxyAllChildNode = 0x00000003,
+	CosmosDocAllGalaxyAllTopXobj = 0x00000004,
+	TangramGalaxyAllTopXobjAllChildNode = 0x00000005,
+	TangramGalaxyAllTopXobj = 0x00000006,
+	GalaxyClusterAllGalaxyAllTopXobjAllChildNode = 0x00000007,
+	GalaxyClusterAllGalaxyAllTopXobj = 0x00000008,
+	GalaxyClusterCtrlBarGalaxyAllTopXobjAllChildNode = 0x00000009,
+	GalaxyClusterCtrlBarGalaxyAllTopXobj = 0x0000000a,
+	GalaxyClusterNotCtrlBarGalaxyAllTopXobjAllChildNode = 0x0000000b,
+	GalaxyClusterNotCtrlBarGalaxyAllTopXobj = 0x0000000c,
+	CosmosDocAllCtrlBarGalaxyAllChildNode = 0x0000000d,
+	CosmosDocAllCtrlBarGalaxy = 0x0000000e
+}ObjEventType;
+
+typedef
+[
+	helpstring("")
+]
+enum XobjType
+{
+	BlankView = 0x00000001,
+	ActiveX = 0x00000002,
+	Grid = 0x00000004,
+	TabGrid = 0x00000008,
+
+	CLRCtrl = 0x00000010,
+	CLRForm = 0x00000020,
+	CLRWnd = 0x00000040,
+	TangramView = 0x00000080,
+	TangramTreeView = 0x0100,
+	TangramListView = 0x0200,
+	TabCtrl = 0x400,
+	TangramWPFCtrl = 0x800
+}XobjType;
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120160101),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IWebRTExtender : IDispatch {
+	[id(0)] HRESULT Close();
+	[propget, id(1)] HRESULT ActiveWorkBenchWindow(BSTR bstrID, [out, retval] IWorkBenchWindow** pVal);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120160918),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IEclipseExtender : IWebRTExtender {
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119631222),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IOfficeExtender : IWebRTExtender {
+	[id(101)] HRESULT AddVBAFormsScript(IDispatch* OfficeObject, BSTR bstrKey, BSTR bstrXml);
+	[id(102)] HRESULT InitVBAForm([in] IDispatch* newVal, [in]long nStyle, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	[id(103)] HRESULT GetNucleusFromVBAForm(IDispatch* pForm, [out, retval] INucleus** ppNucleus);
+	[id(104)] HRESULT GetActiveTopXobj(IDispatch* pForm, [out, retval] IXobj** WndXobj);
+	[id(105)] HRESULT GetObjectFromWnd(LONG hWnd, [out, retval] IDispatch** ppObjFromWnd);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-06011982C951),
+	dual,
+	nonextensible,
+	helpstring("IWebRTTreeNode Interface"),
+	pointer_default(unique)
+]
+interface IWebRTTreeNode : IDispatch {
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-0601198283A6),
+	dual,
+	nonextensible,
+	helpstring("IWebRTTreeViewCallBack Interface"),
+	pointer_default(unique)
+]
+interface IWebRTTreeViewCallBack : IDispatch {
+	[propput, id(1), helpstring("property WndXobj")] HRESULT WndXobj(IXobj* newVal);
+	[propget, id(2), helpstring("property Pages")] HRESULT Pages(long* retVal);
+	[id(100), helpstring("method OnInitTreeView")] HRESULT OnInitTreeView(IWebRTTreeView* pTangramTreeView, BSTR bstrXml);
+	[id(101), helpstring("method OnClick")] HRESULT OnClick(BSTR bstrXml, BSTR bstrXmlData);
+	[id(102), helpstring("method OnInit")] HRESULT OnInit(BSTR bstrXml);
+	[id(103), helpstring("method OnNewPage")] HRESULT OnNewPage(int nNewPage);
+	[id(104), helpstring("method CosmosAction")] HRESULT CosmosAction(BSTR bstrXml, [out, retval] BSTR* bstrRetXml);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-0601198283A5),
+	dual,
+	nonextensible,
+	helpstring("IWebRTTreeView Interface"),
+	pointer_default(unique)
+]
+interface IWebRTTreeView : IDispatch {
+	[propput, id(1), helpstring("property TangramTreeViewCallBack")] HRESULT TangramTreeViewCallBack(BSTR bstrKey, [in] IWebRTTreeViewCallBack* newVal);
+	[propget, id(2), helpstring("property FirstRoot")] HRESULT FirstRoot([out, retval] long* pVal);
+	[id(3), helpstring("method AddTreeNode")] HRESULT AddTreeNode(long hItem, BSTR bstrXml);
+	[id(4), helpstring("method InsertNode")] HRESULT InsertNode(BSTR bstrXml, [out, retval] long* hItem);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120160928),
+	dual,
+	hidden,
+	nonextensible,
+	helpstring("IWebRTEventObj Interface"),
+	pointer_default(unique)
+]
+interface IWebRTEventObj : IDispatch {
+	[propget, id(0)] HRESULT eventSource([out, retval] IDispatch** pVal);
+	[propput, id(0), helpstring("eventSource")] HRESULT eventSource([in] IDispatch* eventSource);
+	[propget, id(1)] HRESULT Index([out, retval] int* nVal);
+	[propput, id(1)] HRESULT Index(int newVal);
+	[propget, id(2)] HRESULT EventName([out, retval] BSTR* pVal);
+	[propput, id(2)] HRESULT EventName(BSTR newVal);
+	[propget, id(3)] HRESULT Object(int nIndex, [out, retval] IDispatch** pVal);
+	[propput, id(3)] HRESULT Object(int nIndex, IDispatch* newVal);
+	[propget, id(4)] HRESULT Value(int nIndex, [out, retval] VARIANT* pVal);
+	[propput, id(4)] HRESULT Value(int nIndex, VARIANT newVal);
+}
+
+[
+	uuid(19631222-1992-0612-1965-060119820004),
+	helpstring("IXobj Interface"),
+	pointer_default(unique)
+]
+interface IXobj : IDispatch {
+	[propget, id(1), helpstring("property ChildNodes")] HRESULT ChildNodes([out, retval]IXobjCollection** ppXobjColletion);
+	[propget, id(2), helpstring("property Rows")] HRESULT Rows([out, retval]long* nRows);
+	[propget, id(3), helpstring("property Cols")] HRESULT Cols([out, retval]long* nCols);
+	[propget, id(4), helpstring("property Row")] HRESULT Row([out, retval]long* nRow);
+	[propget, id(5), helpstring("property Col")] HRESULT Col([out, retval]long* nCol);
+	[propget, id(6), helpstring("property NodeType")] HRESULT XobjType([out, retval]XobjType* nType);
+	[propget, id(7), helpstring("property ParentXobj")] HRESULT ParentXobj([out, retval]IXobj** ppXobj);
+	[propget, id(8)] HRESULT URL([out, retval] BSTR* pVal);
+	[propput, id(8)] HRESULT URL([in] BSTR newVal);
+	[propget, id(9)] HRESULT Nuclei([out, retval] INuclei** pVal);
+	[propget, id(10), helpstring("property RootNode")] HRESULT RootXobj([out, retval]IXobj** ppXobj);
+	[propget, id(11), helpstring("property XObject")] HRESULT XObject([out, retval] VARIANT* pVar);
+	[propget, id(12), helpstring("property PlugIn")] HRESULT AxPlugIn([in] BSTR bstrPlugInName, [out, retval] IDispatch** pVal);
+	[propget, id(13), helpstring("When this Node is Contained in a Tabbed Node, "
+		"this property is the Tab Caption")] HRESULT Caption([out, retval] BSTR* pVal);
+	[propput, id(13), helpstring("property Caption")] HRESULT Caption([in] BSTR bstrCaption);
+	[propget, id(14), helpstring("property Name")] HRESULT Name([out, retval] BSTR* pVal);
+	[propput, id(14), helpstring("property Name")] HRESULT Name([in] BSTR bstrName);
+	[propget, id(15), helpstring("property Objects")] HRESULT Objects([in]long nType, [out, retval]IXobjCollection** ppXobjColletion);
+	[propget, id(16), helpstring("property Handle")] HRESULT Handle([out, retval]LONGLONG* hWnd);
+	[propget, id(17), helpstring("property Attribute")] HRESULT Attribute([in]BSTR bstrKey, [out, retval] BSTR* pVal);
+	[propput, id(17), helpstring("property Attribute")] HRESULT Attribute([in]BSTR bstrKey, [in]BSTR bstrVal);
+	[propget, id(18), helpstring("property Tag")] HRESULT Tag([out, retval] VARIANT* pVar);
+	[propput, id(18), helpstring("property Tag")] HRESULT Tag([in] VARIANT vVar);
+	[propget, id(19), helpstring("property OuterXml")] HRESULT OuterXml([out, retval] BSTR* pVal);
+	[propget, id(20), helpstring("property Key")] HRESULT Key([out, retval] BSTR* pVal);
+	[propget, id(21), helpstring("property WebPage")] HRESULT WebView([out, retval] IWebView** pVal);
+	[propget, id(22)] HRESULT NameAtWindowPage([out, retval] BSTR* pVal);
+	[propget, id(23), helpstring("property Width")] HRESULT Width([out, retval] LONG* pVal);
+	[propget, id(24), helpstring("property Height")] HRESULT Height([out, retval] LONG* pVal);
+	[propget, id(25), helpstring("property WinNucleus")] HRESULT WinNucleus([out, retval] INucleus** pVal);
+	[propget, id(26), helpstring("property XML")] HRESULT XML([out, retval] BSTR* pVal);
+	[propget, id(27), helpstring("property Extender")] HRESULT Extender([out, retval] IDispatch** pVal);
+	[propput, id(27), helpstring("property Extender")] HRESULT Extender([in] IDispatch* newVal);
+	[propget, id(28)] HRESULT DocXml([out, retval] BSTR* pVal);
+	[propget, id(29)] HRESULT rgbMiddle([out, retval] OLE_COLOR* pVal);
+	[propput, id(29)] HRESULT rgbMiddle([in] OLE_COLOR newVal);
+	[propget, id(30)] HRESULT rgbRightBottom([out, retval] OLE_COLOR* pVal);
+	[propput, id(30)] HRESULT rgbRightBottom([in] OLE_COLOR newVal);
+	[propget, id(31)] HRESULT rgbLeftTop([out, retval] OLE_COLOR* pVal);
+	[propput, id(31)] HRESULT rgbLeftTop([in] OLE_COLOR newVal);
+	[propget, id(32)] HRESULT Hmin([out, retval] int* pVal);
+	[propput, id(32)] HRESULT Hmin([in] int newVal);
+	[propget, id(33)] HRESULT Hmax([out, retval] int* pVal);
+	[propput, id(33)] HRESULT Hmax([in] int newVal);
+	[propget, id(34)] HRESULT Vmin([out, retval] int* pVal);
+	[propput, id(34)] HRESULT Vmin([in] int newVal);
+	[propget, id(35)] HRESULT Vmax([out, retval] int* pVal);
+	[propput, id(35)] HRESULT Vmax([in] int newVal);
+	[propget, id(36)] HRESULT HostXobj([out, retval] IXobj** pVal);
+	[propput, id(36)] HRESULT HostXobj([in] IXobj* newVal);
+	[propget, id(37)] HRESULT ActivePage([out, retval] int* pVal);
+	[propput, id(37)] HRESULT ActivePage([in] int newVal);
+	[propget, id(38), helpstring("property HostGalaxy")] HRESULT HostGalaxy([out, retval] INucleus** pVal);
+	[propget, id(39), helpstring("property Office Object")] HRESULT OfficeObj([out, retval] IDispatch** pVal);
+
+	[id(100), hidden] HRESULT ActiveTabPage(IXobj* pXobj);
+	[id(101), helpstring("method GetNodes")] HRESULT GetXobjs([in]BSTR bstrName, [out]IXobj** ppXobj, [out]IXobjCollection** ppXobjs, [out, retval]long* pCount);
+	[id(102), helpstring("method GetNode")] HRESULT GetXobj([in]long nRow, [in]long nCol, [out, retval]IXobj** ppXobj);
+	[id(103)] HRESULT GetCtrlByName(BSTR bstrName, VARIANT_BOOL bFindInChild, [out, retval] IDispatch** ppCtrlDisp);
+	[id(104)] HRESULT SendIPCMessage(BSTR bstrTo, BSTR bstrPayload, BSTR bstrExtra, BSTR bstrMsgId, [out, retval] BSTR* bstrRes);
+	[id(105)] HRESULT Observe(BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+	[id(106), helpstring("method LoadXML")] HRESULT LoadXML(int nType, BSTR bstrXML);
+	[id(107)] HRESULT ObserveEx(int nRow, int nCol, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+	[id(108)] HRESULT GetXobjByName([in]BSTR bstrName, [out, retval] IXobjCollection** pVal);
+	[id(109)] HRESULT GetCtrlValueByName(BSTR bstrName, VARIANT_BOOL bFindInChild, [out, retval] BSTR* bstrVal);
+	[id(110)] HRESULT SetCtrlValueByName(BSTR bstrName, VARIANT_BOOL bFindInChild, BSTR bstrVal);
+	[id(112)] HRESULT NavigateURL(BSTR bstrURL, IDispatch* dispObjforScript);
+	[id(113)] HRESULT GetChildXobjByName([in]BSTR bstrName, [out, retval] IXobj** pVal);
+	[id(114)] HRESULT GetUIScript([in]BSTR bstrCtrlName, [out, retval]  BSTR* bstrVal);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119822007),
+	dual,
+	nonextensible,
+	helpstring("IAppExtender Interface"),
+	pointer_default(unique)
+]
+interface IAppExtender : IDispatch {
+	[id(1), helpstring("method ProcessNotify")] HRESULT ProcessNotify([in]BSTR bstrXmlNotify);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119820001),
+	dual,
+	nonextensible,
+	helpstring("IWebRT Interface"),
+	pointer_default(unique)
+]
+interface IWebRT : IDispatch {
+	[propget, id(1)] HRESULT HostChromeBrowserWnd([out, retval] IBrowser** ppChromeWebBrowser);
+	[propget, id(2), helpstring("property AppKeyValue")] HRESULT AppKeyValue(BSTR bstrKey, [out, retval] VARIANT* pVal);
+	[propput, id(2), helpstring("property AppKeyValue")] HRESULT AppKeyValue(BSTR bstrKey, [in] VARIANT newVal);
+	[propget, id(3)] HRESULT RemoteHelperHWND([out, retval] LONGLONG* pVal);
+	[propput, id(3)] HRESULT RemoteHelperHWND([in]LONGLONG newVal);
+	[propget, id(4), helpstring("property RootNodes")] HRESULT RootNodes([out, retval]IXobjCollection** ppXobjColletion);
+	[propget, id(5)] HRESULT Extender([out, retval] IWebRTExtender** pVal);
+	[propput, id(5)] HRESULT Extender([in] IWebRTExtender* newVal);
+	[propget, id(6), helpstring("property CurrentActiveNode")] HRESULT CurrentActiveXobj([out, retval] IXobj** pVal);
+	[propget, id(7), helpstring("property CreatingNode")] HRESULT CreatingXobj([out, retval] IXobj** pVal);
+	[propget, id(8)] HRESULT RemoteCosmos(BSTR bstrID, [out, retval] IWebRT** pVal);
+
+	[id(0x00100)] HRESULT NavigateNode(IXobj* pXobj, BSTR bstrBrowserID, BSTR bstrXml, [out, retval] IXobj** pVal);
+	[id(0x00101)] HRESULT CreateNucleusGroup(LONGLONG hWnd, [out, retval]INuclei** ppNucleusCluster);
+	[id(0x00102)] HRESULT CreateOfficeDocument(BSTR bstrXml);
+	[id(0x00103), helpstring("method Create CLR Object")] HRESULT CreateCLRObj(BSTR bstrObjID, [out, retval]IDispatch** ppDisp);
+	[id(0x00104)] HRESULT CreateApplication(BSTR bstrAppID, BSTR bstrXml);
+	[id(0x00105), helpstring("method GetNucleus")] HRESULT GetNucleus(LONGLONG hHostWnd, [out, retval] INucleus** ppNucleus);
+	[id(0x00106)] HRESULT GetItemText(IXobj* pXobj, long nCtrlID, LONG nMaxLengeh, [out, retval] BSTR* bstrRet);
+	[id(0x00107)] HRESULT SetItemText(IXobj* pXobj, long nCtrlID, BSTR bstrText);
+	[id(0x00108)] HRESULT FireCosmosEventObj(IWebRTEventObj* pWebRTEventObj);
+	[id(0x00109), helpstring("method MessageBox")] HRESULT MessageBox(LONGLONG hWnd, BSTR bstrContext, BSTR bstrCaption, long nStyle, [out, retval] int* nRet);
+	[id(0x0010a)] HRESULT DeletePage(LONGLONG PageHandle);
+	[id(0x0010b), helpstring("method SetHostFocus")] HRESULT SetHostFocus(void);
+	[id(0x0010c)] HRESULT UpdateXobj(IXobj* pXobj);
+	[id(0x0010d)] HRESULT CreateCosmosEventObj([out, retval]IWebRTEventObj** ppWebRTEventObj);
+	[id(0x0010e)] HRESULT InitEclipseApp();
+	[id(0x0010f), helpstring("method CreateOutLookObj")] HRESULT CreateOutLookObj(BSTR bstrObjType, int nType, BSTR bstrURL, [out, retval] IDispatch** ppRetDisp);
+	[id(0x00110)] HRESULT ObserveNuclei(LONGLONG hWnd, BSTR bstrGalaxys, BSTR bstrKey, BSTR bstrXml, VARIANT_BOOL bSaveToConfigFile);
+	[id(0x00111)] HRESULT GetCtrlByName(IDispatch* pCtrl, BSTR bstrName, VARIANT_BOOL bFindInChild, [out, retval] IDispatch** ppCtrlDisp);
+	[id(0x00112)] HRESULT GetXobjFromHandle(LONGLONG hWnd, [out, retval] IXobj** ppRetXobj);
+	[id(0x00113)] HRESULT GetCtrlValueByName(IDispatch* pCtrl, BSTR bstrName, VARIANT_BOOL bFindInChild, [out, retval] BSTR* bstrVal);
+	[id(0x00114)] HRESULT SetCtrlValueByName(IDispatch* pCtrl, BSTR bstrName, VARIANT_BOOL bFindInChild, BSTR bstrVal);
+	[id(0x00115), hidden] HRESULT CreateCosmosCtrl(BSTR bstrAppID, [out, retval] IWebRTCtrl** ppRetCtrl);
+	[id(0x00116)] HRESULT InitCLRApp(BSTR strInitXml, [out, retval] LONGLONG* llHandle);
+	[id(0x00117)] HRESULT DeleteGalaxy(INucleus* pGalaxy);
+	[id(0x00118)] HRESULT GetWindowClientDefaultNode(IDispatch* pAddDisp, LONGLONG hParent, BSTR bstrWndClaName, BSTR bstrGalaxyClusterName, [out, retval] IXobj** ppXobj);
+	[id(0x00119), helpstring("method Create ChromeWebBrowser")] HRESULT CreateBrowser(ULONGLONG hParentWnd, BSTR strUrls, [out, retval]IBrowser** ppRet);
+	[id(0x0011a)] HRESULT NewWorkBench(BSTR bstrCosmosDoc, [out, retval] IWorkBenchWindow** ppWorkBenchWindow);
+	[id(0x0011b), helpstring("method Create CLR Object Remote")] HRESULT CreateCLRObjRemote(BSTR bstrObjID, BSTR bstrXmlData, LONGLONG hWnd, [out, retval]IDispatch** ppDisp);
+	[id(0x0011c)] HRESULT DestroyCtrl(LONGLONG hWnd);
+	[id(0x0011d)] HRESULT GetRemoteHostViewRect(LONGLONG hHostWnd, [out, retval] BSTR* strData);
+
+	[id(0x001000), helpstring("method CosmosCommand")] HRESULT CosmosCommand(IDispatch* RibbonControl);
+	[id(0x001001), helpstring("method CosmosGetImage")] HRESULT CosmosGetImage(BSTR strValue, [out, retval] IPictureDisp** ppdispImage);
+	[id(0x001002), helpstring("method CosmosGetVisible")] HRESULT CosmosGetVisible(IDispatch* RibbonControl, [out, retval] VARIANT* varVisible);
+	[id(0x001003), helpstring("method CosmosOnLoad")] HRESULT CosmosOnLoad(IDispatch* RibbonControl);
+	[id(0x001004), helpstring("method CosmosGetItemCount")] HRESULT CosmosGetItemCount(IDispatch* RibbonControl, [out, retval] long* nCount);
+	[id(0x001005), helpstring("method CosmosGetItemLabel")] HRESULT CosmosGetItemLabel(IDispatch* RibbonControl, long nIndex, [out, retval] BSTR* bstrLabel);
+	[id(0x001006), helpstring("method CosmosGetItemID")] HRESULT CosmosGetItemID(IDispatch* RibbonControl, long nIndex, [out, retval]BSTR* bstrID);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119820003),
+	dual,
+	nonextensible,
+	helpstring("INucleus Interface"),
+	pointer_default(unique)
+]
+interface INucleus : IDispatch {
+	[propget, id(DISPID_VALUE), helpstring("")] HRESULT Xobj([in]VARIANT vIndex, [out, retval]IXobj** ppXobj);
+	[propget, id(DISPID_NEWENUM), helpstring("")] HRESULT _NewEnum([out, retval]IUnknown** ppVal);
+	[propget, id(1), helpstring("property HWND")] HRESULT HWND([out, retval] LONGLONG* pVal);
+	[propget, id(2), helpstring("property VisibleXobj")] HRESULT VisibleXobj([out, retval] IXobj** pVal);
+	[propget, id(3)] HRESULT CurrentNavigateKey([out, retval] BSTR* pVal);
+	[propget, id(4)] HRESULT Nuclei([out, retval] INuclei** pVal);
+	[propget, id(5)] HRESULT HostWebPage([out, retval] IWebView** ppChromeWebPage);
+	[propget, id(6)] HRESULT HostBrowser([out, retval] IBrowser** ppChromeWebBrowser);
+	[propget, id(7), helpstring("")] HRESULT Count([out, retval]long* pCount);
+	[propget, id(8), helpstring("property RootXobjs")] HRESULT RootXobjs([out, retval]IXobjCollection** ppXobjColletion);
+	[propget, id(9)] HRESULT GalaxyXML([out, retval] BSTR* pVal);
+	[propget, id(10)] HRESULT GalaxyType([out, retval] GalaxyType* pVal);
+	[propget, id(11)] HRESULT Name([out, retval] BSTR* pVal);
+
+	[id(101), helpstring("method Detach")] HRESULT Detach(void);
+	[id(102), helpstring("method Attach")] HRESULT Attach(void);
+	[id(103), helpstring("method ModifyHost")] HRESULT ModifyHost(LONGLONG hHostWnd);
+	[id(104)] HRESULT Observe(BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+	[id(105)] HRESULT GetXml(BSTR bstrRootName, [out, retval] BSTR* bstrRet);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119820017),
+	dual,
+	nonextensible,
+	helpstring("IXobjCollection Interface"),
+	pointer_default(unique)
+]
+interface IXobjCollection : IDispatch {
+	[propget, id(1), helpstring("")] HRESULT XobjCount([out, retval]long* pCount);
+	[propget, id(DISPID_VALUE), helpstring("")] HRESULT Item([in]long iIndex, [out, retval]IXobj** ppTopWindow);
+	[propget, id(DISPID_NEWENUM), helpstring("")] HRESULT _NewEnum([out, retval]IUnknown** ppVal);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119820002),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface INuclei : IDispatch {
+	[propget, id(DISPID_VALUE), helpstring("")] HRESULT WinNucleus([in]VARIANT vIndex, [out, retval]INucleus** ppNucleus);
+	[propget, id(DISPID_NEWENUM), helpstring("")] HRESULT _NewEnum([out, retval]IUnknown** ppVal);
+	[propget, id(1), helpstring("")] HRESULT Count([out, retval]long* pCount);
+	[propget, id(2)] HRESULT NucleiXML([out, retval] BSTR* pVal);
+	[propget, id(3)] HRESULT Parent([out, retval] INuclei** pVal);
+	[propget, id(4)] HRESULT Xobj(BSTR bstrNodeName, [out, retval] IXobj** pVal);
+	[propget, id(5)] HRESULT XObject(BSTR bstrName, [out, retval] IDispatch** pVal);
+	[propget, id(6)] HRESULT NucleusName(LONGLONG hHwnd, [out, retval] BSTR* pVal);
+	[propget, id(7)] HRESULT Handle([out, retval] LONGLONG* pVal);
+	[propget, id(8)] HRESULT Width([out, retval] long* pVal);
+	[propput, id(8)] HRESULT Width([in] long newVal);
+	[propget, id(9)] HRESULT Height([out, retval] long* pVal);
+	[propput, id(9)] HRESULT Height([in] long newVal);
+	[propget, id(10)] HRESULT XobjNames([out, retval] BSTR* pVal);
+
+	[id(101)] HRESULT CreateNucleus(VARIANT ParentObj, VARIANT HostWnd, BSTR bstrNucleusName, [out, retval] INucleus** pRetGalaxy);
+	[id(102)] HRESULT Observe(IDispatch* Parent, BSTR CtrlName, BSTR NucleusName, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+	[id(103)] HRESULT ObserveCtrl(VARIANT Ctrl, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+	[id(104)] HRESULT GetXobj(BSTR bstrNucleusName, BSTR bstrNodeName, [out, retval] IXobj** pRetNode);
+	[id(105)] HRESULT GetCtrlInXobj(BSTR NodeName, BSTR CtrlName, [out, retval] IDispatch** ppCtrl);
+	[id(106)] HRESULT GetNucleusFromCtrl(IDispatch* ctrl, [out, retval] INucleus** ppNucleus);
+	[id(107)] HRESULT ObserveNuclei(BSTR bstrGalaxys, BSTR bstrKey, BSTR bstrXml, VARIANT_BOOL bSaveToConfigFile);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119825D34),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IWorkBenchWindow : IDispatch {
+	[propget, id(DISPID_VALUE), helpstring("")] HRESULT Ctrl([in]VARIANT vIndex, [out, retval]IEclipseCtrl** ppCtrl);
+	[propget, id(DISPID_NEWENUM), helpstring("")] HRESULT _NewEnum([out, retval]IUnknown** ppVal);
+	[propget, id(1), helpstring("")] HRESULT Count([out, retval]long* pCount);
+	[propget, id(2)] HRESULT Handle([out, retval] LONGLONG* pVal);
+	[propget, id(3)] HRESULT CosmosCtrl(LONGLONG hWnd, [out, retval] IEclipseCtrl** pVal);
+	[propget, id(4)] HRESULT Nuclei([out, retval] INuclei** pVal);
+	[propget, id(5)] HRESULT WinNucleus([out, retval] INucleus** pVal);
+
+	[id(101)] HRESULT Active();
+	[id(102), hidden] HRESULT CloseTangramUI();
+	[id(103)] HRESULT Observe(BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	[id(104)] HRESULT ObserveEx(BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	[id(105)] HRESULT ObserveinView(int nIndex, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120180828),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IBrowser : IDispatch {
+	[propget, id(1)] HRESULT RemoteXobj([out, retval] IXobj** pVal);
+	[propput, id(1)] HRESULT RemoteXobj([in]IXobj* newVal);
+	[propput, id(2)] HRESULT DrawHandle([in]LONGLONG newVal);
+
+	[id(101)] HRESULT OpenURL(BSTR bstrURL, BrowserWndOpenDisposition nDisposition, BSTR bstrKey, BSTR bstrXml);
+	[id(102)] HRESULT AddURLs(BSTR bstrURLs);
+	//[id(104)] HRESULT ExtendEx(BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	//[id(105)] HRESULT ExtendInView(int nIndex, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppRetXobj);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120180903),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IWebView : IDispatch {
+	[propget, id(1)] HRESULT HostWnd([out, retval] LONGLONG* pVal);
+	[propput, id(1)] HRESULT HostWnd([in] LONGLONG newVal);
+	[propget, id(2)] HRESULT WebBrowser([out, retval] IBrowser** ppWebBrowser);
+	[id(101)] HRESULT CreateForm(BSTR bstrKey, LONGLONG hParent, [out, retval]IDispatch** pRetForm);
+	[id(102)] HRESULT Observe(BSTR bstrKey, BSTR bstrXml, [out, retval]IXobj** pRetXobj);
+	[id(103)] HRESULT SendXmlMessage(IXobj* sender, BSTR bstrXml);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060119650606),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IOfficeObject : IDispatch {
+	[id(1)] HRESULT Show(VARIANT_BOOL bShow);
+	[id(2)] HRESULT Observe(BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	[id(3)] HRESULT UnloadCosmos();
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-0601198231DC),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IWebRTCtrl : IDispatch {
+	[propget, id(1), helpstring("property HWND")] HRESULT HWND([out, retval] LONGLONG* pVal);
+	[propget, id(2)] HRESULT Cosmos([out, retval] IWebRT** pVal);
+	[propget, id(1000)] HRESULT tag([out, retval] VARIANT* pVal);
+	[propput, id(1000)] HRESULT tag([in] VARIANT newVal);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120161001),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IWebRTAppCtrl : IWebRTCtrl {
+	[propput, id(100)] HRESULT AppCtrl([in] VARIANT_BOOL newVal);
+};
+
+[
+	object,
+	uuid(19631222-1992-0612-1965-060120160912),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IEclipseCtrl : IWebRTCtrl {
+	[propput, id(101), helpstring("Universe WinNucleus Window for SWT")] HRESULT Handle(BSTR bstrHandleName, [in] LONGLONG newVal);
+	[propget, id(102)] HRESULT EclipseViewHandle([out, retval] LONGLONG* pVal);
+	[propget, id(103)] HRESULT Nuclei([out, retval] INuclei** pVal);
+	[propget, id(104)] HRESULT WorkBenchWindow([out, retval] IWorkBenchWindow** pVal);
+	[propget, id(105)] HRESULT TopNuclei([out, retval] INuclei** pVal);
+	[propget, id(106)] HRESULT TopGalaxy([out, retval] INucleus** pVal);
+	[propget, id(107)] HRESULT ActiveTopXobj([out, retval] IXobj** pVal);
+	[propget, id(108), helpstring("property AppKeyValue")] HRESULT AppKeyValue(BSTR bstrKey, [out, retval] VARIANT* pVal);
+	[propput, id(108), helpstring("property AppKeyValue")] HRESULT AppKeyValue(BSTR bstrKey, [in] VARIANT newVal);
+
+	[id(201)] HRESULT Observe(BSTR bstrNucleusName, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	[id(202)] HRESULT ObserveEx(BSTR bstrNucleusName, BSTR bstrKey, BSTR bstrXml, [out, retval] IXobj** ppXobj);
+	[id(203)] HRESULT InitCtrl(BSTR bstrXml);
+};
+
+[
+	uuid(19631222-1992-0612-1965-060119820911),
+	version(1.0),
+	helpstring("Web Runtime 1.0.0.0 Type Library")
+]
+library Universe
+{
+	[
+		uuid(19631222-1992-0612-1965-060119821002),
+		helpstring("_IWebRT Interface")
+	]
+	dispinterface _IWebRT
+	{
+		properties:
+		methods:
+			[id(1), helpstring("method OpenComplete")] HRESULT OpenComplete(LONG hWnd, BSTR bstrUrl, IXobj * pRootXobj);
+			[id(2)] HRESULT Close();
+			[id(3)] HRESULT CosmosEvent(IWebRTEventObj* NotifyObj);
+	};
+
+	[
+		uuid(19631222-1992-0612-1965-060119990606),
+		appobject,
+		helpstring("Cosmos Class")
+	]
+	coclass WebRT
+	{
+		[default] interface IWebRT;
+		[default, source] dispinterface _IWebRT;
+	};
+
+	[
+		uuid(19631222-1992-0612-1965-060119821001),
+		helpstring("_IXobjEvents Interface")
+	]
+	dispinterface _IXobjEvents
+	{
+		properties:
+		methods:
+			[id(1), helpstring("method ObserveComplete")] HRESULT ObserveComplete();
+			[id(2)] HRESULT Destroy();
+			[id(3), helpstring("WndXobj Addin Object Created")] HRESULT XobjAddInCreated(IDispatch* pAddIndisp, BSTR bstrAddInID, BSTR bstrAddInXml);
+			[id(4)] HRESULT XobjAddInsCreated();
+			[id(5)] HRESULT NodeDocumentComplete(IDispatch* ExtenderDisp, BSTR bstrURL);
+			[id(6)] HRESULT ControlNotify(IXobj* sender, LONG NotifyCode, LONG CtrlID, long CtrlHandle, BSTR CtrlClassName);
+			[id(7)] HRESULT TabChange(LONG ActivePage, LONG OldPage);
+			[id(8)] HRESULT IPCMessageReceived(BSTR bstrChannel, BSTR bstrData);
+	};
+
+	[
+		uuid(19631222-1992-0612-1965-060119821992),
+		helpstring("_IWebRTObjEvents Interface")
+	]
+	dispinterface _IWebRTObjEvents
+	{
+	properties:
+	methods:
+		[id(1)] HRESULT PageLoaded(IDispatch * sender, BSTR url);
+		[id(2)] HRESULT NodeCreated(IXobj* pXobjCreated);
+		[id(3)] HRESULT AddInCreated(IXobj* pRootXobj, IDispatch* pAddIn, BSTR bstrID, BSTR bstrAddInXml);
+		[id(4)] HRESULT BeforeExtendXml(BSTR bstrXml, long hWnd);
+		[id(5)] HRESULT ExtendXmlComplete(BSTR bstrXml, long hWnd, IXobj* pRetRootNode);
+		[id(6)] HRESULT Destroy();
+		[id(7)] HRESULT NodeMouseActivate(IXobj* pActiveNode);
+		[id(8)] HRESULT ClrControlCreated(IXobj* Node, IDispatch* Ctrl, BSTR CtrlName, long CtrlHandle);
+		[id(9)] HRESULT TabChange(IXobj* sender, LONG ActivePage, LONG OldPage);
+		[id(10)] HRESULT Event(IDispatch* sender, IDispatch* EventArg);
+		[id(11)] HRESULT ControlNotify(IXobj* sender, LONG NotifyCode, LONG CtrlID, long CtrlHandle, BSTR CtrlClassName);
+		[id(12)] HRESULT CosmosEvent(IWebRTEventObj* NotifyObj);
+		[id(13)] HRESULT IPCMsg(INucleus* pSender, BSTR bstrType, BSTR bstrContent, BSTR bstrFeature);
+	};
+
+	[
+		uuid(19631222-1992-0612-1965-060120160930),
+		helpstring("_IWebRTAppEvents Interface")
+	]
+	dispinterface _IWebRTAppEvents
+	{
+	properties:
+	methods:
+		[id(1)] HRESULT CosmosEvent(IWebRTEventObj * NotifyObj);
+	};
+
+	[
+		uuid(19631222-1992-0612-1965-060120071001),
+		control
+	]
+	coclass WebRTCtrl
+	{
+		[default] interface IWebRTCtrl;
+		[default, source] dispinterface 	_IWebRTObjEvents;
+	};
+
+	[
+		hidden,
+		uuid(19631222-1992-0612-1965-060100000000)
+	]
+	coclass CosmosExtender
+	{
+		interface IEclipseCtrl;
+		interface IEclipseExtender;
+		interface IOfficeExtender;
+		interface IWebRTAppCtrl;
+	};
+};

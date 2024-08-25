@@ -1,0 +1,9 @@
+﻿<properties>
+    <window>
+    <node id="grid" name="Grid" rows="2" cols="1" height="287,831," width ="300,">
+      <node name="propertygrid" id="nucleus"/>
+      <node name="propertygridhost">
+      </node>
+    </node>
+  </window>
+</properties>

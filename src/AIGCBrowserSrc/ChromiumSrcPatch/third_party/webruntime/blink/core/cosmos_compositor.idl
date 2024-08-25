@@ -1,0 +1,10 @@
+
+[
+	Exposed = Window
+] interface CosmosCompositor : CosmosXobj {
+	readonly attribute DOMString name;
+
+	// Event handler attributes
+	attribute EventHandler onMessageReceived;
+	attribute EventHandler onXobjCreated;
+};
