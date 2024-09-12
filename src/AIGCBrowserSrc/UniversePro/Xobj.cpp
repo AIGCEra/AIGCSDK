@@ -937,46 +937,6 @@ BOOL CXobj::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, 
 					{
 						if (m_strID.CompareNoCase(_T("TreeView")))
 						{
-							if (m_strObjTypeID.CompareNoCase(_T("tabbedwnd")) == 0)
-							{
-								if (g_pSpaceTelescope->m_strExeName.CompareNoCase(_T("devenv")) == 0)
-								{
-#ifdef _WIN32
-									CString strLib = g_pSpaceTelescope->m_strAppPath + _T("PublicAssemblies\\TabbedWnd.dll");
-									if (::PathFileExists(strLib))
-									{
-										::LoadLibrary(strLib);
-										auto it = g_pSpaceTelescope->m_mapWindowProvider.find(m_strObjTypeID);
-										if (it != g_pSpaceTelescope->m_mapWindowProvider.end())
-										{
-											pViewFactoryDisp = it->second;
-										}
-									}
-#endif
-								}
-								else
-								{
-									if (::LoadLibrary(_T("TabbedWnd.dll")))
-									{
-										auto it = g_pSpaceTelescope->m_mapWindowProvider.find(m_strObjTypeID);
-										if (it != g_pSpaceTelescope->m_mapWindowProvider.end())
-										{
-											pViewFactoryDisp = it->second;
-										}
-									}
-								}
-							}
-							else if (m_strObjTypeID.CompareNoCase(_T("mfctab")) == 0)
-							{
-								if (::LoadLibrary(_T("mfctab.dll")))
-								{									
-									auto it = g_pSpaceTelescope->m_mapWindowProvider.find(m_strObjTypeID);
-									if (it != g_pSpaceTelescope->m_mapWindowProvider.end())
-									{
-										pViewFactoryDisp = it->second;
-									}
-								}
-							}
 							if (pViewFactoryDisp == nullptr)
 							{
 								CString strLib = g_pSpaceTelescope->m_strAppPath + m_strObjTypeID + _T(".dll");
@@ -1410,57 +1370,6 @@ BOOL CXobj::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, 
 	{
 		m_nRows = 1;
 		m_nCols = nCol;
-
-		if (nCol && m_pHostParse->GetChild(TGM_XOBJ))
-		{
-			m_nViewType = TabGrid;
-			if (m_nActivePage<0 || m_nActivePage>nCol - 1)
-				m_nActivePage = 0;
-			CWnd* pView = nullptr;
-			CXobj* pObj = nullptr;
-			int j = 0;
-			for (int i = 0; i < nCol; i++)
-			{
-				CTangramXmlParse* pChild = m_pHostParse->GetChild(i);
-				CString _strName = pChild->name();
-				CString strName = pChild->attr(_T("id"), _T(""));
-				if (_strName.CompareNoCase(TGM_XOBJ) == 0)
-				{
-					strName.Trim();
-					strName.MakeLower();
-
-					pObj = new CComObject<CXobj>;
-					pObj->m_pRootObj = m_pRootObj;
-					pObj->m_pHostParse = pChild;
-					AddChildNode(pObj);
-					pObj->m_nCol = j;
-					pObj->InitWndXobj();
-
-					if (pObj->m_pObjClsInfo)
-					{
-						pContext->m_pNewViewClass = pObj->m_pObjClsInfo;
-						pView = (CWnd*)pContext->m_pNewViewClass->CreateObject();
-						if (pObj->m_strID.CompareNoCase(_T("tabctrl")) == 0)
-						{
-							CTangramTabCtrl* pTabCtrl = (CTangramTabCtrl*)pView;
-							pTabCtrl->Create(WS_CHILD, rect, m_pHostWnd, 0);
-						}
-						else
-							pView->Create(NULL, _T(""), WS_CHILD, rect, m_pHostWnd, 0, pContext);
-						if (i == 0)
-							pObj->m_strCaption += _T(" - Add by TangramTeam");
-						HWND m_hChild = (HWND)::SendMessage(m_pHostWnd->m_hWnd, WM_CREATETABPAGE, (WPARAM)pView->m_hWnd, (LPARAM)LPCTSTR(pObj->m_strCaption));
-					}
-					j++;
-				}
-			}
-			if (m_nActivePage) {
-				::SendMessage(m_pHostWnd->m_hWnd, WM_TGM_SETACTIVEPAGE, (WPARAM)m_nActivePage, (LPARAM)0);
-				::PostMessage(m_pHostWnd->m_hWnd, WM_TABCHANGE, (WPARAM)m_nActivePage, (LPARAM)0);
-				Fire_TabChange(m_nActivePage, 0);
-				m_pXobjShareData->m_pNuclei->Fire_TabChange(this, m_nActivePage, 0);
-			}
-		}
 	}
 
 	m_pHostWnd->SetWindowText(m_strNodeName);
