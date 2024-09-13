@@ -406,7 +406,7 @@ def CopyDlls(target_dir, configuration, target_cpu):
     _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=False)
     if configuration == 'Debug':
       _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=True)
-   # _CopyDebugger(target_dir, target_cpu)
+    # _CopyDebugger(target_dir, target_cpu)
 
 
 def _CopyDebugger(target_dir, target_cpu):

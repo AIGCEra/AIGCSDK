@@ -28,12 +28,12 @@ class MainDllLoader :
     public CommonUniverse::CWebRTMainDllLoader
     // end Add by TangramTeam
 {
-public:
-    MainDllLoader();
-    // begin Add by TangramTeam
-    // virtual ~MainDllLoader();
-    ~MainDllLoader() override;
-    // end Add by TangramTeam
+ public:
+  MainDllLoader();
+  // begin Add by TangramTeam
+  // virtual ~MainDllLoader();
+  ~MainDllLoader() override;
+  // end Add by TangramTeam
 
   // Loads and calls the entry point of chrome.dll. |instance| is the exe
   // instance retrieved from wWinMain. |exe_entry_point_ticks| is the time

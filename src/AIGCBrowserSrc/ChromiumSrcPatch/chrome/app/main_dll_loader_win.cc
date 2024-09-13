@@ -46,6 +46,7 @@
 #include "sandbox/policy/mojom/sandbox.mojom.h"
 #include "sandbox/policy/sandbox_type.h"
 #include "sandbox/win/src/sandbox.h"
+
 // begin Add by TangramTeam
 #include <tlhelp32.h>
 #include <wincrypt.h>
@@ -139,29 +140,27 @@ HMODULE Load(base::FilePath* module,
              bool is_browser,
              base::TimeTicks& preread_begin_ticks,
              base::TimeTicks& preread_end_ticks) {
-  // begin Add by TangramTeam
-  TCHAR m_szBuffer[MAX_PATH];
-  HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
-  if (hModule) {
-    ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
-    CString strPath = m_szBuffer;
-    int nPos = strPath.ReverseFind('\\');
-    CString strBase = strPath.Left(nPos + 1);
-    CString strVer = chrome::kChromeVersion;
-    if (strVer != _T("")) {
-      strPath = strBase + strVer + _T("\\") + installer::kChromeDll;
-      *module = base::FilePath(strPath.GetBuffer());
-      strPath.ReleaseBuffer();
-      HMODULE dll =
-          LoadModuleWithDirectory(*module, cmd_line, is_browser,
-                                  preread_begin_ticks, preread_end_ticks);
-      if (!dll) {
-        PLOG(ERROR) << "Failed to load Chrome DLL from " << module->value();
-      }
-      return dll;
+    // begin Add by TangramTeam
+    TCHAR m_szBuffer[MAX_PATH];
+    HMODULE hModule = ::GetModuleHandle(L"AIGCAgent.dll");
+    if (hModule) {
+        ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
+        CString strPath = m_szBuffer;
+        int nPos = strPath.ReverseFind('\\');
+        CString strBase = strPath.Left(nPos + 1);
+        CString strVer = chrome::kChromeVersion;
+        if (strVer != _T("")) {
+            strPath = strBase + strVer + _T("\\") + installer::kChromeDll;
+            *module = base::FilePath(strPath.GetBuffer());
+            strPath.ReleaseBuffer();
+            HMODULE dll = LoadModuleWithDirectory(*module, cmd_line, is_browser, preread_begin_ticks, preread_end_ticks);
+            if (!dll) {
+                PLOG(ERROR) << "Failed to load Chrome DLL from " << module->value();
+            }
+            return dll;
+        }
     }
-  }
-  // end Add by TangramTeam
+    // end Add by TangramTeam
   *module = GetModulePath(installer::kChromeDll);
   if (module->empty()) {
     PLOG(ERROR) << "Cannot find module " << installer::kChromeDll;
@@ -178,70 +177,68 @@ HMODULE Load(base::FilePath* module,
 }  // namespace
 
 //=============================================================================
-int CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString& MD5) {
-    HCRYPTPROV hProv = NULL;
-    DWORD dw = 0;
-    if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
-        HCRYPTHASH hHash;
-        if (CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash)) {
-            if (CryptHashData(hHash, pBuffer, BufferSize, 0)) {
-                DWORD dwCount = 16;
-                unsigned char digest[16];
-                CryptGetHashParam(hHash, HP_HASHVAL, digest, &dwCount, 0);
-
-                if (hHash) {
-                    CryptDestroyHash(hHash);
-                }
-
-                if (hProv) {
-                    CryptReleaseContext(hProv, 0);
-                }
-
-                unsigned char b;
-                char c;
-                char* Value = new char[1024];
-                int k = 0;
-                for (int i = 0; i < 16; i++) {
-                    b = digest[i];
-                    for (int j = 4; j >= 0; j -= 4) {
-                        c = ((char)(b >> j) & 0x0F);
-                        if (c < 10) {
-                            c += '0';
-                        }
-                        else {
-                            c = ('a' + (c - 10));
-                        }
-                        Value[k] = c;
-                        k++;
-                    }
-                }
-                Value[k] = '\0';
-                MD5 = CString(Value);
-                delete[] Value;
-            }
-        }
-    }
-    else {
-        dw = GetLastError();
-        if (dw == (DWORD)NTE_BAD_KEYSET) {
-            if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
-                CRYPT_NEWKEYSET)) {
-                _tprintf(TEXT("CryptAcquireContext succeeded.\n"));
-            }
-            else {
-                _tprintf(TEXT("CryptAcquireContext falied.\n"));
-            }
-        }
-    }
-
-    return 1;
-}
 
 MainDllLoader::MainDllLoader() : dll_(nullptr) {}
 
 MainDllLoader::~MainDllLoader() = default;
 
 const int kNonBrowserShutdownPriority = 0x280;
+
+//int CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString& MD5) {
+//  HCRYPTPROV hProv = NULL;
+//  DWORD dw = 0;
+//  if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+//    HCRYPTHASH hHash;
+//    if (CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash)) {
+//      if (CryptHashData(hHash, pBuffer, BufferSize, 0)) {
+//        DWORD dwCount = 16;
+//        unsigned char digest[16];
+//        CryptGetHashParam(hHash, HP_HASHVAL, digest, &dwCount, 0);
+//
+//        if (hHash) {
+//          CryptDestroyHash(hHash);
+//        }
+//
+//        if (hProv) {
+//          CryptReleaseContext(hProv, 0);
+//        }
+//
+//        unsigned char b;
+//        char c;
+//        char* Value = new char[1024];
+//        int k = 0;
+//        for (int i = 0; i < 16; i++) {
+//          b = digest[i];
+//          for (int j = 4; j >= 0; j -= 4) {
+//            c = ((char)(b >> j) & 0x0F);
+//            if (c < 10) {
+//              c += '0';
+//            } else {
+//              c = ('a' + (c - 10));
+//            }
+//            Value[k] = c;
+//            k++;
+//          }
+//        }
+//        Value[k] = '\0';
+//        MD5 = CString(Value);
+//        delete[] Value;
+//      }
+//    }
+//  } else {
+//    dw = GetLastError();
+//    if (dw == (DWORD)NTE_BAD_KEYSET) {
+//      if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
+//                              CRYPT_NEWKEYSET)) {
+//        _tprintf(TEXT("CryptAcquireContext succeeded.\n"));
+//      } else {
+//        _tprintf(TEXT("CryptAcquireContext falied.\n"));
+//      }
+//    }
+//  }
+//
+//  return 1;
+//}
 
 // Launching is a matter of loading the right dll and calling the entry point.
 // Derived classes can add custom code in the OnBeforeLaunch callback.
@@ -253,6 +250,114 @@ int MainDllLoader::Launch(HINSTANCE instance,
   // Initialize the sandbox services.
   sandbox::SandboxInterfaceInfo sandbox_info = {nullptr};
   const bool is_browser = process_type_.empty();
+  // begin Add by TangramTeam
+  HMODULE hModule = NULL;
+  if (is_browser) {
+    hModule = ::GetModuleHandle(L"universe.dll");
+    if (hModule == nullptr) {
+      ::LoadLibrary(L"universe.dll");
+    }
+  }
+  if (hModule && g_pSpaceTelescopeImpl == nullptr) {
+    typedef CommonUniverse::CWebRTImpl*(__stdcall * GetWebRTImpl)(IWebRT**);
+    GetWebRTImpl _pCosmosFunction;
+    _pCosmosFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
+    if (_pCosmosFunction != NULL) {
+      IWebRT* pCosmos = nullptr;
+      g_pSpaceTelescopeImpl = _pCosmosFunction(&pCosmos);
+    }
+  }
+  if (g_pSpaceTelescopeImpl) {
+    //TCHAR m_szBuffer[MAX_PATH];
+    CString strSRC = _T("");
+    g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = _T("");
+    g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = _T("");
+    //if (g_strUniverseDllMD5 != _T("")) {
+    //  ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
+    //  strSRC = m_szBuffer;
+    //  HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
+    //                              OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
+
+    //  if (hFile == INVALID_HANDLE_VALUE) {
+    //    return 0;
+    //  } else {
+    //    DWORD dwFileSizeHigh = 0;
+    //    __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
+    //    qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
+    //    DWORD dwFileSize = qwFileSize;
+    //    if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
+    //      CloseHandle(hFile);
+    //      return 0;
+    //    } else {
+    //      BYTE* buffer = new BYTE[dwFileSize];
+    //      memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
+    //      DWORD dwBytesRead = 0;
+    //      if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
+    //        CloseHandle(hFile);
+    //        return 0;
+    //      } else {
+    //        CString strRet = _T("");
+    //        CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
+    //        delete[] buffer;
+    //        CloseHandle(hFile);
+    //        if (strRet.CompareNoCase(g_strUniverseDllMD5)) {
+    //          ::MessageBox(NULL,
+    //                       L"Your version of \"Universe.dll\" does not match "
+    //                       L"the current version of WebRT",
+    //                       L"AIGC Agent", MB_OK);
+    //          return 0;
+    //        } else {
+    //          g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = strRet;
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
+    hModule = ::GetModuleHandle(L"cosmos.dll");
+    //if (hModule != NULL && g_strCosmosDllMD5 != _T("")) {
+    //  ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
+    //  strSRC = m_szBuffer;
+    //  HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
+    //                              OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
+
+    //  if (hFile == INVALID_HANDLE_VALUE) {
+    //    return 0;
+    //  } else {
+    //    DWORD dwFileSizeHigh = 0;
+    //    __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
+    //    qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
+    //    DWORD dwFileSize = qwFileSize;
+    //    if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
+    //      CloseHandle(hFile);
+    //      return 0;
+    //    } else {
+    //      BYTE* buffer = new BYTE[dwFileSize];
+    //      memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
+    //      DWORD dwBytesRead = 0;
+    //      if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
+    //        CloseHandle(hFile);
+    //        return 0;
+    //      } else {
+    //        CString strRet = _T("");
+    //        CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
+    //        delete[] buffer;
+    //        CloseHandle(hFile);
+    //        if (strRet.CompareNoCase(g_strCosmosDllMD5)) {
+    //          ::MessageBox(NULL,
+    //                       L"Your version of \"Cosmos.dll\" does not match the "
+    //                       L"current version of WebRT",
+    //                       L"AIGC Agent", MB_OK);
+    //          return 0;
+    //        } else {
+    //          g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = strRet;
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
+    g_pSpaceTelescopeImpl->m_pWebRTMainDllLoader = this;
+  }
+  // end Add by TangramTeam
   // IsUnsandboxedSandboxType() can't be used here because its result can be
   // gated behind a feature flag, which are not yet initialized.
   const bool is_sandboxed =
@@ -275,9 +380,8 @@ int MainDllLoader::Launch(HINSTANCE instance,
   base::FilePath file;
   dll_ =
       Load(&file, cmd_line, is_browser, preread_begin_ticks, preread_end_ticks);
-  if (!dll_) {
+  if (!dll_)
     return chrome::RESULT_CODE_MISSING_DATA;
-  }
 
   if (!is_browser) {
     // Set non-browser processes up to be killed by the system after the
@@ -289,115 +393,6 @@ int MainDllLoader::Launch(HINSTANCE instance,
                                    SHUTDOWN_NORETRY);
   }
 
-  // begin Add by TangramTeam
-  HMODULE hModule = NULL;
-  if (is_browser) {
-      hModule = ::GetModuleHandle(L"universe.dll");
-      if (hModule == nullptr) {
-          ::LoadLibrary(L"universe.dll");
-      }
-  }
-  if (hModule && g_pSpaceTelescopeImpl == nullptr) {
-      typedef CommonUniverse::CWebRTImpl* (__stdcall* GetWebRTImpl)(IWebRT**);
-      GetWebRTImpl _pCosmosFunction;
-      _pCosmosFunction = (GetWebRTImpl)GetProcAddress(hModule, "GetWebRTImpl");
-      if (_pCosmosFunction != NULL) {
-          IWebRT* pCosmos = nullptr;
-          g_pSpaceTelescopeImpl = _pCosmosFunction(&pCosmos);
-      }
-  }
-  if (g_pSpaceTelescopeImpl) {
-    TCHAR m_szBuffer[MAX_PATH];
-    CString strSRC = _T("");
-    g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = _T("");
-    g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = _T("");
-    if (g_strUniverseDllMD5 != _T("")) {
-      ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
-      strSRC = m_szBuffer;
-      HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
-                                  OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
-
-      if (hFile == INVALID_HANDLE_VALUE) {
-        return 0;
-      } else {
-        DWORD dwFileSizeHigh = 0;
-        __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-        qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
-        DWORD dwFileSize = qwFileSize;
-        if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
-          CloseHandle(hFile);
-          return 0;
-        } else {
-          BYTE* buffer = new BYTE[dwFileSize];
-          memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
-          DWORD dwBytesRead = 0;
-          if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
-            CloseHandle(hFile);
-            return 0;
-          } else {
-            CString strRet = _T("");
-            CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
-            delete[] buffer;
-            CloseHandle(hFile);
-            if (strRet.CompareNoCase(g_strUniverseDllMD5)) {
-              ::MessageBox(NULL,
-                           L"Your version of \"Universe.dll\" does not match "
-                           L"the current version of WebRT",
-                           L"AIGC Agent", MB_OK);
-              return 0;
-            } else {
-              g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = strRet;
-            }
-          }
-        }
-      }
-    }
-    hModule = ::GetModuleHandle(L"cosmos.dll");
-    if (hModule != NULL && g_strCosmosDllMD5 != _T("")) {
-      ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
-      strSRC = m_szBuffer;
-      HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
-                                  OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
-
-      if (hFile == INVALID_HANDLE_VALUE) {
-        return 0;
-      } else {
-        DWORD dwFileSizeHigh = 0;
-        __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-        qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
-        DWORD dwFileSize = qwFileSize;
-        if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
-          CloseHandle(hFile);
-          return 0;
-        } else {
-          BYTE* buffer = new BYTE[dwFileSize];
-          memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
-          DWORD dwBytesRead = 0;
-          if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
-            CloseHandle(hFile);
-            return 0;
-          } else {
-            CString strRet = _T("");
-            CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
-            delete[] buffer;
-            CloseHandle(hFile);
-            if (strRet.CompareNoCase(g_strCosmosDllMD5)) {
-              ::MessageBox(NULL,
-                           L"Your version of \"Cosmos.dll\" does not match the "
-                           L"current version of WebRT",
-                           L"AIGC Agent", MB_OK);
-              return 0;
-            } else {
-              g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = strRet;
-            }
-          }
-        }
-      }
-    }
-    g_pSpaceTelescopeImpl->m_pWebRTMainDllLoader = this;
-  }
-  // end Add by TangramTeam
-
   OnBeforeLaunch(process_type_, file);
   DLL_MAIN chrome_main =
       reinterpret_cast<DLL_MAIN>(::GetProcAddress(dll_, "ChromeMain"));
@@ -407,8 +402,8 @@ int MainDllLoader::Launch(HINSTANCE instance,
                        preread_end_ticks.ToInternalValue());
   // begin Add by TangramTeam
   if (g_pSpaceTelescopeImpl && g_pSpaceTelescopeImpl->m_pBrowserFactory) {
-    delete g_pSpaceTelescopeImpl->m_pBrowserFactory;
-    g_pSpaceTelescopeImpl->m_pBrowserFactory = nullptr;
+      delete g_pSpaceTelescopeImpl->m_pBrowserFactory;
+      g_pSpaceTelescopeImpl->m_pBrowserFactory = nullptr;
   }
   // end Add by TangramTeam
   return rc;
@@ -456,6 +451,7 @@ void ChromeDllLoader::OnBeforeLaunch(const std::string& process_type,
 }
 
 //=============================================================================
+
 class ChromiumDllLoader : public MainDllLoader {
   // begin Add by TangramTeam
  public:

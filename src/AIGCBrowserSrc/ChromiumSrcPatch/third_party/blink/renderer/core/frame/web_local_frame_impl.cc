@@ -884,7 +884,7 @@ gfx::Size WebLocalFrameImpl::DocumentSize() const {
 bool WebLocalFrameImpl::HasVisibleContent() const {
   auto* layout_object = GetFrame()->OwnerLayoutObject();
   if (layout_object &&
-      layout_object->StyleRef().Visibility() != EVisibility::kVisible) {
+      layout_object->StyleRef().UsedVisibility() != EVisibility::kVisible) {
     return false;
   }
 
@@ -3328,6 +3328,11 @@ void WebLocalFrameImpl::SetLCPPHint(
     unused_preloads.emplace_back(url);
   }
   lcpp->set_unused_preloads(std::move(unused_preloads));
+}
+
+bool WebLocalFrameImpl::IsFeatureEnabled(
+    const mojom::blink::PermissionsPolicyFeature& feature) const {
+  return GetFrame()->DomWindow()->IsFeatureEnabled(feature);
 }
 
 void WebLocalFrameImpl::AddHitTestOnTouchStartCallback(

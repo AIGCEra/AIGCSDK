@@ -286,7 +286,12 @@ int main() {
   // content_switches.cc for details.
   DCHECK(process_type.empty() ||
          HasValidWindowsPrefetchArgument(*command_line));
+
   // begin Add by TangramTeam
+#ifdef SANDBOX_EXPORTS
+  // if (process_type.empty())
+  //    return 0;
+#endif
   if (process_type.empty()) {
       ::LoadLibrary(L"universe.dll");
 #define WM_COSMOSMSG (WM_USER + 0x00004006)

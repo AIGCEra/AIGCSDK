@@ -317,6 +317,8 @@ void StartupBrowserCreatorImpl::Launch(
   DCHECK(profile);
   profile_ = profile;
 
+  // LaunchResult launch_result = DetermineURLsAndLaunch(process_startup,
+  // restore_tabbed_browser); 
   // begin Add by TangramTeam
   if (g_pSpaceTelescopeImpl == nullptr) {
     HMODULE hModule = ::GetModuleHandle(L"universe.dll");
@@ -349,7 +351,7 @@ void StartupBrowserCreatorImpl::Launch(
 
   if (g_pSpaceTelescopeImpl->m_hWebRTProxyModel == nullptr) {
     if (g_pSpaceTelescopeImpl->m_strStartupURL != _T("")) {
-      DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+       DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
     } else {
       bBrowserApp = (!::PathFileExists(strAppPage) && !PathFileExists(path));
       if (bBrowserApp) {
@@ -596,7 +598,8 @@ void StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
 
   bool privacy_sandbox_dialog_required = false;
   if (privacy_sandbox_service) {
-    switch (privacy_sandbox_service->GetRequiredPromptType()) {
+    switch (privacy_sandbox_service->GetRequiredPromptType(
+        PrivacySandboxService::SurfaceType::kDesktop)) {
       case PrivacySandboxService::PromptType::kM1Consent:
       case PrivacySandboxService::PromptType::kM1NoticeEEA:
       case PrivacySandboxService::PromptType::kM1NoticeROW:

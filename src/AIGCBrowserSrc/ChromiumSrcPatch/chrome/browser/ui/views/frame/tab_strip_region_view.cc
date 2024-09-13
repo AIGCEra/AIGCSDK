@@ -510,8 +510,14 @@ void TabStripRegionView::UpdateButtonBorders() {
   if (tab_search_container_) {
     tab_search_container_->tab_search_button()->SetBorder(
         views::CreateEmptyBorder(border_insets));
-    if (tab_search_container_->tab_organization_button()) {
-      tab_search_container_->tab_organization_button()->SetBorder(
+
+    if (tab_search_container_->auto_tab_group_button()) {
+      tab_search_container_->auto_tab_group_button()->SetBorder(
+          views::CreateEmptyBorder(border_insets));
+    }
+
+    if (tab_search_container_->tab_declutter_button()) {
+      tab_search_container_->tab_declutter_button()->SetBorder(
           views::CreateEmptyBorder(border_insets));
     }
   }
@@ -599,7 +605,7 @@ class TabSearchPositionMetricsLogger {
   // Logs the UMA metric for the tab search position.
   void LogMetrics() {
     base::UmaHistogramEnumeration(
-        "Tabs.TabSearch.IsTrailingTabstrip",
+        "Tabs.TabSearch.PositionInTabstrip",
         tabs::GetTabSearchTrailingTabstrip(profile_)
             ? TabStripRegionView::TabSearchPositionEnum::kTrailing
             : TabStripRegionView::TabSearchPositionEnum::kLeading);

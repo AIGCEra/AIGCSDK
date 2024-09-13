@@ -703,20 +703,20 @@ void StartupBrowserCreator::LaunchBrowser(
 
   if (!IsSilentLaunchEnabled(command_line, profile)) {
   // begin add by TangramTeam
-//#if BUILDFLAG(IS_CHROMEOS_LACROS) || BUILDFLAG(ENABLE_DICE_SUPPORT)
-//    auto* fre_service = FirstRunServiceFactory::GetForBrowserContext(profile);
-//    if (fre_service && fre_service->ShouldOpenFirstRun()) {
-//      // Show the FRE and let `OpenNewWindowForFirstRun()` handle the browser
-//      // launch. This `StartupBrowserCreator` will get destroyed when the method
-//      // returns so the relevant data is copied over and passed to the callback.
-//      fre_service->OpenFirstRunIfNeeded(
-//          FirstRunService::EntryPoint::kProcessStartup,
-//          base::BindOnce(&OpenNewWindowForFirstRun, command_line, profile,
-//                         cur_dir, first_run_tabs_, process_startup,
-//                         is_first_run));
-//      return;
-//    }
-//#endif
+#if BUILDFLAG(IS_CHROMEOS_LACROS) || BUILDFLAG(ENABLE_DICE_SUPPORT)
+    //auto* fre_service = FirstRunServiceFactory::GetForBrowserContext(profile);
+    //if (fre_service && fre_service->ShouldOpenFirstRun()) {
+    //  // Show the FRE and let `OpenNewWindowForFirstRun()` handle the browser
+    //  // launch. This `StartupBrowserCreator` will get destroyed when the method
+    //  // returns so the relevant data is copied over and passed to the callback.
+    //  fre_service->OpenFirstRunIfNeeded(
+    //      FirstRunService::EntryPoint::kProcessStartup,
+    //      base::BindOnce(&OpenNewWindowForFirstRun, command_line, profile,
+    //                     cur_dir, first_run_tabs_, process_startup,
+    //                     is_first_run));
+    //  return;
+    //}
+#endif
     // end add by TangramTeam
     StartupBrowserCreatorImpl lwp(cur_dir, command_line, this, is_first_run);
     lwp.Launch(profile,

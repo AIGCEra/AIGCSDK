@@ -140,12 +140,14 @@ if (enable_uncompressed_archive) {
 action("mini_installer_archive") {
   script = "//chrome/tools/build/win/create_installer_archive.py"
 
-  release_file = "chrome.release"
+  # begin Add by TangramTeam
+  release_file = "//third_party/webruntime/installer/chrome.release"
+  # end Add by TangramTeam
 
   inputs = [
     # begin Add by TangramTeam
-    # "$root_out_dir/chrome.dll",
     "$root_out_dir/AIGCAssistant.dll",
+    # "$root_out_dir/chrome.dll",
     # end Add by TangramTeam
     "$root_out_dir/chrome.exe",
     "$root_out_dir/locales/en-US.pak",
@@ -193,7 +195,10 @@ action("mini_installer_archive") {
     ":chrome_runtime_deps",
     ":setup_runtime_deps",
     "//chrome",
-    "//chrome:chrome_dll",
+    # begin Add by TangramTeam
+    "//chrome:main_dll",
+    # "//chrome:chrome_dll",
+    # end Add by TangramTeam
     "//chrome/browser/extensions/default_extensions",
     "//chrome/common/win:eventlog_provider",
     "//chrome/installer/setup",

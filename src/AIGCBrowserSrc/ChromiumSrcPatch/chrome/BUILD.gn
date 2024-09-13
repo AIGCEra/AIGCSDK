@@ -58,7 +58,11 @@ if (is_android) {
   import("//third_party/icu/config.gni")
 }
 
-if (is_chromeos_ash) {
+# b/365489014: CrOS' chrome.sections_embedded target breaks on component builds;
+# there's no clear value of supporting it there, so disable it.
+_cros_generate_embed_section_target = is_chromeos_ash && !is_component_build
+
+if (_cros_generate_embed_section_target) {
   import("//build/chromeos/embed_sections.gni")
 }
 
@@ -123,8 +127,15 @@ group("assert_no_deps") {
   assert_no_deps = [ "//chrome/installer/util:strings" ]
 }
 
+
 # begin Add by TangramTeam
 copy("tangram_copy") {
+  sources = [ "$root_out_dir/chrome.exe" ]
+  outputs = [ "$root_out_dir/AICopilot.exe" ]
+
+  public_deps = [ ":reorder_imports" ]
+}
+copy("gpt_copy") {
   sources = [ "$root_out_dir/chrome.exe" ]
   outputs = [ "$root_out_dir/AIGCBrowser.exe" ]
 
@@ -134,14 +145,22 @@ copy("tangram_copy") {
 
 if (!is_android && !is_mac) {
   group("chrome") {
-    public_deps = [ ":chrome_initial" ]
+    public_deps = [
+      ":chrome_initial",
+      # begin Add by TangramTeam
+      ":chrome_initial_component",
+      ":tangram_copy",
+      ":gpt_copy",
+      # end Add by TangramTeam
+    ]
     data_deps = [
       ":chrome_initial",
       # begin Add by TangramTeam
+      ":chrome_initial_component",
       ":tangram_copy",
+      ":gpt_copy",
       # end Add by TangramTeam
     ]
-
     # Do not add any more deps or data_deps to group("chrome").
     # Because chrome_initial sets its output name to "chrome", running commands
     # such as `ninja chrome` causes chrome_initial to be built instead. All
@@ -435,8 +454,243 @@ if (!is_android && !is_mac) {
   }
 }  # !is_android && !is_mac
 
+# begin Add by TangramTeam
+
+  template("chrome_component") {
+    shared_library(target_name) {
+      output_name = "${invoker.output_name}_rt"
+      output_name = "AIGCAgent"
+      sources = invoker.sources
+      if (defined(invoker.deps)) {
+        deps = invoker.deps
+      } else {
+        deps = []
+      }
+      if (defined(invoker.data)) {
+        data = invoker.data
+      } else {
+        data = []
+      }
+
+      if (!is_win || is_clang) {
+        # Normally, we need to pass specific flags to the linker to
+        # create an executable that gathers profile data. However, when
+        # using MSVC, we need to make sure we *don't* pass /GENPROFILE
+        # when linking without generating any code, or else the linker
+        # will give us fatal error LNK1264. So we add the PGO flags
+        # on all configurations, execpt MSVC on Windows.
+        # configs += [ "//build/config/compiler/pgo:default_pgo_flags" ]
+      }
+
+      # Because the sources list varies so significantly per-platform, generally
+      # each platform lists its own files rather than relying on filtering or
+      # removing unused files.
+      sources += [ "app/chrome_exe_resource.h" ]
+      defines = []
+      public_deps = []
+      deps += [ "//printing/buildflags" ]
+
+      data += [ "$root_out_dir/resources.pak" ]
+      if (is_linux || is_win) {
+        data += [
+          "$root_out_dir/chrome_100_percent.pak",
+          "$root_out_dir/locales/en-US.pak",
+          "$root_out_dir/locales/fr.pak",
+        ]
+        if (enable_hidpi || enable_mus) {
+          data += [ "$root_out_dir/chrome_200_percent.pak" ]
+        }
+      }
+
+      data_deps = []
+
+      if (is_win) {
+        sources += [
+          "app/chrome_exe.rc",
+          # "app/chrome_exe_main_win.cc",
+          "//third_party/webruntime/chrome/chrome_tangram_core.cc",
+          "//third_party/webruntime/chrome/chrome_tangram_core.def",
+          "app/delay_load_failure_hook_win.cc",
+          "app/delay_load_failure_hook_win.h",
+          "app/main_dll_loader_win.cc",
+          "app/main_dll_loader_win.h",
+          "common/crash_keys.cc",
+          "common/crash_keys.h",
+        ]
+
+        deps += [
+          ":chrome_dll",
+          ":chrome_exe_version",
+          ":copy_first_run",
+          ":packed_resources_integrity",
+          ":visual_elements_resources",
+          "//base",
+          "//build:branding_buildflags",
+          "//chrome/app:chrome_exe_main_exports",
+          "//chrome/app:exit_code_watcher",
+          "//chrome/app/version_assembly:chrome_exe_manifest",
+          "//chrome/browser:active_use_util",
+          "//chrome/browser:chrome_process_finder",
+          "//chrome/browser/policy:path_parser",
+          "//chrome/chrome_elf",
+          "//chrome/common:constants",
+          "//chrome/common/win:delay_load_failure_support",
+          "//chrome/install_static:install_static_util",
+          "//chrome/install_static:secondary_module",
+          "//chrome/installer/util:constants",
+          "//chrome/installer/util:did_run_support",
+          "//components/crash/core/app",
+          "//components/crash/core/app:run_as_crashpad_handler",
+          "//components/crash/core/common",
+          "//components/crash/win:chrome_wer",
+          "//components/flags_ui:switches",
+          "//content:sandbox_helper_win",
+          "//content/public/common:static_switches",
+          "//crypto",
+          "//gpu/command_buffer/service",
+          "//sandbox",
+          "//sandbox/policy",
+          "//sandbox/policy/mojom",
+          "//third_party/breakpad:breakpad_handler",
+          "//third_party/breakpad:breakpad_sender",
+          "//third_party/crashpad/crashpad/util",
+          "//ui/gl",
+        ]
+        data_deps = [
+          "//chrome/app/version_assembly:version_assembly_manifest",
+          "//chrome/browser/web_applications/chrome_pwa_launcher",
+          "//chrome/chrome_proxy",
+          "//chrome/elevation_service",
+          "//chrome/notification_helper",
+        ]
+
+        if (win_console_app) {
+          defines += [ "WIN_CONSOLE_APP" ]
+        } else {
+          # Set /SUBSYSTEM:WINDOWS for chrome.exe itself, unless a console build
+          # has been requested.
+          configs -= [ "//build/config/win:console" ]
+          configs += [ "//build/config/win:windowed" ]
+        }
+
+        configs += [
+          "//build/config/win:delayloads",
+          "//build/config/win:delayloads_not_for_child_dll",
+        ]
+
+        if (current_cpu == "x86") {
+          # Set the initial stack size to 0.5MiB, instead of the 1.5MiB needed by
+          # Chrome's main thread. This saves significant memory on threads (like
+          # those in the Windows thread pool, and others) whose stack size we can
+          # only control through this setting. Because Chrome's main thread needs
+          # a minimum 1.5 MiB stack, the main thread (in 32-bit builds only) uses
+          # fibers to switch to a 1.5 MiB stack before running any other code.
+          ldflags = [ "/STACK:0x80000" ]
+        } else {
+          # Increase the initial stack size. The default is 1MB, this is 8MB.
+          ldflags = [ "/STACK:0x800000" ]
+        }
+      }
+
+      if (is_linux) {
+        sources += [
+          "app/chrome_dll_resource.h",
+          "app/chrome_main.cc",
+          "app/chrome_main_delegate.cc",
+          "app/chrome_main_delegate.h",
+        ]
+
+        deps += [
+          # On Linux, link the dependencies (libraries) that make up actual
+          # Chromium functionality directly into the executable.
+          ":browser_dependencies",
+          ":child_dependencies",
+
+          # Needed to use the master_preferences functions
+          "//chrome/installer/util:with_no_strings",
+          "//content/public/app:both",
+          "//content/public/common:service_names",
+
+          # For headless mode.
+          "//headless:headless_shell_lib",
+          "//services/service_manager/embedder",
+        ]
+
+        public_deps = [
+          ":xdg_mime",  # Needs to be public for installer to consume files.
+          "//chrome/common:buildflags",
+        ]
+
+        ldflags = []
+
+        # Chrome OS debug builds for arm need to pass --long-plt to the linker.
+        # See https://bugs.chromium.org/p/chromium/issues/detail?id=583532
+        if (is_chromeos && is_debug && target_cpu == "arm") {
+          ldflags += [ "-Wl,--long-plt" ]
+        }
+
+        if (is_desktop_linux && !is_component_build && !using_sanitizer) {
+          version_script = "//build/linux/chrome.map"
+          inputs = [
+            version_script,
+          ]
+          ldflags += [ "-Wl,--version-script=" +
+                       rebase_path(version_script, root_build_dir) ]
+        }
+
+        if (use_x11) {
+          configs += [
+            "//build/config/linux:x11",
+            "//build/config/linux:xext",
+          ]
+        }
+      }
+      
+      # These files are used by the installer so we need a public dep.
+      public_deps += [ ":packed_resources" ]
+
+      # Only ChromeOS has precompiled Flash that needs to get copied to the output
+      # directory. On other platforms, Flash is either component-updated only or
+      # not supported at all.
+      if (is_chromeos) {
+        deps += [ "//third_party/adobe/flash:flapper_binaries" ]
+      }
+
+      # ChromeOS by design is safe to have rpath=$ORIGIN. This simplifies shared
+      # library usage.
+      if (is_chromeos && !is_component_build) {
+        configs += [ "//build/config/gcc:rpath_for_built_shared_libraries" ]
+      }
+
+      data_deps += [
+        "//chrome/browser/resources/media/mei_preload:component",
+        "//third_party/widevine/cdm",
+      ]
+    }
+  }
+
+  chrome_component("chrome_initial_component") {
+    if (is_win) {
+      output_name = "chrome"
+    } 
+
+    sources = []
+    if (!is_win && use_aura) {
+      # Non-Windows aura entrypoint.
+      sources += [ "app/chrome_exe_main_aura.cc" ]
+    }
+  }
+
+# end Add by TangramTeam
+
 if (is_win) {
-  shared_library("chrome_dll") {
+  # Begin Add by TangramTeam
+  group("chrome_dll") {
+    data_deps = [ ":main_dll" ]
+  }
+  # End Add by TangramTeam
+  
+  shared_library("main_dll") {
     configs += [ "//build/config/compiler:wexit_time_destructors" ]
     configs -= [ "//build/config/compiler:thinlto_optimize_default" ]
     configs += [ "//build/config/compiler:thinlto_optimize_max" ]
@@ -450,7 +704,6 @@ if (is_win) {
       "app/chrome_main_delegate.h",
       "app/startup_timestamps.h",
     ]
-
     # Begin Add by TangramTeam
     # output_name = "chrome"
     output_name = "AIGCAssistant"
@@ -504,8 +757,7 @@ if (is_win) {
   chrome_framework_name = chrome_product_full_name + " Framework"
   chrome_framework_version = chrome_version_full
 
-  verify_dynamic_libraries = !is_component_build && !is_asan && !is_ubsan &&
-                             !is_ubsan_vptr && !is_ubsan_security
+  verify_dynamic_libraries = !is_component_build && !is_asan && !is_ubsan_any
   if (host_os == "mac") {
     objdump_path = mac_bin_path
   } else {
@@ -1513,7 +1765,12 @@ group("dependencies") {
 
 if (is_win) {
   process_version_rc_template("chrome_exe_version") {
-    sources = [ "app/chrome_exe.ver" ]
+    sources = [
+      # begin Add by TangramTeam
+      # "app/chrome_exe.ver",
+      "//third_party/webruntime/branding_file/chrome_exe.ver",
+      # end Add by TangramTeam
+    ]
     output = "$target_gen_dir/chrome_exe_version.rc"
   }
 
@@ -1741,8 +1998,9 @@ if (is_android) {
 # //chrome/android:${_variant}_resource_allowlist.
 if (is_win && enable_resource_allowlist_generation) {
   generate_resource_allowlist("resource_allowlist") {
-    deps = [ ":chrome_dll" ]
     # begin Add by TangramTeam
+      deps = [ ":main_dll" ]
+    # deps = [ ":chrome_dll" ]
     # inputs = [ "$root_out_dir/chrome.dll.pdb" ]
     inputs = [ "$root_out_dir/AIGCAssistant.dll.pdb" ]
     # end Add by TangramTeam
@@ -1879,7 +2137,7 @@ if (is_linux || is_chromeos) {
   }
 }
 
-if (is_chromeos_ash) {
+if (_cros_generate_embed_section_target) {
   embed_sections("section_embedded_chrome_binary") {
     binary_input = "$root_out_dir/chrome"
     sections_embedded_binary_output = "$root_out_dir/chrome.sections_embedded"

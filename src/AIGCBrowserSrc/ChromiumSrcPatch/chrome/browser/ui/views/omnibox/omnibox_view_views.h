@@ -159,7 +159,6 @@ class OmniboxViewViews
   void RemovedFromWidget() override;
   std::u16string GetLabelForCommandId(int command_id) const override;
   bool IsCommandIdEnabled(int command_id) const override;
-  void UpdateAccessibleTextSelection() override;
 
   // For testing only.
   OmniboxPopupView* GetPopupViewForTesting() const;
@@ -278,6 +277,8 @@ class OmniboxViewViews
   bool IsTextEditCommandEnabled(ui::TextEditCommand command) const override;
   void ExecuteTextEditCommand(ui::TextEditCommand command) override;
   bool ShouldShowPlaceholderText() const override;
+
+  void UpdateAccessibleValue() override;
 
   // ash::input_method::InputMethodManager::CandidateWindowObserver:
 #if BUILDFLAG(IS_CHROMEOS_ASH)

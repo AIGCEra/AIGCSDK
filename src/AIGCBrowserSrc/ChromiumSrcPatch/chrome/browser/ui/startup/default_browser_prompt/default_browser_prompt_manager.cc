@@ -23,6 +23,7 @@
 #include "components/infobars/core/infobar.h"
 #include "components/prefs/pref_service.h"
 #include "content/public/browser/web_contents.h"
+
 // begin Add by TangramTeam
 #include "chrome/browser/ui/views/frame/browser_view.h"
 #include "ui/views/win/hwnd_util.h"
