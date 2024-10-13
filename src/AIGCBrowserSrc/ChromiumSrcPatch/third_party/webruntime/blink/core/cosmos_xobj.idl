@@ -1,0 +1,55 @@
+
+[Exposed = Window] interface CosmosXobj : EventTarget {
+  [Replaceable] readonly attribute DOMString name;
+  [Replaceable] readonly attribute CosmosXobj grid;
+  [Replaceable] readonly attribute CosmosXobj form;
+  [Replaceable] readonly attribute CosmosXobj galaxy;
+  [Replaceable] readonly attribute Element element;
+  [Replaceable] readonly attribute Element uiElement;
+  [Replaceable] readonly attribute Element refElement;
+  [Replaceable] readonly attribute Element eventElement;
+  [Replaceable] readonly attribute Element propertyElement;
+  [Replaceable] readonly attribute Element messageElement;
+  [Replaceable] readonly attribute DocumentFragment docFragment;
+  [Replaceable] readonly attribute DocumentFragment hostdocFragment;
+
+  attribute DOMString msgID;
+  attribute DOMString caption;
+  attribute CosmosXobj sender;
+  attribute Element workElement;
+
+  DOMString getStr(DOMString strKey);
+  void setStr(DOMString strKey, DOMString value);
+  long getLong(DOMString strKey);
+  void setLong(DOMString strKey, long value);
+  long long getInt64(DOMString strKey);
+  void setInt64(DOMString strKey, long long value);
+  float getFloat(DOMString strKey);
+  void setFloat(DOMString strKey, float value);
+
+  void ShowWebContent(DOMString strParentDivName, DOMString strDivName);
+  void setVisibleElement(DOMString strKey, Element value);
+  Element getVisibleElement(DOMString strKey);
+
+  [Affects = Nothing] Element getElementById(DOMString strID,
+                                             optional long nLevel = 0);
+  [Affects = Nothing] NodeList getElementsByName(DOMString localName,
+                                                 optional long nLevel = 0);
+  [Affects = Nothing] HTMLCollection getElementsByTagName(
+      DOMString localName, optional long nLevel = 0);
+
+  void sendMessage(optional CosmosXobj msg,
+                   optional ApplicationCallback callback);
+  void addEventListener(DOMString eventName, ApplicationCallback callback);
+  void addEventListener(DOMString subObjName, DOMString eventName,
+                        ApplicationCallback callback);
+  void removeEventListener(DOMString eventName);
+  void BindCtrlValue(DOMString strcontrols,
+                     optional ApplicationCallback callback);
+
+  attribute EventHandler onCloudMessageForObject;
+  attribute EventHandler onCloudMessageForCloudForm;
+  attribute EventHandler onCloudMessageForXobj;
+  attribute EventHandler onMessageReceived;
+  attribute EventHandler onXobjCreated;
+};

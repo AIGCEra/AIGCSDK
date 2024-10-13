@@ -1,0 +1,34 @@
+{
+  metadata: {
+    "namespace": "webrt_event_type_names",
+    "export": "CORE_EXPORT"
+  },
+
+  data: [
+    "webrt",
+    "xobjcreated",
+    "mdichildactivate",
+    "loadcloudform",
+    "allmdichildremoved",
+    "cloudmessageforobject",
+    "cloudmessageforxobj",
+    "cloudmessageforcloudform",
+    "loadmdichildcloudform",
+    "loadmdicloudform",
+    "initwebrtapp",
+    "mdichildcloudformready",
+    "mdicloudformready",
+    "cloudformready",
+    "cloudformclosed",
+    "cosmoscompositor",
+    "cosmoscontrolcreated",
+    "cosmosgalaxycreated",
+    "cosmosxobj",
+    "webrtmessage",
+    "webrtobjectcreated",
+    "newdocument",
+    "opendocument",
+    "closedocument",
+    "bindclrobject"
+  ],
+}

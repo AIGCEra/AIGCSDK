@@ -1,0 +1,21 @@
+
+[
+  Exposed = Window
+] interface CosmosEvent {
+  attribute DOMString eventId;
+  attribute DOMString param1;
+  attribute DOMString param2;
+  attribute DOMString param3;
+  attribute DOMString param4;
+  attribute DOMString param5;
+  attribute long long handleSource;
+  attribute long long handleTarget;
+  readonly attribute DOMString name;
+  readonly attribute DOMString msgID;
+  readonly attribute DOMString objtype;
+  readonly attribute long long hwnd;
+  readonly attribute CosmosXobj xobj;
+  readonly attribute CosmosNode grid;
+  readonly attribute CosmosWinform form;
+  readonly attribute CosmosGalaxy galaxy;
+};
