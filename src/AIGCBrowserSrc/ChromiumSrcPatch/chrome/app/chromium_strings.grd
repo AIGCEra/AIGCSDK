@@ -714,56 +714,52 @@ Permissions you've already given to websites and apps may apply to this account.
         <ph name="FILE_NAME">$1<ex>malware.exe</ex></ph> is dangerous, so Chromium has blocked it.
       </message>
       <message name="IDS_BLOCK_REASON_PROMPT_FOR_SCANNING"
-         desc="Message shown to the user on chrome://downloads page to explain that this download is recommended to be scanned.">
+         desc="Message shown to the user on tangram://downloads page to explain that this download is recommended to be scanned.">
         Chromium recommends scanning this file because it may be dangerous.
       </message>
 
-      <!-- chrome://downloads page dangerous file description strings -->
+      <!-- tangram://downloads page dangerous file description strings -->
       <message name="IDS_BLOCK_DOWNLOAD_REASON_DANGEROUS_FILETYPE"
-               desc="On the chrome://downloads page, the description shown for a blocked file with a dangerous filetype.">
+               desc="On the tangram://downloads page, the description shown for a blocked file with a dangerous filetype.">
         Chromium blocked this download because the file type isn't commonly downloaded and it may be dangerous
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_DANGEROUS"
-               desc="On the chrome://downloads page, the description shown for a blocked file that is dangerous.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that is dangerous.">
         Chromium blocked this download because the file is dangerous
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_DANGEROUS_COOKIE_THEFT"
-               desc="On the chrome://downloads page, the description shown for a blocked file that is dangerous because of cookie theft.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that is dangerous because of cookie theft.">
         Chromium blocked this download because the file can harm your personal and social network accounts
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_DANGEROUS_COOKIE_THEFT_AND_ACCOUNT"
-               desc="On the chrome://downloads page, the description with account info shown for a blocked file that is dangerous because of cookie theft.">
+               desc="On the tangram://downloads page, the description with account info shown for a blocked file that is dangerous because of cookie theft.">
         Chromium blocked this download because the file can harm your personal and social network accounts, including <ph name="USER_EMAIL">$1<ex>john@google.com</ex></ph>
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_UNCOMMON"
-               desc="On the chrome://downloads page, the description shown for a blocked file that is uncommon.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that is uncommon.">
         Chromium blocked this download because the file isn't commonly downloaded and it may be dangerous
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_UNCOMMON_SUSPICIOUS_ARCHIVE"
-               desc="On the chrome://downloads page, the description shown for a blocked file that is suspicious archive.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that is suspicious archive.">
         Chromium blocked this download because the archive file includes other files that may hide malware
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_POTENTIALLY_UNWANTED"
-               desc="On the chrome://downloads page, the description shown for a blocked file that is potentially unwanted.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that is potentially unwanted.">
         Chromium blocked this download because the file is deceptive and may make unexpected changes to your device
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_INSECURE"
-               desc="On the chrome://downloads page, the description shown for a blocked file that is insecure.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that is insecure.">
         Chromium blocked this download because the site isn't using a secure connection and the file may have been tampered with
       </message>
       <message name="IDS_BLOCK_DOWNLOAD_REASON_UNVERIFIED_NO_SAFE_BROWSING"
-               desc="On the chrome://downloads page, the description shown for a blocked file that could not be verified because Safe Browsing is off.">
+               desc="On the tangram://downloads page, the description shown for a blocked file that could not be verified because Safe Browsing is off.">
         Chromium blocked this download because you turned Safe Browsing off and the file can't be verified
       </message>
 
-      <!-- chrome://downloads page bypass dangerous download warning prompt-->
+      <!-- tangram://downloads page bypass dangerous download warning prompt-->
       <message name="IDS_DOWNLOAD_WARNING_BYPASS_PROMPT_LEARN_MORE_LINK"
                desc="On the downloads page, the label for the link to the help center in the prompt to bypass a dangerous download warning.">
         Learn why Chromium blocks some files
-      </message>
-      <message name="IDS_DOWNLOAD_WARNING_BYPASS_PROMPT_LEARN_MORE_LINK_ACCESSIBLE"
-               desc="On the downloads page, accessible text for the link to the help center in the prompt to bypass a dangerous download warning.">
-        Learn why Chromium blocks some files, opens in new tab
       </message>
 
       <!-- Abandon in-progress downloads confirmation dialog -->
@@ -858,7 +854,7 @@ Permissions you've already given to websites and apps may apply to this account.
         This extension hasn't published privacy practices, such as how it collects and uses data. Chromium recommends that you remove it.
       </message>
 
-      <!-- chrome://extensions page -->
+      <!-- tangram://extensions page -->
   <message name="IDS_EXTENSIONS_SC_DESCRIPTION" desc="Detailed message displayed in the Safety Check description section.">
     {NUM_EXTENSIONS, plural,
      =1 {Chromium recommends that you remove it}
@@ -1005,6 +1001,9 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_ENTERPRISE_SIGNIN_WORK_PROFILE_EXPLANATION" desc="The warning message displayed to an enterprise user about to link their profile to their Google account. This message is followed by a 'Learn more' link.">
           Any Chromium data that is generated during the use of this profile (such as the creation of bookmarks, history, passwords, and other settings) can be removed by the work profile administrator. <ph name="LEARN_MORE">$1<ex>Learn more</ex></ph>
         </message>
+        <message name="IDS_ENTERPRISE_WELCOME_PROFILE_INFORMATION_DETAILS" desc="Paragraph disclaiming to the user what their organization can do with their profile information.">
+          Your organization can see and manage browsing data in your work profile, such as your bookmarks, history, and passwords. It can’t see browsing data in personal Chromium profiles.
+        </message>
         <!-- New one-click sign-in dialog contents for SAML support -->
         <message name="IDS_ONE_CLICK_SIGNIN_DIALOG_TITLE_NEW" desc="The title of the modal dialog window that opens when the user chooses to use one click sign-in.">
           You're signed in to Chromium!
@@ -1013,17 +1012,6 @@ Permissions you've already given to websites and apps may apply to this account.
           You're signed in as <ph name="USER_EMAIL_ADDRESS">$1<ex>foo@gmail.com</ex></ph>. Now you can access your bookmarks, history, and other settings on all your signed in devices.
         </message>
       </if>
-
-      <!-- Management bubble -->
-      <message name="IDS_MANAGEMENT_DIALOG_BROWSER_MANAGED" desc="Disclosure that an unnamed organization is managing the browser.">
-        Your organization manages Chromium
-      </message>
-      <message name="IDS_MANAGEMENT_DIALOG_BROWSER_MANAGED_BY" desc="Disclosure that a known organization is managing the browser.">
-        <ph name="MANAGER">$1<ex>The Company</ex></ph> manages Chromium
-      </message>
-      <message name="IDS_MANAGEMENT_DIALOG_BROWSER_MANAGED_BY_MULTIPLE_ORGANIZATIONS" desc="Disclosure that multiple organization are managing the browser and profile.">
-        Multiple organizations manage Chromium
-      </message>
 
       <!-- Extension requests sign in to Chrome through chrome.identity API -->
       <if expr="enable_extensions">
@@ -1069,35 +1057,8 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
 
-      <!-- Dice Web Signin Interception Bubble-->
-      <if expr="not use_titlecase">
-        <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
-          desc="Text asking the user to sign into Chromium while the Chromium Signin Bubble intercept is shown.">
-          Sign in to Chromium?
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-          Make Chromium your own
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
-          desc="Label of the Decline button of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-          Use Chromium without an account
-        </message>
-      </if>
-      <if expr="use_titlecase">
-        <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
-          desc="Text asking the user to sign into Chromium while the Chromium Signin Bubble intercept is shown.">
-          Sign In to Chromium?
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-          Make Chromium Your Own
-        </message>
-        <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
-          desc="Label of the Decline button of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
-          Use Chromium Without an Account
-        </message>
-      </if>
-
       <if expr="not chromeos_ash and not is_android and not chromeos_lacros">
+        <!-- Dice Web Signin Interception Bubble-->
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_CREATE_BUBBLE_TITLE" desc="Title of the web signin interception bubble">
           Continue in a new Chromium profile?
         </message>
@@ -1137,12 +1098,6 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_IPH_TEXT_SIGNIN_REMINDER_SCREENREADER" desc="This string is the accessibility text of a reminder message, which is intended to help users understand that they have been signed in to Chrome.">
           While you're signed in, you can use your passwords and more from your Google Account in Chromium. <ph name="SHORTCUT">$1<ex>CTRL+SHIFT+M</ex></ph> can change your Google services settings.
         </message>
-        <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_NO_UNSYNCED_TITLE" desc="This is the title of a confirmation dialog and asks the user to confirm that they want to sign out of Chromium. It appears when the user opens the Chromium Profile Menu and chooses 'Sign out of Chromium'. This title is before the 'Your passwords and other Chromium data are saved to your Google Account, and will be removed from this device. To use them in the future, sign back in to Chromium.' string. The tone should be straightforward.">
-          Sign out of Chromium?
-        </message>
-        <message name="CHROME_SIGNOUT_CONFIRMATION_PROMPT_NO_UNSYNCED_BODY" desc="This is the subtitle of a confirmation dialog that asks the user to confirm that they want to sign out of Chromium. It appears when the user opens the Chromium Profile Menu and chooses 'Sign out of Chromium'. This subtitle is after the 'Sign out of Chromium?' string. The tone should be calm, because we want to explain to the user that their data is saved; however, we want to set expectations by clarifying that the data will be removed from the device. This string provides a path to resolution because it explains how the user can see their data again (by signing back in).">
-          Your passwords and other Chromium data are saved in your Google Account, and will be removed from this device. To use them in the future, sign back in to Chromium.
-        </message>
         <message name="IDS_CHROME_SIGNOUT_CONFIRMATION_PROMPT_VERIFY_BODY" desc="This is the subtitle of an error message dialog that appears when the user opens the Chromium Profile Menu and chooses 'Sign out of Chromium'. The error message appears when the user has saved some data (like a password or payment method) to Chromium, but Chromium wasn't able to save the data to the user's Google Account due to a sign-in error; but, the data has been saved locally to Chromium. This subtitle is after the 'Some data isn’t saved yet' string. The tone should be cautionary, because we want to explain to the user that their data is not saved to their Google Account. This string provides a path to resolution because it explains how the user can properly save their data before they sign out of Chromium.">
           Chromium needs to verify it’s you before some data can be saved in your Google Account and used on all your devices. If you sign out, this data will stay on this device.
         </message>
@@ -1152,6 +1107,33 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_CLOSE_WARNING_FOR_CLEAR_COOKIES_ON_EXIT_TEXT" desc="Body of a notice displayed when closing the last Chrome window, to inform the user about a change in the way the 'Clear cookie on exit' setting works.">
           You’ll be signed out of most sites when you close all Chromium windows, except your Google Account if you’re signed in to Chromium. To let sites remember you, <ph name="SETTINGS_LINK">$1<ex>go to settings</ex></ph>.
         </message>
+
+        <if expr="not use_titlecase">
+          <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
+            desc="Text asking the user to sign into Chromium while the Chromium Signin Bubble intercept is shown.">
+            Sign in to Chromium?
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+            Make Chromium your own
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
+            desc="Label of the Decline button of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+            Use Chromium without an account
+          </message>
+        </if>
+        <if expr="use_titlecase">
+          <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_TEXT"
+            desc="Text asking the user to sign into Chromium while the Chromium Signin Bubble intercept is shown.">
+            Sign In to Chromium?
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_TITLE" desc="Title of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+            Make Chromium Your Own
+          </message>
+          <message name="IDS_SIGNIN_DICE_WEB_INTERCEPT_BUBBLE_CHROME_SIGNIN_DECLINE_TEXT"
+            desc="Label of the Decline button of the Chromium Signin Bubble intercept that is shown when a signed out user signs in on the web with it's first account.">
+            Use Chromium Without an Account
+          </message>
+        </if>
         <message name="IDS_AVATAR_BUTTON_INTERCEPT_BUBBLE_CHROME_SIGNIN_ACCESSIBILITY_LABEL"
           desc="Accessibility label (read by the accessibility tools) of the avatar button when the Chromium Signin bubble is shown. The text implies that the expanded bubble underneath the button is closable by clicking on the button. The actual text is 'Sign in to Chromium?' with a bubble shown under it.">
           Click to close the Chromium sign-in dialog
@@ -1488,9 +1470,6 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_SYNC_ERROR_USER_MENU_UPGRADE_BUTTON" desc="Button in the header of desktop user menu that prompts the user to update Chrome to fix the out-of-date Chrome client error.">
         Update Chromium
       </message>
-      <message name="IDS_SYNC_ERROR_PASSPHRASE_USER_MENU_TITLE_SIGNED_IN_ONLY" desc="Title of the sync/signin error header of desktop user menu. Shown for users who are signed-in but not syncing.">
-        To use and save Chromium data in your Google Account, enter your passphrase
-      </message>
 
       <!-- Sync errors. Android uses native UI to handle Sync settings -->
       <if expr="not is_android">
@@ -1559,9 +1538,6 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_INFOBAR_MISSING_CAMERA_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the camera capabilities, but Chrome is missing the Android camera permission.">
           Chromium needs permission to access your camera for this site
         </message>
-        <message name="IDS_INFOBAR_MISSING_HAND_TRACKING_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to hand tracking capabilities, but Chrome is missing the Android hand tracking permission.">
-          Chromium needs permission to track your hands
-        </message>
         <message name="IDS_INFOBAR_MISSING_MICROPHONE_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to the microphone capabilities, but Chrome is missing the Android microphone permission.">
           Chromium needs permission to access your microphone for this site
         </message>
@@ -1578,11 +1554,11 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_MESSAGE_MISSING_AR_CAMERA_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to augmented reality capabilities, but Chrome is missing the Android camera permission.">
           Chromium needs camera permission to create a 3D map of your surroundings
         </message>
+        <message name="IDS_MESSAGE_MISSING_XR_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to mixed reality capabilities, but Chrome is missing the Android scene understanding and hand tracking permission.">
+          Chromium needs permission to map your surroundings and track your hands
+        </message>
         <message name="IDS_MESSAGE_MISSING_CAMERA_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the camera capabilities, but Chrome is missing the Android camera permission.">
           Chromium needs camera permission for this site
-        </message>
-        <message name="IDS_MESSAGE_MISSING_HAND_TRACKING_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to mixed reality capabilities, but Chrome is missing the Android hand tracking permission.">
-          Chromium needs permission to track your hands
         </message>
         <message name="IDS_MESSAGE_MISSING_MICROPHONE_PERMISSION_TEXT" desc="Text shown in a prompt ui when a website has requested access to the microphone capabilities, but Chrome is missing the Android microphone permission.">
           Chromium needs microphone permission for this site
@@ -1595,9 +1571,6 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
         <message name="IDS_MESSAGE_STORAGE_ACCESS_PERMISSION_TEXT" desc="Text shown educating the user that Chrome is missing the Android storage permission, which is required to download files.">
           Chromium needs storage access permission to download files
-        </message>
-        <message name="IDS_MESSAGE_MISSING_XR_PERMISSION_TEXT" desc="Text shown in an infobar when a website has requested access to mixed reality capabilities, but Chrome is missing the Android scene understanding and hand tracking permission.">
-          Chromium needs permission to map your surroundings and track your hands
         </message>
       </if>
 
@@ -1620,7 +1593,7 @@ Permissions you've already given to websites and apps may apply to this account.
         </message>
       </if>
 
-      <!-- Welcome page (chrome://welcome) strings -->
+      <!-- Welcome page (tangram://welcome) strings -->
       <if expr="not chromeos_ash and not is_android">
         <message name="IDS_WELCOME_HEADER" desc="A message which will appear as the header on the Welcome UI if the user has never run Chromium before.">
           Welcome to Chromium
@@ -1756,15 +1729,6 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_ENTERPRISE_OIDC_WELCOME_TIMEOUT_SUBTITLE" desc="Subtitle of a section telling the user that their work profile was created but is not fully ready yet.">
           While we're setting up account access, you can still use Chromium. You may not be able to access some resources until setup is complete.
         </message>
-
-        <!-- Supervised user profile signin IPH -->
-        <!-- TODO(b/351333491): Mark them translateable once the strings are approved. -->
-        <message name="IDS_SUPERVISED_USER_PROFILE_SIGNIN_IPH_TEXT"
-          desc="Informative text shown on the IPH bubble when a supervised user signs-in in a new profile or an existing local profile."
-          translateable="false">
-          The Chromium settings your parent chose in Family Link can help keep you safe online
-        </message>
-
         <!-- Profile Picker -->
         <if expr="chromeos_lacros">
           <message name="IDS_PROFILE_PICKER_MAIN_VIEW_SUBTITLE_LACROS" desc="Profile picker main view subtitle">
@@ -1934,7 +1898,7 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_LEARN_MORE_SECTION_2_BULLET_POINT_2" desc="FLEDGE API Bullet 2 of 3 that appear beneath the “Sites you visit that define your interests” subtitle. We break the description into the 3 pieces users most care about: 1) what data, 2) why this data, 3) what can I do about it? * “How we use this data:” is bold and serves as a label to help people skimming the page.">
         <ph name="BEGIN_BOLD">&lt;b&gt;</ph>How we use this data:<ph name="END_BOLD">&lt;/b&gt;</ph> Sites can store information with Chromium about your interests. For example, if you visit a site to buy shoes for a marathon, the site might define your interest as running marathons. Later, if you visit a different site to register for a race, that site can show you an ad for running shoes based on your interests.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_BOTTOM_SUMMARY" desc="A conclusion paragraph for the entire page. It sits beneath the “More control over the ads you see” subtitle but it’s no more associated with that topic than “Limit sharing between sites”. * “You can change your mind”: When writing a consent moment, we have a legal obligation to inform the user how they can “revoke their consent” or “opt out”. A friendlier way to say this is “change your mind”. * “in Chrome settings”: The URL is chrome://settings/privacySandbox. We don’t make it a live link because we need the users to stay in this moment until they make a choice. * “The trials run alongside…”: The trials happen in addition to today’s current system based on third-party cookies. In other words, even by accepting in this consent moment, the user’s core experience doesn’t change much. This is an experiment, and we need the user to understand as much. ">
+      <message name="IDS_PRIVACY_SANDBOX_DIALOG_CONSENT_BOTTOM_SUMMARY" desc="A conclusion paragraph for the entire page. It sits beneath the “More control over the ads you see” subtitle but it’s no more associated with that topic than “Limit sharing between sites”. * “You can change your mind”: When writing a consent moment, we have a legal obligation to inform the user how they can “revoke their consent” or “opt out”. A friendlier way to say this is “change your mind”. * “in Chrome settings”: The URL is tangram://settings/privacySandbox. We don’t make it a live link because we need the users to stay in this moment until they make a choice. * “The trials run alongside…”: The trials happen in addition to today’s current system based on third-party cookies. In other words, even by accepting in this consent moment, the user’s core experience doesn’t change much. This is an experiment, and we need the user to understand as much. ">
         You can change your mind at any time in Chromium settings. The trials run alongside the current way ads get served, so you won’t see changes right away.
       </message>
       <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_SUBTITLE" desc="A subtitle on the consent page. Consider this a tagline for the Privacy Sandbox project.* “exploring” conveys that this is a work in progress. * “new features” include settings that the user can turn on/off and also backend features that change the way Chrome works for everyone * “allow sites to deliver”: Privacy Sandbox is proposed by Google as a collaborative effort with the browser industry. We’re building and testing functionality that will live in the Chrome browser. In order to land the full promise of Privacy Sandbox, websites and advertisers need to adopt the new APIs / functionality that we’re developing. So “allow sites…” makes it clear to the user that we’re building something for the ecosystem. Typically a Google product builds something for the user, and that’s true in this case, but it’s bigger than that. * “same browsing experience using less of your info”: Another definition of the promise of Privacy Sandbox. Third-party cookies are going away. In this new world, the user will have essentially the same browsing experience but it’s more private because it doesn’t expose so much of the user’s info.">
@@ -1943,7 +1907,7 @@ Permissions you've already given to websites and apps may apply to this account.
       <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_BODY_DESCRIPTION_2" desc="A paragraph beneath the “More control over the ads you see” subtitle.* “During the trials”: The trials happens in addition to today’s current system based on third-party cookies. In other words, even by agreeing to or remaining in a trial,, the user’s core experience doesn’t change much. This is an experiment, and we need the user to understand as much. * “see and remove topics of interests”: we want to stress the element of control * “estimate topics”: Topics of interest include things like “Live comedy” and “Rock music”. Chrome estimates these interests based on the sites users visit. It’s an “estimation”, and we don’t want to suggest that we know with certainty the user’s interests. Avoid words like “guess”, “establish”, “define”, etc. (in place of “estimate”). * “recent browsing history”: Later in the UI, we define this as “a record of sites you’ve visited using Chrome on this device.” By “recent”, we mean the last 3 weeks (also defined later in the UI).">
         During the trials, you can see and remove topics of interest sites use to show you ads. Chromium estimates your interests based on your recent browsing history.
       </message>
-      <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_BOTTOM_SUMMARY" desc="A conclusion paragraph for the entire page. It sits beneath the “More control over the ads you see” subtitle but it’s no more associated with that topic than “Limit sharing between sites”. * “in Chrome settings”: The URL is chrome://settings/privacySandbox. We don’t make it a live link because we need the users to stay in this moment until they make a choice.">
+      <message name="IDS_PRIVACY_SANDBOX_DIALOG_NOTICE_BOTTOM_SUMMARY" desc="A conclusion paragraph for the entire page. It sits beneath the “More control over the ads you see” subtitle but it’s no more associated with that topic than “Limit sharing between sites”. * “in Chrome settings”: The URL is tangram://settings/privacySandbox. We don’t make it a live link because we need the users to stay in this moment until they make a choice.">
         You can learn more about these features in Chromium settings.
       </message>
 
@@ -2052,24 +2016,6 @@ Permissions you've already given to websites and apps may apply to this account.
         <message name="IDS_EXTRA_CODE"
                  desc="The optional extra code for any of the errors below">
           Extra code: <ph name="EXTRA_CODE">$1<ex>0x80071234</ex></ph>.
-        </message>
-
-        <!--Startup errors.-->
-        <message name="IDS_UNABLE_TO_GET_SETUP_LOCK"
-                 desc="Error message displayed in the main dialog when the updater is unable to get the setup lock at startup.">
-          Startup error: another instance of setup is currently running, please try again later.
-        </message>
-        <message name="IDS_WRONG_USER_ELEVATION_REQUIRED_ERROR"
-                 desc="Error message displayed in the main dialog when the updater is run without administrative privileges to install a per-system application.">
-          Startup error: please run the installer as administrator.
-        </message>
-        <message name="IDS_WRONG_USER_DEELEVATION_REQUIRED_ERROR"
-                 desc="Error message displayed in the main dialog when the updater is run with administrative privileges to install a per-user application.">
-          Startup error: please run the installer as a regular user, not as administrator.
-        </message>
-        <message name="IDS_GENERIC_STARTUP_ERROR"
-                 desc="Error message displayed in the main dialog when an error is encountered at startup of the updater.">
-          Startup error: <ph name="STARTUP_ERROR">$1<ex>error-internal</ex></ph>.
         </message>
 
         <!--Network errors.-->

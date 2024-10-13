@@ -1,0 +1,15 @@
+{
+  "short_name": "Google Password Manager",
+  "name": "Google Password Manager",
+  "icons": [
+    {
+      "src": "tangram://password-manager/images/password_manager_pwa_icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "id": "tangram://password-manager/",
+  "display": "standalone",
+  "scope": "tangram://password-manager/"
+}

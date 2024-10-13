@@ -1,0 +1,15 @@
+{
+  "short_name": "Password Manager",
+  "name": "Password Manager",
+  "icons": [
+    {
+      "src": "tangram://password-manager/images/password_manager_logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/?source=pwa",
+  "id": "tangram://password-manager/",
+  "display": "standalone",
+  "scope": "tangram://password-manager/"
+}

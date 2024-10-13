@@ -9,7 +9,6 @@
 
 #include "base/gtest_prod_util.h"
 #include "base/memory/raw_ptr.h"
-#include "components/prefs/pref_change_registrar.h"
 #include "ui/gfx/geometry/rect.h"
 #include "ui/gfx/geometry/size.h"
 #include "ui/gfx/native_widget_types.h"
@@ -56,7 +55,7 @@ class BrowserViewLayout :
  public:
   // The minimum width for the normal (tabbed or web app) browser window's
   // contents area. This should be wide enough that WebUI pages (e.g.
-  // chrome://settings) and the various associated WebUI dialogs (e.g. Import
+  // tangram://settings) and the various associated WebUI dialogs (e.g. Import
   // Bookmarks) can still be functional. This value provides a trade-off between
   // browser usability and privacy - specifically, the ability to browse in a
   // very small window, even on large monitors (which is why a minimum height is
@@ -195,8 +194,6 @@ class BrowserViewLayout :
   // Returns the minimum acceptable width for the browser web contents.
   int GetMinWebContentsWidth() const;
 
-  void OnCompactModeChanged();
-
   // The delegate interface. May be a mock in tests.
   const std::unique_ptr<BrowserViewLayoutDelegate> delegate_;
 
@@ -237,13 +234,6 @@ class BrowserViewLayout :
   // The widget displaying a border on top of contents container for
   // highlighting the content. Not created by default.
   raw_ptr<views::Widget, DanglingUntriaged> contents_border_widget_ = nullptr;
-
-  bool is_compact_mode_ = false;
-
-  // Listens to prefs::kCompactModeEnabled. When the pref is changed we will
-  // toggle the mode the browser is in. Compact -> Standard, Standard ->
-  // Compact.
-  PrefChangeRegistrar registrar_;
 
   // The bounds within which the vertically-stacked contents of the BrowserView
   // should be laid out within. This is just the local bounds of the

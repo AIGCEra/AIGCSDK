@@ -265,8 +265,8 @@
         </message>
       </if>
 
-      <!-- chrome://crashes strings -->
-      <message name="IDS_CRASH_DISABLED_MESSAGE" desc="The explanatory message for chrome://crashes when crash reporting is disabled">
+      <!-- tangram://crashes strings -->
+      <message name="IDS_CRASH_DISABLED_MESSAGE" desc="The explanatory message for tangram://crashes when crash reporting is disabled">
         Crash reporting is not available in Chromium.
       </message>
 
@@ -292,12 +292,12 @@
       <!-- Page Info -->
       <if expr="_is_chrome_for_testing_branded">
         <then>
-          <message name="IDS_PAGE_INFO_INTERNAL_PAGE" desc="Message to display in the page info bubble when the page you are on is a chrome:// page or about:something.">
+          <message name="IDS_PAGE_INFO_INTERNAL_PAGE" desc="Message to display in the page info bubble when the page you are on is a tangram:// page or about:something.">
             You're viewing a secure Chrome for Testing page
           </message>
         </then>
         <else>
-          <message name="IDS_PAGE_INFO_INTERNAL_PAGE" desc="Message to display in the page info bubble when the page you are on is a chrome:// page or about:something.">
+          <message name="IDS_PAGE_INFO_INTERNAL_PAGE" desc="Message to display in the page info bubble when the page you are on is a tangram:// page or about:something.">
             You're viewing a secure Chromium page
           </message>
         </else>

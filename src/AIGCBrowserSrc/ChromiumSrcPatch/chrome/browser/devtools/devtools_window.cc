@@ -80,10 +80,7 @@
 #include "content/public/browser/render_widget_host_view.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/common/content_client.h"
-#include "content/public/common/content_features.h"
 #include "content/public/common/url_constants.h"
-#include "extensions/browser/view_type_utils.h"
-#include "extensions/common/constants.h"
 #include "net/cert/x509_certificate.h"
 #include "services/metrics/public/cpp/ukm_builders.h"
 #include "services/metrics/public/cpp/ukm_recorder.h"
@@ -510,7 +507,6 @@ void DevToolsWindow::RegisterProfilePrefs(
   registry->RegisterDictionaryPref(prefs::kDevToolsEditedFiles);
   registry->RegisterDictionaryPref(prefs::kDevToolsFileSystemPaths);
   registry->RegisterStringPref(prefs::kDevToolsAdbKey, std::string());
-  registry->RegisterInt64Pref(prefs::kDevToolsLastOpenTimestamp, 0L);
 
   registry->RegisterBooleanPref(prefs::kDevToolsDiscoverUsbDevicesEnabled,
                                 true);
@@ -1157,11 +1153,6 @@ DevToolsWindow::DevToolsWindow(FrontendType frontend_type,
     Observe(inspected_web_contents);
   }
 
-  // TODO(https://crbug.com/356827776): kTabContents is not the right view type
-  // for devtools window. We should have a new view type here.
-  extensions::SetViewType(main_web_contents_,
-                          extensions::mojom::ViewType::kTabContents);
-
   // Initialize docked page to be of the right size.
   if (can_dock_ && inspected_web_contents) {
     content::RenderWidgetHostView* inspected_view =
@@ -1188,11 +1179,6 @@ DevToolsWindow::DevToolsWindow(FrontendType frontend_type,
       language::prefs::kAcceptLanguages,
       base::BindRepeating(&DevToolsWindow::OnLocaleChanged,
                           base::Unretained(this)));
-
-  int64_t now_timestamp =
-      base::Time::Now().ToDeltaSinceWindowsEpoch().InMilliseconds();
-  profile_->GetPrefs()->SetInt64(prefs::kDevToolsLastOpenTimestamp,
-                                 now_timestamp);
 }
 
 // static
@@ -1391,7 +1377,7 @@ void DevToolsWindow::ActivateContents(WebContents* contents) {
   }
 }
 
-WebContents* DevToolsWindow::AddNewContents(
+void DevToolsWindow::AddNewContents(
     WebContents* source,
     std::unique_ptr<WebContents> new_contents,
     const GURL& target_url,
@@ -1412,7 +1398,7 @@ WebContents* DevToolsWindow::AddNewContents(
       toolbox_web_contents_->GetRenderWidgetHostView()->SetSize(size);
     }
     UpdateBrowserWindow();
-    return nullptr;
+    return;
   }
 
   WebContents* inspected_web_contents = GetInspectedWebContents();
@@ -1421,7 +1407,6 @@ WebContents* DevToolsWindow::AddNewContents(
         source, std::move(new_contents), target_url, disposition,
         window_features, user_gesture, was_blocked);
   }
-  return nullptr;
 }
 
 void DevToolsWindow::WebContentsCreated(WebContents* source_contents,
@@ -1684,7 +1669,7 @@ void DevToolsWindow::OpenInNewTab(const GURL& url) {
       child_id = render_view_host->GetProcess()->GetID();
   }
   // Use about:blank instead of an empty GURL. The browser treats an empty GURL
-  // as navigating to the home page, which may be privileged (chrome://newtab/).
+  // as navigating to the home page, which may be privileged (tangram://newtab/).
   if (!content::ChildProcessSecurityPolicy::GetInstance()->CanRequestURL(
           child_id, fixed_url))
     fixed_url = GURL(url::kAboutBlankURL);
@@ -1994,15 +1979,7 @@ void DevToolsWindow::MaybeShowSharedProcessInfobar() {
   checked_sharing_process_id_ = rph_id;
 
   if (!base::FeatureList::IsEnabled(
-          ::features::kDevToolsSharedProcessInfobar) ||
-      !base::FeatureList::IsEnabled(
-          ::features::kProcessPerSiteUpToMainFrameThreshold)) {
-    return;
-  }
-
-  content::SiteInstance* site_instance =
-      inspected_web_contents->GetPrimaryMainFrame()->GetSiteInstance();
-  if (site_instance->GetSiteURL().SchemeIs(extensions::kExtensionScheme)) {
+          ::features::kDevToolsSharedProcessInfobar)) {
     return;
   }
 
