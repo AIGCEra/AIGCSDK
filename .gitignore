@@ -380,3 +380,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /src/Sample/DotnetComponent/SunnyCtrl/Cosmos.dll
+/src/AIGCBrowserSrc/ChromiumSrcPatch/ui/gfx/win/rendering_window_manager.cc
