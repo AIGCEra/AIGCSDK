@@ -7,8 +7,8 @@ import 'tangram://history/history.js';
 import type {HistorySyncedDeviceManagerElement} from 'tangram://history/history.js';
 import {ensureLazyLoaded} from 'tangram://history/history.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {pressAndReleaseKeyOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {assertEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {pressAndReleaseKeyOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 
 import {createSession, createWindow} from './test_util.js';

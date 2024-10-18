@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {BookmarksAppElement, BookmarksItemElement} from 'tangram://bookmarks/bookmarks.js';
+import type {BookmarksAppElement} from 'tangram://bookmarks/bookmarks.js';
 import {BookmarksApiProxyImpl, HIDE_FOCUS_RING_ATTRIBUTE, LOCAL_STORAGE_FOLDER_STATE_KEY, LOCAL_STORAGE_TREE_WIDTH_KEY} from 'tangram://bookmarks/bookmarks.js';
 import {isMac} from 'tangram://resources/js/platform.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {down, keyDownOn, pressAndReleaseKeyOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
-import {assertDeepEquals, assertEquals, assertNotEquals} from 'tangram://webui-test/chai_assert.js';
+import {assertDeepEquals, assertEquals, assertFalse, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn, pressAndReleaseKeyOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
+import {down} from 'tangram://webui-test/mouse_mock_interactions.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 
 import {TestBookmarksApiProxy} from './test_bookmarks_api_proxy.js';
@@ -88,23 +89,24 @@ suite('<bookmarks-app>', function() {
 
   test('focus ring hides and restores', async function() {
     const list = app.shadowRoot!.querySelector('bookmarks-list');
+    assertTrue(!!list);
     await flushTasks();
-    const item = list!.root!.querySelectorAll('bookmarks-item')[0] as
-        BookmarksItemElement;
-    const getFocusAttribute = () => app.getAttribute(HIDE_FOCUS_RING_ATTRIBUTE);
+    const item = list.shadowRoot!.querySelectorAll('bookmarks-item')[0];
+    assertTrue(!!item);
+    const hasFocusAttribute = () => app.hasAttribute(HIDE_FOCUS_RING_ATTRIBUTE);
 
-    assertEquals(null, getFocusAttribute());
+    assertFalse(hasFocusAttribute());
 
     down(item);
-    assertEquals('', getFocusAttribute());
+    assertTrue(hasFocusAttribute());
 
     keyDownOn(item, 16, [], 'Shift');
-    assertEquals('', getFocusAttribute());
+    assertTrue(hasFocusAttribute());
 
     // This event is also captured by the bookmarks-list and propagation is
     // stopped. Regardless, it should clear the focus first.
     keyDownOn(item, 40, [], 'ArrowDown');
-    assertEquals(null, getFocusAttribute());
+    assertFalse(hasFocusAttribute());
   });
 
   test('when find shortcut is invoked, focus on search input', async () => {

@@ -270,7 +270,7 @@ void CosmosWinform::InitWinForm() {
     DocumentFragment_ = cosmos_->createDocumentFragment();
     if (DocumentFragment_) {
       ExceptionState exception_state(
-          cosmos_->GetIsolate(), ExceptionContextType::kAttributeSet, "Element", "outerHTML");
+          cosmos_->GetIsolate(), v8::ExceptionContext::kAttributeSet, "Element", "outerHTML");
 
       cosmos_->helperElem_->setInnerHTML(strMessageXml, exception_state);
       DocumentFragment_->appendChild(cosmos_->helperElem_->firstChild());

@@ -12,9 +12,9 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import 'tangram://resources/cr_elements/cr_input/cr_input.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
+import 'tangram://resources/cr_elements/cr_page_selector/cr_page_selector.js';
 import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
 import 'tangram://resources/polymer/v3_0/iron-list/iron-list.js';
-import 'tangram://resources/polymer/v3_0/iron-pages/iron-pages.js';
 import 'tangram://resources/polymer/v3_0/paper-spinner/paper-spinner-lite.js';
 import '../settings_shared.css.js';
 import '../site_favicon.js';
@@ -394,6 +394,9 @@ export class SettingsSecurityKeysBioEnrollDialogElement extends
     // Prevent this event from bubbling since it is unnecessarily triggering
     // the listener within settings-animated-pages.
     e.stopPropagation();
+
+    // Also asynchronously notify iron-list of the possible resize.
+    setTimeout(() => this.$.enrollmentList.notifyResize(), 0);
   }
 
   private deleteEnrollment_(event: {model: {index: number}}) {

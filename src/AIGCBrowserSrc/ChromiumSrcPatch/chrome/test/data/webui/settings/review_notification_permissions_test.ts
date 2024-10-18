@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // clang-format off
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';

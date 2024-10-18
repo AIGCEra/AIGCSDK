@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#ifdef UNSAFE_BUFFERS_BUILD
+// TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
+#pragma allow_unsafe_buffers
+#endif
+
 #include "components/omnibox/browser/featured_search_provider.h"
 
 #include <stddef.h>
@@ -26,7 +31,6 @@
 #include "components/omnibox/common/omnibox_features.h"
 #include "components/prefs/pref_service.h"
 #include "components/prefs/testing_pref_service.h"
-#include "components/search_engines/search_engines_test_environment.h"
 #include "components/search_engines/template_url.h"
 #include "components/search_engines/template_url_data.h"
 #include "components/search_engines/template_url_service.h"
@@ -84,8 +88,6 @@ class FeaturedSearchProviderTest : public testing::Test {
 
   void SetUp() override {
     client_ = std::make_unique<FakeAutocompleteProviderClient>();
-    client_->set_template_url_service(
-        search_engines_test_environment_.ReleaseTemplateURLService());
     provider_ = new FeaturedSearchProvider(client_.get());
     omnibox::RegisterProfilePrefs(
         static_cast<sync_preferences::TestingPrefServiceSyncable*>(
@@ -169,7 +171,6 @@ class FeaturedSearchProviderTest : public testing::Test {
         std::make_unique<TemplateURL>(template_url_data));
   }
 
-  search_engines::SearchEnginesTestEnvironment search_engines_test_environment_;
   std::unique_ptr<MockAutocompleteProviderClient> client_;
   scoped_refptr<FeaturedSearchProvider> provider_;
 };

@@ -627,6 +627,15 @@
       "tangram://os-settings/*",
       "tangram://settings/*"
     ]
+  },
+  {
+    "channel": "stable",
+    "contexts": [
+      "webui_untrusted"
+    ],
+    "matches": [
+      "chrome-untrusted://lens/*"
+    ]
   }],
   "login": [{
     "dependencies": ["behavior:imprivata_extension", "permission:login"],

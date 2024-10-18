@@ -790,16 +790,16 @@ bool MessagePumpForUI::ProcessMessageHelper(const MSG& msg) {
   ::TranslateMessage(&msg);
   // begin Add by TangramTeam
   if (m_pWebRTDelegate) {
-    // if (msg.message != 0x0400)
-    m_pWebRTDelegate->ProcessMsg((MSG*)&msg);
-  } else {
-    // end Add by TangramTeam
-    //::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+      // if (msg.message != 0x0400)
+      m_pWebRTDelegate->ProcessMsg((MSG*)&msg);
   }
-  for (Observer& observer : observers_) {
+  else {
+      // end Add by TangramTeam
+      //::TranslateMessage(&msg);
+      ::DispatchMessage(&msg);
+  }
+  for (Observer& observer : observers_)
     observer.DidDispatchMSG(msg);
-  }
 
   return true;
 }
@@ -1047,38 +1047,44 @@ bool MessagePumpForIO::WaitForIOCompletion(DWORD timeout) {
 
 // Asks the OS for another IO completion result.
 bool MessagePumpForIO::GetIOItem(DWORD timeout, IOItem* item) {
-  DCHECK_CALLED_ON_VALID_THREAD(bound_thread_);
-
-  memset(item, 0, sizeof(*item));
-  ULONG_PTR key = reinterpret_cast<ULONG_PTR>(nullptr);
-  OVERLAPPED* overlapped = nullptr;
-  if (!::GetQueuedCompletionStatus(port_.get(), &item->bytes_transfered, &key,
-                                   &overlapped, timeout)) {
-    if (!overlapped) {
-      return false;  // Nothing in the queue.
-    }
-    item->error = GetLastError();
+    DCHECK_CALLED_ON_VALID_THREAD(bound_thread_);
+    ULONG_PTR key = reinterpret_cast<ULONG_PTR>(nullptr);
+    OVERLAPPED* overlapped = nullptr;
+    // Clear the value for the number of bytes transferred in case extracting the
+    // packet doesn't populate it.
     item->bytes_transfered = 0;
-  }
-
-  item->handler = reinterpret_cast<IOHandler*>(key);
-  item->context = reinterpret_cast<IOContext*>(overlapped);
-  return true;
+    if (!::GetQueuedCompletionStatus(port_.get(), &item->bytes_transfered, &key,
+        &overlapped, timeout)) {
+        if (!overlapped)
+            return false;  // Nothing in the queue.
+        // A completion packet for a failed operation was processed. The Windows
+        // last error code pertains to the operation that failed.
+        item->error = ::GetLastError();
+        // The packet may have contained a value for the number of bytes
+        // transferred, so pass along whatever value was populated from it.
+    }
+    else {
+        // The packet corresponded to an operation that succeeded, so clear out
+        // the error value so that the handler sees the operation as a success.
+        item->error = ERROR_SUCCESS;
+    }
+    item->handler = reinterpret_cast<IOHandler*>(key);
+    item->context = reinterpret_cast<IOContext*>(overlapped);
+    return true;
 }
 
 bool MessagePumpForIO::ProcessInternalIOItem(const IOItem& item) {
-  DCHECK_CALLED_ON_VALID_THREAD(bound_thread_);
-
-  if (reinterpret_cast<void*>(this) ==
-          reinterpret_cast<void*>(item.context.get()) &&
-      reinterpret_cast<void*>(this) ==
-          reinterpret_cast<void*>(item.handler.get())) {
-    // This is our internal completion.
-    DCHECK(!item.bytes_transfered);
-    native_msg_scheduled_.store(false, std::memory_order_relaxed);
-    return true;
-  }
-  return false;
+    DCHECK_CALLED_ON_VALID_THREAD(bound_thread_);
+    if (reinterpret_cast<void*>(this) ==
+        reinterpret_cast<void*>(item.context.get()) &&
+        reinterpret_cast<void*>(this) ==
+        reinterpret_cast<void*>(item.handler.get())) {
+        // This is our internal completion.
+        DCHECK(!item.bytes_transfered);
+        native_msg_scheduled_.store(false, std::memory_order_relaxed);
+        return true;
+    }
+    return false;
 }
 
 }  // namespace base

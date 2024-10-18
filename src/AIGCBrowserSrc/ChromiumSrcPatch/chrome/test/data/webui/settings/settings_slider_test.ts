@@ -5,7 +5,7 @@
 // clang-format off
 import 'tangram://settings/lazy_load.js';
 
-import {keyDownOn, keyUpOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
+import {keyDownOn, keyUpOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {CrSliderElement,SettingsSliderElement} from 'tangram://settings/lazy_load.js';
 import {assertEquals, assertFalse, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';

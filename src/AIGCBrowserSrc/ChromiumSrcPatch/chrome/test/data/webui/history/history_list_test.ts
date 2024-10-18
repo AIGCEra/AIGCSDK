@@ -6,9 +6,9 @@ import type {HistoryAppElement, HistoryEntry, HistoryItemElement, HistoryListEle
 import {BrowserServiceImpl, CrRouter, ensureLazyLoaded} from 'tangram://history/history.js';
 import {webUIListenerCallback} from 'tangram://resources/js/cr.js';
 import {isMac} from 'tangram://resources/js/platform.js';
-import {pressAndReleaseKeyOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertDeepEquals, assertEquals, assertFalse, assertGT, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {pressAndReleaseKeyOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flushTasks, waitAfterNextRender} from 'tangram://webui-test/polymer_test_util.js';
 
 import {TestBrowserService} from './test_browser_service.js';
@@ -523,7 +523,7 @@ suite('HistoryListTest', function() {
 
     // Key event should be ignored.
     assertEquals(1, testService.getCallCount('removeVisits'));
-    pressAndReleaseKeyOn(document.body, 46, '', 'Delete');
+    pressAndReleaseKeyOn(document.body, 46, [], 'Delete');
 
     await flushTasks();
     assertEquals(1, testService.getCallCount('removeVisits'));
@@ -564,7 +564,7 @@ suite('HistoryListTest', function() {
     const items = element.shadowRoot!.querySelectorAll('history-item');
 
     // Dialog should not appear when there is no item selected.
-    pressAndReleaseKeyOn(document.body, 46, '', 'Delete');
+    pressAndReleaseKeyOn(document.body, 46, [], 'Delete');
     await flushTasks();
     assertFalse(dialog.open);
 
@@ -578,13 +578,13 @@ suite('HistoryListTest', function() {
 
     assertEquals(2, toolbar.count);
 
-    pressAndReleaseKeyOn(document.body, 46, '', 'Delete');
+    pressAndReleaseKeyOn(document.body, 46, [], 'Delete');
     await flushTasks();
     assertTrue(dialog.open);
     element.shadowRoot!.querySelector<HTMLElement>('.cancel-button')!.click();
     assertFalse(dialog.open);
 
-    pressAndReleaseKeyOn(document.body, 8, '', 'Backspace');
+    pressAndReleaseKeyOn(document.body, 8, [], 'Backspace');
     await flushTasks();
     assertTrue(dialog.open);
     element.shadowRoot!.querySelector<HTMLElement>('.action-button')!.click();

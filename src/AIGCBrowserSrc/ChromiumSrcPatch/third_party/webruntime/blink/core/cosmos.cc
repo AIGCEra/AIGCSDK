@@ -94,7 +94,7 @@ Cosmos::Cosmos(LocalDOMWindow* window)
 
   ExceptionState exception_state(
       isolate,  // blink::GetBlinkIsolate(),
-      ExceptionContextType::kConstructorOperationInvoke, "createcosmos",
+      v8::ExceptionContext::kConstructor, "createcosmos",
       "creatHelper");
   helperElem_ = window->document()->CreateElementForBinding(
       AtomicString("cosmos"), exception_state);
@@ -651,7 +651,7 @@ void Cosmos::MdiChildActive(CosmosXobj* xobj) {
           WebLocalFrameImpl::FromFrame(DomWindow()->GetFrame());
       v8::Isolate* isolate = web_frame->GetAgentGroupScheduler()->Isolate();
       ExceptionState exception_state(isolate,
-                                     ExceptionContextType::kOperationInvoke,
+          v8::ExceptionContext::kOperation,
                                      "MdiChildActive", "MdiChildActive");
       if (form->m_pContentElement == nullptr) {
         HTMLCollection* contentCollection =
@@ -727,7 +727,7 @@ void Cosmos::AllMdiChildRemoved(CosmosXobj* xobj) {
       v8::Isolate* isolate = web_frame->GetAgentGroupScheduler()->Isolate();
 
       ExceptionState exception_state(
-          isolate, ExceptionContextType::kOperationInvoke, "AllMdiChildRemoved",
+          isolate, v8::ExceptionContext::kOperation, "AllMdiChildRemoved",
           "AllMdiChildRemoved");
       m_pVisibleContentElement->classList().remove({"show"}, exception_state);
       m_pVisibleContentElement->classList().add({"hidden"}, exception_state);
@@ -1144,7 +1144,7 @@ CosmosNode* Cosmos::createCosmosNode(CosmosXobj* xobj) {
               WebLocalFrameImpl::FromFrame(DomWindow()->GetFrame());
           v8::Isolate* isolate = web_frame->GetAgentGroupScheduler()->Isolate();
           ExceptionState exception_state(isolate,
-                                       ExceptionContextType::kAttributeSet,
+              v8::ExceptionContext::kAttributeSet,
                                        "Element", "outerHTML");
 
         helperElem_->setInnerHTML(strMessageXml, exception_state);

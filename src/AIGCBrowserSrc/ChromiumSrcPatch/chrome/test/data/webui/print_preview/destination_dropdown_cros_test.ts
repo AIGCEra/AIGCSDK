@@ -4,9 +4,10 @@
 
 import type {PrintPreviewDestinationDropdownCrosElement} from 'tangram://print/print_preview.js';
 import {Destination, DestinationOrigin} from 'tangram://print/print_preview.js';
-import {keyDownOn, move} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
+import {move} from 'tangram://webui-test/mouse_mock_interactions.js';
 import {eventToPromise} from 'tangram://webui-test/test_util.js';
 
 import {getGoogleDriveDestination, getSaveAsPdfDestination} from './print_preview_test_utils.js';

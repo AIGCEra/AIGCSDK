@@ -7,8 +7,8 @@ import 'tangram://history/history.js';
 import type {HistoryAppElement, HistorySideBarElement} from 'tangram://history/history.js';
 import {BrowserProxyImpl, BrowserServiceImpl, CrRouter, HistoryEmbeddingsBrowserProxyImpl, HistoryEmbeddingsPageHandlerRemote, MetricsProxyImpl} from 'tangram://history/history.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {assertEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 import {TestMock} from 'tangram://webui-test/test_mock.js';
 import {eventToPromise, isVisible, microtasksFinished} from 'tangram://webui-test/test_util.js';
@@ -119,7 +119,7 @@ import {navigateTo} from './test_util.js';
       assertEquals('tangram://history/syncedTabs', window.location.href);
 
       // Currently selected history view is preserved in sidebar menu item.
-      keyDownOn(sidebar.$.history, 0, '', ' ');
+      keyDownOn(sidebar.$.history, 0, [], ' ');
       await eventToPromise('iron-select', sidebar.$.menu);
       assertEquals('history', sidebar.$.menu.selected);
       assertEquals('tangram://history/', window.location.href);
@@ -134,13 +134,13 @@ import {navigateTo} from './test_util.js';
         assertEquals('grouped', sidebar.$.menu.selected);
         assertEquals('tangram://history/grouped', window.location.href);
 
-        keyDownOn(sidebar.$.syncedTabs, 0, '', ' ');
+        keyDownOn(sidebar.$.syncedTabs, 0, [], ' ');
         await eventToPromise('iron-select', sidebar.$.menu);
         assertEquals('syncedTabs', sidebar.$.menu.selected);
         assertEquals('tangram://history/syncedTabs', window.location.href);
 
         // Currently selected history view is preserved in sidebar menu item.
-        keyDownOn(sidebar.$.history, 0, '', ' ');
+        keyDownOn(sidebar.$.history, 0, [], ' ');
         await eventToPromise('iron-select', sidebar.$.menu);
         assertEquals('grouped', sidebar.$.menu.selected);
         assertEquals('tangram://history/grouped', window.location.href);

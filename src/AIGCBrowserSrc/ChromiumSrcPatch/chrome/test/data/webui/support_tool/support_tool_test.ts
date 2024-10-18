@@ -15,7 +15,6 @@ import type {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbo
 import type {CrInputElement} from 'tangram://resources/cr_elements/cr_input/cr_input.js';
 import {webUIListenerCallback} from 'tangram://resources/js/cr.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
-import {track} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {BrowserProxy, DataCollectorItem, IssueDetails, PiiDataItem, SupportTokenGenerationResult} from 'tangram://support-tool/browser_proxy.js';
 import {BrowserProxyImpl} from 'tangram://support-tool/browser_proxy.js';
@@ -24,6 +23,7 @@ import type {DataExportResult, SupportToolElement} from 'tangram://support-tool/
 import {SupportToolPageIndex} from 'tangram://support-tool/support_tool.js';
 import type {UrlGeneratorElement} from 'tangram://support-tool/url_generator.js';
 import {assertEquals, assertFalse, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {track} from 'tangram://webui-test/mouse_mock_interactions.js';
 import {waitAfterNextRender} from 'tangram://webui-test/polymer_test_util.js';
 import {TestBrowserProxy} from 'tangram://webui-test/test_browser_proxy.js';
 
@@ -327,8 +327,6 @@ suite('SupportToolTest', function() {
     const confirmButton = screenshot.shadowRoot!.getElementById('confirmEdit')!;
 
     // After clicking the confirm button, the image is changed.
-    hideInfoButton.click();
-    await waitAfterNextRender(screenshot);
     track(canvas, canvas.width / 4, canvas.height / 4, 1);
     confirmButton.click();
     await waitAfterNextRender(screenshot);

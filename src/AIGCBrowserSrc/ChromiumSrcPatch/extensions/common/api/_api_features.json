@@ -351,6 +351,7 @@
       "tangram://apps/*",
       "tangram://bookmarks/*",
       "tangram://bookmarks-side-panel.top-chrome/*",
+      "tangram://compare/*",
       "tangram://customize-chrome-side-panel.top-chrome/*",
       "tangram://shopping-insights-side-panel.top-chrome/*",
       "tangram://download-shelf.top-chrome/*",

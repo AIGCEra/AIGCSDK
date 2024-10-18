@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'tangram://resources/polymer/v3_0/iron-pages/iron-pages.js';
 import 'tangram://resources/polymer/v3_0/iron-selector/iron-selector.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
+import 'tangram://resources/cr_elements/cr_page_selector/cr_page_selector.js';
 
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 

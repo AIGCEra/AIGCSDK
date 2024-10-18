@@ -6,9 +6,9 @@ import type {HistoryAppElement, HistoryEntry, HistoryListElement} from 'tangram:
 import {BrowserServiceImpl, ensureLazyLoaded} from 'tangram://history/history.js';
 import {isMac} from 'tangram://resources/js/platform.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {pressAndReleaseKeyOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertDeepEquals, assertEquals, assertFalse, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {pressAndReleaseKeyOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flushTasks, waitAfterNextRender} from 'tangram://webui-test/polymer_test_util.js';
 import {eventToPromise} from 'tangram://webui-test/test_util.js';
 

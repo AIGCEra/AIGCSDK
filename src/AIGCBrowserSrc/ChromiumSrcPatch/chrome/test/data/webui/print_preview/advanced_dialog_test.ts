@@ -4,9 +4,9 @@
 
 import type {PrintPreviewAdvancedSettingsDialogElement, PrintPreviewModelElement} from 'tangram://print/print_preview.js';
 import {Destination, DestinationOrigin} from 'tangram://print/print_preview.js';
-import {keyEventOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyEventOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {fakeDataBind} from 'tangram://webui-test/polymer_test_util.js';
 import {eventToPromise} from 'tangram://webui-test/test_util.js';
 

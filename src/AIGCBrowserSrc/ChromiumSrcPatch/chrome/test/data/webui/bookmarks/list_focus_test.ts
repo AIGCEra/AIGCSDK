@@ -6,9 +6,10 @@ import type {BookmarksItemElement, BookmarksListElement} from 'tangram://bookmar
 import {BookmarkManagerApiProxyImpl, Command} from 'tangram://bookmarks/bookmarks.js';
 import {isMac} from 'tangram://resources/js/platform.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertDeepEquals, assertEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
+import type {ModifiersParam} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 
 import {TestBookmarkManagerApiProxy} from './test_bookmark_manager_api_proxy.js';
@@ -23,8 +24,7 @@ suite('<bookmarks-list>', function() {
   let testCommandManager: TestCommandManager;
   const multiKey = isMac ? 'meta' : 'ctrl';
 
-  function keydown(
-      item: HTMLElement, key: string, modifiers?: string|string[]) {
+  function keydown(item: HTMLElement, key: string, modifiers?: ModifiersParam) {
     keyDownOn(item, 0, modifiers, key);
   }
 

@@ -6,11 +6,10 @@ import 'tangram://signin-reauth/signin_reauth_app.js';
 
 import {webUIListenerCallback} from 'tangram://resources/js/cr.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
-import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {SigninReauthAppElement} from 'tangram://signin-reauth/signin_reauth_app.js';
 import {SigninReauthBrowserProxyImpl} from 'tangram://signin-reauth/signin_reauth_browser_proxy.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
-import {isVisible} from 'tangram://webui-test/test_util.js';
+import {isVisible, microtasksFinished} from 'tangram://webui-test/test_util.js';
 
 import {TestSigninReauthBrowserProxy} from './test_signin_reauth_browser_proxy.js';
 
@@ -59,7 +58,7 @@ suite('SigninReauthTest', function() {
     assertTrue(isVisible(app.shadowRoot!.querySelector('paper-spinner-lite')));
 
     webUIListenerCallback('reauth-type-determined');
-    flush();
+    await microtasksFinished();
 
     assertTrue(isVisible(app.$.confirmButton));
     assertTrue(isVisible(app.$.cancelButton));

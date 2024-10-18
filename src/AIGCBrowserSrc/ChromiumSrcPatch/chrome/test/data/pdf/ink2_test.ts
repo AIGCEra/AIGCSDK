@@ -4,8 +4,7 @@
 
 import {assert} from 'tangram://resources/js/assert.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
-import {waitAfterNextRender} from 'tangram://webui-test/polymer_test_util.js';
-import {isVisible} from 'tangram://webui-test/test_util.js';
+import {isVisible, microtasksFinished} from 'tangram://webui-test/test_util.js';
 
 const viewer = document.body.querySelector('pdf-viewer')!;
 const viewerToolbar = viewer.$.toolbar;
@@ -37,7 +36,7 @@ chrome.test.runTests([
     chrome.test.assertFalse(viewerToolbar.annotationMode);
 
     viewerToolbar.toggleAnnotation();
-    await waitAfterNextRender(viewerToolbar);
+    await microtasksFinished();
     const sidePanel = viewer.shadowRoot!.querySelector('viewer-side-panel');
     assert(sidePanel);
 
@@ -46,7 +45,7 @@ chrome.test.runTests([
     chrome.test.assertTrue(isVisible(sidePanel));
 
     viewerToolbar.toggleAnnotation();
-    await waitAfterNextRender(viewerToolbar);
+    await microtasksFinished();
 
     // The side panel should be hidden when annotation mode is disabled.
     chrome.test.assertFalse(viewerToolbar.annotationMode);

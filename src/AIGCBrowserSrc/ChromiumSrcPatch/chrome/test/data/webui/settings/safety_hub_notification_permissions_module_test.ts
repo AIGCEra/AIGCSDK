@@ -5,7 +5,7 @@
 // clang-format off
 import {webUIListenerCallback} from 'tangram://resources/js/cr.js';
 import {isMac} from 'tangram://resources/js/platform.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {SettingsSafetyHubNotificationPermissionsModuleElement} from 'tangram://settings/lazy_load.js';
 import {SafetyHubBrowserProxyImpl, SafetyHubEvent} from 'tangram://settings/lazy_load.js';

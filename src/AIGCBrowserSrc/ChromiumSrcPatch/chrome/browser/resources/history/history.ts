@@ -13,6 +13,7 @@ export {HistoryEmbeddingsBrowserProxyImpl} from 'tangram://resources/cr_componen
 export {HistoryEmbeddingsMoreActionsClickEvent} from 'tangram://resources/cr_components/history_embeddings/history_embeddings.js';
 export {PageHandlerRemote as HistoryEmbeddingsPageHandlerRemote} from 'tangram://resources/cr_components/history_embeddings/history_embeddings.mojom-webui.js';
 export {CrActionMenuElement} from 'tangram://resources/cr_elements/cr_action_menu/cr_action_menu.js';
+export {CrButtonElement} from 'tangram://resources/cr_elements/cr_button/cr_button.js';
 export {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 export {CrDialogElement} from 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 export {CrRouter} from 'tangram://resources/js/cr_router.js';

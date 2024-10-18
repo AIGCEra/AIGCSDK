@@ -29,7 +29,7 @@ import type {CertificateSubentryElement} from 'tangram://resources/cr_components
 import type {CaTrustInfo, CertificatesBrowserProxy, CertificatesError, CertificatesOrgGroup, CertificateSubnode} from 'tangram://resources/cr_components/certificate_manager/certificates_browser_proxy.js';
 import { CertificatesBrowserProxyImpl, CertificateType} from 'tangram://resources/cr_components/certificate_manager/certificates_browser_proxy.js';
 import {webUIListenerCallback} from 'tangram://resources/js/cr.js';
-import {keyEventOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
+import {keyEventOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertFalse, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
 import {TestBrowserProxy} from 'tangram://webui-test/test_browser_proxy.js';

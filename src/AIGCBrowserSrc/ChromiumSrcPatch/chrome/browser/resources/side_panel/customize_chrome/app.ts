@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'tangram://customize-chrome-side-panel.top-chrome/shared/sp_heading.js';
+import 'tangram://resources/cr_components/help_bubble/new_badge.js';
 import 'tangram://resources/cr_elements/cr_chip/cr_chip.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/cr_elements/cr_page_selector/cr_page_selector.js';

@@ -6,8 +6,8 @@ import 'tangram://print/print_preview.js';
 
 import type {PrintPreviewNumberSettingsSectionElement} from 'tangram://print/print_preview.js';
 import {getTrustedHTML} from 'tangram://print/print_preview.js';
-import {keyEventOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyEventOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {eventToPromise} from 'tangram://webui-test/test_util.js';
 
 import {triggerInputEvent} from './print_preview_test_utils.js';

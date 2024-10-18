@@ -5,9 +5,9 @@
 import type {BookmarksCommandManagerElement, BookmarksItemElement, BookmarksListElement} from 'tangram://bookmarks/bookmarks.js';
 import {DialogFocusManager, MenuSource} from 'tangram://bookmarks/bookmarks.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertFalse, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {eventToPromise} from 'tangram://webui-test/test_util.js';
 
 import {TestCommandManager} from './test_command_manager.js';
@@ -23,7 +23,7 @@ suite('DialogFocusManager', function() {
   let dialogFocusManager: DialogFocusManager;
 
   function keydown(el: HTMLElement, key: string) {
-    keyDownOn(el, 0, '', key);
+    keyDownOn(el, 0, [], key);
   }
 
   setup(function() {

@@ -4,8 +4,8 @@
 
 import type {ForeignSession, ForeignSessionTab, ForeignSessionWindow, HistoryAppElement, HistoryEntry, HistoryQuery} from 'tangram://history/history.js';
 import type {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
-import {middleOfNode} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
+import {middleOfNode} from 'tangram://webui-test/mouse_mock_interactions.js';
 
 
 /**

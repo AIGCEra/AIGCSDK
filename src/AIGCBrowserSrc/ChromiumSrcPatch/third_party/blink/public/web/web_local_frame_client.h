@@ -827,6 +827,8 @@ public:
   // Inform the widget that it was shown.
   virtual void WasShown() {}
 
+  virtual void OnFrameVisibilityChanged(mojom::FrameVisibility render_status) {}
+
   // Called after a navigation which set the shared memory region for
   // tracking smoothness via UKM.
   virtual void SetUpSharedMemoryForSmoothness(

@@ -4,8 +4,8 @@
 
 import type {PrintPreviewDestinationDialogCrosElement} from 'tangram://print/print_preview.js';
 import {NativeLayerImpl, State} from 'tangram://print/print_preview.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {fakeDataBind} from 'tangram://webui-test/polymer_test_util.js';
 import {eventToPromise} from 'tangram://webui-test/test_util.js';
 

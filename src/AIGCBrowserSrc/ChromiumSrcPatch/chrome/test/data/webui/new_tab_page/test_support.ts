@@ -6,8 +6,8 @@ import type {DomIf} from 'tangram://new-tab-page/new_tab_page.js';
 import type {BackgroundImage, Theme} from 'tangram://new-tab-page/new_tab_page.mojom-webui.js';
 import {NtpBackgroundImageSource} from 'tangram://new-tab-page/new_tab_page.mojom-webui.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {assertEquals, assertNotEquals} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {TestMock} from 'tangram://webui-test/test_mock.js';
 
 export const NONE_ANIMATION: string = 'none 0s ease 0s 1 normal none running';

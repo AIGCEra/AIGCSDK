@@ -6,7 +6,6 @@
 import 'tangram://resources/cr_elements/cr_lottie/cr_lottie.js';
 
 import type {CrLottieElement} from 'tangram://resources/cr_elements/cr_lottie/cr_lottie.js';
-import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertNotEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
 import type { MockMethod} from 'tangram://webui-test/mock_controller.js';
 import {MockController} from 'tangram://webui-test/mock_controller.js';
@@ -86,8 +85,6 @@ suite('cr_lottie_test', function() {
     container.appendChild(crLottieElement);
 
     canvas = crLottieElement.$.canvas;
-
-    flush();
   }
 
   /**

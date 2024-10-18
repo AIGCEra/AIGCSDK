@@ -106,7 +106,7 @@ void CosmosXobj::ShowWebContent(const String& strParentDivName,
   Element* visibleElem2 = getVisibleElement(contentname);
 
   ExceptionState exception_state(cosmos_->GetIsolate(),
-      ExceptionContextType::kOperationInvoke,
+      v8::ExceptionContext::kOperation,
       "MdiChildActive", "MdiChildActive");
 
   if (visibleElem2 == nullptr) {

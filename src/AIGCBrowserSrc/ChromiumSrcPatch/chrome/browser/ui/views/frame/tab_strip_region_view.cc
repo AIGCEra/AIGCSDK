@@ -4,6 +4,7 @@
 
 #include "chrome/browser/ui/views/frame/tab_strip_region_view.h"
 
+#include "base/feature_list.h"
 #include "base/functional/bind.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/task/single_thread_task_runner.h"
@@ -31,6 +32,7 @@
 #include "chrome/browser/ui/views/tabs/tab_style_views.h"
 #include "chrome/browser/ui/views/toolbar/toolbar_view.h"
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
+#include "chrome/common/pref_names.h"
 #include "chrome/grit/generated_resources.h"
 #include "components/commerce/core/commerce_feature_list.h"
 #include "components/vector_icons/vector_icons.h"
@@ -107,67 +109,68 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
       this, views::kCascadingBackgroundColor,
       kColorTabBackgroundInactiveFrameInactive);
 
-    SetLayoutManager(std::make_unique<views::FlexLayout>())
-        ->SetOrientation(views::LayoutOrientation::kHorizontal);
+  SetLayoutManager(std::make_unique<views::FlexLayout>())
+      ->SetOrientation(views::LayoutOrientation::kHorizontal);
 
   GetViewAccessibility().SetRole(ax::mojom::Role::kTabList);
+  GetViewAccessibility().SetIsMultiselectable(true);
 
-    tab_strip_ = tab_strip.get();
-    const Browser* browser = tab_strip_->GetBrowser();
-    // begin Add by TangramTeam
-    bool bChild = false;
-    if (g_pSpaceTelescopeImpl) {
-        HWND hwnd = g_pSpaceTelescopeImpl->m_hParent;
-        if (::IsWindow(hwnd)) {
-            bChild = true;
-        }
+  tab_strip_ = tab_strip.get();
+  const Browser* browser = tab_strip_->GetBrowser();
+  // begin Add by TangramTeam
+  bool bChild = false;
+  if (g_pSpaceTelescopeImpl) {
+    HWND hwnd = g_pSpaceTelescopeImpl->m_hParent;
+    if (::IsWindow(hwnd)) {
+      bChild = true;
     }
-    // end Add by TangramTeam
+  }
+  // end Add by TangramTeam
 
-    // Add and configure the TabSearchContainer.
-    std::unique_ptr<TabSearchContainer> tab_search_container;
-    if (bChild == false && browser && browser->is_type_normal()) {
-        tab_search_container = std::make_unique<TabSearchContainer>(
+  // Add and configure the TabSearchContainer.
+  std::unique_ptr<TabSearchContainer> tab_search_container;
+  if (bChild == false && browser && browser->is_type_normal()) {
+    tab_search_container = std::make_unique<TabSearchContainer>(
+        tab_strip_->controller(), browser->tab_strip_model(),
+        render_tab_search_before_tab_strip_, this);
+    tab_search_container->SetProperty(views::kCrossAxisAlignmentKey,
+                                      views::LayoutAlignment::kCenter);
+  }
+
+  // Add and configure the ProductSpecificationsButton.
+  std::unique_ptr<ProductSpecificationsButton> product_specifications_button;
+  if (tab_search_container &&
+      base::FeatureList::IsEnabled(commerce::kProductSpecifications)) {
+    product_specifications_button =
+        std::make_unique<ProductSpecificationsButton>(
             tab_strip_->controller(), browser->tab_strip_model(),
-            render_tab_search_before_tab_strip_, this);
-        tab_search_container->SetProperty(views::kCrossAxisAlignmentKey,
-            views::LayoutAlignment::kCenter);
-    }
-
-    // Add and configure the ProductSpecificationsButton.
-    std::unique_ptr<ProductSpecificationsButton> product_specifications_button;
-    if (tab_search_container &&
-        base::FeatureList::IsEnabled(commerce::kProductSpecifications)) {
-        product_specifications_button =
-            std::make_unique<ProductSpecificationsButton>(
-                tab_strip_->controller(), browser->tab_strip_model(),
-                browser->browser_window_features()
+            browser->browser_window_features()
                 ->product_specifications_entry_point_controller(),
-                render_tab_search_before_tab_strip_, this);
-        product_specifications_button->SetProperty(views::kCrossAxisAlignmentKey,
-            views::LayoutAlignment::kCenter);
+            render_tab_search_before_tab_strip_, this);
+    product_specifications_button->SetProperty(views::kCrossAxisAlignmentKey,
+                                               views::LayoutAlignment::kCenter);
+  }
+
+  if (tab_search_container && render_tab_search_before_tab_strip_) {
+    tab_search_container->SetPaintToLayer();
+    tab_search_container->layer()->SetFillsBoundsOpaquely(false);
+
+    tab_search_container_ = AddChildView(std::move(tab_search_container));
+
+    // Inset between the tabsearch and tabstrip should be reduced to account for
+    // extra spacing.
+    tab_search_container_->SetProperty(views::kViewIgnoredByLayoutKey, true);
+
+    if (product_specifications_button) {
+      product_specifications_button->SetPaintToLayer();
+      product_specifications_button->layer()->SetFillsBoundsOpaquely(false);
+
+      product_specifications_button_ =
+          AddChildView(std::move(product_specifications_button));
+      product_specifications_button_->SetProperty(
+          views::kViewIgnoredByLayoutKey, true);
     }
-
-    if (tab_search_container && render_tab_search_before_tab_strip_) {
-        tab_search_container->SetPaintToLayer();
-        tab_search_container->layer()->SetFillsBoundsOpaquely(false);
-
-        tab_search_container_ = AddChildView(std::move(tab_search_container));
-
-        // Inset between the tabsearch and tabstrip should be reduced to account for
-        // extra spacing.
-        tab_search_container_->SetProperty(views::kViewIgnoredByLayoutKey, true);
-
-        if (product_specifications_button) {
-            product_specifications_button->SetPaintToLayer();
-            product_specifications_button->layer()->SetFillsBoundsOpaquely(false);
-
-            product_specifications_button_ =
-                AddChildView(std::move(product_specifications_button));
-            product_specifications_button_->SetProperty(
-                views::kViewIgnoredByLayoutKey, true);
-        }
-    }
+  }
 
   if (base::FeatureList::IsEnabled(tabs::kScrollableTabStrip)) {
     std::unique_ptr<TabStripScrollContainer> scroll_container =
@@ -183,56 +186,57 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
     tab_strip_container_->SetProperty(views::kFlexBehaviorKey,
                                       tab_strip_container_flex_spec);
 
-    }
-    else {
-        tab_strip_container_ = AddChildView(std::move(tab_strip));
+  } else {
+    tab_strip_container_ = AddChildView(std::move(tab_strip));
 
-        // Allow the |tab_strip_container_| to grow into the free space available in
-        // the TabStripRegionView.
-        const views::FlexSpecification tab_strip_container_flex_spec =
-            views::FlexSpecification(views::LayoutOrientation::kHorizontal,
-                views::MinimumFlexSizeRule::kScaleToZero,
-                views::MaximumFlexSizeRule::kPreferred);
-        tab_strip_container_->SetProperty(views::kFlexBehaviorKey,
-            tab_strip_container_flex_spec);
-    }
+    // Allow the |tab_strip_container_| to grow into the free space available in
+    // the TabStripRegionView.
+    const views::FlexSpecification tab_strip_container_flex_spec =
+        views::FlexSpecification(views::LayoutOrientation::kHorizontal,
+                                 views::MinimumFlexSizeRule::kScaleToZero,
+                                 views::MaximumFlexSizeRule::kPreferred);
+    tab_strip_container_->SetProperty(views::kFlexBehaviorKey,
+                                      tab_strip_container_flex_spec);
+  }
 
-    if (ShouldShowNewTabButton(browser)) {
-        std::unique_ptr<TabStripControlButton> tab_strip_control_button =
-            std::make_unique<TabStripControlButton>(
-                tab_strip_->controller(),
-                base::BindRepeating(&TabStrip::NewTabButtonPressed,
-                    base::Unretained(tab_strip_)),
-                vector_icons::kAddChromeRefreshIcon);
-        tab_strip_control_button->SetProperty(views::kElementIdentifierKey,
-            kNewTabButtonElementId);
-        if (bChild == false) {
-            new_tab_button_ = AddChildView(std::move(tab_strip_control_button));
+  if (ShouldShowNewTabButton(browser)) {
+    std::unique_ptr<TabStripControlButton> tab_strip_control_button =
+        std::make_unique<TabStripControlButton>(
+            tab_strip_->controller(),
+            base::BindRepeating(&TabStrip::NewTabButtonPressed,
+                                base::Unretained(tab_strip_)),
+            vector_icons::kAddIcon);
+    tab_strip_control_button->SetProperty(views::kElementIdentifierKey,
+                                          kNewTabButtonElementId);
 
-            new_tab_button_->SetTooltipText(
-                l10n_util::GetStringUTF16(IDS_TOOLTIP_NEW_TAB));
-            new_tab_button_->GetViewAccessibility().SetName(
-                l10n_util::GetStringUTF16(IDS_ACCNAME_NEWTAB));
+    if (bChild == false) {
+        new_tab_button_ = AddChildView(std::move(tab_strip_control_button));
 
-            // TODO(crbug.com/40118868): Revisit the macro expression once build flag
-            // switch of lacros-chrome is complete.
+        new_tab_button_->SetTooltipText(
+            l10n_util::GetStringUTF16(IDS_TOOLTIP_NEW_TAB));
+        new_tab_button_->GetViewAccessibility().SetName(
+            l10n_util::GetStringUTF16(IDS_ACCNAME_NEWTAB));
+
+        // TODO(crbug.com/40118868): Revisit the macro expression once build flag
+        // switch of lacros-chrome is complete.
 #if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_CHROMEOS_LACROS)
     // The New Tab Button can be middle-clicked on Linux.
-            new_tab_button_->SetTriggerableEventFlags(
-                new_tab_button_->GetTriggerableEventFlags() |
-                ui::EF_MIDDLE_MOUSE_BUTTON);
+        new_tab_button_->SetTriggerableEventFlags(
+            new_tab_button_->GetTriggerableEventFlags() |
+            ui::EF_MIDDLE_MOUSE_BUTTON);
 #endif
-        }
+    }
+  }
 
-        reserved_grab_handle_space_ =
-            AddChildView(std::make_unique<FrameGrabHandle>());
-        reserved_grab_handle_space_->SetProperty(
-            views::kFlexBehaviorKey,
-            views::FlexSpecification(views::MinimumFlexSizeRule::kPreferred,
-                views::MaximumFlexSizeRule::kUnbounded)
-            .WithOrder(3));
+  reserved_grab_handle_space_ =
+      AddChildView(std::make_unique<FrameGrabHandle>());
+  reserved_grab_handle_space_->SetProperty(
+      views::kFlexBehaviorKey,
+      views::FlexSpecification(views::MinimumFlexSizeRule::kPreferred,
+                               views::MaximumFlexSizeRule::kUnbounded)
+          .WithOrder(3));
 
-        SetProperty(views::kElementIdentifierKey, kTabStripRegionElementId);
+  SetProperty(views::kElementIdentifierKey, kTabStripRegionElementId);
 
   if (browser && tab_search_container && !render_tab_search_before_tab_strip_) {
     if (product_specifications_button) {
@@ -245,8 +249,7 @@ TabStripRegionView::TabStripRegionView(std::unique_ptr<TabStrip> tab_strip)
         gfx::Insets::TLBR(0, 0, 0, GetLayoutConstant(TAB_STRIP_PADDING)));
   }
 
-        UpdateTabStripMargin();
-    }
+  UpdateTabStripMargin();
 }
 
 TabStripRegionView::~TabStripRegionView() = default;
@@ -383,12 +386,17 @@ void TabStripRegionView::Layout(PassKey) {
     gfx::Size new_tab_button_size = new_tab_button_->GetPreferredSize();
 
     // The y position is measured from the bottom of the tabstrip, and then
-    // pading and button height are removed.
-    gfx::Point new_tab_button_new_position =
-        gfx::Point(tab_strip_container_->bounds().right() -
-                       TabStyle::Get()->GetBottomCornerRadius() +
-                       GetLayoutConstant(TAB_STRIP_PADDING),
-                   0);
+    // padding and button height are removed.
+    int x = tab_strip_container_->bounds().right() -
+            TabStyle::Get()->GetBottomCornerRadius() +
+            GetLayoutConstant(TAB_STRIP_PADDING);
+
+    if (base::FeatureList::IsEnabled(features::kCompactMode)) {
+      if (profile_->GetPrefs()->GetBoolean(prefs::kCompactModeEnabled)) {
+        x -= GetLayoutConstant(TAB_STRIP_PADDING);
+      }
+    }
+    gfx::Point new_tab_button_new_position = gfx::Point(x, 0);
 
     gfx::Rect new_tab_button_new_bounds =
         gfx::Rect(new_tab_button_new_position, new_tab_button_size);

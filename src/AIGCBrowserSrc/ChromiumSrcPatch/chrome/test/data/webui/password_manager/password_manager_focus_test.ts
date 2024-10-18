@@ -5,8 +5,8 @@
 import 'tangram://password-manager/password_manager.js';
 
 import {CheckupSubpage, Page, PasswordManagerImpl, Router} from 'tangram://password-manager/password_manager.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {assertEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 import {microtasksFinished} from 'tangram://webui-test/test_util.js';
 

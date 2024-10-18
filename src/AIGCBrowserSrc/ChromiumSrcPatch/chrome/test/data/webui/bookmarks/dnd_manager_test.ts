@@ -4,9 +4,9 @@
 
 import type {BookmarkElement, BookmarksAppElement, BookmarksFolderNodeElement, BookmarksItemElement, BookmarksListElement, DndManager} from 'tangram://bookmarks/bookmarks.js';
 import {BookmarkManagerApiProxyImpl, BrowserProxyImpl, DragInfo, overrideFolderOpenerTimeoutDelay, setDebouncerForTesting} from 'tangram://bookmarks/bookmarks.js';
-import {middleOfNode, topLeftOfNode} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertDeepEquals, assertEquals, assertFalse, assertNotReached, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {middleOfNode, topLeftOfNode} from 'tangram://webui-test/mouse_mock_interactions.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 
 import {TestBookmarkManagerApiProxy} from './test_bookmark_manager_api_proxy.js';

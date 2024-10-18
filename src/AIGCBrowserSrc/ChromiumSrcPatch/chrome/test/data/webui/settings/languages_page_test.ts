@@ -4,7 +4,7 @@
 
 // clang-format off
 import {PromiseResolver} from 'tangram://resources/js/promise_resolver.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {LanguageHelper, SettingsAddLanguagesDialogElement, SettingsLanguagesPageElement} from 'tangram://settings/lazy_load.js';
 import {LanguagesBrowserProxyImpl} from 'tangram://settings/lazy_load.js';

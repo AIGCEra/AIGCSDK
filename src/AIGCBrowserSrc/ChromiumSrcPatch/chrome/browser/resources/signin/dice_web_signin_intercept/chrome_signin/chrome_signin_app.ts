@@ -6,6 +6,8 @@ import '../strings.m.js';
 import '../signin_shared.css.js';
 import '../signin_vars.css.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
+import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
 
 import {I18nMixin} from 'tangram://resources/cr_elements/i18n_mixin.js';
 import {WebUiListenerMixin} from 'tangram://resources/cr_elements/web_ui_listener_mixin.js';

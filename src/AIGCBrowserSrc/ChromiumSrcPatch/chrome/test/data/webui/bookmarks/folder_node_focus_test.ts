@@ -5,9 +5,9 @@
 import type {BookmarksFolderNodeElement, SelectFolderAction} from 'tangram://bookmarks/bookmarks.js';
 import {BookmarkManagerApiProxyImpl, changeFolderOpen, Command, selectFolder} from 'tangram://bookmarks/bookmarks.js';
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
-import {keyDownOn} from 'tangram://resources/polymer/v3_0/iron-test-helpers/mock-interactions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertDeepEquals, assertEquals, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 
 import {TestBookmarkManagerApiProxy} from './test_bookmark_manager_api_proxy.js';
 import {TestCommandManager} from './test_command_manager.js';
