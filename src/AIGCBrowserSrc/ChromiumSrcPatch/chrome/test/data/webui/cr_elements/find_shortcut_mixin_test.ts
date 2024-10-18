@@ -5,7 +5,8 @@
 // clang-format off
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 
-import {FindShortcutManager, FindShortcutMixin} from 'tangram://resources/cr_elements/find_shortcut_mixin.js';
+import {FindShortcutManager} from 'tangram://resources/cr_elements/find_shortcut_manager.js';
+import {FindShortcutMixin} from 'tangram://resources/cr_elements/find_shortcut_mixin.js';
 import {isMac} from 'tangram://resources/js/platform.js';
 import {getTrustedHTML} from 'tangram://resources/js/static_types.js';
 import {PromiseResolver} from 'tangram://resources/js/promise_resolver.js';

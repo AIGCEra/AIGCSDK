@@ -9,7 +9,7 @@ import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_toast/cr_toast.js';
 import 'tangram://resources/cr_elements/cr_tooltip/cr_tooltip.js';
 import 'tangram://resources/cr_elements/policy/cr_tooltip_icon.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import '../settings_shared.css.js';
 import '../site_favicon.js';
 import '../i18n_setup.js';

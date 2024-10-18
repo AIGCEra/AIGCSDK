@@ -4,7 +4,7 @@
 
 // clang-format off
 import type {CrTooltipElement, StorageAccessEmbeddingException, StorageAccessSiteException, ChooserException, DefaultContentSetting, OriginInfo, RawChooserException, RawSiteException, SiteException, SiteGroup} from 'tangram://settings/lazy_load.js';
-import {ChooserType, ContentSetting, ContentSettingProvider, ContentSettingsTypes, SiteSettingSource} from 'tangram://settings/lazy_load.js';
+import {ChooserType, ContentSetting, DefaultSettingSource, ContentSettingsTypes, SiteSettingSource} from 'tangram://settings/lazy_load.js';
 import type {Route} from 'tangram://settings/settings.js';
 import {Router} from 'tangram://settings/settings.js';
 import {assertEquals} from 'tangram://webui-test/chai_assert.js';
@@ -34,7 +34,7 @@ export function createDefaultContentSetting(
   return Object.assign(
       {
         setting: ContentSetting.ASK,
-        source: ContentSettingProvider.PREFERENCE,
+        source: DefaultSettingSource.PREFERENCE,
       },
       override || {});
 }
@@ -125,7 +125,8 @@ export function createSiteSettingsPrefs(
   defaults[ContentSettingsTypes.COOKIES].setting = ContentSetting.ALLOW;
   defaults[ContentSettingsTypes.IMAGES].setting = ContentSetting.ALLOW;
   defaults[ContentSettingsTypes.JAVASCRIPT].setting = ContentSetting.ALLOW;
-  defaults[ContentSettingsTypes.JAVASCRIPT_JIT].setting = ContentSetting.ALLOW;
+  defaults[ContentSettingsTypes.JAVASCRIPT_OPTIMIZER].setting =
+      ContentSetting.ALLOW;
   defaults[ContentSettingsTypes.SOUND].setting = ContentSetting.ALLOW;
   defaults[ContentSettingsTypes.POPUPS].setting = ContentSetting.BLOCK;
   defaults[ContentSettingsTypes.PROTOCOL_HANDLERS].setting =

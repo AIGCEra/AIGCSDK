@@ -4,7 +4,7 @@
 
 import {getDeepActiveElement} from 'tangram://resources/js/util.js';
 import type {ProfileData, TabSearchPageElement} from 'tangram://tab-search.top-chrome/tab_search.js';
-import {InfiniteList, TabSearchApiProxyImpl, TabSearchItemElement} from 'tangram://tab-search.top-chrome/tab_search.js';
+import {SelectableLazyListElement, TabSearchApiProxyImpl, TabSearchItemElement} from 'tangram://tab-search.top-chrome/tab_search.js';
 import {assertEquals, assertGT, assertNotEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
 import {keyDownOn} from 'tangram://webui-test/keyboard_mock_interactions.js';
 import {eventToPromise, microtasksFinished} from 'tangram://webui-test/test_util.js';
@@ -17,7 +17,7 @@ suite('TabSearchAppFocusTest', () => {
   let tabSearchPage: TabSearchPageElement;
   let testProxy: TestTabSearchApiProxy;
 
-  disableAnimationBehavior(InfiniteList, 'scrollTo');
+  disableAnimationBehavior(SelectableLazyListElement, 'scrollTo');
   disableAnimationBehavior(TabSearchItemElement, 'scrollIntoView');
 
   async function setupTest(
@@ -121,7 +121,7 @@ suite('TabSearchAppFocusTest', () => {
         tabIds: [(i + 1)],
         recentlyClosedTabs: [],
       });
-      await microtasksFinished();
+      await eventToPromise('focus-restored-for-test', tabSearchPage.$.tabsList);
       assertEquals(numTabItems - 1 - i, queryRows().length);
       assertEquals('tab-search-item', getDeepActiveElement()!.localName);
     }
@@ -206,14 +206,15 @@ suite('TabSearchAppFocusTest', () => {
     // Expand the `Recently Closed` section.
     recentlyClosedTitleExpandButton.click();
 
-    await microtasksFinished();
-    const tabsDiv = tabSearchPage.$.tabsList;
+    await eventToPromise('viewport-filled', tabSearchPage.$.tabsList);
     // Assert that the tabs are in a overflowing state.
-    assertGT(tabsDiv.scrollHeight, tabsDiv.clientHeight);
+    assertGT(
+        tabSearchPage.$.tabsList.scrollHeight,
+        tabSearchPage.$.tabsList.clientHeight);
 
     // Assert the first recently closed item is in view bounds.
     const tabItems =
         tabSearchPage.$.tabsList.querySelectorAll('tab-search-item');
-    assertTabItemInViewBounds(tabsDiv, tabItems[4]!);
+    assertTabItemInViewBounds(tabSearchPage.$.tabsList, tabItems[4]!);
   });
 });

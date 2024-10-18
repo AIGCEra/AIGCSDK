@@ -6,13 +6,14 @@ import {webUIListenerCallback} from 'tangram://resources/js/cr.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {PrivacyGuideCompletionFragmentElement} from 'tangram://settings/lazy_load.js';
 import type {CrLinkRowElement} from 'tangram://settings/settings.js';
-import {loadTimeData, MetricsBrowserProxyImpl, OpenWindowProxyImpl, PrivacyGuideInteractions, resetRouterForTesting, Router, routes} from 'tangram://settings/settings.js';
+import {loadTimeData, MetricsBrowserProxyImpl, OpenWindowProxyImpl, PrivacyGuideBrowserProxyImpl, PrivacyGuideInteractions, resetRouterForTesting, Router, routes} from 'tangram://settings/settings.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 import {TestOpenWindowProxy} from 'tangram://webui-test/test_open_window_proxy.js';
 import {eventToPromise, isChildVisible} from 'tangram://webui-test/test_util.js';
 
 import {TestMetricsBrowserProxy} from './test_metrics_browser_proxy.js';
+import {TestPrivacyGuideBrowserProxy} from './test_privacy_guide_browser_proxy.js';
 
 /** Fire a sign in status change event and flush the UI. */
 function setSignInState(signedIn: boolean) {
@@ -27,12 +28,12 @@ suite('CompletionFragment', function() {
   let fragment: PrivacyGuideCompletionFragmentElement;
   let testMetricsBrowserProxy: TestMetricsBrowserProxy;
   let openWindowProxy: TestOpenWindowProxy;
+  let testPrivacyGuideBrowserProxy: TestPrivacyGuideBrowserProxy;
 
   suiteSetup(function() {
     loadTimeData.overrideValues({
       isPrivacySandboxRestricted: false,
       isPrivacySandboxRestrictedNoticeEnabled: false,
-      isPrivacySandboxPrivacyGuideAdTopicsEnabled: false,
     });
     resetRouterForTesting();
   });
@@ -43,6 +44,11 @@ suite('CompletionFragment', function() {
     assertTrue(loadTimeData.getBoolean('showPrivacyGuide'));
     testMetricsBrowserProxy = new TestMetricsBrowserProxy();
     MetricsBrowserProxyImpl.setInstance(testMetricsBrowserProxy);
+    testPrivacyGuideBrowserProxy = new TestPrivacyGuideBrowserProxy();
+    testPrivacyGuideBrowserProxy
+        .setPrivacySandboxPrivacyGuideShouldShowCompletionCardAdTopicsSubLabel(
+            false);
+    PrivacyGuideBrowserProxyImpl.setInstance(testPrivacyGuideBrowserProxy);
     openWindowProxy = new TestOpenWindowProxy();
     OpenWindowProxyImpl.setInstance(openWindowProxy);
 
@@ -225,12 +231,12 @@ suite(
 
 suite('CompletionFragmentWithAdTopicsCard', function() {
   let fragment: PrivacyGuideCompletionFragmentElement;
+  let testPrivacyGuideBrowserProxy: TestPrivacyGuideBrowserProxy;
 
   suiteSetup(function() {
     loadTimeData.overrideValues({
       isPrivacySandboxRestricted: false,
       isPrivacySandboxRestrictedNoticeEnabled: false,
-      isPrivacySandboxPrivacyGuideAdTopicsEnabled: true,
     });
     resetRouterForTesting();
   });
@@ -240,6 +246,11 @@ suite('CompletionFragmentWithAdTopicsCard', function() {
 
     assertTrue(loadTimeData.getBoolean('showPrivacyGuide'));
 
+    testPrivacyGuideBrowserProxy = new TestPrivacyGuideBrowserProxy();
+    testPrivacyGuideBrowserProxy
+        .setPrivacySandboxPrivacyGuideShouldShowCompletionCardAdTopicsSubLabel(
+            true);
+    PrivacyGuideBrowserProxyImpl.setInstance(testPrivacyGuideBrowserProxy);
     fragment = document.createElement('privacy-guide-completion-fragment');
     document.body.appendChild(fragment);
 

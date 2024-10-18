@@ -152,6 +152,8 @@ enum class PolicyFetchReason {
   kTest,
   // Policy fetched as requested by the user, e.g. through tangram://policy.
   kUserRequest,
+  // Policy fetch as previous request failed.
+  kRetry,
 };
 
 }  // namespace policy

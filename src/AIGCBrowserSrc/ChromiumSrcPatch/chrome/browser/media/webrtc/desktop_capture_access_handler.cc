@@ -381,8 +381,9 @@ void DesktopCaptureAccessHandler::HandleRequest(
       return;
     }
 #if BUILDFLAG(IS_MAC)
-    if (system_media_permissions::CheckSystemScreenCapturePermission() !=
-        system_media_permissions::SystemPermission::kAllowed) {
+    if (system_media_permissions::ScreenCaptureNeedsSystemLevelPermissions() &&
+        system_media_permissions::CheckSystemScreenCapturePermission() !=
+            system_permission_settings::SystemPermission::kAllowed) {
       std::move(pending_request->callback)
           .Run(blink::mojom::StreamDevicesSet(),
                blink::mojom::MediaStreamRequestResult::SYSTEM_PERMISSION_DENIED,
@@ -437,7 +438,7 @@ void DesktopCaptureAccessHandler::HandleRequest(
 #if BUILDFLAG(IS_MAC)
   if (media_id.type != content::DesktopMediaID::TYPE_WEB_CONTENTS &&
       system_media_permissions::CheckSystemScreenCapturePermission() !=
-          system_media_permissions::SystemPermission::kAllowed) {
+          system_permission_settings::SystemPermission::kAllowed) {
     std::move(pending_request->callback)
         .Run(blink::mojom::StreamDevicesSet(),
              blink::mojom::MediaStreamRequestResult::SYSTEM_PERMISSION_DENIED,

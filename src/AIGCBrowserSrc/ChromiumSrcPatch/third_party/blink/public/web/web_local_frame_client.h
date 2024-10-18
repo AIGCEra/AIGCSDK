@@ -111,6 +111,10 @@ namespace gfx {
 class Rect;
 }  // namespace gfx
 
+namespace net {
+class SiteForCookies;
+}  // namespace net
+
 namespace network {
 class SharedURLLoaderFactory;
 }  // namespace network
@@ -506,7 +510,10 @@ public:
 
   // PlzNavigate
   // Called to abort a navigation that is being handled by the browser process.
-  virtual void AbortClientNavigation() {}
+  // `for_new_navigation` is true iff the abort is the result of beginning a
+  // new navigation, since a document should only have one navigation in-flight
+  // at a time.
+  virtual void AbortClientNavigation(bool for_new_navigation) {}
 
   // InstalledApp API ----------------------------------------------------
 
@@ -570,12 +577,22 @@ public:
   // Low-level resource notifications ------------------------------------
 
   using ForRedirect = base::StrongAlias<class ForRedirectTag, bool>;
-  // A request is about to be sent out, and the client may modify it.  Request
-  // is writable, and changes to the URL, for example, will change the request
-  // made. `upstream_url` is the URL of the frame that initiated the request.
-  virtual void WillSendRequest(WebURLRequest&,
-                               ForRedirect,
-                               const WebURL& upstream_url) {}
+
+  // Called before a request is looked up from the cache. Allows the client
+  // to override the url.
+  virtual std::optional<WebURL> WillSendRequest(
+      const WebURL& target,
+      const WebSecurityOrigin& security_origin,
+      const net::SiteForCookies& site_for_cookies,
+      ForRedirect for_redirect,
+      const WebURL& upstream_url) {
+    return std::nullopt;
+  }
+
+  // A request is about to be sent out, and the client may modify it. The
+  // client should not modify the url in this method, instead use
+  // OverrideRequestUrl(). Other changes are allowed to the request.
+  virtual void FinalizeRequest(WebURLRequest&) {}
 
   // The specified request was satified from WebCore's memory cache.
   virtual void DidLoadResourceFromMemoryCache(const WebURLRequest&,

@@ -169,6 +169,10 @@ inline constexpr char kPlayBooksAppId[] = "jglfhlbohpgcbefmhdmpancnijacbbji";
 inline constexpr char kPrintManagementAppId[] =
     "fglkccnmnaankjodgccmiodmlkpaiodc";
 
+// Generated as:web_app::GenerateAppId(/*manifest_id=*/std::nullopt, GURL(
+//      "tangram://recorder-app/"))
+inline constexpr char kRecorderAppId[] = "aegafoechlhchmknlbhmofidaodfkhhk";
+
 // Generated as: web_app::GenerateAppId(/*manifest_id=*/std::nullopt,
 // GURL("tangram://sanitize/"))
 inline constexpr char kSanitizeAppId[] = "kochjemhjheifpfhkppkameonoheenjk";

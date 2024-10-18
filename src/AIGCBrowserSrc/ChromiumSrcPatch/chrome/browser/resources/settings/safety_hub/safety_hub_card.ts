@@ -10,8 +10,8 @@
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import '../settings_shared.css.js';
 
+import type {CrIconElement} from 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import {assertNotReached} from 'tangram://resources/js/assert.js';
-import type {IronIconElement} from 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 
 import type {CardInfo} from './safety_hub_browser_proxy.js';
@@ -20,7 +20,7 @@ import {getTemplate} from './safety_hub_card.html.js';
 
 export interface SettingsSafetyHubCardElement {
   $: {
-    icon: IronIconElement,
+    icon: CrIconElement,
   };
 }
 

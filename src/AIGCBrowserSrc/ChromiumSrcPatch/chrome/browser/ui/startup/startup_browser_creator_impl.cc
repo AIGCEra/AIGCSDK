@@ -42,7 +42,6 @@
 #include "chrome/browser/ui/browser_tabstrip.h"
 #include "chrome/browser/ui/browser_window.h"
 #include "chrome/browser/ui/startup/infobar_utils.h"
-#include "chrome/browser/ui/startup/launch_mode_recorder.h"
 #include "chrome/browser/ui/startup/startup_browser_creator.h"
 #include "chrome/browser/ui/startup/startup_tab.h"
 #include "chrome/browser/ui/startup/startup_tab_provider.h"
@@ -314,14 +313,11 @@ void StartupBrowserCreatorImpl::MaybeToggleFullscreen(Browser* browser) {
 void StartupBrowserCreatorImpl::Launch(
     Profile* profile,
     chrome::startup::IsProcessStartup process_startup,
-    std::unique_ptr<OldLaunchModeRecorder> launch_mode_recorder,
     bool restore_tabbed_browser) {
   DCHECK(profile);
   profile_ = profile;
 
-  // LaunchResult launch_result = DetermineURLsAndLaunch(process_startup,
-  // restore_tabbed_browser); begin Add by TangramTeam
-  LaunchResult launch_result;
+  // begin Add by TangramTeam
   if (g_pSpaceTelescopeImpl == nullptr) {
     HMODULE hModule = ::GetModuleHandle(L"universe.dll");
     if (hModule) {
@@ -353,37 +349,26 @@ void StartupBrowserCreatorImpl::Launch(
 
   if (g_pSpaceTelescopeImpl->m_hWebRTProxyModel == nullptr) {
     if (g_pSpaceTelescopeImpl->m_strStartupURL != _T("")) {
-      launch_result =
-          DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+      DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
     } else {
       bBrowserApp = (!::PathFileExists(strAppPage) && !PathFileExists(path));
       if (bBrowserApp) {
-        launch_result =
-            DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+         DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
       }
     }
   } else {
     bBrowserApp = (::PathFileExists(path) && !::PathIsDirectory(path));
+  // DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
 
     if ((g_pSpaceTelescopeImpl &&
          g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER) ||
         process_startup == chrome::startup::IsProcessStartup::kNo) {
       if (!bBrowserApp) {
-        launch_result =
-            DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+         DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
       }
     }
   }
   //  end Add by TangramTeam
-
-  // Check the true process command line for --try-chrome-again=N rather than
-  // the one parsed for startup URLs and such.
-  if (launch_mode_recorder) {
-    launch_mode_recorder->SetLaunchMode(launch_result ==
-                                                LaunchResult::kWithGivenUrls
-                                            ? OldLaunchMode::kWithUrls
-                                            : OldLaunchMode::kToBeDecided);
-  }
 
   if (command_line_->HasSwitch(switches::kInstallChromeApp)) {
     install_chrome_app::InstallChromeApp(
@@ -557,8 +542,7 @@ Browser* StartupBrowserCreatorImpl::OpenTabsInBrowser(
   return browser;
 }
 
-StartupBrowserCreatorImpl::LaunchResult
-StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
+void StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
     chrome::startup::IsProcessStartup process_startup,
     bool restore_tabbed_browser) {
   if (StartupBrowserCreator::ShouldLoadProfileWithoutWindow(*command_line_)) {
@@ -566,7 +550,7 @@ StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
     // TODO(crbug.com/40216113): Remove by M104.
     NOTREACHED_IN_MIGRATION();
     base::debug::DumpWithoutCrashing();
-    return LaunchResult::kNormally;
+    return;
   }
 
   const bool is_incognito_or_guest = profile_->IsOffTheRecord();
@@ -612,7 +596,8 @@ StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
 
   bool privacy_sandbox_dialog_required = false;
   if (privacy_sandbox_service) {
-    switch (privacy_sandbox_service->GetRequiredPromptType()) {
+    switch (privacy_sandbox_service->GetRequiredPromptType(
+        PrivacySandboxService::SurfaceType::kDesktop)) {
       case PrivacySandboxService::PromptType::kM1Consent:
       case PrivacySandboxService::PromptType::kM1NoticeEEA:
       case PrivacySandboxService::PromptType::kM1NoticeROW:
@@ -639,9 +624,8 @@ StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
   // Return immediately if we start an async restore, since the remainder of
   // that process is self-contained.
   if (MaybeAsyncRestore(tabs, process_startup, is_post_crash_launch)) {
-    return result.launch_result;
+    return;
   }
-
   BrowserOpenBehaviorOptions behavior_options = 0;
   if (process_startup == chrome::startup::IsProcessStartup::kYes) {
     behavior_options |= PROCESS_STARTUP;
@@ -681,7 +665,6 @@ StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
   // Finally, add info bars.
   AddInfoBarsIfNecessary(browser, profile_, *command_line_, is_first_run_,
                          /*is_web_app=*/false);
-  return result.launch_result;
 }
 
 StartupBrowserCreatorImpl::DetermineStartupTabsResult::

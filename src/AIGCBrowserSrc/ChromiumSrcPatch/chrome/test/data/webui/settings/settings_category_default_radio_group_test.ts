@@ -4,7 +4,7 @@
 
 // clang-format off
 import type {SettingsCategoryDefaultRadioGroupElement} from 'tangram://settings/lazy_load.js';
-import {ContentSetting, ContentSettingProvider, ContentSettingsTypes, SiteSettingsPrefsBrowserProxyImpl} from 'tangram://settings/lazy_load.js';
+import {ContentSetting, DefaultSettingSource, ContentSettingsTypes, SiteSettingsPrefsBrowserProxyImpl} from 'tangram://settings/lazy_load.js';
 import {assertEquals, assertNotEquals, assertTrue, assertFalse} from 'tangram://webui-test/chai_assert.js';
 //import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 import {eventToPromise, microtasksFinished} from 'tangram://webui-test/test_util.js';
@@ -168,7 +168,7 @@ suite('SettingsCategoryDefaultRadioGroup', function() {
         [createContentSettingTypeToValuePair(
             ContentSettingsTypes.GEOLOCATION, createDefaultContentSetting({
               setting: ContentSetting.BLOCK,
-              source: ContentSettingProvider.EXTENSION,
+              source: DefaultSettingSource.EXTENSION,
             }))],
         []);
     browserProxy.reset();

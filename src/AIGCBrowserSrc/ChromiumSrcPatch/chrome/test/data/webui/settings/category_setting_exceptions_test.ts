@@ -5,7 +5,7 @@
 // clang-format off
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {CategorySettingExceptionsElement} from 'tangram://settings/lazy_load.js';
-import {ContentSetting, ContentSettingProvider, ContentSettingsTypes, SiteSettingsPrefsBrowserProxyImpl} from 'tangram://settings/lazy_load.js';
+import {ContentSetting, DefaultSettingSource, ContentSettingsTypes, SiteSettingsPrefsBrowserProxyImpl} from 'tangram://settings/lazy_load.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
 
 import {TestSiteSettingsPrefsBrowserProxy} from './test_site_settings_prefs_browser_proxy.js';
@@ -63,7 +63,7 @@ suite('CategorySettingExceptions', function() {
               createContentSettingTypeToValuePair(
                   ContentSettingsTypes.COOKIES, createDefaultContentSetting({
                     setting: ContentSetting.ALLOW,
-                    source: ContentSettingProvider.POLICY,
+                    source: DefaultSettingSource.POLICY,
                   })),
             ],
             []);

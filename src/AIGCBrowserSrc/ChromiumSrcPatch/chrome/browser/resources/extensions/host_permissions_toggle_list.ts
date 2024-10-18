@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/cr_elements/icons.html.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './restricted_sites_dialog.js';
 import './toggle_row.js';
 import './shared_style.css.js';

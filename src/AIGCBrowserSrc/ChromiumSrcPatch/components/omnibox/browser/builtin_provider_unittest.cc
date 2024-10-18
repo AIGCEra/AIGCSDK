@@ -33,7 +33,7 @@
 namespace {
 
 const char kEmbedderAboutScheme[] = "tangram";
-const char16_t kEmbedderAboutScheme16[] = u"tangram";
+const char16_t kEmbedderAboutScheme16[] = u"chrome";
 const char16_t kDefaultURL1[] = u"tangram://default1/";
 const char16_t kDefaultURL2[] = u"tangram://default2/";
 const char16_t kDefaultURL3[] = u"tangram://foo/";

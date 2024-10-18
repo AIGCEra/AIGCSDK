@@ -795,7 +795,6 @@ bool MessagePumpForUI::ProcessMessageHelper(const MSG& msg) {
   }
   else {
       // end Add by TangramTeam
-      //::TranslateMessage(&msg);
       ::DispatchMessage(&msg);
   }
   for (Observer& observer : observers_)

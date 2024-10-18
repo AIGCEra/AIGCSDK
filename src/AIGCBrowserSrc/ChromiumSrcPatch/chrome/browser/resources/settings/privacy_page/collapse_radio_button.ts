@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 import 'tangram://resources/cr_elements/cr_expand_button/cr_expand_button.js';
 import 'tangram://resources/cr_elements/cr_radio_button/cr_radio_button_style.css.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import '../settings_shared.css.js';
 
 import type {CrExpandButtonElement} from 'tangram://resources/cr_elements/cr_expand_button/cr_expand_button.js';
@@ -55,7 +55,7 @@ export class SettingsCollapseRadioButtonElement extends
 
       icon: {
         type: String,
-        value: null,
+        value: '',
       },
 
       /*

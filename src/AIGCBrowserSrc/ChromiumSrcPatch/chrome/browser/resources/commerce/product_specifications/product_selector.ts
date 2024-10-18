@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './product_selection_menu.js';
 
 import type {CrUrlListItemElement} from 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';

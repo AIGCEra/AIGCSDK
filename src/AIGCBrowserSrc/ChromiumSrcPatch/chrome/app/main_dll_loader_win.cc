@@ -178,70 +178,68 @@ HMODULE Load(base::FilePath* module,
 }  // namespace
 
 //=============================================================================
-int CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString& MD5) {
-    HCRYPTPROV hProv = NULL;
-    DWORD dw = 0;
-    if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
-        HCRYPTHASH hHash;
-        if (CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash)) {
-            if (CryptHashData(hHash, pBuffer, BufferSize, 0)) {
-                DWORD dwCount = 16;
-                unsigned char digest[16];
-                CryptGetHashParam(hHash, HP_HASHVAL, digest, &dwCount, 0);
-
-                if (hHash) {
-                    CryptDestroyHash(hHash);
-                }
-
-                if (hProv) {
-                    CryptReleaseContext(hProv, 0);
-                }
-
-                unsigned char b;
-                char c;
-                char* Value = new char[1024];
-                int k = 0;
-                for (int i = 0; i < 16; i++) {
-                    b = digest[i];
-                    for (int j = 4; j >= 0; j -= 4) {
-                        c = ((char)(b >> j) & 0x0F);
-                        if (c < 10) {
-                            c += '0';
-                        }
-                        else {
-                            c = ('a' + (c - 10));
-                        }
-                        Value[k] = c;
-                        k++;
-                    }
-                }
-                Value[k] = '\0';
-                MD5 = CString(Value);
-                delete[] Value;
-            }
-        }
-    }
-    else {
-        dw = GetLastError();
-        if (dw == (DWORD)NTE_BAD_KEYSET) {
-            if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
-                CRYPT_NEWKEYSET)) {
-                _tprintf(TEXT("CryptAcquireContext succeeded.\n"));
-            }
-            else {
-                _tprintf(TEXT("CryptAcquireContext falied.\n"));
-            }
-        }
-    }
-
-    return 1;
-}
 
 MainDllLoader::MainDllLoader() : dll_(nullptr) {}
 
 MainDllLoader::~MainDllLoader() = default;
 
 const int kNonBrowserShutdownPriority = 0x280;
+
+//int CalculateByteMD5(BYTE* pBuffer, int BufferSize, CString& MD5) {
+//  HCRYPTPROV hProv = NULL;
+//  DWORD dw = 0;
+//  if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, 0)) {
+//    HCRYPTHASH hHash;
+//    if (CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash)) {
+//      if (CryptHashData(hHash, pBuffer, BufferSize, 0)) {
+//        DWORD dwCount = 16;
+//        unsigned char digest[16];
+//        CryptGetHashParam(hHash, HP_HASHVAL, digest, &dwCount, 0);
+//
+//        if (hHash) {
+//          CryptDestroyHash(hHash);
+//        }
+//
+//        if (hProv) {
+//          CryptReleaseContext(hProv, 0);
+//        }
+//
+//        unsigned char b;
+//        char c;
+//        char* Value = new char[1024];
+//        int k = 0;
+//        for (int i = 0; i < 16; i++) {
+//          b = digest[i];
+//          for (int j = 4; j >= 0; j -= 4) {
+//            c = ((char)(b >> j) & 0x0F);
+//            if (c < 10) {
+//              c += '0';
+//            } else {
+//              c = ('a' + (c - 10));
+//            }
+//            Value[k] = c;
+//            k++;
+//          }
+//        }
+//        Value[k] = '\0';
+//        MD5 = CString(Value);
+//        delete[] Value;
+//      }
+//    }
+//  } else {
+//    dw = GetLastError();
+//    if (dw == (DWORD)NTE_BAD_KEYSET) {
+//      if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL,
+//                              CRYPT_NEWKEYSET)) {
+//        _tprintf(TEXT("CryptAcquireContext succeeded.\n"));
+//      } else {
+//        _tprintf(TEXT("CryptAcquireContext falied.\n"));
+//      }
+//    }
+//  }
+//
+//  return 1;
+//}
 
 // Launching is a matter of loading the right dll and calling the entry point.
 // Derived classes can add custom code in the OnBeforeLaunch callback.
@@ -307,93 +305,93 @@ int MainDllLoader::Launch(HINSTANCE instance,
       }
   }
   if (g_pSpaceTelescopeImpl) {
-    TCHAR m_szBuffer[MAX_PATH];
+    //TCHAR m_szBuffer[MAX_PATH];
     CString strSRC = _T("");
     g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = _T("");
     g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = _T("");
-    if (g_strUniverseDllMD5 != _T("")) {
-      ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
-      strSRC = m_szBuffer;
-      HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
-                                  OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
+    //if (g_strUniverseDllMD5 != _T("")) {
+    //  ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
+    //  strSRC = m_szBuffer;
+    //  HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
+    //                              OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
 
-      if (hFile == INVALID_HANDLE_VALUE) {
-        return 0;
-      } else {
-        DWORD dwFileSizeHigh = 0;
-        __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-        qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
-        DWORD dwFileSize = qwFileSize;
-        if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
-          CloseHandle(hFile);
-          return 0;
-        } else {
-          BYTE* buffer = new BYTE[dwFileSize];
-          memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
-          DWORD dwBytesRead = 0;
-          if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
-            CloseHandle(hFile);
-            return 0;
-          } else {
-            CString strRet = _T("");
-            CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
-            delete[] buffer;
-            CloseHandle(hFile);
-            if (strRet.CompareNoCase(g_strUniverseDllMD5)) {
-              ::MessageBox(NULL,
-                           L"Your version of \"Universe.dll\" does not match "
-                           L"the current version of WebRT",
-                           L"AIGC Agent", MB_OK);
-              return 0;
-            } else {
-              g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = strRet;
-            }
-          }
-        }
-      }
-    }
+    //  if (hFile == INVALID_HANDLE_VALUE) {
+    //    return 0;
+    //  } else {
+    //    DWORD dwFileSizeHigh = 0;
+    //    __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
+    //    qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
+    //    DWORD dwFileSize = qwFileSize;
+    //    if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
+    //      CloseHandle(hFile);
+    //      return 0;
+    //    } else {
+    //      BYTE* buffer = new BYTE[dwFileSize];
+    //      memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
+    //      DWORD dwBytesRead = 0;
+    //      if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
+    //        CloseHandle(hFile);
+    //        return 0;
+    //      } else {
+    //        CString strRet = _T("");
+    //        CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
+    //        delete[] buffer;
+    //        CloseHandle(hFile);
+    //        if (strRet.CompareNoCase(g_strUniverseDllMD5)) {
+    //          ::MessageBox(NULL,
+    //                       L"Your version of \"Universe.dll\" does not match "
+    //                       L"the current version of WebRT",
+    //                       L"AIGC Agent", MB_OK);
+    //          return 0;
+    //        } else {
+    //          g_pSpaceTelescopeImpl->m_strUniverseDllMD5 = strRet;
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
     hModule = ::GetModuleHandle(L"cosmos.dll");
-    if (hModule != NULL && g_strCosmosDllMD5 != _T("")) {
-      ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
-      strSRC = m_szBuffer;
-      HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
-                                  OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
+    //if (hModule != NULL && g_strCosmosDllMD5 != _T("")) {
+    //  ::GetModuleFileName(hModule, m_szBuffer, MAX_PATH);
+    //  strSRC = m_szBuffer;
+    //  HANDLE hFile = ::CreateFile(strSRC, GENERIC_READ, FILE_SHARE_READ, NULL,
+    //                              OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
 
-      if (hFile == INVALID_HANDLE_VALUE) {
-        return 0;
-      } else {
-        DWORD dwFileSizeHigh = 0;
-        __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
-        qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
-        DWORD dwFileSize = qwFileSize;
-        if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
-          CloseHandle(hFile);
-          return 0;
-        } else {
-          BYTE* buffer = new BYTE[dwFileSize];
-          memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
-          DWORD dwBytesRead = 0;
-          if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
-            CloseHandle(hFile);
-            return 0;
-          } else {
-            CString strRet = _T("");
-            CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
-            delete[] buffer;
-            CloseHandle(hFile);
-            if (strRet.CompareNoCase(g_strCosmosDllMD5)) {
-              ::MessageBox(NULL,
-                           L"Your version of \"Cosmos.dll\" does not match the "
-                           L"current version of WebRT",
-                           L"AIGC Agent", MB_OK);
-              return 0;
-            } else {
-              g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = strRet;
-            }
-          }
-        }
-      }
-    }
+    //  if (hFile == INVALID_HANDLE_VALUE) {
+    //    return 0;
+    //  } else {
+    //    DWORD dwFileSizeHigh = 0;
+    //    __int64 qwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
+    //    qwFileSize |= (((__int64)dwFileSizeHigh) << 32);
+    //    DWORD dwFileSize = qwFileSize;
+    //    if ((dwFileSize == 0) || (dwFileSize == INVALID_FILE_SIZE)) {
+    //      CloseHandle(hFile);
+    //      return 0;
+    //    } else {
+    //      BYTE* buffer = new BYTE[dwFileSize];
+    //      memset(buffer, 0, (dwFileSize) * sizeof(BYTE));
+    //      DWORD dwBytesRead = 0;
+    //      if (!ReadFile(hFile, buffer, dwFileSize, &dwBytesRead, NULL)) {
+    //        CloseHandle(hFile);
+    //        return 0;
+    //      } else {
+    //        CString strRet = _T("");
+    //        CalculateByteMD5(buffer, dwFileSize * sizeof(BYTE), strRet);
+    //        delete[] buffer;
+    //        CloseHandle(hFile);
+    //        if (strRet.CompareNoCase(g_strCosmosDllMD5)) {
+    //          ::MessageBox(NULL,
+    //                       L"Your version of \"Cosmos.dll\" does not match the "
+    //                       L"current version of WebRT",
+    //                       L"AIGC Agent", MB_OK);
+    //          return 0;
+    //        } else {
+    //          g_pSpaceTelescopeImpl->m_strCosmosDllMD5 = strRet;
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
     g_pSpaceTelescopeImpl->m_pWebRTMainDllLoader = this;
   }
   // end Add by TangramTeam

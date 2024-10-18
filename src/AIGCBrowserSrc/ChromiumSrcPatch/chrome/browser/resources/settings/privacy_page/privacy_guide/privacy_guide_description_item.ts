@@ -8,7 +8,7 @@
  * the description of a privacy setting in the privacy guide.
  */
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import '../../settings_shared.css.js';
 
 import {sanitizeInnerHtml} from 'tangram://resources/js/parse_html_subset.js';

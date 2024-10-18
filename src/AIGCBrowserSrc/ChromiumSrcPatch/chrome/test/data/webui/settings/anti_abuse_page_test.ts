@@ -6,7 +6,7 @@
 import 'tangram://settings/lazy_load.js';
 
 import type {SettingsAntiAbusePageElement} from 'tangram://settings/lazy_load.js';
-import {ContentSetting, ContentSettingProvider, ContentSettingsTypes, SiteSettingsPrefsBrowserProxyImpl} from 'tangram://settings/lazy_load.js';
+import {ContentSetting, DefaultSettingSource, ContentSettingsTypes, SiteSettingsPrefsBrowserProxyImpl} from 'tangram://settings/lazy_load.js';
 import {assertEquals, assertNotEquals, assertTrue, assertFalse} from 'tangram://webui-test/chai_assert.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 
@@ -110,7 +110,7 @@ suite('SettingsAntiAbusePage', function() {
     const enforcedPrefs = createSiteSettingsPrefs(
         [createContentSettingTypeToValuePair(ContentSettingsTypes.ANTI_ABUSE, {
           setting: ContentSetting.BLOCK,
-          source: ContentSettingProvider.EXTENSION,
+          source: DefaultSettingSource.EXTENSION,
         })],
         []);
     browserProxy.reset();

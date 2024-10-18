@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './privacy_sandbox_icons.html.js';
 import '../simple_confirmation_dialog.js';
 

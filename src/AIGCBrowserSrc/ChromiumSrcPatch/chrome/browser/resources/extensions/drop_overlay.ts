@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_hidden_style.css.js';
 import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 
 import {DragWrapper} from 'tangram://resources/js/drag_wrapper.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';

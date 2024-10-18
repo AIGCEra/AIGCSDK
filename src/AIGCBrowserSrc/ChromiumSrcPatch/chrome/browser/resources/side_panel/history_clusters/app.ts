@@ -5,11 +5,13 @@
 import './strings.m.js';
 import 'tangram://resources/cr_components/history_clusters/browser_proxy.js';
 import 'tangram://resources/cr_components/history_clusters/clusters.js';
+import 'tangram://resources/cr_components/history_embeddings/icons.html.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar_search_field.js';
 
 import {ColorChangeUpdater} from 'tangram://resources/cr_components/color_change_listener/colors_css_updater.js';
 import {BrowserProxyImpl} from 'tangram://resources/cr_components/history_clusters/browser_proxy.js';
 import type {CrToolbarSearchFieldElement} from 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar_search_field.js';
+import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 
 import {getCss} from './app.css.js';
@@ -43,6 +45,8 @@ export class HistoryClustersAppElement extends CrLitElement {
       query: {type: String},
 
       scrollTarget_: {type: Object},
+
+      searchIcon_: {type: String},
     };
   }
 
@@ -57,6 +61,7 @@ export class HistoryClustersAppElement extends CrLitElement {
 
   query: string = '';
   protected scrollTarget_?: HTMLElement;
+  protected searchIcon_?: string;
 
   //============================================================================
   // Event Handlers
@@ -74,6 +79,10 @@ export class HistoryClustersAppElement extends CrLitElement {
   override connectedCallback() {
     super.connectedCallback();
     this.scrollTarget_ = this.$.historyClusters;
+
+    if (loadTimeData.getBoolean('enableHistoryEmbeddings')) {
+      this.searchIcon_ = 'history-embeddings:search';
+    }
 
     // Populate the initial query from the URL parameter. Other methods are
     // mostly racy.

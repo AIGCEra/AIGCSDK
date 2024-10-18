@@ -186,6 +186,10 @@
     [ Replaceable,
       SameObject ] readonly attribute VisualViewport visualViewport;
 
+    // Viewport API
+    // https://drafts.csswg.org/css-viewport-1/
+    [Replaceable, SameObject, RuntimeEnabled=ViewportSegments] readonly attribute Viewport viewport;
+
     // client
     [ HighEntropy = Direct, MeasureAs = WindowScreenX,
       Replaceable ] readonly attribute long screenX;

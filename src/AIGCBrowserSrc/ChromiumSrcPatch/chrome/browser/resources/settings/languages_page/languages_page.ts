@@ -20,7 +20,7 @@ import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/js/action_link.js';
 import 'tangram://resources/cr_elements/action_link.css.js';
 import 'tangram://resources/polymer/v3_0/iron-flex-layout/iron-flex-layout-classes.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './add_languages_dialog.js';
 import '../icons.html.js';
 import '../relaunch_confirmation_dialog.js';

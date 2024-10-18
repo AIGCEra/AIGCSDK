@@ -60,6 +60,10 @@
       "tangram://extensions/*"
     ]
   }],
+  "experimentalAiData": {
+    "contexts": ["privileged_extension"],
+    "channel": "dev"
+  },
   "app": {
     "blocklist": [
       "2FC374607C2DF285634B67C64A2E356C607091C3",  // Quickoffice
@@ -215,6 +219,7 @@
       "tangram://add-supervision/*",
       "tangram://chrome-signin/*",
       "tangram://discards/*",
+      "tangram://graduation/*",
       "tangram://mobilesetup/*",
       "tangram://oobe/*",
       "tangram://os-settings/*",
@@ -256,10 +261,21 @@
     "dependencies": ["manifest:commands"],
     "contexts": ["privileged_extension"]
   },
-  "contentSettings": {
+  "contentSettings": [{
     "dependencies": ["permission:contentSettings"],
-    "contexts": ["privileged_extension"]
-  },
+    "contexts": [
+      "privileged_extension"
+    ],
+    "default_parent": true
+  },{
+    "channel": "stable",
+    "contexts": [
+      "webui_untrusted"
+    ],
+    "matches": [
+      "chrome-untrusted://boca-app/*"
+    ]
+  }],
   "contentSettings.clipboard": {
     "feature_flag": "ApiContentSettingsClipboard"
   },
@@ -283,7 +299,8 @@
     ],
     "matches": [
       "tangram://camera-app/*",
-      "tangram://media-app/*"
+      "tangram://media-app/*",
+      "tangram://recorder-app/*"
     ]
   },
   {
@@ -415,6 +432,9 @@
   },
   "enterprise.reportingPrivate.getHotfixes": {
     "platforms": ["win"]
+  },
+  "enterprise.reportingPrivate.reportDataMaskingEvent": {
+    "feature_flag": "ApiEnterpriseReportingPrivateReportDataMaskingEvent"
   },
   "experimental.devtools.audits": {
     "nocompile": true,
@@ -634,7 +654,7 @@
       "webui_untrusted"
     ],
     "matches": [
-      "chrome-untrusted://lens/*"
+      "chrome-untrusted://lens-overlay/*"
     ]
   }],
   "login": [{

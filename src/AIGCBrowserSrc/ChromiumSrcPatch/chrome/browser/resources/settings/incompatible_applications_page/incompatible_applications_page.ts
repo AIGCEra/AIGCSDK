@@ -11,7 +11,7 @@
 import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/polymer/v3_0/iron-flex-layout/iron-flex-layout-classes.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import '../settings_shared.css.js';
 import './incompatible_application_item.js';
 
