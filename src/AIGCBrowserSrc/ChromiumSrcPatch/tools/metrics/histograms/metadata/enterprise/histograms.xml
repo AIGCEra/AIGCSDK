@@ -1635,7 +1635,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Enterprise.Dlp.FilesUnknownAccessLevel"
-    units="EnterpriseDlpPolicyLevel" expires_after="2025-02-10">
+    units="EnterpriseDlpPolicyLevel" expires_after="2025-04-13">
   <owner>poromov@google.com</owner>
   <owner>chromeos-dlp@google.com</owner>
   <summary>
@@ -2081,7 +2081,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Enterprise.EnrollmentAttestationBased"
-    enum="EnterpriseEnrollmentType" expires_after="2025-02-10">
+    enum="EnterpriseEnrollmentType" expires_after="2025-04-13">
   <owner>asumaneev@google.com</owner>
   <owner>sergiyb@chromium.org</owner>
   <owner>chromeos-commercial-remote-management@google.com</owner>
@@ -2604,7 +2604,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Enterprise.OnBulkDataEntry.DataSize" units="bytes"
-    expires_after="2025-02-10">
+    expires_after="2025-04-13">
   <owner>domfc@chromium.org</owner>
   <owner>webprotect-team@google.com</owner>
   <summary>
@@ -2898,7 +2898,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Enterprise.RegularUserSession.SessionLength" units="minutes"
-    expires_after="2025-02-10">
+    expires_after="2025-04-13">
   <owner>bfranz@chromium.org</owner>
   <owner>chromeos-kiosk-eng@google.com</owner>
   <summary>
@@ -3000,6 +3000,19 @@ chromium-metrics-reviews@google.com.
   </summary>
 </histogram>
 
+<histogram name="Enterprise.SkyVault.LocalStorage.Misconfigured" enum="Boolean"
+    expires_after="2025-10-01">
+  <owner>aidazolic@google.com</owner>
+  <owner>src/chrome/browser/ash/policy/skyvault/OWNERS</owner>
+  <summary>
+    Records whether SkyVault is misconfigured: Local file storage is disabled,
+    and the DownloadsDirectory policy, which also determines the default
+    location for the Files app, is not set to a cloud location (e.g. Google
+    Drive). This may cause the Files app to display incorrect folder
+    information.
+  </summary>
+</histogram>
+
 <histogram name="Enterprise.SkyVault.Migration.Reset" enum="Boolean"
     expires_after="2025-10-01">
   <owner>aidazolic@google.com</owner>
@@ -3017,6 +3030,28 @@ chromium-metrics-reviews@google.com.
   <owner>src/chrome/browser/ash/policy/skyvault/OWNERS</owner>
   <summary>
     Recorded when an error occurs while setting the local storage write access.
+  </summary>
+</histogram>
+
+<histogram name="Enterprise.SkyVault.Migration.{CloudProvider}.DialogAction"
+    enum="EnterpriseSkyVaultMigrationDialogAction" expires_after="2025-10-01">
+  <owner>aidazolic@google.com</owner>
+  <owner>src/chrome/browser/ash/policy/skyvault/OWNERS</owner>
+  <summary>
+    Records user interactions with the migration dialog displayed 24 hours
+    before the scheduled migration of local files to {CloudProvider}.
+  </summary>
+</histogram>
+
+<histogram name="Enterprise.SkyVault.Migration.{CloudProvider}.DialogShown"
+    enum="Boolean" expires_after="2025-10-01">
+  <owner>aidazolic@google.com</owner>
+  <owner>src/chrome/browser/ash/policy/skyvault/OWNERS</owner>
+  <summary>
+    Recorded when initiating the display of the migration information dialog. A
+    value of &quot;true&quot; indicates the dialog was shown to the user. A
+    value of &quot;false&quot; indicates the dialog was not shown, typically
+    because a previous dialog was already displayed.
   </summary>
 </histogram>
 
@@ -3265,31 +3300,6 @@ chromium-metrics-reviews@google.com.
   </summary>
 </histogram>
 
-<histogram name="Enterprise.SystemLogUploader.LogSize.{LogName}" units="KB"
-    expires_after="2025-06-01">
-  <owner>nedol@google.com</owner>
-  <owner>iremuguz@google.com</owner>
-  <summary>
-    Records the total size in kilobytes of all the &quot;{LogName}&quot; log
-    files uploaded during the periodic log upload.
-  </summary>
-  <token key="LogName">
-    <variant name="BiosInfo"
-        summary="Messages from components before Linux kernel starts."/>
-    <variant name="Chrome"
-        summary="Messages that are written before user logs in."/>
-    <variant name="Eventlog" summary="Messages about system events."/>
-    <variant name="Extensions"
-        summary="Messages from extension acting as system extensions."/>
-    <variant name="Messages"
-        summary="Messages written by services such as session_manager,
-                 cryptohomed and cros-disks."/>
-    <variant name="Net" summary="Network-related messages."/>
-    <variant name="UI" summary="Data written to stdout and stderr by Chrome."/>
-    <variant name="UpdateEngine" summary="Messages from update_engine."/>
-  </token>
-</histogram>
-
 <histogram name="Enterprise.SystemSignals.Collection.WMI.{Signal}.ParsingError"
     enum="DeviceSignalsWmiParsingError" expires_after="2025-03-20">
   <owner>seblalancette@chromium.org</owner>
@@ -3398,7 +3408,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Enterprise.UserInfoFetch.Status"
-    enum="EnterpriseUserInfoFetchStatus" expires_after="2025-02-12">
+    enum="EnterpriseUserInfoFetchStatus" expires_after="2025-04-13">
   <owner>vincb@google.com</owner>
   <owner>zmin@chromium.org</owner>
   <summary>
@@ -3652,7 +3662,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="EnterpriseCheck.IsEnterpriseUser" enum="BooleanEnabled"
-    expires_after="2025-02-10">
+    expires_after="2025-04-13">
   <owner>pastarmovj@chromium.org</owner>
   <owner>rogerta@chromium.org</owner>
   <owner>zmin@chromium.org</owner>

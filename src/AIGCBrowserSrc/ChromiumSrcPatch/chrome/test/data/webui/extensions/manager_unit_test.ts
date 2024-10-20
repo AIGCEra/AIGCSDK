@@ -14,7 +14,7 @@ import {getDeepActiveElement} from 'tangram://resources/js/util.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
-import {eventToPromise} from 'tangram://webui-test/test_util.js';
+import {eventToPromise, microtasksFinished} from 'tangram://webui-test/test_util.js';
 
 import {TestService} from './test_service.js';
 import {createExtensionInfo} from './test_util.js';
@@ -149,7 +149,7 @@ suite('ExtensionManagerUnitTest', function() {
   });
 
   test(
-      'UpdateItemData', function() {
+      'UpdateItemData', async () => {
         const oldDescription = 'old description';
         const newDescription = 'new description';
 
@@ -183,6 +183,7 @@ suite('ExtensionManagerUnitTest', function() {
         assertEquals(extension.id, detailsView.data.id);
         assertEquals(newDescription, detailsView.data.description);
 
+        await microtasksFinished();
         const content =
             detailsView.shadowRoot!.querySelector('.section .section-content');
         assertTrue(!!content);

@@ -240,10 +240,6 @@
       name: "AccessibilityMinRoleTabbable",
     },
     {
-      name: "AccessibilityObjectModel",
-      status: "experimental",
-    },
-    {
       name: "AccessibilityOSLevelBoldText",
       status: "experimental",
       public: true,
@@ -315,6 +311,7 @@
       origin_trial_feature_name: "AIPromptAPIForExtension",
       status: "test",
       base_feature: "EnableAIPromptAPIForExtension",
+      base_feature_status: "enabled",
       copied_from_base_feature_if: "overridden",
     },
     {
@@ -335,6 +332,8 @@
       status: "test",
       origin_trial_feature_name: "AISummarizationAPI",
       base_feature: "EnableAISummarizationAPI",
+      base_feature_status: "enabled",
+      copied_from_base_feature_if: "overridden",
     },
     {
       name: "AIWriterAPI",
@@ -380,6 +379,12 @@
       name: "AOMAriaRelationshipProperties",
       public: true,
       status: "experimental",
+    },
+    {
+      name: "AOMAriaRelationshipPropertiesAriaOwns",
+      public: true,
+      status: "experimental",
+      depends_on: ["AOMAriaRelationshipProperties"],
     },
     {
       name: "AppTitle",
@@ -577,18 +582,8 @@
       status: "stable",
     },
     {
-      // crbug.com/41485013
-      name: "BreakIteratorDataGenerator",
-      status: "stable",
-    },
-    {
       // crbug.com/371615505
       name: "BreakIteratorHyphenMinus",
-      status: "stable",
-    },
-    {
-      // crbug.com/41485013
-      name: "BreakIteratorSetStartOffset",
       status: "stable",
     },
     {
@@ -748,6 +743,10 @@
     {
       name: "ClickToCapturedPointer",
       status: "experimental",
+    },
+    {
+      name: "ClipboardItemWithDOMStringSupport",
+      status: "test",
     },
     {
       name: "ClipPathRejectEmptyPaths",
@@ -999,11 +998,6 @@
       status: "stable",
     },
     {
-      // crbug.com/353228153
-      name: "CssDisplaySerialziationFix",
-      status: "stable",
-    },
-    {
       name: "CSSDynamicRangeLimit",
       status: "experimental",
     },
@@ -1178,7 +1172,7 @@
     {
       // crbug.com/359616070
       name: "CSSRelativeColorLateResolveAlways",
-      status: "experimental",
+      status: "stable",
     },
     {
       // crbug.com/365818844
@@ -1382,11 +1376,7 @@
     },
     {
       name: "DevicePosture",
-      public: true,
-      status: "experimental",
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
-      origin_trial_feature_name: "FoldableAPIs",
+      status: "stable",
     },
     {
       // This feature makes the <dialog> element close properly when its "open"
@@ -1756,7 +1746,7 @@
     {
       name: "FastNonCompositedScrollHitTest",
       depends_on: ["HitTestOpaqueness", "RasterInducingScroll"],
-      status: "stable",
+      status: "test",
     },
     // Kill switch.
     {
@@ -1898,7 +1888,7 @@
       // Add Request.bytes() and Response.bytes()
       // https://chromestatus.com/feature/5239268180754432
       name: "FetchBodyBytes",
-      status: "experimental",
+      status: "stable",
     },
     {
       // The Blink runtime-enabled feature name for the API's IDL.
@@ -2269,8 +2259,11 @@
       name: "HighlightPointerEvents",
     },
     {
+      name: "HighlightsFromPoint",
+    },
+    {
       name: "HitTestOpaqueness",
-      status: "stable",
+      status: "experimental",
     },
     // This is a kill switch for a fix that disables painting of line box hit
     // test data with HitTestOpaqueness.
@@ -2448,16 +2441,16 @@
       name: "InstallOnDeviceSpeechRecognition",
     },
     {
+      name: "InterestGroupsInSharedStorageWorklet",
+      public: true,
+    },
+    {
       name: "InteroperablePrivateAttribution",
       status: "experimental",
     },
     {
       // If enabled, IntersectionObserverScrollMargin will be parsed.
       name: "IntersectionObserverScrollMargin",
-      status: "stable",
-    },
-    {
-      name: "IntersectionOptimization",
       status: "stable",
     },
     {
@@ -2553,6 +2546,10 @@
       name: "LayoutNGShapeCache",
       status: "test",
       base_feature: "LayoutNGShapeCache",
+    },
+    {
+      name: "LayoutStretch",
+      status: "experimental",
     },
     {
       name: "LazyInitializeMediaControls",
@@ -3214,6 +3211,10 @@
       status: "experimental",
     },
     {
+      name: "PerformanceNavigationTimingConfidence",
+      status: "experimental",
+    },
+    {
       name: "PeriodicBackgroundSync",
       public: true,
       status: "stable",
@@ -3444,10 +3445,6 @@
       status: "stable",
     },
     {
-      name: "QuotaChange",
-      status: "experimental",
-    },
-    {
       name: "RasterInducingScroll",
       status: "test",
     },
@@ -3663,11 +3660,6 @@
     },
     {
       // crbug.com/324111880
-      name: "RubyLineBreakable",
-      status: "stable",
-    },
-    {
-      // crbug.com/324111880
       name: "RubyShortHeuristics",
       status: "stable",
     },
@@ -3777,6 +3769,12 @@
       base_feature: "none",
     },
     {
+      // SelectAudioOutput API
+      // https://chromestatus.com/feature/5164535504437248
+      name: "SelectAudioOutput",
+      status: "test",
+    },
+    {
       // Implement Selection API across shadow DOM
       // See https://w3c.github.io/selection-api/
       name: "SelectionAcrossShadowDOM",
@@ -3786,8 +3784,9 @@
       // selection.isCollapsed should return false if anchor and focus nodes
       // are different, including in shadow tree.
       // https://crbug.com/40400558
+      // This feature was shipped in M131, so this flag can be removed in M133.
       name: "SelectionIsCollapsedShadowDOMSupport",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Maintain author-defined ::selection highlight colors, even if they
@@ -3808,6 +3807,7 @@
       // https://github.com/whatwg/html/issues/10310
       name: "SelectParserRelaxation",
       status: "stable",
+      public: true,
     },
     {
       // This flag is a performance optimization which reorganizes some code
@@ -3866,11 +3866,6 @@
       status: "experimental",
     },
     {
-      // crbug.com/360716751
-      name: "ShapeOutsideClippedImageFix",
-      status: "stable",
-    },
-    {
       // crbug.com/359616076, crbug.com/360158400, and crbug.com/360903551.
       name: "ShapeOutsideWritingModeFix",
       status: "stable",
@@ -3918,6 +3913,9 @@
       public: true,
     },
     {
+      name: "SharedStorageWebLocks",
+    },
+    {
       name: "SharedWorker",
       public: true,
       // Android does not yet support SharedWorker. crbug.com/154571
@@ -3949,6 +3947,11 @@
       name: "SkipPreloadScanning",
       origin_trial_feature_name: "SkipPreloadScanning",
       base_feature: "SkipPreloadScanning",
+    },
+    {
+      // Added in M131, should be safe to remove after M131 ships.
+      name: "SkipTemporaryDocumentFragment",
+      status: "stable",
     },
     {
       // Skips the browser touch event filter, ensuring that events that reach
@@ -4047,7 +4050,7 @@
     },
     {
       name: "StaticAnimationOptimization",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "StorageAccessHeader",
@@ -4219,6 +4222,13 @@
     },
     {
       name: "TextMetricsBaselines",
+      status: "stable",
+    },
+    {
+      // Ensures correct segment boundary for floating elements
+      // so that the selection does not get expanded for them.
+      // See https://crbug.com/40711666.
+      name: "TextSegmentBoundaryForElementWithFloatStyle",
       status: "stable",
     },
     {
@@ -4400,6 +4410,16 @@
       },
     },
     {
+      // Android currently uses low-quality interpolation, while other platforms
+      // default to medium-quality. This flag is for experimenting with changing
+      // the value on Android. See: https://crbug.com/374315986.
+      name: "UseLowQualityInterpolation",
+      status: {
+        "Android": "stable",
+        "default": "",
+      },
+    },
+    {
       name: "UserActivationSameOriginVisibility",
       base_feature: "none",
       public: true,
@@ -4472,7 +4492,6 @@
     },
     {
       name: "ViewTransitionLayeredCapture",
-      status: "experimental",
     },
     {
       name: "ViewTransitionLongCallbackTimeoutForTesting",
@@ -4488,6 +4507,11 @@
     {
       name: "ViewTransitionOnNavigationForIframes",
       status: "stable",
+    },
+    {
+      name: "ViewTransitionOverflowRectFromSurface",
+      status: "test",
+      implied_by: ["ViewTransitionLayeredCapture"],
     },
     {
       name: "ViewTransitionTreeScopedNames",
@@ -4914,6 +4938,13 @@
       base_feature: "none",
     },
     {
+      name: "WebXRGPUBinding",
+      depends_on: ["WebXR"],
+      public: true,
+      status: "experimental",
+      base_feature: "none",
+    },
+    {
       name: "WebXRHandInput",
       depends_on: ["WebXR"],
       public: true,
@@ -4936,6 +4967,13 @@
     {
       name: "WebXRLayers",
       depends_on: ["WebXR"],
+      public: true,
+      status: "experimental",
+      base_feature: "none",
+    },
+    {
+      name: "WebXRLayersCommon",
+      implied_by: ["WebXRLayers", "WebXRGPUBinding"],
       public: true,
       status: "experimental",
       base_feature: "none",

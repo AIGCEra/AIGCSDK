@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 
+#include "autofill_client.h"
 #include "base/barrier_callback.h"
 #include "base/check_deref.h"
 #include "base/check_op.h"
@@ -141,6 +142,7 @@
 #include "components/signin/public/identity_manager/identity_manager.h"
 #include "components/strings/grit/components_strings.h"
 #include "services/network/public/cpp/shared_url_loader_factory.h"
+#include "third_party/abseil-cpp/absl/types/variant.h"
 #include "ui/base/l10n/l10n_util.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/gfx/geometry/rect.h"
@@ -704,6 +706,19 @@ GetFieldTypeGroupsFromFormStructure(const FormStructure* form_structure) {
                         : base::flat_map<FieldGlobalId, FieldTypeGroup>();
 }
 
+// Returns if the email address was modified on any of the suggested addresses
+// using a plus profile.
+bool WasEmailOverrideAppliedOnSuggestions(
+    const std::vector<Suggestion>& address_suggestions) {
+  return base::ranges::any_of(
+      address_suggestions, [](const Suggestion& suggestion) {
+        const Suggestion::AutofillProfilePayload* profile_payload =
+            absl::get_if<Suggestion::AutofillProfilePayload>(
+                &suggestion.payload);
+        return profile_payload && !profile_payload->email_override.empty();
+      });
+}
+
 }  // namespace
 
 BrowserAutofillManager::MetricsState::MetricsState(
@@ -960,8 +975,35 @@ void BrowserAutofillManager::OnFormSubmittedImpl(const FormData& form,
     delegate->MaybeImportForm(
         std::move(submitted_form),
         base::BindOnce(
-            &BrowserAutofillManager::OnUserAnnotationsMaybeImportableFormFound,
-            weak_ptr_factory_.GetWeakPtr(), form, source,
+            [](base::WeakPtr<AutofillClient> client,
+               base::WeakPtr<BrowserAutofillManager> manager,
+               const FormData& form, SubmissionSource source,
+               base::TimeTicks form_submitted_timestamp,
+               std::unique_ptr<FormStructure> submitted_form,
+               std::vector<optimization_guide::proto::UserAnnotationsEntry>
+                   to_be_upserted_entries,
+               user_annotations::PromptAcceptanceCallback
+                   prompt_acceptance_callback) {
+              // The manager may have been destroyed already.
+              // See crbug.com/373831707#comment5.
+              const bool should_show_prediction_improvements_bubble =
+                  !to_be_upserted_entries.empty();
+              if (client && should_show_prediction_improvements_bubble) {
+                client->ShowSaveAutofillPredictionImprovementsBubble(
+                    std::move(to_be_upserted_entries),
+                    std::move(prompt_acceptance_callback));
+              }
+              if (manager) {
+                manager->MaybeImportFromSubmittedForm(
+                    form, submitted_form.get(),
+                    /*attempt_to_import_into_form_data_importer=*/
+                    !should_show_prediction_improvements_bubble);
+                manager->OnFormSubmittedAfterImport(
+                    form, std::move(submitted_form), source,
+                    form_submitted_timestamp);
+              }
+            },
+            client().GetWeakPtr(), weak_ptr_factory_.GetWeakPtr(), form, source,
             form_submitted_timestamp));
   } else {
     // TODO(crbug.com/40100455): Refactor this:
@@ -1144,28 +1186,6 @@ void BrowserAutofillManager::ProcessPendingFormForUpload() {
                               /*observed_submission=*/false);
 }
 
-void BrowserAutofillManager::OnUserAnnotationsMaybeImportableFormFound(
-    const FormData& form,
-    SubmissionSource source,
-    base::TimeTicks form_submitted_timestamp,
-    std::unique_ptr<FormStructure> submitted_form,
-    std::vector<optimization_guide::proto::UserAnnotationsEntry>
-        to_be_upserted_entries,
-    user_annotations::PromptAcceptanceCallback prompt_acceptance_callback) {
-  const bool should_show_prediction_improvements_bubble =
-      !to_be_upserted_entries.empty();
-  if (should_show_prediction_improvements_bubble) {
-    client().ShowSaveAutofillPredictionImprovementsBubble(
-        std::move(to_be_upserted_entries),
-        std::move(prompt_acceptance_callback));
-  }
-  MaybeImportFromSubmittedForm(form, submitted_form.get(),
-                               /*attempt_to_import_into_form_data_importer=*/
-                               !should_show_prediction_improvements_bubble);
-  OnFormSubmittedAfterImport(form, std::move(submitted_form), source,
-                             form_submitted_timestamp);
-}
-
 void BrowserAutofillManager::MaybeImportFromSubmittedForm(
     const FormData& form,
     const FormStructure* const form_structure,
@@ -1302,6 +1322,12 @@ void BrowserAutofillManager::OnTextFieldDidChangeImpl(
     autofill_field->set_previously_autofilled(true);
     if (logger) {
       logger->OnEditedAutofilledField();
+    }
+    if (AutofillPredictionImprovementsDelegate* delegate =
+            client().GetAutofillPredictionImprovementsDelegate();
+        delegate && autofill_field->filling_product() ==
+                        FillingProduct::kPredictionImprovements) {
+      delegate->OnEditedAutofilledField(form.global_id());
     }
   }
 
@@ -1464,10 +1490,12 @@ void BrowserAutofillManager::OnAskForValuesToFillImpl(
   // IMPORTANT NOTE: If there's no data stored in user annotations,
   // `GenerateSuggestionsAndMaybeShowUI()` will be called and Autofill's regular
   // flow will continue.
-  if (AutofillPredictionImprovementsDelegate* delegate =
-          client().GetAutofillPredictionImprovementsDelegate();
-      delegate && form_structure && autofill_field &&
-      delegate->IsFormAndFieldEligible(*form_structure, *autofill_field)) {
+  AutofillPredictionImprovementsDelegate* delegate =
+      client().GetAutofillPredictionImprovementsDelegate();
+
+  if (delegate && form_structure && autofill_field &&
+      delegate->IsPredictionImprovementsEligible(*form_structure,
+                                                 *autofill_field)) {
     delegate->HasDataStored(base::BindOnce(
         &BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase1,
         weak_ptr_factory_.GetWeakPtr(), form, field, trigger_source, context,
@@ -1568,10 +1596,9 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase2(
     }
     return;
   }
-
-  if (AutofillPredictionImprovementsDelegate* delegate =
-          client().GetAutofillPredictionImprovementsDelegate();
-      delegate && has_prediction_improvements_data &&
+  AutofillPredictionImprovementsDelegate* delegate =
+      client().GetAutofillPredictionImprovementsDelegate();
+  if (delegate && has_prediction_improvements_data &&
       (trigger_source ==
            AutofillSuggestionTriggerSource::kPredictionImprovements ||
        trigger_source ==
@@ -1584,6 +1611,11 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase2(
                               /*ranking_context=*/std::nullopt);
       return;
     }
+  } else if (delegate && form_structure && autofill_field &&
+             delegate->ShouldDisplayIph(*form_structure, *autofill_field) &&
+             client().ShowAutofillFieldIphForFeature(
+                 field, AutofillClient::IphFeature::kPredictionImprovements)) {
+    return;
   }
 
   const bool form_element_was_clicked =
@@ -1620,13 +1652,14 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase2(
   }
   // Only offer plus address suggestions together with address suggestions if
   // these exist. Otherwise, plus address suggestions will be generated and
-  // shown alongside single field form fill suggestions.
-  // TODO(crbug.com/324557053): Do not generate plus address suggestions if the
-  // plus address email override was applied on at least one address suggestion.
+  // shown alongside single field form fill suggestions. Plus address
+  // suggestions are not shown if the plus address email override was applied on
+  // at least one address suggestion.
   const bool should_offer_plus_addresses_with_profiles =
       context.field_is_relevant_for_plus_addresses && autofill_field &&
       autofill_field->Type().group() == FieldTypeGroup::kEmail &&
-      !suggestions.empty();
+      !suggestions.empty() &&
+      !WasEmailOverrideAppliedOnSuggestions(suggestions);
   // Try to show plus address suggestions. If the user specifically requested
   // plus addresses, disregard any other requirements (like having profile
   // suggestions) and show only plus address suggestions. Otherwise plus address
@@ -1959,9 +1992,8 @@ void BrowserAutofillManager::FillOrPreviewProfileForm(
                                   autofill_field, trigger_details);
 }
 
-void BrowserAutofillManager::FillOrPreviewFormExperimental(
+void BrowserAutofillManager::FillOrPreviewFormWithPredictionImprovements(
     mojom::ActionPersistence action_persistence,
-    FillingProduct filling_product,
     const FieldTypeSet& field_types_to_fill,
     const DenseSet<FieldFillingSkipReason>& ignorable_skip_reasons,
     const FormData& form,
@@ -1973,10 +2005,13 @@ void BrowserAutofillManager::FillOrPreviewFormExperimental(
                              &autofill_trigger_field)) {
     return;
   }
-  form_filler_->FillOrPreviewFormExperimental(
-      action_persistence, filling_product, field_types_to_fill,
-      ignorable_skip_reasons, form, trigger_field, *form_structure,
-      *autofill_trigger_field, values_to_fill);
+  form_filler_->FillOrPreviewFormWithPredictionImprovements(
+      action_persistence, field_types_to_fill, ignorable_skip_reasons, form,
+      trigger_field, *form_structure, *autofill_trigger_field, values_to_fill);
+  if (AutofillPredictionImprovementsDelegate* delegate =
+          client().GetAutofillPredictionImprovementsDelegate()) {
+    delegate->OnDidFillSuggestion(form.global_id());
+  }
 }
 
 void BrowserAutofillManager::FillOrPreviewField(
@@ -2001,8 +2036,8 @@ void BrowserAutofillManager::FillOrPreviewField(
   const FillingProduct filling_product =
       GetFillingProductFromSuggestionType(type);
   form_filler_->FillOrPreviewField(action_persistence, action_type, form, field,
-                                   form_structure, autofill_field, value,
-                                   filling_product, field_type_used);
+                                   autofill_field, value, filling_product,
+                                   field_type_used);
   if (action_persistence == mojom::ActionPersistence::kFill) {
     if (type == SuggestionType::kAddressFieldByFieldFilling) {
       metrics_->address_form_event_logger.OnFilledByFieldByFieldFilling(type);
@@ -2267,8 +2302,11 @@ void BrowserAutofillManager::OnHidePopupImpl() {
 }
 
 bool BrowserAutofillManager::RemoveAutofillProfileOrCreditCard(
-    Suggestion::BackendId backend_id) {
-  const std::string guid = absl::get<Suggestion::Guid>(backend_id).value();
+    const Suggestion::Payload& payload) {
+  const std::string guid =
+      absl::holds_alternative<Suggestion::AutofillProfilePayload>(payload)
+          ? absl::get<Suggestion::AutofillProfilePayload>(payload).guid.value()
+          : absl::get<Suggestion::Guid>(payload).value();
   PersonalDataManager* pdm = client().GetPersonalDataManager();
 
   if (const CreditCard* credit_card =
@@ -3142,6 +3180,12 @@ void BrowserAutofillManager::OnFormProcessed(
     autofill_optimization_guide->OnDidParseForm(
         form_structure, client().GetPersonalDataManager());
   }
+
+  if (AutofillPredictionImprovementsDelegate* delegate =
+          client().GetAutofillPredictionImprovementsDelegate()) {
+    delegate->OnFormSeen(form_structure);
+  }
+
   // If a form with the same FormGlobalId was previously filled, the structure
   // of the form changed, and there has not been a refill attempt on that form
   // yet, start the process of triggering a refill.

@@ -450,7 +450,7 @@ std::map<std::string, std::pair<std::string, int>> GetRwsMap(
       std::string etld_plus1 = GetEtldPlusOneForHost(
           BrowsingDataModel::GetHost(entry.data_owner.get()));
       auto schemeful_site = ConvertEtldToSchemefulSite(etld_plus1);
-      auto rws_owner = privacy_sandbox_service->GetFirstPartySetOwner(
+      auto rws_owner = privacy_sandbox_service->GetRelatedWebsiteSetOwner(
           schemeful_site.GetURL());
       if (rws_owner.has_value()) {
         rws_owner_to_members[rws_owner->GetURL().host()].insert(etld_plus1);
@@ -551,7 +551,7 @@ void ConvertSiteGroupMapToList(
       site_group.Set(kRwsNumMembers, rws_map[*etld_plus1].second);
       auto schemeful_site = ConvertEtldToSchemefulSite(*etld_plus1);
       site_group.Set(kRwsEnterpriseManaged,
-                     privacy_sandbox_service->IsPartOfManagedFirstPartySet(
+                     privacy_sandbox_service->IsPartOfManagedRelatedWebsiteSet(
                          schemeful_site));
     }
     list_value->Append(std::move(site_group));
@@ -910,7 +910,7 @@ void SiteSettingsHandler::OnGetUsageInfo() {
                 IDS_SETTINGS_SITE_SETTINGS_RELATED_WEBSITE_SETS_MEMBERSHIP_LABEL),
             "MEMBERS", static_cast<int>(rws_map[etld_plus1].second),
             "RWS_OWNER", rws_map[etld_plus1].first));
-    rwsPolicy = privacy_sandbox_service->IsPartOfManagedFirstPartySet(
+    rwsPolicy = privacy_sandbox_service->IsPartOfManagedRelatedWebsiteSet(
         ConvertEtldToSchemefulSite(etld_plus1));
   }
 
@@ -1580,12 +1580,20 @@ void SiteSettingsHandler::HandleGetSmartCardReaderGrants(
 
   reader_names = base::ToValueList(
       permission_context.GetPersistentReaderGrants(),
-      [](const SmartCardPermissionContext::ReaderGrants& reader_grant) {
+      [this](const SmartCardPermissionContext::ReaderGrants& reader_grant) {
         return base::Value::Dict()
             .Set(site_settings::kReaderName, reader_grant.reader_name)
             .Set(site_settings::kOrigins,
-                 base::ToValueList(reader_grant.origins,
-                                   &url::Origin::Serialize));
+                 base::ToValueList(
+                     reader_grant.origins, [this](const url::Origin& origin) {
+                       return base::Value::Dict()
+                           .Set(site_settings::kOrigin, origin.Serialize())
+                           .Set(site_settings::kDisplayName,
+                                site_settings::GetUrlIdentityForGURL(
+                                    profile_, origin.GetURL(),
+                                    /*hostname_only=*/false)
+                                    .name);
+                     }));
       });
 #endif
   ResolveJavascriptCallback(callback_id, reader_names);

@@ -15,9 +15,7 @@ import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.mi
 import type {CrCheckboxElement} from 'tangram://settings/lazy_load.js';
 // </if>
 
-// <if expr="not chromeos_lacros">
 import {loadTimeData} from 'tangram://settings/settings.js';
-// </if>
 
 import type {SettingsPeoplePageElement} from 'tangram://settings/settings.js';
 import {pageVisibility, ProfileInfoBrowserProxyImpl, Router, routes, SignedInState, StatusAction, SyncBrowserProxyImpl} from 'tangram://settings/settings.js';
@@ -301,23 +299,6 @@ suite('SyncStatusTests', function() {
     const deleteProfile = await syncBrowserProxy.whenCalled('signOut');
     assertFalse(deleteProfile);
   });
-
-  // <if expr="chromeos_lacros">
-  test('SignoutDialogLacrosMainProfile', async function() {
-    loadTimeData.overrideValues({
-      isSecondaryUser: false,
-    });
-    // Navigate to tangram://settings/signOut
-    Router.getInstance().navigateTo(routes.SIGN_OUT);
-
-    await flushTasks();
-    const signoutDialog =
-        peoplePage.shadowRoot!.querySelector('settings-signout-dialog')!;
-    assertTrue(signoutDialog.$.dialog.open);
-    // Delete profile is not allowed for Lacros main profile.
-    assertFalse(!!signoutDialog.shadowRoot!.querySelector('#deleteProfile'));
-  });
-  // </if>
 
   test('SignOutDialogManagedProfileTurnOffSyncDisallowed', async function() {
     let accountControl = null;

@@ -13,16 +13,15 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
+import 'tangram://resources/cr_elements/cr_spinner_style.css.js';
 import 'tangram://resources/js/action_link.js';
 import 'tangram://resources/cr_elements/action_link.css.js';
-import 'tangram://resources/polymer/v3_0/paper-spinner/paper-spinner-lite.js';
 import '../settings_shared.css.js';
 
 import type {CrButtonElement} from 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import type {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import type {CrDialogElement} from 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import {I18nMixin} from 'tangram://resources/cr_elements/i18n_mixin.js';
-import type {PaperSpinnerLiteElement} from 'tangram://resources/polymer/v3_0/paper-spinner/paper-spinner-lite.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 
 import {loadTimeData} from '../i18n_setup.js';
@@ -38,7 +37,6 @@ export interface SettingsResetProfileDialogElement {
     cancel: CrButtonElement,
     dialog: CrDialogElement,
     reset: CrButtonElement,
-    resetSpinner: PaperSpinnerLiteElement,
     sendSettings: CrCheckboxElement,
   };
 }

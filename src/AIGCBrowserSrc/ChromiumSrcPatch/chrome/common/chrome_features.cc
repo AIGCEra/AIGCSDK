@@ -391,18 +391,6 @@ BASE_FEATURE(kLinkedServicesSetting,
              "LinkedServicesSetting",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-#if BUILDFLAG(IS_ANDROID)
-BASE_FEATURE(kPrivacyGuideAndroid3,
-             "PrivacyGuideAndroid3",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-#endif
-
-#if BUILDFLAG(IS_ANDROID)
-BASE_FEATURE(kPrivacyGuidePreloadAndroid,
-             "PrivacyGuidePreloadAndroid",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-#endif
-
 #if !BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kCbdTimeframeRequired,
              "CbdTimeframeRequired",
@@ -1101,6 +1089,11 @@ constexpr base::FeatureParam<std::string> kSafetyHubAndroidTriggerId(
     &kSafetyHubAndroidSurvey,
     "trigger_id",
     /*default_value=*/"");
+
+// Enables Weak and Reused passwords in Safety Hub.
+BASE_FEATURE(kSafetyHubWeakAndReusedPasswords,
+             "SafetyHubWeakAndReusedPasswords",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if !BUILDFLAG(IS_ANDROID)

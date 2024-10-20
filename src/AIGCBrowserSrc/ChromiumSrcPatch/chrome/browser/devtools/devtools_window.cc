@@ -2004,7 +2004,10 @@ void DevToolsWindow::MaybeShowSharedProcessInfobar() {
 
   content::SiteInstance* site_instance =
       inspected_web_contents->GetPrimaryMainFrame()->GetSiteInstance();
-  if (site_instance->GetSiteURL().SchemeIs(extensions::kExtensionScheme)) {
+  const GURL& site_url = site_instance->GetSiteURL();
+  if (site_url.SchemeIs(extensions::kExtensionScheme) ||
+      site_url.SchemeIs(content::kChromeDevToolsScheme) ||
+      site_url.SchemeIs(content::kChromeUIScheme)) {
     return;
   }
 
@@ -2050,7 +2053,7 @@ void DevToolsWindow::MainWebContentRenderFrameHostChanged(
     content::RenderFrameHost* new_frame) {
   DevToolsUIBindings* new_bindings =
       DevToolsUIBindings::ForWebContents(main_web_contents_);
-  if (!new_bindings) {
+  if (!new_bindings || new_bindings == bindings_) {
     return;
   }
   bindings_->TransferDelegate(*new_bindings);

@@ -26,7 +26,6 @@ buildflag_header("buildflags") {
   flags = [
     "USE_EXTERNAL_POPUP_MENU=$use_external_popup_menu",
     "ALLOW_CRITICAL_MEMORY_PRESSURE_HANDLING_IN_FOREGROUND=$allow_critical_memory_pressure_handling_in_foreground",
-    "ENABLE_SCREEN_CAPTURE=$enable_screen_capture",
     "MBI_MODE_PER_RENDER_PROCESS_HOST=$_mbi_mode_per_render_process_host",
     "MBI_MODE_PER_SITE_INSTANCE=$_mbi_mode_per_site_instance",
     "CONTENT_ENABLE_LEGACY_IPC=$content_enable_legacy_ipc",
@@ -115,8 +114,6 @@ source_set("common") {
     "in_process_child_thread_params.h",
     "input/actions_parser.cc",
     "input/actions_parser.h",
-    "input/events_helper.cc",
-    "input/events_helper.h",
     "input/synthetic_gesture.cc",
     "input/synthetic_gesture.h",
     "input/synthetic_gesture_controller.cc",

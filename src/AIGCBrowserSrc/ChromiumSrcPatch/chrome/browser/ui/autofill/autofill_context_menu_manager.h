@@ -13,7 +13,7 @@
 #include "components/renderer_context_menu/render_view_context_menu_base.h"
 #include "components/renderer_context_menu/render_view_context_menu_observer.h"
 #include "content/public/browser/context_menu_params.h"
-#include "ui/base/models/simple_menu_model.h"
+#include "ui/menus/simple_menu_model.h"
 
 namespace password_manager {
 class ContentPasswordManagerDriver;
@@ -180,6 +180,9 @@ class AutofillContextMenuManager : public RenderViewContextMenuObserver {
   // Dangling on linux-lacros-rel in:
   // AutofillContextMenuManagerFeedbackUILacrosBrowserTest
   //   .CloseTabWhileUIIsOpenShouldNotCrash.
+  //
+  // TODO(crbug.com/374115896): Check whether the `dangling` classification
+  // still applies now that lacros support has been removed.
   const raw_ptr<PersonalDataManager, DanglingUntriaged> personal_data_manager_;
   const raw_ptr<ui::SimpleMenuModel> menu_model_;
   const raw_ptr<RenderViewContextMenuBase> delegate_;

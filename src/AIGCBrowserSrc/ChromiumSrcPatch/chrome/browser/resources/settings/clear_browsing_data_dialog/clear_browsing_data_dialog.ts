@@ -9,10 +9,10 @@
 
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
-import 'tangram://resources/cr_elements/cr_tabs/cr_tabs.js';
-import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/cr_elements/cr_page_selector/cr_page_selector.js';
-import 'tangram://resources/polymer/v3_0/paper-spinner/paper-spinner-lite.js';
+import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
+import 'tangram://resources/cr_elements/cr_spinner_style.css.js';
+import 'tangram://resources/cr_elements/cr_tabs/cr_tabs.js';
 import './history_deletion_dialog.js';
 import './passwords_deletion_dialog.js';
 import '../controls/settings_checkbox.js';
@@ -500,11 +500,6 @@ export class SettingsClearBrowsingDataDialogElement extends
     if (shouldShowCookieException) {
       return clearCookiesSummarySyncing;
     }
-    // <if expr="chromeos_lacros">
-    if (!loadTimeData.getBoolean('isSecondaryUser')) {
-      return loadTimeData.getString('clearCookiesSummarySignedInMainProfile');
-    }
-    // </if>
     return cookiesSummary;
   }
 

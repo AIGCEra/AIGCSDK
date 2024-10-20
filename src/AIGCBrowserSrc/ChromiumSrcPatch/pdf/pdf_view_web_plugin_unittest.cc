@@ -1267,8 +1267,8 @@ TEST_F(PdfViewWebPluginTest, OnPaintWithMultiplePaintRects) {
   EXPECT_FALSE(ready[2].flush_now());
 
   // All the requested paints should share the same `SkImage`.
-  EXPECT_NE(&ready[0].image(), &ready[1].image());
-  EXPECT_EQ(&ready[1].image(), &ready[2].image());
+  EXPECT_NE(ready[0].image(), ready[1].image());
+  EXPECT_EQ(ready[1].image(), ready[2].image());
 }
 
 TEST_F(PdfViewWebPluginTest, UpdateLayerTransformWithIdentity) {
@@ -1643,22 +1643,22 @@ TEST_F(PdfViewWebPluginTest, FormTextFieldFocusChangeUpdatesTextInputType) {
 }
 
 TEST_F(PdfViewWebPluginTest, SearchString) {
-  static constexpr char16_t kPattern[] = u"fox";
-  static constexpr char16_t kTarget[] =
+  static constexpr char16_t kNeedle[] = u"fox";
+  static constexpr char16_t kHaystack[] =
       u"The quick brown fox jumped over the lazy Fox";
 
   {
     static constexpr PDFiumEngineClient::SearchStringResult kExpectation[] = {
         {16, 3}};
     EXPECT_THAT(
-        plugin_->SearchString(kTarget, kPattern, /*case_sensitive=*/true),
+        plugin_->SearchString(kNeedle, kHaystack, /*case_sensitive=*/true),
         Pointwise(SearchStringResultEq(), kExpectation));
   }
   {
     static constexpr PDFiumEngineClient::SearchStringResult kExpectation[] = {
         {16, 3}, {41, 3}};
     EXPECT_THAT(
-        plugin_->SearchString(kTarget, kPattern, /*case_sensitive=*/false),
+        plugin_->SearchString(kNeedle, kHaystack, /*case_sensitive=*/false),
         Pointwise(SearchStringResultEq(), kExpectation));
   }
 }

@@ -167,7 +167,6 @@
 <translation id="1292571435393770077">ट्रे १६</translation>
 <translation id="1292701964462482250">"तपाईंको कम्प्युटरमा रहेको सफ्टवेयरले Chrome लाई सुरक्षित रूपमा वेबमा जडान हुनबाट रोकिरहेको छ" (Windows कम्प्युटरहरू मात्र)</translation>
 <translation id="1293797321964802402">Envelope 9 x 11 in</translation>
-<translation id="1294154142200295408">कमान्ड लाइनसम्बन्धी विविधताहरू</translation>
 <translation id="129553762522093515">हालैमा बन्द गरिएको</translation>
 <translation id="1296930489679394997">बिक्री</translation>
 <translation id="1301227606947843452">Legal Extra</translation>
@@ -1405,6 +1404,7 @@
 <translation id="3566021033012934673">तपाईंको जडान निजी होइन</translation>
 <translation id="3566336457819493938">२१५ x ३१५ मिलिमिटर</translation>
 <translation id="3566649245868131295">स्वास्थ्य र चिकित्सासम्बन्धी जागिरहरू</translation>
+<translation id="3566681680543111735">भेरिएसन स्ट्रिङ कपी गर्नुहोस्</translation>
 <translation id="3567778190852720481">संस्थागत खातामार्फत सहभागी हुन सकिँदैन (संस्थागत खाता प्रयोग गर्न मिल्दैन)।</translation>
 <translation id="3567901620846335314">१०० x १५० मिलिमिटर</translation>
 <translation id="3568886473829759308">व्यावसायिक प्रतिष्ठानले उपलब्ध गराएका जानकारी, स्रोत वा सेवाहरूसम्बन्धी जानकारी हेर्न वेबसाइटमा जानुहोस्।</translation>
@@ -3131,6 +3131,7 @@
 <translation id="6710648923880003133">भरपर्दो पासवर्ड सिफारिस गर्नुहोस्</translation>
 <translation id="671076103358959139">दर्ता टोकन:</translation>
 <translation id="6711464428925977395">प्रोक्सी सर्भरमा केही त्रुटि वा ठेगाना गलत छ।</translation>
+<translation id="6711700233707023861">भेरिएसन स्ट्रिङ क्लिपबोर्डमा कपी गरियो</translation>
 <translation id="6716039223770814796"><ph name="COMPARE_SET_NAME" /> को तुलना गर्नुहोस् · <ph name="ITEMS" /> वटा सामग्री</translation>
 <translation id="6716672519412350405"><ph name="URL" /> ले तपाईं वरपरको ठाउँको 3D नक्सा बनाउन र क्यामेराको अवस्था पत्ता लगाउन चाहन्छ</translation>
 <translation id="6717692133381953670"><ph name="DEVICE_NAME" /> बाट पठाइएको ट्याब</translation>
@@ -3583,7 +3584,6 @@
 <translation id="7535087603100972091">मान</translation>
 <translation id="753556296624075801">Google ले सञ्चालन गरेको</translation>
 <translation id="7537536606612762813">अनिवार्य</translation>
-<translation id="7542995811387359312">स्वचालित क्रेडिट कार्ड भरणलाई अक्षम बनाइएको छ किनभने यो फारामले सुरक्षित जडान प्रयोग गर्दैन।</translation>
 <translation id="7543525346216957623">आफ्नो अभिभावकलाई सोध्नुहोस्</translation>
 <translation id="7546409722674205727">‍<ph name="APP_NAME" /> सुरु गरिँदै छ</translation>
 <translation id="7548892272833184391">जडानसम्बन्धी त्रुटिहरू ठिक गर्नुहोस्</translation>
@@ -4100,7 +4100,6 @@
 <translation id="8460854335417802511">यो सुविधा अन गर्नुहोस्</translation>
 <translation id="8461694314515752532">सिंक गरिएको डेटालाई तपाईंको आफ्नै सिंक पासफ्रेजमार्फत इन्क्रिप्ट गर्नुहोस्</translation>
 <translation id="8461973047386722744">कुनै पनि पासवर्ड भेटिएन</translation>
-<translation id="8466379296835108687">{COUNT,plural, =1{१ क्रेडिट कार्ड}other{# क्रेडिट कार्डहरू}}</translation>
 <translation id="8467494337615822642">सेटिङमा रहेको Chrome को सुरक्षा जाँच पेजमा जानुहोस्</translation>
 <translation id="8468358362970107653">Envelope C3</translation>
 <translation id="8469428721212363950">खुद्रा व्यापार</translation>

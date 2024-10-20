@@ -83,6 +83,10 @@ extern const base::FeatureParam<double> kMlAnswererMinScore;
 // development.
 extern const base::FeatureParam<int> kMockAnswererDelayMS;
 
+// Specifies the answer status to use for the mock answerer for local
+// development.
+extern const base::FeatureParam<int> kMockAnswererStatus;
+
 // This can be used to bypass IsAnswererUseAllowed checks. It's necessary for
 // testing and development but should remain false in real configurations.
 extern const base::FeatureParam<bool> kForceAnswererUseAllowed;
@@ -98,6 +102,10 @@ extern const base::FeatureParam<bool> kOmniboxScoped;
 // Whether history embedding results should be shown in the omnibox when not in
 // the '@history' scope. If true, behaves as if `kOmniboxScoped` is also true.
 extern const base::FeatureParam<bool> kOmniboxUnscoped;
+
+// Whether history embedding answers should be shown in the omnibox when in the
+// '@history' scope. No-op if `kOmniboxScoped` is false.
+extern const base::FeatureParam<bool> kAnswersInOmniboxScoped;
 
 // The maximum number of embeddings to submit to the primary (ML) embedder
 // in a single batch via the scheduling embedder.
@@ -149,12 +157,14 @@ extern const base::FeatureParam<bool> kEnableSidePanel;
 extern const base::FeatureParam<int> kMaxAnswererContextUrlCount;
 
 // These control score boosting from passage text word matching.
+// See comments for `SearchParams` struct for more details about each value.
 extern const base::FeatureParam<double> kWordMatchMinEmbeddingScore;
 extern const base::FeatureParam<int> kWordMatchMinTermLength;
 extern const base::FeatureParam<double> kWordMatchScoreBoostFactor;
 extern const base::FeatureParam<int> kWordMatchLimit;
 extern const base::FeatureParam<int> kWordMatchSmoothingFactor;
 extern const base::FeatureParam<int> kWordMatchMaxTermCount;
+extern const base::FeatureParam<double> kWordMatchRequiredTermRatio;
 
 // Whether to include scroll to text fragment directives with answer citations.
 extern const base::FeatureParam<bool> kScrollTagsEnabled;

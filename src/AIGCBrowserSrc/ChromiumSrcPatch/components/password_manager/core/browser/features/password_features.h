@@ -34,17 +34,6 @@ BASE_DECLARE_FEATURE(kAutofillPasswordUserPerceptionSurvey);
 BASE_DECLARE_FEATURE(kWebAuthnUsePasskeyFromAnotherDeviceInContextMenu);
 #endif  // !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_IOS)
 
-#if BUILDFLAG(IS_WIN)
-// OS authentication will use IUserConsentVerifierInterop api to trigger Windows
-// Hello authentication. This api allows us to specify explicitly to which
-// window, the OS prompt should attach.
-BASE_DECLARE_FEATURE(kAuthenticateUsingUserConsentVerifierInteropApi);
-
-// OS authentication will use UserConsentVerifier api to trigger Windows Hello
-// authentication.
-BASE_DECLARE_FEATURE(kAuthenticateUsingUserConsentVerifierApi);
-#endif  // BUILDFLAG(IS_WIN)
-
 // Enables Biometrics for the Touch To Fill feature. This only effects Android.
 BASE_DECLARE_FEATURE(kBiometricTouchToFill);
 
@@ -80,6 +69,9 @@ BASE_DECLARE_FEATURE(kIOSProactivePasswordGenerationBottomSheet);
 
 // Enables saving enterprise password hashes to a local state preference.
 BASE_DECLARE_FEATURE(kLocalStateEnterprisePasswordHashes);
+
+// Enables running the clientside form classifier to parse password forms.
+BASE_DECLARE_FEATURE(kPasswordFormClientsideClassifier);
 
 // Enables offering credentials for filling across grouped domains.
 BASE_DECLARE_FEATURE(kPasswordFormGroupedAffiliations);

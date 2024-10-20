@@ -649,7 +649,6 @@
 <translation id="1465827627707997754">Պիցցայի կտոր</translation>
 <translation id="1467005863208369884">Այս ֆայլը չի կարող ստուգվել, քանի որ Անվտանգ դիտարկումն անջատված է</translation>
 <translation id="1467432559032391204">Ձախ</translation>
-<translation id="1468368115497843240">Այցելությունների պատմությունը և այս պրոֆիլին առնչվող պահված աշխատասեղաններն ընդմիշտ կջնջվեն այս սարքից։ Այս պրոֆիլի Google հաշիվները կարող են օգտագործվել ձեր <ph name="DEVICE_TYPE" /> սարքի այլ հավելվածների կողմից։ Հաշիվները հեռացնելու համար անցեք <ph name="BEGIN_LINK" /><ph name="SETTING_SECTION" /> &gt; <ph name="ACCOUNTS_SECTION" /><ph name="END_LINK" />։</translation>
 <translation id="1468571364034902819">Հնարավոր չէ օգտագործել այս պրոֆիլը</translation>
 <translation id="1469702495092129863">Ստուգեք ձեր խոսափողը</translation>
 <translation id="1470084204649225129">{NUM_TABS,plural, =1{Ավելացնել ներդիր նոր խմբում}one{Ավելացնել ներդիրներ նոր խմբում}other{Ավելացնել ներդիրներ նոր խմբում}}</translation>
@@ -1512,7 +1511,6 @@
 <translation id="2053312383184521053">Անգործուն վիճակի տվյալներ</translation>
 <translation id="205560151218727633">Google Օգնականի լոգո</translation>
 <translation id="2058456167109518507">Հայտնաբերվել է սարք</translation>
-<translation id="2058581283817163201">Հաստատեք այս հեռախոսով</translation>
 <translation id="2059913712424898428">Ժամային գոտի</translation>
 <translation id="2060375639911876205">Հեռացնել eSIM-ի պրոֆիլը</translation>
 <translation id="2061366302742593739">Ցուցադրելու ոչինչ չկա</translation>
@@ -3158,7 +3156,6 @@
 <translation id="3241680850019875542">Ընտրեք արմատային գրացուցակը՝ փաթեթավորվող ընդլայնման համար: Ընդլայնումը թարմացնելու համար ընտրեք նաև մասնավոր բանալու ֆայլը:</translation>
 <translation id="3241810535741601486">Այս փոփոխությունը հնարավոր չէ հետարկել։ Ընդլայնված թարմացումները կիրառվում են այս սարքի բոլոր օգտատերերի համար։ <ph name="LINK_START" />Իմանալ ավելին<ph name="LINK_END" /></translation>
 <translation id="3242289508736283383">«Kiosk_only» մանիֆեստի հատկանիշով հավելվածը պետք է տեղադրվի ChromeOS-ի կրպակի ռեժիմում</translation>
-<translation id="3242665648857227438">Այս պրոֆիլի համար օգտագործվում են ChromeOS-ի պրոքսի սերվերի կարգավորումները</translation>
 <translation id="3243017971870859287">Կարդալ ChromeOS Flex սարքի և բաղադրիչների սերիական համարները</translation>
 <translation id="324366796737464147">Աղմուկի նվազեցում</translation>
 <translation id="3244294424315804309">Անջատել ձայնը</translation>
@@ -4467,7 +4464,6 @@
 <translation id="4168651806173792090"><ph name="NETWORK_NAME" /> (քարտի համարի վերջին թվերը՝ <ph name="LAST_FOUR_DIGITS" />)</translation>
 <translation id="4169535189173047238">Չեղարկել</translation>
 <translation id="4170314459383239649">Մաքրել ելնելիս</translation>
-<translation id="417096670996204801">Ընտրեք պրոֆիլ</translation>
 <translation id="4175137578744761569">Բաց մանուշակագույն և սպիտակ</translation>
 <translation id="4176463684765177261">Անջատված է</translation>
 <translation id="4176864026061939326">Սա կառավարվող սարք է։ Ձեր սարքի ադմինիստրատորին անհրաժեշտ է նոր պրոֆիլ <ph name="USER_EMAIL_ADDRESS" /> հաշվի համար։</translation>
@@ -4491,7 +4487,6 @@
     <ph name="BEGIN_PARAGRAPH2" />Գեներատիվ արհեստական բանականությունը փորձարկման ու մշակման վաղ փուլում է և ներկայումս ունի սահմանափակ հասանելիություն։<ph name="END_PARAGRAPH2" /></translation>
 <translation id="4193251682249731404">Հավաստագրման վստահելի կենտրոն</translation>
 <translation id="4193575319002689239">Ցույց տալ քարտերը</translation>
-<translation id="4193836101014293726">Չհաջողվեց ջնջել պրոֆիլը</translation>
 <translation id="419427585139779713">Մուտքագրեք վանկերով</translation>
 <translation id="4194570336751258953">Միացնել tap-to-click գործառույթը</translation>
 <translation id="4195001808989442226">Չհաջողվեց բացել Chromebook-ի համար Steam-ը (բետա)</translation>
@@ -4717,7 +4712,6 @@
 <translation id="4360738659108163902">Սեղմել մկնիկի աջ կոճակը</translation>
 <translation id="4361142739114356624">Սպասառուի հավաստագրի մասնավոր բանալին բացակայում է կամ անվավեր է</translation>
 <translation id="4361745360460842907">Բացել որպես ներդիր</translation>
-<translation id="4362675504017386626"><ph name="ACCOUNT_EMAIL" /> հասցեն ձեր <ph name="DEVICE_TYPE" />-ի կանխադրված հաշիվն է</translation>
 <translation id="4363262124589131906">«Իմ դրայվը» պանակի նոր ֆայլերն ավտոմատ կդադարեն համաժամացվել այս Chromebook-ի հետ</translation>
 <translation id="4364327530094270451">Սեխ</translation>
 <translation id="4364567974334641491"><ph name="APP_NAME" /> հավելվածը կիսվում է պատուհանով:</translation>
@@ -4886,7 +4880,6 @@
 <translation id="4486333480498805415">Տեղորոշման ճշգրտություն</translation>
 <translation id="4487489714832036847">Chromebook սարքերում ավանդական ծրագրերի փոխարեն հավելվածներ են օգտագործվում։ Տեղադրեք աշխատանքային, ժամանցային և այլ հավելվածներ։</translation>
 <translation id="4488257340342212116">Թույլատրվում է օգտագործել ձեր տեսախցիկը</translation>
-<translation id="4490086832405043258">Օգտագործել ChromeOS-ի պրոքսի սերվերի կարգավորումներն այս պրոֆիլի համար։</translation>
 <translation id="4490798467014431984">Ընդլայնումներն արգելված են այս կայքում</translation>
 <translation id="449102748655090594">Ներդիրները խմբավորվում են…</translation>
 <translation id="449126573531210296">Գաղտնագրել համաժամացված գաղտնաբառերը Google հաշվի միջոցով</translation>
@@ -5520,7 +5513,6 @@
 <translation id="4946998421534856407">գործարկիչ + վերև սլաք</translation>
 <translation id="4947376546135294974">Տվյալներ կայքից, որն այցելում եք</translation>
 <translation id="4950100687509657457">Ստեղծել պրոֆիլ</translation>
-<translation id="4950993567860689081">Աշխատաշրջանը կառավարվում է ձեր կազմակերպության կողմից։ Ադմինիստրատորները կարող են ջնջել ձեր պրոֆիլը, ինչպես նաև վերահսկել ձեր ցանցի թրաֆիկը։</translation>
 <translation id="495164417696120157">{COUNT,plural, =1{ֆայլ}one{# ֆայլ}other{# ֆայլ}}</translation>
 <translation id="495170559598752135">Գործողություններ</translation>
 <translation id="4951966678293618079">Երբեք չպահել գաղտնաբառեր այս կայքի համար</translation>
@@ -5979,7 +5971,6 @@
 <translation id="5294068591166433464">Եթե կայքը փորձում է գողանալ ձեր գաղտնաբառը, կամ երբ վնասակար ֆայլ եք ներբեռնում, Chrome-ը կարող է նաև ուղարկել URL-ն ու էջի բովանդակությունը Google-ին</translation>
 <translation id="5294097441441645251">Պետք է սկսվի փոքրատառով կամ ընդգծման նշանով</translation>
 <translation id="5294618183559481278">Ձեր <ph name="DEVICE_TYPE" /> սարքն օգտագործում է ներկառուցված տվիչ՝ էկրանի դիմաց հայտնված կողմնակի մարդկանց ներկայությունը հայտնաբերելու համար։ Տվիչի բոլոր տվյալները մշակվում են անմիջապես ձեր սարքում, ինչից հետո հեռացվում են։ Դրանք երբեք չեն ուղարկվում Google-ին։ <ph name="LINK_BEGIN" />Իմանալ ավելին<ph name="LINK_END" /></translation>
-<translation id="5295188371713072404">Ընդլայնումները կարող են այս կայքի հասանելիություն խնդրել</translation>
 <translation id="5295349205180144885">Ներդիրների խմբի անվանումը՝ <ph name="NAME" /></translation>
 <translation id="5296350763804564124">Լսեք ձայնային ուղեկցումը, որպեսզի կարողանաք օգտագործել սարքն առանց էկրանին նայելու։ Բրայլյան գրերի աջակցումը հասանելի է միացված սարքի հետ։</translation>
 <translation id="5296536303670088158">Chrome-ի ամենահուսալի անվտանգության համակարգը պաշտպանում է ձեզ վնասաբեր կայքերից</translation>
@@ -6797,7 +6788,6 @@
 <translation id="5906732635754427568">Այս հավելվածին առնչվող տվյալները կհեռացվեն այս սարքից:</translation>
 <translation id="5906974869830879618">Մուտքագրեք PIN կոդը</translation>
 <translation id="5908474332780919512">Գործարկել հավելվածը մուտք գործելիս</translation>
-<translation id="5909379458939060601">Ջնջե՞լ այս պրոֆիլը և այցելությունների պատմությունը</translation>
 <translation id="5910363049092958439">Պա&amp;հել պատկերը որպես…</translation>
 <translation id="5910726859585389579"><ph name="DEVICE_TYPE" /> սարքը միացած չէ ինտերնետին</translation>
 <translation id="5911030830365207728">Google Translate</translation>
@@ -6862,7 +6852,6 @@
 <translation id="5951303645598168883"><ph name="ORIGIN" /> կայքն ուզում է օգտագործել տեղական տառատեսակներ</translation>
 <translation id="5951624318208955736">Մոնիտոր</translation>
 <translation id="5952020381407136867">հպահարթակ</translation>
-<translation id="595262438437661818">Որևէ ընդլայնման հարկավոր չէ այս կայքի հասանելիություն</translation>
 <translation id="5953211687820750364">Այս ցուցակի նկատմամբ գործում են <ph name="BEGIN_LINK1" />{BrowserSwitcherExternalGreylistUrl}<ph name="END_LINK1" /> և <ph name="BEGIN_LINK2" />{BrowserSwitcherUrlGreylist}<ph name="END_LINK2" /> կանոնները։</translation>
 <translation id="5955282598396714173">Ձեր գաղտնաբառի ժամկետը սպառվել է։ Գաղտնաբառը փոխելու համար դուրս եկեք հաշվից ու նորից մուտք գործեք։</translation>
 <translation id="5955304353782037793">app</translation>
@@ -8895,7 +8884,6 @@
 <translation id="7450761244949417357">Բացվում է <ph name="ALTERNATIVE_BROWSER_NAME" /> դիտարկիչով</translation>
 <translation id="7450926666485653189">Ուղարկում է URL-ի քողարկված մասը Google-ին գաղտնիության սերվերի միջոցով, որը թաքցնում է ձեր IP հասցեն</translation>
 <translation id="7453008956351770337">Ընտրելով այս տպիչը՝ դուք հետևյալ ընդլայնմանը թույլատրում եք մուտք գործել ձեր տպիչ՝</translation>
-<translation id="7453467225369441013">Դուք դուրս կգրվեք կայքերի մեծ մասից, բայց կմնաք Google հաշվում:</translation>
 <translation id="7454548535253569100">Պորտալ՝ <ph name="SUBFRAME_SITE" /></translation>
 <translation id="7454744349230173024">Ձեր կազմակերպությունն անջատել է գաղտնաբառերի պահման գործառույթը</translation>
 <translation id="7455730275746867420">Կառավարել լրացուցիչ կոնտեյներներ</translation>
@@ -8977,7 +8965,6 @@
 <translation id="7508707215237589321">Ջնջե՞լ «<ph name="CERT_NAME" />» հավաստագիրը</translation>
 <translation id="7508971277215079477">{MULTI_GROUP_TAB_COUNT,plural, =0{Փակե՞լ ներդիրը և ջնջել խումբը}=1{Փակե՞լ ներդիրները և ջնջել խումբը}one{Փակե՞լ ներդիրները և ջնջել խումբը}other{Փակե՞լ ներդիրները և ջնջել խմբերը}}</translation>
 <translation id="7509097596023256288">Կառավարման պարամետրերը կարգավորվում են</translation>
-<translation id="7509246181739783082">Հաստատեք ձեր ինքնությունը</translation>
 <translation id="7509539379068593709">Ապատեղադրել հավելվածը</translation>
 <translation id="7514239104543605883">Պատճենել սարքում</translation>
 <translation id="7514365320538308">Ներբեռնել</translation>
@@ -9789,7 +9776,6 @@
 <translation id="80798452873915119">Կայքերը կարող են հայցել պատուհանները բոլոր էկրաններին կառավարելու թույլտվություն</translation>
 <translation id="8080028325999236607">Փակել բոլոր ներդիրները</translation>
 <translation id="808089508890593134">Google</translation>
-<translation id="8081623398548615289">Ձեր աշխատաշրջանը կառավարվում է <ph name="MANAGER_NAME" />-ի կողմից։ Ադմինիստրատորները կարող են ջնջել ձեր պրոֆիլը, ինչպես նաև վերահսկել ձեր ցանցի թրաֆիկը։</translation>
 <translation id="8081989000209387414">Անջատե՞լ ADB վրիպազերծումը</translation>
 <translation id="8082106343289440791">Զուգակցե՞լ «<ph name="DEVICE_NAME" />» սարքի հետ</translation>
 <translation id="8082132721957920509">Ձեր քարտը պահվել է</translation>
@@ -10674,7 +10660,6 @@
 <translation id="8715480913140015283">Ֆոնային ներդիրն օգտագործում է ձեր տեսախցիկը</translation>
 <translation id="8716931980467311658">Ջնջե՞լ բոլոր Լինուքս հավելվածները, ինչպես նաև «Լինուքսի ֆայլեր» պանակի տվյալները <ph name="DEVICE_TYPE" /> սարքից:</translation>
 <translation id="8717864919010420084">Պատճենել հղումը</translation>
-<translation id="8718560545710680911">Հարցրեք այս էջի միջոցով</translation>
 <translation id="8718994464069323380">Հայտնաբերվել է հպէկրան</translation>
 <translation id="8719472795285728850">Ընդլայնման գործողությունների լսում…</translation>
 <translation id="8719665168401479425">Օգտագործել դեմքի շարժումները՝ գործողություններ կատարելու համար</translation>

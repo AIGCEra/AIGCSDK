@@ -495,6 +495,25 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
       assertEquals(21, numChars);
     });
 
+    test('SendsQualityLogOnVisibilityChange', async () => {
+      if (!enableAnswers) {
+        return;
+      }
+      // Remove and re-add element to call connectedCallback again.
+      element.remove();
+      element.inSidePanel = true;
+      document.body.appendChild(element);
+      await flushTasks();
+
+      Object.defineProperty(
+          document, 'visibilityState', {value: 'hidden', writable: true});
+      document.dispatchEvent(new CustomEvent('visibilitychange'));
+      const [clickedIndices, numChars] =
+          await handler.whenCalled('sendQualityLog');
+      assertDeepEquals([], clickedIndices);
+      assertEquals(21, numChars);
+    });
+
     test('ForceFlushesQualityLogOnBeforeUnload', async () => {
       if (!enableAnswers) {
         return;
@@ -837,7 +856,7 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
       const errorEl = element.shadowRoot!.querySelector<HTMLElement>('.answer');
       assertTrue(!!errorEl);
       assertTrue(isVisible(errorEl));
-      assertEquals('Sorry, can\'t help you with that.', errorEl.innerText);
+      assertEquals('Sorry, I can\'t help you with that.', errorEl.innerText);
 
       await updateAnswerStatus(AnswerStatus.kExecutionCanceled);
       assertTrue(isVisible(errorEl));

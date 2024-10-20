@@ -933,7 +933,7 @@ class SiteSettingsHandlerBaseTest : public testing::Test {
   }
 
   void SetupDefaultRelatedWebsiteSets(MockPrivacySandboxService* mock_service) {
-    EXPECT_CALL(*mock_service, GetFirstPartySetOwner(_))
+    EXPECT_CALL(*mock_service, GetRelatedWebsiteSetOwner(_))
         .WillRepeatedly(
             [&](const GURL& url) -> std::optional<net::SchemefulSite> {
               auto related_website_sets = GetTestRelatedWebsiteSets();
@@ -4341,37 +4341,50 @@ TEST_F(SmartCardReaderPermissionsSiteSettingsHandlerTest,
   SmartCardPermissionContext& context =
       SmartCardPermissionContextFactory::GetForProfile(*profile());
 
-  const auto kTestOrigin1 = url::Origin::Create(
+  const auto kTestOrigin0 = url::Origin::Create(
       GURL("isolated-app://"
            "amoiebz32b7o24tilu257xne2yf3nkblkploanxzm7ebeglseqpfeaacai/"));
-  const auto kTestOrigin2 = url::Origin::Create(
-      GURL("isolated-app://"
-           "anayaszofsyqapbofoli7ljxoxkp32qkothweire2o6t7xy6taz6oaacai/"));
+  const auto kTestOrigin1 =
+      url::Origin::Create(GURL("https://www.example.com"));
+  const std::string kTestOrigin1DisplayName = "www.example.com";
 
   const std::string kReader0 = "Reader 0";
   const std::string kReader1 = "Reader 1";
 
-  GrantPersistentReaderPermission(context, kTestOrigin1, kReader0);
+  GrantPersistentReaderPermission(context, kTestOrigin0, kReader0);
+  GrantPersistentReaderPermission(context, kTestOrigin0, kReader1);
   GrantPersistentReaderPermission(context, kTestOrigin1, kReader1);
-  GrantPersistentReaderPermission(context, kTestOrigin2, kReader1);
   context.FlushScheduledSaveSettingsCalls();
 
   handler_->HandleGetSmartCardReaderGrants(
       base::Value::List().Append(kCallbackId));
 
-  EXPECT_EQ(web_ui()->call_data().back()->arg3()->GetList(),
-            base::Value::List()
-                .Append(base::Value::Dict()
-                            .Set(site_settings::kReaderName, kReader0)
-                            .Set(site_settings::kOrigins,
-                                 base::Value::List().Append(
-                                     kTestOrigin1.Serialize())))
-                .Append(base::Value::Dict()
-                            .Set(site_settings::kReaderName, kReader1)
-                            .Set(site_settings::kOrigins,
-                                 base::Value::List()
-                                     .Append(kTestOrigin1.Serialize())
-                                     .Append(kTestOrigin2.Serialize()))));
+  EXPECT_EQ(
+      web_ui()->call_data().back()->arg3()->GetList(),
+      base::Value::List()
+          .Append(base::Value::Dict()
+                      .Set(site_settings::kReaderName, kReader0)
+                      .Set(site_settings::kOrigins,
+                           base::Value::List().Append(
+                               base::Value::Dict()
+                                   .Set(site_settings::kOrigin,
+                                        kTestOrigin0.Serialize())
+                                   .Set(site_settings::kDisplayName,
+                                        kTestOrigin0.Serialize()))))
+          .Append(base::Value::Dict()
+                      .Set(site_settings::kReaderName, kReader1)
+                      .Set(site_settings::kOrigins,
+                           base::Value::List()
+                               .Append(base::Value::Dict()
+                                           .Set(site_settings::kOrigin,
+                                                kTestOrigin0.Serialize())
+                                           .Set(site_settings::kDisplayName,
+                                                kTestOrigin0.Serialize()))
+                               .Append(base::Value::Dict()
+                                           .Set(site_settings::kOrigin,
+                                                kTestOrigin1.Serialize())
+                                           .Set(site_settings::kDisplayName,
+                                                kTestOrigin1DisplayName)))));
 }
 
 TEST_F(SmartCardReaderPermissionsSiteSettingsHandlerTest,
@@ -6518,12 +6531,13 @@ TEST_F(SiteSettingsHandlerTest, HandleGetFormattedBytes) {
 TEST_F(SiteSettingsHandlerTest, HandleGetUsageInfo) {
   SetupDefaultRelatedWebsiteSets(mock_privacy_sandbox_service());
 
-  EXPECT_CALL(*mock_privacy_sandbox_service(), IsPartOfManagedFirstPartySet(_))
+  EXPECT_CALL(*mock_privacy_sandbox_service(),
+              IsPartOfManagedRelatedWebsiteSet(_))
       .Times(1)
       .WillOnce(Return(false));
-  EXPECT_CALL(
-      *mock_privacy_sandbox_service(),
-      IsPartOfManagedFirstPartySet(ConvertEtldToSchemefulSite("example.com")))
+  EXPECT_CALL(*mock_privacy_sandbox_service(),
+              IsPartOfManagedRelatedWebsiteSet(
+                  ConvertEtldToSchemefulSite("example.com")))
       .Times(2)
       .WillRepeatedly(Return(true));
 
@@ -6573,12 +6587,13 @@ TEST_F(SiteSettingsHandlerTest, HandleGetUsageInfo) {
 TEST_F(SiteSettingsHandlerTest, RelatedWebsiteSetsMembership) {
   SetupDefaultRelatedWebsiteSets(mock_privacy_sandbox_service());
 
-  EXPECT_CALL(*mock_privacy_sandbox_service(), IsPartOfManagedFirstPartySet(_))
+  EXPECT_CALL(*mock_privacy_sandbox_service(),
+              IsPartOfManagedRelatedWebsiteSet(_))
       .Times(2)
       .WillRepeatedly(Return(false));
-  EXPECT_CALL(
-      *mock_privacy_sandbox_service(),
-      IsPartOfManagedFirstPartySet(ConvertEtldToSchemefulSite("example.com")))
+  EXPECT_CALL(*mock_privacy_sandbox_service(),
+              IsPartOfManagedRelatedWebsiteSet(
+                  ConvertEtldToSchemefulSite("example.com")))
       .Times(1)
       .WillOnce(Return(true));
 

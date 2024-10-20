@@ -319,7 +319,7 @@ IN_PROC_BROWSER_TEST_F(AttributionInternalsWebUiBrowserTest,
               .SetSourceEventId(std::numeric_limits<uint64_t>::max())
               .SetAttributionLogic(StoredSource::AttributionLogic::kNever)
               .SetDebugKey(19)
-              .SetDebugCookieSet(true)
+              .SetCookieBasedDebugAllowed(true)
               .SetDestinationSites({
                   net::SchemefulSite::Deserialize("https://a.test"),
                   net::SchemefulSite::Deserialize("https://b.test"),
@@ -458,24 +458,24 @@ IN_PROC_BROWSER_TEST_F(AttributionInternalsWebUiBrowserTest,
         tds[11]?.innerText === 'true' &&
         // Attribution Scopes Data
         tds[12]?.innerText === '{\n   "limit": 3,\n   "max_event_states": 3,\n   "values": [ "a" ]\n}\n' &&
-        // Epsilon
-        tds[13]?.innerText === '14.000' &&
-        // Trigger Data Matching
-        tds[14]?.innerText === 'modulus' &&
-        // Event-Level Dedup Keys
-        tds[16]?.children[0]?.children[0]?.innerText === '13' &&
-        tds[16]?.children[0]?.children[1]?.innerText === '17' &&
-        // Remaining Aggregatable Attribution Budget
-        tds[18]?.innerText === '1300 / 65536' &&
-        // Aggregation Keys
-        tds[19]?.innerText === '{\n "a": "0x1"\n}' &&
-        // Aggregatable Dedup Keys
-        tds[20]?.children[0]?.children[0]?.innerText === '14' &&
-        tds[20]?.children[0]?.children[1]?.innerText === '18' &&
         // Remaining Aggregatable Debug Budget
-        tds[21]?.innerText === '100 / 65536' &&
+        tds[13]?.innerText === '100 / 65536' &&
         // Aggregatable Debug Key Piece
-        tds[22]?.innerText === '0xf'
+        tds[14]?.innerText === '0xf' &&
+        // Epsilon
+        tds[15]?.innerText === '14.000' &&
+        // Trigger Data Matching
+        tds[16]?.innerText === 'modulus' &&
+        // Event-Level Dedup Keys
+        tds[18]?.children[0]?.children[0]?.innerText === '13' &&
+        tds[18]?.children[0]?.children[1]?.innerText === '17' &&
+        // Remaining Aggregatable Attribution Budget
+        tds[20]?.innerText === '1300 / 65536' &&
+        // Aggregation Keys
+        tds[21]?.innerText === '{\n "a": "0x1"\n}' &&
+        // Aggregatable Dedup Keys
+        tds[22]?.children[0]?.children[0]?.innerText === '14' &&
+        tds[22]?.children[0]?.children[1]?.innerText === '18'
       ) {
         if (obs) {
           obs.disconnect();
@@ -1140,7 +1140,7 @@ IN_PROC_BROWSER_TEST_F(
 
   std::vector<blink::mojom::AggregatableReportHistogramContribution>
       contributions{blink::mojom::AggregatableReportHistogramContribution(
-          1, 2, /*filtering_id=*/std::nullopt)};
+          /*bucket=*/1, /*value=*/2, /*filtering_id=*/3)};
 
   manager()->NotifyReportSent(
       ReportBuilder(AttributionInfoBuilder().Build(),
@@ -1204,14 +1204,14 @@ IN_PROC_BROWSER_TEST_F(
             table.rows[0].cells[1]?.innerText ===
               'https://report.test/.well-known/attribution-reporting/report-aggregate-attribution' &&
             table.rows[0].cells[0]?.innerText === 'Pending' &&
-            table.rows[0].cells[4]?.innerText === '[ {  "key": "0x1",  "value": 2 }]' &&
+            table.rows[0].cells[4]?.innerText === '[ {  "key": "0x1",  "value": 2,  "filteringId": "3" }]' &&
             table.rows[0].cells[5]?.innerText === 'https://aws.example.test' &&
             table.rows[0].cells[6]?.innerText === 'false' &&
             table.rows[1].cells[0]?.innerText === 'Sent: HTTP 200' &&
             table.rows[2].cells[0]?.innerText === 'Prohibited by browser policy' &&
             table.rows[3].cells[0]?.innerText === 'Dropped due to assembly failure' &&
             table.rows[4].cells[0]?.innerText === 'Network error: ERR_INVALID_REDIRECT' &&
-            table.rows[5].cells[4]?.innerText === '[ {  "key": "0x0",  "value": 0 }]' &&
+            table.rows[5].cells[4]?.innerText === '[ {  "key": "0x0",  "value": 0,  "filteringId": "0" }]' &&
             table.rows[5].cells[6]?.innerText === 'true') {
           if (obs) {
             obs.disconnect();
@@ -1399,7 +1399,7 @@ IN_PROC_BROWSER_TEST_F(AttributionInternalsWebUiBrowserTest, DebugReports) {
       /*is_operation_allowed=*/[]() { return true; },
       StoreSourceResult(SourceBuilder()
                             .SetDebugReporting(true)
-                            .SetDebugCookieSet(true)
+                            .SetCookieBasedDebugAllowed(true)
                             .Build(),
                         /*is_noised=*/false, /*source_time=*/base::Time::Now(),
                         /*destination_limit=*/std::nullopt,

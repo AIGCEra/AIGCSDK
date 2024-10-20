@@ -10,7 +10,6 @@
 #include "build/branding_buildflags.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
-#include "chrome/common/buildflags.h"
 #include "chrome/common/pref_font_webkit_names.h"
 #include "components/compose/buildflags.h"
 #include "components/offline_pages/buildflags/buildflags.h"
@@ -3359,9 +3358,10 @@ inline constexpr char kShelfDefaultPinLayoutRolls[] =
 // Same as kShelfDefaultPinLayoutRolls, but for tablet form factor devices.
 inline constexpr char kShelfDefaultPinLayoutRollsForTabletFormFactor[] =
     "shelf_default_pin_layout_rolls_for_tablet_form_factor";
-// Keeps track of whether a container app was pinned to shelf as a default app,
+// Keeps track of whether the Gemini app was pinned to shelf as a default app,
 // to prevent applying the default pin twice (after the user unpins the app).
-inline constexpr char kShelfContainerAppPinRolls[] =
+// NOTE: The Gemini app was previously referred to as the container app.
+inline constexpr char kShelfGeminiAppPinRolls[] =
     "shelf_container_app_pin_layout_rolls";
 // Keeps track of whether the Mall app was pinned to shelf as a default app,
 // to prevent applying the default pin twice (after the user unpins the app).
@@ -3787,12 +3787,16 @@ inline constexpr char kTabStatsDiscardsProactive[] =
     "tab_stats.discards_proactive";
 inline constexpr char kTabStatsDiscardsSuggested[] =
     "tab_stats.discards_suggested";
+inline constexpr char kTabStatsDiscardsFrozenWithGrowingMemory[] =
+    "tab_stats.discards_frozen";
 inline constexpr char kTabStatsReloadsExternal[] = "tab_stats.reloads_external";
 inline constexpr char kTabStatsReloadsUrgent[] = "tab_stats.reloads_urgent";
 inline constexpr char kTabStatsReloadsProactive[] =
     "tab_stats.reloads_proactive";
 inline constexpr char kTabStatsReloadsSuggested[] =
     "tab_stats.reloads_suggested";
+inline constexpr char kTabStatsReloadsFrozenWithGrowingMemory[] =
+    "tab_stats.reloads_frozen";
 
 // A list of origins (URLs) to treat as "secure origins" for debugging purposes.
 inline constexpr char kUnsafelyTreatInsecureOriginAsSecure[] =

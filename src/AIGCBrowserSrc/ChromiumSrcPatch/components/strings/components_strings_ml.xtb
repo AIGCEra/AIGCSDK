@@ -167,7 +167,6 @@
 <translation id="1292571435393770077">ട്രേ 16</translation>
 <translation id="1292701964462482250">"വെബിലേക്ക് സുരക്ഷിതമായി കണക്‌റ്റ് ചെയ്യുന്നതിൽ നിന്ന് Chrome-നെ നിങ്ങളുടെ കമ്പ്യൂട്ടറിലെ സോഫ്റ്റ്‌വെയർ തടയുന്നു" (Windows കമ്പ്യൂട്ടറുകളിൽ മാത്രം)</translation>
 <translation id="1293797321964802402">Envelope 9 x 11 ഇഞ്ച്</translation>
-<translation id="1294154142200295408">കമാൻഡ്-ലൈൻ വ്യതിയാനങ്ങൾ</translation>
 <translation id="129553762522093515">സമീപകാലത്ത് അടച്ചവ</translation>
 <translation id="1296930489679394997">വിൽപ്പനകൾ</translation>
 <translation id="1301227606947843452">ലീഗൽ എക്‌സ്‌ട്രാ</translation>
@@ -1407,6 +1406,7 @@
 <translation id="3566021033012934673">നിങ്ങളുടെ കണക്ഷൻ സ്വകാര്യമല്ല</translation>
 <translation id="3566336457819493938">215 x 315 ഇഞ്ച്</translation>
 <translation id="3566649245868131295">ആരോഗ്യ മെഡിക്കൽ ജോലികൾ</translation>
+<translation id="3566681680543111735">വേരിയേഷനുകളുടെ സ്ട്രിംഗ് പകർത്തുക</translation>
 <translation id="3567778190852720481">എന്റർപ്രൈസ് അക്കൗണ്ട് ഉപയോഗിച്ച് എൻറോൾ ചെയ്യാനാകുന്നില്ല (എന്റർപ്രൈസ് അക്കൗണ്ട് യോഗ്യമല്ല).</translation>
 <translation id="3567901620846335314">100 x 150 മി.മീ</translation>
 <translation id="3568886473829759308">ബിസിനസ് നൽകുന്ന വിവരങ്ങളും വിഭവങ്ങളും സേവനങ്ങളും കാണാൻ വെബ്‌സെെറ്റ് ആക്‌സസ് ചെയ്യുക.</translation>
@@ -3132,6 +3132,7 @@
 <translation id="6710648923880003133">ശക്തമായ പാസ്‌വേഡ് നിർദ്ദേശിക്കുക</translation>
 <translation id="671076103358959139">എന്‍‌റോള്‍‌മെന്‍റ് ടോക്കണ്‍:</translation>
 <translation id="6711464428925977395">പ്രോക്‌സി സെർവറിൽ എന്തോ പ്രശ്‌നമുണ്ട്, അല്ലെങ്കിൽ വിലാസം തെറ്റാണ്.</translation>
+<translation id="6711700233707023861">വേരിയേഷനുകളുടെ സ്ട്രിംഗ് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</translation>
 <translation id="6716039223770814796"><ph name="COMPARE_SET_NAME" /> താരതമ്യം ചെയ്യുക · <ph name="ITEMS" /> ഇനങ്ങൾ</translation>
 <translation id="6716672519412350405">നിങ്ങളുടെ ചുറ്റുപാടുകളുടെ 3D മാപ്പ് സൃഷ്ടിക്കാനും ക്യാമറയുടെ സ്ഥാനം ട്രാക്ക് ചെയ്യാനും <ph name="URL" /> താല്‍‌പ്പര്യപ്പെടുന്നു</translation>
 <translation id="6717692133381953670"><ph name="DEVICE_NAME" /> എന്നതിൽ നിന്നയച്ച ടാബ്</translation>
@@ -3583,7 +3584,6 @@
 <translation id="7535087603100972091">മൂല്യം</translation>
 <translation id="753556296624075801">Google നൽകുന്നത്</translation>
 <translation id="7537536606612762813">നിർബന്ധിതം</translation>
-<translation id="7542995811387359312">ഈ ഫോം ഒരു സുരക്ഷിത കണക്ഷന്‍ ഉപയോഗിക്കാത്തതിനാല്‍ സ്വപ്രേരിത ക്രെഡിറ്റ് കാര്‍ഡ് പൂരിപ്പിക്കല്‍ പ്രവർത്തനരഹിതമാക്കി</translation>
 <translation id="7543525346216957623">നിങ്ങളുടെ രക്ഷിതാവിനോട്‌ ആവശ്യപ്പെടുക</translation>
 <translation id="7546409722674205727"><ph name="APP_NAME" /> ആരംഭിക്കുന്നു</translation>
 <translation id="7548892272833184391">കണക്ഷൻ പിശകുകൾ പരിഹരിക്കുക</translation>
@@ -4100,7 +4100,6 @@
 <translation id="8460854335417802511">ഇത് ഓണാക്കുക</translation>
 <translation id="8461694314515752532">നിങ്ങളുടെ സമന്വയ പാസ്‌ഫ്രെയ്‌സ് ഉപയോഗിച്ച്, സമന്വയിപ്പിച്ച ഡാറ്റ എൻക്രി‌പ്‌റ്റ് ചെയ്യുക</translation>
 <translation id="8461973047386722744">പാസ്‌വേഡുകളൊന്നും കണ്ടെത്തിയില്ല</translation>
-<translation id="8466379296835108687">{COUNT,plural, =1{ഒരു ക്രെഡിറ്റ് കാർഡ്}other{# ക്രെഡിറ്റ് കാർഡുകൾ}}</translation>
 <translation id="8467494337615822642">ക്രമീകരണത്തിലെ Chrome സുരക്ഷാ പരിശോധനാ പേജിലേക്ക് പോകുക</translation>
 <translation id="8468358362970107653">Envelope C3</translation>
 <translation id="8469428721212363950">ചില്ലറ വ്യാപാരം</translation>

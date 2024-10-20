@@ -31,6 +31,7 @@
 #include "base/process/process_handle.h"
 #include "base/task/single_thread_task_runner.h"
 #include "base/timer/timer.h"
+#include "base/types/optional_ref.h"
 #include "base/unguessable_token.h"
 #include "base/uuid.h"
 #include "build/build_config.h"
@@ -148,7 +149,6 @@ class WebAgentGroupScheduler;
 
 class WeakWrapperResourceLoadInfoNotifier;
 class WebBackgroundResourceFetchAssets;
-class WebComputedAXTree;
 class WebContentDecryptionModule;
 class WebElement;
 class WebLocalFrame;
@@ -250,10 +250,10 @@ class CONTENT_EXPORT RenderFrameImpl
       mojo::PendingAssociatedRemote<blink::mojom::AssociatedInterfaceProvider>
           associated_interface_provider,
       blink::WebView* web_view,
-      const std::optional<blink::FrameToken>& previous_frame_token,
-      const std::optional<blink::FrameToken>& opener_frame_token,
-      const std::optional<blink::FrameToken>& parent_frame_token,
-      const std::optional<blink::FrameToken>& previous_sibling_frame_token,
+      base::optional_ref<const blink::FrameToken> previous_frame_token,
+      base::optional_ref<const blink::FrameToken> opener_frame_token,
+      base::optional_ref<const blink::FrameToken> parent_frame_token,
+      base::optional_ref<const blink::FrameToken> previous_sibling_frame_token,
       const base::UnguessableToken& devtools_frame_token,
       blink::mojom::TreeScopeType tree_scope_type,
       blink::mojom::FrameReplicationStatePtr replicated_state,
@@ -1041,20 +1041,19 @@ class CONTENT_EXPORT RenderFrameImpl
 
   void InitializeMediaStreamDeviceObserver();
 
-  // Called when the RenderFrameImpl is created. This creates and initializes
-  // the WebFrameWidget unless this is a LocalFrame<->LocalFrame swap. Widget
-  // creation maybe deferred until commit for this case.
+  // Called when the RenderFrameImpl is created. This either:
+  // - creates and initializes the WebFrameWidget with a new compositor, i.e.
+  //   the "typical" case or
+  // - stashes the creation params for later use. Experimental mode used only
+  //   for local -> local RenderFrame swaps. Widget creation will be deferred
+  //   until commit; when created, the widget will reuse the previous
+  //   RenderFrame's compositor.
   void MaybeInitializeWidget(mojom::CreateFrameWidgetParamsPtr widget_params);
 
   // Called during a LocalFrame<->LocalFrame swap. This creates and initializes
   // the WebFrameWidget if it was deferred when the RenderFrameImpl was created,
   // see `MaybeInitializeWidget()` above.
-  void EnsureWidgetInitialized();
-
-  // Returns the widget whose compositor should be reused for this widget if
-  // a non-null `previous_frame_token` is provided.
-  blink::WebFrameWidget* PreviousWidgetForLazyCompositorInitialization(
-      const std::optional<blink::FrameToken>& previous_frame_token) const;
+  void InitializeWidgetAtSwap(blink::WebLocalFrame& previous_frame);
 
   // Sends a FrameHostMsg_BeginNavigation to the browser
   void BeginNavigationInternal(std::unique_ptr<blink::WebNavigationInfo> info,
@@ -1180,8 +1179,6 @@ class CONTENT_EXPORT RenderFrameImpl
       mojom::DidCommitProvisionalLoadInterfaceParamsPtr interface_params,
       mojom::DidCommitSameDocumentNavigationParamsPtr same_document_params,
       const std::optional<base::UnguessableToken>& embedding_token);
-
-  blink::WebComputedAXTree* GetOrCreateWebComputedAXTree() override;
 
   std::unique_ptr<blink::WebSocketHandshakeThrottle>
   CreateWebSocketHandshakeThrottle() override;
@@ -1583,10 +1580,6 @@ class CONTENT_EXPORT RenderFrameImpl
   // True if the frame host wants stack traces on JavaScript console messages of
   // kError severity.
   bool want_error_message_stack_trace_ = false;
-
-  // Contains a representation of the accessibility tree stored in content for
-  // use inside of Blink.
-  std::unique_ptr<blink::WebComputedAXTree> computed_ax_tree_;
 
   // Used for tracking a frame's main frame document intersection and
   // replicating it to the browser when it changes.

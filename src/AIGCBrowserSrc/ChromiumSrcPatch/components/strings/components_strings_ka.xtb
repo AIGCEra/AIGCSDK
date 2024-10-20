@@ -167,7 +167,6 @@
 <translation id="1292571435393770077">ლანგარი 16</translation>
 <translation id="1292701964462482250">„თქვენს კომპიუტერზე დაინსტალირებული პროგრამული უზრუნველყოფა ხელს უშლის Chrome-ს ვებზე უსაფრთხოდ წვდომაში“ (მხოლოდ Windows)</translation>
 <translation id="1293797321964802402">კონვერტი 9 x 11 დუიმი</translation>
-<translation id="1294154142200295408">ბრძანებათა სტრიქონის ვარიანტები</translation>
 <translation id="129553762522093515">ბოლოს დახურული</translation>
 <translation id="1296930489679394997">გაყიდვები</translation>
 <translation id="1301227606947843452">Legal Extra</translation>
@@ -1408,6 +1407,7 @@
 <translation id="3566021033012934673">თქვენი კავშირი არ არის პირადი</translation>
 <translation id="3566336457819493938">215 x 315 მმ</translation>
 <translation id="3566649245868131295">ვაკანსიები ჯანდაცვისა და სამედიცინო სფეროში</translation>
+<translation id="3566681680543111735">ვარიანტების ფრაზების კოპირება</translation>
 <translation id="3567778190852720481">კორპორაციული ანგარიშით რეგისტრაცია ვერ ხერხდება (კორპორაციული ანგარიში პირობებთან შეუსაბამოა).</translation>
 <translation id="3567901620846335314">100 x 150 მმ</translation>
 <translation id="3568886473829759308">მიიღეთ წვდომა ვებსაიტზე, კომპანიის მიერ შემოთავაზებული ინფორმაციის, რესურსებისა თუ სერვისების სანახავად.</translation>
@@ -3133,6 +3133,7 @@
 <translation id="6710648923880003133">ძლიერი პაროლის შემოთავაზება</translation>
 <translation id="671076103358959139">რეგისტრაციის ჟეტონი:</translation>
 <translation id="6711464428925977395">პროქსი-სერვერთან დაკავშირებით რაღაც პრობლემაა, ან მისამართი არასწორია.</translation>
+<translation id="6711700233707023861">ვარიანტების ფრაზები დაკოპირებულია გაცვლის ბუფერში</translation>
 <translation id="6716039223770814796">შედარება: <ph name="COMPARE_SET_NAME" /> · <ph name="ITEMS" /> ერთეული</translation>
 <translation id="6716672519412350405"><ph name="URL" /> ითხოვს თქვენი გარემოს 3-განზომილებიანი რუკის შექმნასა და კამერის პოზიციისთვის თვალის მიდევნების ნებართვას</translation>
 <translation id="6717692133381953670"><ph name="DEVICE_NAME" />-იდან გამოგზავნილი ჩანართი</translation>
@@ -3585,7 +3586,6 @@
 <translation id="7535087603100972091">მნიშვნელობა</translation>
 <translation id="753556296624075801">უზრუნველყოფს Google</translation>
 <translation id="7537536606612762813">სავალდებულო</translation>
-<translation id="7542995811387359312">საკრედიტო ბარათის ავტომატურად შევსება გამორთულია, რადგან ეს ფორმა არ იყენებს უსაფრთხო კავშირს.</translation>
 <translation id="7543525346216957623">სთხოვეთ მშობელს</translation>
 <translation id="7546409722674205727">მიმდინარეობს <ph name="APP_NAME" />-ის გაშვება</translation>
 <translation id="7548892272833184391">კავშირის შეცდომების აღმოფხვრა</translation>
@@ -4102,7 +4102,6 @@
 <translation id="8460854335417802511">ჩართვა</translation>
 <translation id="8461694314515752532">სინქრონიზებული მონაცემების დაშიფვრა თქვენი საკუთარი საიდუმლო ფრაზით</translation>
 <translation id="8461973047386722744">პაროლები ვერ მოიძებნა</translation>
-<translation id="8466379296835108687">{COUNT,plural, =1{1 საკრედიტო ბარათი}other{# საკრედიტო ბარათი}}</translation>
 <translation id="8467494337615822642">Chrome-ის უსაფრთხოების შემოწმების გვერდზე გადასვლა პარამეტრებში</translation>
 <translation id="8468358362970107653">კონვერტი C3</translation>
 <translation id="8469428721212363950">საცალო ვაჭრობა</translation>

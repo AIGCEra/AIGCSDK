@@ -29,7 +29,6 @@
 #include "base/functional/callback.h"
 #include "base/i18n/char_iterator.h"
 #include "base/i18n/rtl.h"
-#include "base/i18n/string_search.h"
 #include "base/i18n/time_formatting.h"
 #include "base/logging.h"
 #include "base/memory/raw_ptr.h"
@@ -59,6 +58,7 @@
 #include "pdf/document_layout.h"
 #include "pdf/loader/result_codes.h"
 #include "pdf/loader/url_loader.h"
+#include "pdf/message_util.h"
 #include "pdf/metrics_handler.h"
 #include "pdf/mojom/pdf.mojom.h"
 #include "pdf/paint_manager.h"
@@ -70,6 +70,7 @@
 #include "pdf/pdfium/pdfium_engine.h"
 #include "pdf/pdfium/pdfium_engine_client.h"
 #include "pdf/post_message_receiver.h"
+#include "pdf/text_search.h"
 #include "pdf/ui/document_properties.h"
 #include "pdf/ui/file_name.h"
 #include "pdf/ui/thumbnail.h"
@@ -253,20 +254,6 @@ int ExtractPrintPreviewPageIndex(std::string_view src_url) {
 
 bool IsPreviewingPDF(int print_preview_page_count) {
   return print_preview_page_count == 0;
-}
-
-// Prepares messages from the plugin that reply to messages from the embedder.
-// If the "type" value of `message` is "foo", then the `reply_type` must be
-// "fooReply". The `message` from the embedder must have a "messageId" value
-// that will be copied to the reply message.
-base::Value::Dict PrepareReplyMessage(std::string_view reply_type,
-                                      const base::Value::Dict& message) {
-  DCHECK_EQ(reply_type, *message.FindString("type") + "Reply");
-
-  base::Value::Dict reply;
-  reply.Set("type", reply_type);
-  reply.Set("messageId", *message.FindString("messageId"));
-  return reply;
 }
 
 bool IsSaveDataSizeValid(size_t size) {
@@ -1154,17 +1141,10 @@ v8::Isolate* PdfViewWebPlugin::GetIsolate() {
 }
 
 std::vector<PDFiumEngineClient::SearchStringResult>
-PdfViewWebPlugin::SearchString(const char16_t* string,
-                               const char16_t* term,
+PdfViewWebPlugin::SearchString(const std::u16string& needle,
+                               const std::u16string& haystack,
                                bool case_sensitive) {
-  base::i18n::RepeatingStringSearch searcher(
-      /*find_this=*/term, /*in_this=*/string, case_sensitive);
-  std::vector<SearchStringResult> results;
-  int match_index;
-  int match_length;
-  while (searcher.NextMatchResult(match_index, match_length))
-    results.push_back({.start_index = match_index, .length = match_length});
-  return results;
+  return TextSearch(/*needle=*/needle, /*haystack=*/haystack, case_sensitive);
 }
 
 void PdfViewWebPlugin::DocumentLoadComplete() {
@@ -1467,8 +1447,7 @@ void PdfViewWebPlugin::HandleGetNamedDestinationMessage(
                               ? base::checked_cast<int>(named_destination->page)
                               : -1;
 
-  base::Value::Dict reply =
-      PrepareReplyMessage("getNamedDestinationReply", message);
+  base::Value::Dict reply = PrepareReplyMessage(message);
   reply.Set("pageNumber", page_number);
 
   if (named_destination.has_value() && !named_destination->view.empty()) {
@@ -1490,8 +1469,7 @@ void PdfViewWebPlugin::HandleGetNamedDestinationMessage(
 void PdfViewWebPlugin::HandleGetPageBoundingBoxMessage(
     const base::Value::Dict& message) {
   const int page_index = message.FindInt("page").value();
-  base::Value::Dict reply =
-      PrepareReplyMessage("getPageBoundingBoxReply", message);
+  base::Value::Dict reply = PrepareReplyMessage(message);
 
   PDFiumPage* page = engine_->GetPage(page_index);
   CHECK(page);
@@ -1521,8 +1499,7 @@ void PdfViewWebPlugin::HandleGetSelectedTextMessage(
   std::string selected_text;
   base::RemoveChars(engine_->GetSelectedText(), "\r", &selected_text);
 
-  base::Value::Dict reply =
-      PrepareReplyMessage("getSelectedTextReply", message);
+  base::Value::Dict reply = PrepareReplyMessage(message);
   reply.Set("selectedText", selected_text);
   client_->PostMessage(std::move(reply));
 }
@@ -1530,7 +1507,7 @@ void PdfViewWebPlugin::HandleGetSelectedTextMessage(
 void PdfViewWebPlugin::HandleGetThumbnailMessage(
     const base::Value::Dict& message) {
   const int page_index = message.FindInt("pageIndex").value();
-  base::Value::Dict reply = PrepareReplyMessage("getThumbnailReply", message);
+  base::Value::Dict reply = PrepareReplyMessage(message);
 
   engine_->RequestThumbnail(
       page_index, device_scale_,
@@ -1568,7 +1545,7 @@ void PdfViewWebPlugin::HandleSaveAttachmentMessage(
   base::Value data_to_save(
       IsSaveDataSizeValid(data.size()) ? data : std::vector<uint8_t>());
 
-  base::Value::Dict reply = PrepareReplyMessage("saveAttachmentReply", message);
+  base::Value::Dict reply = PrepareReplyMessage(message);
   reply.Set("dataToSave", std::move(data_to_save));
   client_->PostMessage(std::move(reply));
 }
@@ -2176,8 +2153,15 @@ void PdfViewWebPlugin::OnViewportChanged(
   const gfx::Size new_image_size =
       PaintManager::GetNewContextSize(old_image_size, plugin_rect_.size());
   if (new_image_size != old_image_size) {
-    image_data_.allocPixels(
-        SkImageInfo::MakeN32Premul(gfx::SizeToSkISize(new_image_size)));
+    SkAlphaType alpha_type;
+    if (base::FeatureList::IsEnabled(
+            features::kPdfPaintManagerDrawsBackground)) {
+      alpha_type = kUnpremul_SkAlphaType;
+    } else {
+      alpha_type = kPremul_SkAlphaType;
+    }
+    image_data_.allocPixels(SkImageInfo::MakeN32(
+        new_image_size.width(), new_image_size.height(), alpha_type));
     first_paint_ = true;
   }
 

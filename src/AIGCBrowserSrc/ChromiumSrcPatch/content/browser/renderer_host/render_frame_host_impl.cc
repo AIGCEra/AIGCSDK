@@ -260,6 +260,7 @@
 #include "third_party/blink/public/common/storage_key/storage_key.h"
 #include "third_party/blink/public/mojom/back_forward_cache_not_restored_reasons.mojom.h"
 #include "third_party/blink/public/mojom/broadcastchannel/broadcast_channel.mojom.h"
+#include "third_party/blink/public/mojom/confidence_level.mojom.h"
 #include "third_party/blink/public/mojom/devtools/inspector_issue.mojom.h"
 #include "third_party/blink/public/mojom/frame/frame.mojom.h"
 #include "third_party/blink/public/mojom/frame/frame_owner_properties.mojom.h"
@@ -4057,11 +4058,11 @@ bool RenderFrameHostImpl::CreateRenderFrame(
                 previous_rfh->GetFrameSize().value_or(gfx::Size()), 1.f / dsf);
       }
 
-      if (frame_tree_node_->current_frame_host()->ShouldReuseCompositing(
-              *GetSiteInstance())) {
+      params->widget_params->reuse_compositor =
+          frame_tree_node_->current_frame_host()->ShouldReuseCompositing(
+              *GetSiteInstance());
+      if (params->widget_params->reuse_compositor) {
         waiting_for_renderer_widget_creation_after_commit_ = true;
-        params->widget_params->previous_frame_token_for_compositor_reuse =
-            previous_rfh->GetFrameToken();
       }
     }
   }
@@ -7667,6 +7668,13 @@ void RenderFrameHostImpl::DraggableRegionsChanged(
   delegate_->DraggableRegionsChanged(std::move(regions));
 }
 
+void RenderFrameHostImpl::NotifyDocumentInteractive() {
+  if (IsInPrimaryMainFrame()) {
+    GetAssociatedLocalMainFrame()->FinalizeNavigationConfidence(
+        0.0, blink::mojom::ConfidenceLevel::kHigh);
+  }
+}
+
 void RenderFrameHostImpl::RegisterProtocolHandler(const std::string& scheme,
                                                   const GURL& url,
                                                   bool user_gesture) {
@@ -9835,13 +9843,14 @@ void RenderFrameHostImpl::MaybeSendFencedFrameAutomaticReportingBeacon(
   // when they are served using the `Allow-Fenced-Frame-Automatic-Beacons=true`
   // HTTP response header. A cross-origin document can only opt in through the
   // header.
-  std::string allow;
   const bool initiator_allows_fenced_frame_automatic_beacons =
       initiator_rfh->GetLastResponseHead() &&
-      initiator_rfh->GetLastResponseHead()->headers &&
-      initiator_rfh->GetLastResponseHead()->headers->GetNormalizedHeader(
-          "Allow-Fenced-Frame-Automatic-Beacons", &allow) &&
-      base::EqualsCaseInsensitiveASCII(allow, "true");
+      initiator_rfh->GetLastResponseHead()->headers && [&]() -> bool {
+    std::optional<std::string> allow =
+        initiator_rfh->GetLastResponseHead()->headers->GetNormalizedHeader(
+            "Allow-Fenced-Frame-Automatic-Beacons");
+    return allow && base::EqualsCaseInsensitiveASCII(*allow, "true");
+  }();
 
   // If there is no automatic beacon declared and no opt-in through a header,
   // don't send an automatic beacon.
@@ -10681,7 +10690,8 @@ void RenderFrameHostImpl::HandleAXEvents(
 
   // A renderer should never send an accessibility update before web
   // accessibility is enabled.
-  if (!accessibility_reset_token_) {
+  if (!accessibility_reset_token_ &&
+      reset_token != kAccessibilityResetTokenForTesting) {
     std::move(report_bad_message_callback).Run(
         "Unexpected accessibility message.");
     return;
@@ -10690,7 +10700,8 @@ void RenderFrameHostImpl::HandleAXEvents(
   // Don't process this IPC if either we're waiting on a reset and this IPC
   // doesn't have the matching token ID.
   // The token prevents obsolete data from being processed.
-  if (*accessibility_reset_token_ != reset_token) {
+  if (*accessibility_reset_token_ != reset_token &&
+      reset_token != kAccessibilityResetTokenForTesting) {
     DVLOG(1) << "Ignoring obsolete accessibility data.";
     return;
   }
@@ -10811,13 +10822,15 @@ void RenderFrameHostImpl::HandleAXLocationChanges(
 
   // A renderer should never send an accessibility update before web
   // accessibility is enabled.
-  if (!accessibility_reset_token_) {
+  if (!accessibility_reset_token_ &&
+      reset_token != kAccessibilityResetTokenForTesting) {
     std::move(report_bad_message_callback).Run(
         "Unexpected accessibility message.");
     return;
   }
 
-  if (*accessibility_reset_token_ != reset_token) {
+  if (*accessibility_reset_token_ != reset_token &&
+      reset_token != kAccessibilityResetTokenForTesting) {
     DVLOG(1) << "Ignoring obsolete accessibility data.";
     return;
   }
@@ -12176,10 +12189,9 @@ void RenderFrameHostImpl::AddResourceTimingEntryForFailedSubframeNavigation(
     const network::URLLoaderCompletionStatus& completion_status) {
   uint32_t status_code = 0;
   std::string mime_type;
-  std::string normalized_server_timing;
-
-  response_head->headers->GetNormalizedHeader("Server-Timing",
-                                              &normalized_server_timing);
+  std::string normalized_server_timing =
+      response_head->headers->GetNormalizedHeader("Server-Timing")
+          .value_or(std::string());
 
   if (allow_response_details) {
     status_code = response_head->headers->response_code();
@@ -13811,25 +13823,6 @@ void RenderFrameHostImpl::GetPushMessaging(
   }
 
   push_messaging_manager_->AddPushMessagingReceiver(std::move(receiver));
-}
-
-void RenderFrameHostImpl::GetVirtualAuthenticatorManager(
-    mojo::PendingReceiver<blink::test::mojom::VirtualAuthenticatorManager>
-        receiver) {
-#if !BUILDFLAG(IS_ANDROID)
-  // VirtualAuthenticatorManagerImpl is enabled at the frame level. Inactive
-  // document are detached. They don't have a frame anymore, so they can't be
-  // used to enable this test-only feature.
-  if (!IsActive()) {
-    return;
-  }
-
-  if (base::CommandLine::ForCurrentProcess()->HasSwitch(
-          switches::kEnableWebAuthDeprecatedMojoTestingApi)) {
-    CHECK(owner_);
-    owner_->GetVirtualAuthenticatorManager(std::move(receiver));
-  }
-#endif  // !BUILDFLAG(IS_ANDROID)
 }
 
 bool IsInitialSynchronousAboutBlankCommit(const GURL& url,

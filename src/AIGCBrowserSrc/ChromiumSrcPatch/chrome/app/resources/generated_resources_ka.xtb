@@ -647,7 +647,6 @@
 <translation id="1465827627707997754">პიცის ნაჭერი</translation>
 <translation id="1467005863208369884">ამ ფაილის დადასტურება ვერ მოხერხდება, რადგან Safe Browsing გამორთულია</translation>
 <translation id="1467432559032391204">მარცხენა</translation>
-<translation id="1468368115497843240">ეს მოქმედება ამ მოწყობილობიდან სამუდამოდ წაშლის ვების დათვალიერების მონაცემებსა და შენახულ სამუშაო მაგიდებს, რომლებიც დაკავშირებულია ამ პროფილთან. ამ პროფილში არსებული Google ანგარიშები, შესაძლოა, სხვა აპების მიერ გამოიყენებოდეს თქვენს <ph name="DEVICE_TYPE" />-ზე. ამ ანგარიშების ამოსაშლელად გადადით აქ: <ph name="BEGIN_LINK" /><ph name="SETTING_SECTION" /> &gt; <ph name="ACCOUNTS_SECTION" /><ph name="END_LINK" />.</translation>
 <translation id="1468571364034902819">ამ პროფილის გამოყენება ვერ მოხერხდება</translation>
 <translation id="1469702495092129863">შეამოწმეთ მიკროფონი</translation>
 <translation id="1470084204649225129">{NUM_TABS,plural, =1{ჩანართის დამატება ახალ ჯგუფში}other{ჩანართების დამატება ახალ ჯგუფში}}</translation>
@@ -1510,7 +1509,6 @@
 <translation id="2053312383184521053">უმოქმედო მდგომარეობის მონაცემები</translation>
 <translation id="205560151218727633">Google ასისტენტის ლოგო</translation>
 <translation id="2058456167109518507">აღმოჩენილია მოწყობილობა</translation>
-<translation id="2058581283817163201">ამ ტელეფონით დადასტურება</translation>
 <translation id="2059913712424898428">სასაათო სარტყელი</translation>
 <translation id="2060375639911876205">eSIM პროფილის წაშლა</translation>
 <translation id="2061366302742593739">საჩვენებელი არაფერია</translation>
@@ -3158,7 +3156,6 @@
 <translation id="3241680850019875542">აირჩიეთ გაფართოების ძირითადი დირექტორია შეფუთვისთვის. გაფართოების განსაახლებლად, აირჩიეთ პირადი გასაღების ფაილი ხელახლა გამოსაყენებლად.</translation>
 <translation id="3241810535741601486">ეს ცვლილება სამუდამოა და მას უკან ვეღარ დააბრუნებთ. გაფართოებული განახლებები ვრცელდება ამ მოწყობილობის ყველა მომხმარებელზე. <ph name="LINK_START" />შეიტყვეთ მეტი<ph name="LINK_END" /></translation>
 <translation id="3242289508736283383">აპი, რომლის მანიფესტის ატრიბუტიცაა „kiosk_only“, უნდა დაინსტალირდეს ChromeOS-ის კიოსკის რეჟიმში</translation>
-<translation id="3242665648857227438">ეს პროფილი იყენებს ChromeOS პროქსი-სერვერის პარამეტრებს.</translation>
 <translation id="3243017971870859287">ChromeOS Flex მოწყობილობისა და კომპონენტების სერიული ნომრების წაკითხვა</translation>
 <translation id="324366796737464147">ხმაურის შემცირება</translation>
 <translation id="3244294424315804309">ხმის დადუმების გაგრძელება</translation>
@@ -4469,7 +4466,6 @@
 <translation id="4168651806173792090"><ph name="NETWORK_NAME" />, რომელიც მთავრდება <ph name="LAST_FOUR_DIGITS" />-ით</translation>
 <translation id="4169535189173047238">აკრძალვა</translation>
 <translation id="4170314459383239649">გასუფთავება გასვლისას</translation>
-<translation id="417096670996204801">აირჩიეთ პროფილი</translation>
 <translation id="4175137578744761569">ღია მეწამული და თეთრი</translation>
 <translation id="4176463684765177261">გამორთული</translation>
 <translation id="4176864026061939326">ეს მოწყობილობა მართულია. მოწყობილობის ადმინისტრატორი ითხოვს ახალ პროფილს ანგარიშისთვის <ph name="USER_EMAIL_ADDRESS" />.</translation>
@@ -4493,7 +4489,6 @@
     <ph name="BEGIN_PARAGRAPH2" />გენერაციული ხელოვნური ინტელექტი ექსპერიმენტული ფუნქციაა, რომელიც შემუშავების ადრეულ სტადიებზეა, ამიტომ მისი ხელმისაწვდომობა შეზღუდულია.<ph name="END_PARAGRAPH2" /></translation>
 <translation id="4193251682249731404">სანდო CA</translation>
 <translation id="4193575319002689239">ბარათების ჩვენება</translation>
-<translation id="4193836101014293726">ამ პროფილის წაშლა ვერ ხერხდება</translation>
 <translation id="419427585139779713">თითო ჯერზე თითო მარცვალი უნდა შეიყვანოთ</translation>
 <translation id="4194570336751258953">ჩართე დაჭერა, რათა დააწკაპუნო</translation>
 <translation id="4195001808989442226">Steam for Chromebook (ბეტა) ვერ გაიხსნა.</translation>
@@ -4719,7 +4714,6 @@
 <translation id="4360738659108163902">მაუსზე მარჯვენა დაწკაპუნება</translation>
 <translation id="4361142739114356624">ამ კლიენტის სერტიფიკატს აკლია პირადი გასაღები, ან ის არასწორია</translation>
 <translation id="4361745360460842907">გახსენით როგორც ჩანართი</translation>
-<translation id="4362675504017386626"><ph name="ACCOUNT_EMAIL" /> ნაგულისხმევი ანგარიშია თქვენს <ph name="DEVICE_TYPE" />-ზე</translation>
 <translation id="4363262124589131906">„ჩემი Drive“-იდან ახალი ფაილები აღარ იქნება ავტომატურად სინქრონიზებული ამ Chromebook-თან</translation>
 <translation id="4364327530094270451">ნესვი</translation>
 <translation id="4364567974334641491"><ph name="APP_NAME" /> ფანჯარას აზიარებს.</translation>
@@ -4888,7 +4882,6 @@
 <translation id="4486333480498805415">მდებარეობის სიზუსტე</translation>
 <translation id="4487489714832036847">Chromebook-ები იყენებენ აპებს, ტრადიციული პროგრამული უზრუნველყოფის ნაცვლად. ჩამოტვირთეთ აპები პროდუქტიულობისთვის, გართობისთვის და ა.შ.</translation>
 <translation id="4488257340342212116">თქვენი კამერის გამოყენება დაშვებულია</translation>
-<translation id="4490086832405043258">ChromeOS პროქსი-სერვერის პარამეტრების გამოყენება ამ პროფილისთვის.</translation>
 <translation id="4490798467014431984">გაფართოებები არ არის დაშვებული ამ საიტზე</translation>
 <translation id="449102748655090594">თქვენი ჩანართების დაჯგუფება…</translation>
 <translation id="449126573531210296">სინქრონიზებული პაროლების დაშიფვრა თქვენი Google ანგარიშის მეშვეობით</translation>
@@ -5522,7 +5515,6 @@
 <translation id="4946998421534856407">launcher + ზემოთ მიმართული ისარი</translation>
 <translation id="4947376546135294974">მონაცემები თქვენ მიერ მონახულებული საიტიდან</translation>
 <translation id="4950100687509657457">პროფილის შექმნა</translation>
-<translation id="4950993567860689081">თქვენს სესიას მართავს თქვენივე ორგანიზაცია. ადმინისტრატორებს შეუძლიათ თქვენი პროფილის წაშლა და თქვენი ქსელის ტრაფიკზე დაკვირვება.</translation>
 <translation id="495164417696120157">{COUNT,plural, =1{ფაილი}other{# ფაილი}}</translation>
 <translation id="495170559598752135">ქმედებები</translation>
 <translation id="4951966678293618079">არასოდეს შეინახოს პაროლები ამ საიტისთვის</translation>
@@ -5982,7 +5974,6 @@
 <translation id="5294068591166433464">საიტის მიერ პაროლის მოპარვის მცდელობის ან თქვენ მიერ საზიანო ფაილის ჩამოტვირთვის შემთხვევაში Chrome-ის მიერ Google-ს გაეგზავნება URL-ები და შესაბამისი გვერდის კონტენტის გარკვეული ნაწილი</translation>
 <translation id="5294097441441645251">უნდა იწყებოდეს არამთავრული სიმბოლოთი ან ქვედახაზით</translation>
 <translation id="5294618183559481278">თქვენი <ph name="DEVICE_TYPE" /> იყენებს ჩაშენებულ სენსორს თქვენი მოწყობილობის წინ მყოფი ადამიანების აღმოსაჩენად. ყველა დაკავშირებული მონაცემი მყისიერად მუშავდება თქვენს მოწყობილობაზე, შემდეგ კი იშლება. სენსორის მონაცემები არასოდეს ეგზავნება Google-ს. <ph name="LINK_BEGIN" />შეიტყვეთ მეტი<ph name="LINK_END" /></translation>
-<translation id="5295188371713072404">გაფართოებებს შეუძლია ამ საიტზე წვდომის მოთხოვნა</translation>
 <translation id="5295349205180144885">ჩანართების ჯგუფის სახელი: <ph name="NAME" /></translation>
 <translation id="5296350763804564124">მოისმინეთ გახმოვანებული უკუკავშირი და გამოიყენეთ მოწყობილობა ეკრანზე ყურების საჭიროების გარეშე. ბრაილთან დაკავშირებული უკუკავშირი ხელმისაწვდომია დაკავშირებული მოწყობილობის მეშვეობით.</translation>
 <translation id="5296536303670088158">თქვენ სარგებლობთ Chrome-ის ყველაზე ძლიერი დაცვით სახიფათო ვებსაიტებისგან</translation>
@@ -6802,7 +6793,6 @@
 <translation id="5906732635754427568">ამ აპთან დაკავშირებული მონაცემები ამ მოწყობილობიდან ამოიშლება.</translation>
 <translation id="5906974869830879618">გთხოვთ, შეიყვანოთ PIN-კოდი</translation>
 <translation id="5908474332780919512">აპის გაშვება სისტემაში შესვლისას</translation>
-<translation id="5909379458939060601">გსურთ, წაშალოთ ეს პროფილი და დათვალიერების მონაცემები?</translation>
 <translation id="5910363049092958439">გამოსახულების შენ&amp;ახვა, როგორც…</translation>
 <translation id="5910726859585389579"><ph name="DEVICE_TYPE" /> ხაზგარეშეა</translation>
 <translation id="5911030830365207728">Google Translate</translation>
@@ -6867,7 +6857,6 @@
 <translation id="5951303645598168883"><ph name="ORIGIN" /> ადგილობრივი შრიფტების გამოყენებას ითხოვს</translation>
 <translation id="5951624318208955736">მონიტორი</translation>
 <translation id="5952020381407136867">სენსორული პანელი</translation>
-<translation id="595262438437661818">ამ საიტზე წვდომას არცერთი გაფართოება არ საჭიროებს</translation>
 <translation id="5953211687820750364">ამ სიაზე აისახება <ph name="BEGIN_LINK1" />{BrowserSwitcherExternalGreylistUrl}<ph name="END_LINK1" />
           და <ph name="BEGIN_LINK2" />{BrowserSwitcherUrlGreylist}<ph name="END_LINK2" /></translation>
 <translation id="5955282598396714173">თქვენი პაროლის მოქმედების ვადა ამოიწურა. მის შესაცვლელად გადით და ხელახლა შედით სისტემაში.</translation>
@@ -8898,7 +8887,6 @@
 <translation id="7450761244949417357"><ph name="ALTERNATIVE_BROWSER_NAME" />-ში გაიხსნება ახლა</translation>
 <translation id="7450926666485653189">გაუგზავნის Google-ს URL-ის შენიღბულ ნაწილს კონფიდენციალური სერვერის მეშვეობით, რომელიც მალავს თქვენს IP მისამართს</translation>
 <translation id="7453008956351770337">ამ პრინტერის არჩევით, თქვენს პრინტერზე წვდომის ნებართვას აძლევთ შემდეგ გაფართოებას:</translation>
-<translation id="7453467225369441013">თქვენ გამოხვალთ სისტემიდან საიტების უმეტესობაზე, თუმცა თქვენს Google ანგარიშში შესული დარჩებით.</translation>
 <translation id="7454548535253569100">პორტალი: <ph name="SUBFRAME_SITE" /></translation>
 <translation id="7454744349230173024">თქვენმა ორგანიზაციამ გამორთო პაროლების შენახვა</translation>
 <translation id="7455730275746867420">დამატებითი კონტეინერების მართვა</translation>
@@ -8980,7 +8968,6 @@
 <translation id="7508707215237589321">წაიშალოს „<ph name="CERT_NAME" />“?</translation>
 <translation id="7508971277215079477">{MULTI_GROUP_TAB_COUNT,plural, =0{დაიხუროს ჩანართი და წაიშალოს ჯგუფი?}=1{დაიხუროს ჩანართი და წაიშალოს ჯგუფი?}other{დაიხუროს ჩანართები და წაიშალოს ჯგუფი?}}</translation>
 <translation id="7509097596023256288">მიმდინარეობს მართვის დაყენება</translation>
-<translation id="7509246181739783082">დაადასტურეთ ვინაობა</translation>
 <translation id="7509539379068593709">აპის დეინსტალაცია</translation>
 <translation id="7514239104543605883">თქვენს მოწყობილობაზე კოპირება</translation>
 <translation id="7514365320538308">ჩამოტვირთვა</translation>
@@ -9793,7 +9780,6 @@
 <translation id="80798452873915119">საიტებს შეუძლია თქვენს ყველა ეკრანზე ფანჯრების მართვის მოთხოვნა</translation>
 <translation id="8080028325999236607">ყველა ჩანართის დახურვა</translation>
 <translation id="808089508890593134">Google</translation>
-<translation id="8081623398548615289">თქვენს სესიას მართავს <ph name="MANAGER_NAME" />. ადმინისტრატორებს შეუძლიათ თქვენი პროფილის წაშლა და თქვენი ქსელის ტრაფიკზე დაკვირვება.</translation>
 <translation id="8081989000209387414">გსურთ ADB გამართვის გამორთვა?</translation>
 <translation id="8082106343289440791">გსურთ „<ph name="DEVICE_NAME" />“-თან დაწყვილება?</translation>
 <translation id="8082132721957920509">თქვენი ბარათი შენახულია</translation>
@@ -10678,7 +10664,6 @@
 <translation id="8715480913140015283">ფონური ჩანართი იყენებს თქვენს კამერას</translation>
 <translation id="8716931980467311658">გსურთ, ამ <ph name="DEVICE_TYPE" />-დან წაშალოთ ყველა Linux აპლიკაცია და Linux-ის ფაილების საქაღალდეში არსებული ყველა მონაცემი?</translation>
 <translation id="8717864919010420084">ბმულის კოპირება</translation>
-<translation id="8718560545710680911">მოითხოვეთ ამ გვერდის გამოყენება</translation>
 <translation id="8718994464069323380">აღმოჩენილია სენსორული ეკრანი</translation>
 <translation id="8719472795285728850">მიმდინარეობს გაფართოებების აქტივობის მოსმენა…</translation>
 <translation id="8719665168401479425">სახის ჟესტებით შეასრულეთ მოქმედებები</translation>

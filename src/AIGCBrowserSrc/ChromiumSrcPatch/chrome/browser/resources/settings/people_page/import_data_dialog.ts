@@ -8,9 +8,9 @@
  */
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
-import 'tangram://resources/cr_elements/md_select.css.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/polymer/v3_0/paper-spinner/paper-spinner-lite.js';
+import 'tangram://resources/cr_elements/cr_spinner_style.css.js';
+import 'tangram://resources/cr_elements/md_select.css.js';
 import '../controls/settings_checkbox.js';
 import '../controls/settings_toggle_button.js';
 import '../icons.html.js';

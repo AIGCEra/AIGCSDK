@@ -1533,8 +1533,17 @@ void MaybeRegisterChromeTutorials(
   }
 }
 
-// Note: If you add a badge here, be sure to add the name of the corresponding
-// feature to tools/metrics/histograms/metadata/user_education/histograms.xml
+// NOTES FOR FEATURE TEAMS:
+//
+// 1. If you add a badge here, be sure to add the name of the corresponding
+//    feature to tools/metrics/histograms/metadata/user_education/histograms.xml
+//
+// 2. When a feature ship and you are removing the feature flag, you must also
+//    remove the entry here. THIS IS BY DESIGN. This is a point at which the
+//    feature is no longer "new", even for holdback users (at least by the time
+//    the code change rolls out to Stable). DO NOT keep a feature flag around
+//    longer that necessary just to keep a "New" Badge around.
+//
 void MaybeRegisterChromeNewBadges(user_education::NewBadgeRegistry& registry) {
   if (registry.IsFeatureRegistered(
           user_education::features::kNewBadgeTestFeature)) {
@@ -1568,12 +1577,6 @@ void MaybeRegisterChromeNewBadges(user_education::NewBadgeRegistry& registry) {
       lens::features::kLensOverlay,
       user_education::Metadata(126, "jdonnelly@google.com, dfried@google.com",
                                "Shown in app and web context menus.")));
-
-  registry.RegisterFeature(user_education::NewBadgeSpecification(
-      features::kTabOrganization,
-      user_education::Metadata(
-          126, "emshack@chromium.org",
-          "Shown in app menu when TabOrganizationAppMenuItem is enabled.")));
 
   registry.RegisterFeature(user_education::NewBadgeSpecification(
       autofill::features::kAutofillForUnclassifiedFieldsAvailable,

@@ -11,6 +11,7 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
+import '/shared/settings/prefs/prefs.js';
 import 'tangram://resources/cr_elements/icons_lit.html.js';
 import '../controls/settings_toggle_button.js';
 import '../icons.html.js';
@@ -19,12 +20,16 @@ import '../settings_shared.css.js';
 import '../simple_confirmation_dialog.js';
 
 import {I18nMixin} from '//resources/cr_elements/i18n_mixin.js';
+import {PrefsMixin} from '/shared/settings/prefs/prefs_mixin.js';
 import {assert} from 'tangram://resources/js/assert.js';
 import {OpenWindowProxyImpl} from 'tangram://resources/js/open_window_proxy.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import type {DomRepeatEvent} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 
+import type {SettingsToggleButtonElement} from '../controls/settings_toggle_button.js';
 import {loadTimeData} from '../i18n_setup.js';
+import {routes} from '../route.js';
+import {Router} from '../router.js';
 import type {SettingsSimpleConfirmationDialogElement} from '../simple_confirmation_dialog.js';
 
 import {getTemplate} from './autofill_prediction_improvements_section.html.js';
@@ -35,12 +40,12 @@ type UserAnnotationsEntry = chrome.autofillPrivate.UserAnnotationsEntry;
 
 export interface SettingsAutofillPredictionImprovementsSectionElement {
   $: {
-    prefToggle: HTMLElement,
+    prefToggle: SettingsToggleButtonElement,
   };
 }
 
 const SettingsAutofillPredictionImprovementsSectionElementBase =
-    I18nMixin(PolymerElement);
+    PrefsMixin(I18nMixin(PolymerElement));
 
 export class SettingsAutofillPredictionImprovementsSectionElement extends
     SettingsAutofillPredictionImprovementsSectionElementBase {
@@ -54,9 +59,9 @@ export class SettingsAutofillPredictionImprovementsSectionElement extends
 
   static get properties() {
     return {
-      prefs: {
-        type: Object,
-        notify: true,
+      disabled: {
+        type: Boolean,
+        reflectToAttribute: true,
       },
 
       entryToDelete_: Object,
@@ -73,7 +78,7 @@ export class SettingsAutofillPredictionImprovementsSectionElement extends
     };
   }
 
-  prefs: {[key: string]: any};
+  disabled: boolean = false;
   private userAnnotationsEntries_: UserAnnotationsEntry[] = [];
   private userAnnotationsManager_: UserAnnotationsManagerProxy =
       UserAnnotationsManagerProxyImpl.getInstance();
@@ -86,6 +91,9 @@ export class SettingsAutofillPredictionImprovementsSectionElement extends
 
     this.userAnnotationsManager_.getEntries().then(
         (entries: UserAnnotationsEntry[]) => {
+          if (this.disabled && entries.length === 0) {
+            Router.getInstance().navigateTo(routes.AUTOFILL);
+          }
           this.userAnnotationsEntries_ = entries;
         });
   }
@@ -93,6 +101,33 @@ export class SettingsAutofillPredictionImprovementsSectionElement extends
   private onToggleSubLabelLinkClick_(): void {
     OpenWindowProxyImpl.getInstance().openUrl(
         loadTimeData.getString('addressesAndPaymentMethodsLearnMoreURL'));
+  }
+
+  private onPrefToggleChanged_() {
+    this.userAnnotationsManager_.predictionImprovementsIphFeatureUsed();
+
+    this.maybeTriggerBootstrapping_();
+  }
+
+  private async maybeTriggerBootstrapping_() {
+    const bootstrappingDisabled =
+        !loadTimeData.getBoolean('autofillPredictionBootstrappingEnabled');
+    const toggleDisabled = !this.$.prefToggle.checked;
+    const hasEntries = await this.userAnnotationsManager_.hasEntries();
+    // Only trigger bootstrapping if the pref was just enabled and there are no
+    // entries yet.
+    if (bootstrappingDisabled || this.disabled || toggleDisabled ||
+        hasEntries) {
+      return;
+    }
+
+    const entriesAdded =
+        await this.userAnnotationsManager_.triggerBootstrapping();
+    // Refresh the list if bootstrapping resulted in new entries being added.
+    if (entriesAdded) {
+      this.userAnnotationsEntries_ =
+          await this.userAnnotationsManager_.getEntries();
+    }
   }
 
   private onDeleteEntryCick_(e: DomRepeatEvent<UserAnnotationsEntry>): void {

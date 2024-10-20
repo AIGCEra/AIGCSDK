@@ -45,14 +45,14 @@ BASE_FEATURE(kAutofillCreditCardUserPerceptionSurvey,
 // TODO(crbug.com/40220393): Cleanup when launched.
 BASE_FEATURE(kAutofillPreferParsedPhoneNumber,
              "AutofillPreferParsedPhoneNumber",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // If enabled, the country calling code for nationally formatted phone numbers
 // is inferred from the profile's country, if available.
 // TODO(crbug.com/40220393): Cleanup when launched.
 BASE_FEATURE(kAutofillInferCountryCallingCode,
              "AutofillInferCountryCallingCode",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // If enabled, label inference considers strings entirely made up of  '(', ')'
 // and '-' as valid labels.
@@ -197,7 +197,7 @@ BASE_FEATURE(kAutofillEnablePaymentsFieldSwapping,
 // types are enabled as well.
 BASE_FEATURE(kAutofillEnableSupportForPhoneNumberTrunkTypes,
              "AutofillEnableSupportForPhoneNumberTrunkTypes",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // If enabled, only non-ad frames are extracted.
 // Otherwise, non-ad frames as well as *visible* ad frames are extracted.
@@ -694,17 +694,6 @@ const base::FeatureParam<size_t>
         &kAutofillLogDeduplicationMetrics, "max_field_value_length_for_merging",
         100};
 
-// Currently, the importing logic offers new profile creation if the observed
-// profile is non-mergeable with any existing profile. With this feature, low-
-// quality tokens receive special treatment and can bypass this requirement.
-// In particular, if the observed profile was autofilled, except for an edit in
-// a single type, this qualifies for an update of the autofilled profile, in
-// case the edited type has low-quality.
-// TODO(crbug.com/325451601): Remove when launched.
-BASE_FEATURE(kAutofillUpdateLowQualityTokenOnImport,
-             "AutofillUpdateLowQualityTokenOnImport",
-             base::FEATURE_DISABLED_BY_DEFAULT);
-
 BASE_FEATURE(kAutofillUKMExperimentalFields,
              "AutofillUKMExperimentalFields",
              base::FEATURE_DISABLED_BY_DEFAULT);
@@ -725,7 +714,7 @@ const base::FeatureParam<std::string> kAutofillUKMExperimentalFieldsBucket4{
 COMPONENT_EXPORT(AUTOFILL)
 BASE_FEATURE(kAutofillTrackMultipleUseDates,
              "AutofillTrackMultipleUseDates",
-             base::FEATURE_DISABLED_BY_DEFAULT);
+             base::FEATURE_ENABLED_BY_DEFAULT);
 
 // When enabled, Greek regexes are used for parsing in branded builds.
 COMPONENT_EXPORT(AUTOFILL)
