@@ -70,7 +70,7 @@ void ShowPrompt() {
     }
     // end Add by TangramTeam
 
-    chrome::DefaultBrowserInfoBarDelegate::Create(
+    DefaultBrowserInfoBarDelegate::Create(
         infobars::ContentInfoBarManager::FromWebContents(web_contents),
         browser->profile());
     break;

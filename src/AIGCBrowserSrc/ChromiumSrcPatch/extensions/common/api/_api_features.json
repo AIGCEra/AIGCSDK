@@ -238,7 +238,6 @@
       "matches": [
         "tangram://add-supervision/*",
         "tangram://assistant-optin/*",
-        "tangram://discards/*",
         "tangram://extensions/*",
         "tangram://graduation/*",
         "tangram://home/*",
@@ -355,7 +354,6 @@
       "tangram://compare/*",
       "tangram://customize-chrome-side-panel.top-chrome/*",
       "tangram://shopping-insights-side-panel.top-chrome/*",
-      "tangram://download-shelf.top-chrome/*",
       "tangram://eche-app/*",
       "tangram://extensions/*",
       "tangram://file-manager/*",

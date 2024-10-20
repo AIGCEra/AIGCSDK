@@ -8,7 +8,7 @@ import {mobileNav} from 'tangram://interstitials/common/resources/interstitial_m
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
 
 import {HIDDEN_CLASS} from './constants.js';
-import {Runner} from './offline.js';
+import {Runner} from './dino_game/offline.js';
 
 /**
  * @typedef {{

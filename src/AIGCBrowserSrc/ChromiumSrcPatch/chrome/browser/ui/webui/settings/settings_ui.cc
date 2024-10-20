@@ -90,10 +90,12 @@
 #include "chrome/grit/settings_resources_map.h"
 #include "components/account_manager_core/account_manager_facade.h"
 #include "components/commerce/core/commerce_feature_list.h"
+#include "components/commerce/core/feature_utils.h"
 #include "components/commerce/core/shopping_service.h"
 #include "components/compose/core/browser/compose_features.h"
 #include "components/content_settings/core/common/features.h"
 #include "components/favicon_base/favicon_url_parser.h"
+#include "components/optimization_guide/core/optimization_guide_features.h"
 #include "components/password_manager/core/common/password_manager_features.h"
 #include "components/performance_manager/public/features.h"
 #include "components/permissions/features.h"
@@ -372,6 +374,10 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
                           false);
 #endif
 
+  html_source->AddBoolean(
+      "enableEsbAiStringUpdate",
+      base::FeatureList::IsEnabled(safe_browsing::kEsbAiStringUpdate));
+
   html_source->AddBoolean("enableHashPrefixRealTimeLookups",
                           safe_browsing::hash_realtime_utils::
                               IsHashRealTimeLookupEligibleInSession());
@@ -381,7 +387,8 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
 
   html_source->AddBoolean(
       "enableKeyboardAndPointerLockPrompt",
-      base::FeatureList::IsEnabled(features::kKeyboardAndPointerLockPrompt));
+      base::FeatureList::IsEnabled(
+          permissions::features::kKeyboardAndPointerLockPrompt));
 
   html_source->AddBoolean(
       "enableLinkedServicesSetting",
@@ -518,6 +525,9 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
       "is3pcdCookieSettingsRedesignEnabled",
       TrackingProtectionSettingsFactory::GetForProfile(profile)
           ->IsTrackingProtection3pcdEnabled());
+  html_source->AddBoolean(
+      "isTrackingProtectionUxEnabled",
+      base::FeatureList::IsEnabled(privacy_sandbox::kTrackingProtection3pcdUx));
 
   // ACT UX
   html_source->AddBoolean(
@@ -526,11 +536,6 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
   html_source->AddBoolean("isFingerprintingProtectionUxEnabled",
                           base::FeatureList::IsEnabled(
                               privacy_sandbox::kFingerprintingProtectionUx));
-
-  html_source->AddBoolean(
-      "isProactiveTopicsBlockingEnabled",
-      base::FeatureList::IsEnabled(
-          privacy_sandbox::kPrivacySandboxProactiveTopicsBlocking));
 
   // Performance
   AddSettingsPageUIHandler(std::make_unique<PerformanceHandler>());
@@ -597,6 +602,14 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
     optimization_guide_feature_visible[0] |= visible;
   }
 
+  bool should_show_compare_settings_page =
+      base::FeatureList::IsEnabled(
+          optimization_guide::features::kAiSettingsPageRefresh) &&
+      commerce::CanFetchProductSpecificationsData(
+          shopping_service->GetAccountChecker());
+
+  optimization_guide_feature_visible[0] |= should_show_compare_settings_page;
+
   html_source->AddBoolean("showAdvancedFeaturesMainControl",
                           optimization_guide_feature_visible[0]);
   html_source->AddBoolean("showComposeControl",
@@ -607,10 +620,13 @@ SettingsUI::SettingsUI(content::WebUI* web_ui)
                           optimization_guide_feature_visible[3]);
   html_source->AddBoolean("showHistorySearchControl",
                           optimization_guide_feature_visible[4]);
+  html_source->AddBoolean("showCompareControl",
+                          should_show_compare_settings_page);
 
   html_source->AddBoolean(
       "enableAiSettingsPageRefresh",
-      base::FeatureList::IsEnabled(features::kAiSettingsPageRefresh));
+      base::FeatureList::IsEnabled(
+          optimization_guide::features::kAiSettingsPageRefresh));
 
   TryShowHatsSurveyWithTimeout();
 }

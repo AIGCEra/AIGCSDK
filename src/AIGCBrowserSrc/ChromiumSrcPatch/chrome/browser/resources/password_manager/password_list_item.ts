@@ -5,7 +5,7 @@ import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_icons.css.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_tooltip/cr_tooltip.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import './site_favicon.js';
 import './searchable_label.js';
 import './shared_style.css.js';

@@ -9,6 +9,7 @@ import '../settings_page/settings_subpage.js';
 import './ai_tab_organization_subpage.js';
 
 import {PrefsMixin} from '/shared/settings/prefs/prefs_mixin.js';
+import {OpenWindowProxyImpl} from 'tangram://resources/js/open_window_proxy.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 
 import {loadTimeData} from '../i18n_setup.js';
@@ -16,23 +17,7 @@ import {routes} from '../route.js';
 import {Router} from '../router.js';
 
 import {getTemplate} from './ai_page.html.js';
-
-// These values must stay in sync with
-// optimization_guide::prefs::FeatureOptInState in
-// components/optimization_guide/core/optimization_guide_prefs.h.
-export enum FeatureOptInState {
-  NOT_INITIALIZED = 0,
-  ENABLED = 1,
-  DISABLED = 2,
-}
-
-// Exporting pref names so that they can be referenced by tests.
-export enum SettingsAiPageFeaturePrefName {
-  MAIN = 'optimization_guide.model_execution_main_toggle_setting_state',
-  COMPOSE = 'optimization_guide.compose_setting_state',
-  TAB_ORGANIZATION = 'optimization_guide.tab_organization_setting_state',
-  WALLPAPER_SEARCH = 'optimization_guide.wallpaper_search_setting_state',
-}
+import {FeatureOptInState, SettingsAiPageFeaturePrefName} from './constants.js';
 
 export interface SettingsAiPageElement {
   $: {
@@ -53,11 +38,6 @@ export class SettingsAiPageElement extends SettingsAiPageElementBase {
 
   static get properties() {
     return {
-      prefs: {
-        type: Object,
-        notify: true,
-      },
-
       enableAiSettingsPageRefresh_: {
         type: Boolean,
         value: () => loadTimeData.getBoolean('enableAiSettingsPageRefresh'),
@@ -66,6 +46,11 @@ export class SettingsAiPageElement extends SettingsAiPageElementBase {
       showComposeControl_: {
         type: Boolean,
         value: () => loadTimeData.getBoolean('showComposeControl'),
+      },
+
+      showCompareControl_: {
+        type: Boolean,
+        value: () => loadTimeData.getBoolean('showCompareControl'),
       },
 
       showHistorySearchControl_: {
@@ -99,6 +84,18 @@ export class SettingsAiPageElement extends SettingsAiPageElementBase {
         value() {
           const map = new Map();
 
+          if (routes.HISTORY_SEARCH) {
+            map.set(routes.HISTORY_SEARCH.path, '#historySearchRowV2');
+          }
+
+          if (routes.COMPARE) {
+            map.set(routes.COMPARE.path, '#compareRowV2');
+          }
+
+          if (routes.OFFER_WRITING_HELP) {
+            map.set(routes.OFFER_WRITING_HELP.path, '#composeRowV2');
+          }
+
           if (routes.AI_TAB_ORGANIZATION) {
             map.set(routes.AI_TAB_ORGANIZATION.path, '#tabOrganizationRowV2');
           }
@@ -106,11 +103,22 @@ export class SettingsAiPageElement extends SettingsAiPageElementBase {
           return map;
         },
       },
+
+      historySearchRowSublabel_: {
+        type: String,
+        value: () => {
+          return loadTimeData.getBoolean(
+                     'historyEmbeddingsAnswersFeatureEnabled') ?
+              loadTimeData.getString('historySearchAnswersSettingSublabel') :
+              loadTimeData.getString('historySearchSettingSublabel');
+        },
+      },
     };
   }
 
   private enableAiSettingsPageRefresh_: boolean;
   private showComposeControl_: boolean;
+  private showCompareControl_: boolean;
   private showHistorySearchControl_: boolean;
   private showTabOrganizationControl_: boolean;
   private showWallpaperSearchControl_: boolean;
@@ -140,9 +148,32 @@ export class SettingsAiPageElement extends SettingsAiPageElementBase {
     router.navigateTo(router.getRoutes().HISTORY_SEARCH);
   }
 
+  private onCompareRowClick_() {
+    const router = Router.getInstance();
+    router.navigateTo(router.getRoutes().COMPARE);
+  }
+
+  private onComposeRowClick_() {
+    const router = Router.getInstance();
+    router.navigateTo(router.getRoutes().OFFER_WRITING_HELP);
+  }
+
   private onTabOrganizationRowClick_() {
     const router = Router.getInstance();
     router.navigateTo(router.getRoutes().AI_TAB_ORGANIZATION);
+  }
+
+  private onWallpaperSearchRowClick_() {
+    OpenWindowProxyImpl.getInstance().openUrl(
+        loadTimeData.getString('wallpaperSearchLearnMoreUrl'));
+  }
+
+  private getHistorySearchSublabel_(): string {
+    if (this.getPref(SettingsAiPageFeaturePrefName.HISTORY_SEARCH).value ===
+        FeatureOptInState.ENABLED) {
+      return loadTimeData.getString('historySearchSublabelOn');
+    }
+    return loadTimeData.getString('historySearchSublabelOff');
   }
 }
 

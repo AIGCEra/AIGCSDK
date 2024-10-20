@@ -10,7 +10,7 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/md_select.css.js';
 import 'tangram://resources/polymer/v3_0/iron-flex-layout/iron-flex-layout-classes.js';

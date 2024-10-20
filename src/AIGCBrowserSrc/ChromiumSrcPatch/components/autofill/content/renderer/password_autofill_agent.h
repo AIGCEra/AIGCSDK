@@ -276,8 +276,54 @@ class PasswordAutofillAgent : public content::RenderFrameObserver,
 
   AutofillAgent& autofill_agent() { return *autofill_agent_; }
 
+  // Notifies the driver about focusing the node.
+  //
+  // If `element` is null, notifies the password manager driver about removing
+  // the focus from the currently focused node (with no setting it to a new
+  // one).
+  //
+  // TODO: crbug.com/370301890 - Fire this in
+  // RenderFrameObserver::FocusedElementChanged() and remove the plumbing from
+  // AutofillAgent?
+  void FocusedElementChangedWithCustomSemantics(
+      const blink::WebElement& element,
+      base::PassKey<AutofillAgent> pass_key) {
+    focus_state_notifier_.FocusedElementChanged(element);
+  }
+
  private:
   class DeferringPasswordManagerDriver;
+
+  // This class ensures that the driver will only receive notifications only
+  // when a focused field or its type (FocusedFieldType) change.
+  class FocusStateNotifier {
+   public:
+    // Creates a new notifier that uses the agent which owns it to access the
+    // real driver implementation.
+    explicit FocusStateNotifier(PasswordAutofillAgent* agent);
+
+    FocusStateNotifier(const FocusStateNotifier&) = delete;
+    FocusStateNotifier& operator=(const FocusStateNotifier&) = delete;
+
+    ~FocusStateNotifier();
+
+    // Notifies the driver about focusing the node.
+    void FocusedElementChanged(const blink::WebElement& element);
+
+    // Notifies the password manager driver about removing the focus from the
+    // currently focused node (with no setting it to a new one).
+    void ResetFocus();
+
+    mojom::FocusedFieldType GetFieldType(
+        const blink::WebFormControlElement& node);
+    void NotifyIfChanged(mojom::FocusedFieldType new_focused_field_type,
+                         FieldRendererId new_focused_field_id);
+
+    FieldRendererId focused_field_id_;
+    mojom::FocusedFieldType focused_field_type_ =
+        mojom::FocusedFieldType::kUnknown;
+    const raw_ref<PasswordAutofillAgent> agent_;
+  };
 
   // Enumeration representing possible keyboard replacing surface states. A
   // keyboard replacing surface can be either Touch To Fill UI or Android
@@ -297,8 +343,6 @@ class PasswordAutofillAgent : public content::RenderFrameObserver,
     // The user accepted a suggestion from a dropdown on a password field.
     bool password_field_suggestion_was_accepted = false;
   };
-  using WebInputToPasswordInfoMap = std::map<FieldRef, PasswordInfo>;
-  using PasswordToLoginMap = std::map<FieldRef, FieldRef>;
 
   // Stores information about form field structure.
   struct FormFieldInfo {
@@ -547,11 +591,18 @@ class PasswordAutofillAgent : public content::RenderFrameObserver,
 
   // A map from WebInput elements to `PasswordInfo` for all elements that
   // password manager has fill information for.
-  WebInputToPasswordInfoMap web_input_to_password_info_;
+  //
+  // After any mutation, `last_supplied_password_info_iter_` must be updated.
+  std::map<FieldRef, PasswordInfo> web_input_to_password_info_;
+
   // A (sort-of) reverse map to `web_input_to_password_info_`.
-  PasswordToLoginMap password_to_username_;
+  std::map<FieldRef, FieldRef> password_to_username_;
+
   // The chronologically last insertion into `web_input_to_password_info_`.
-  WebInputToPasswordInfoMap::iterator last_supplied_password_info_iter_;
+  // This iterator always points to `web_input_to_password_info_`.
+  std::map<FieldRef, PasswordInfo>::iterator last_supplied_password_info_iter_ =
+      web_input_to_password_info_.end();
+
   // Set of fields that are reliably identified as non-credential fields.
   base::flat_set<FieldRendererId> suggestion_banned_fields_;
 
@@ -560,20 +611,19 @@ class PasswordAutofillAgent : public content::RenderFrameObserver,
   PasswordValueGatekeeper gatekeeper_;
 
   // True indicates that user debug information should be logged.
-  bool logging_state_active_;
+  bool logging_state_active_ = false;
 
   std::vector<PreviewInfo> previewed_elements_;
 
   // True indicates that a request for credentials has been sent to the store.
-  bool sent_request_to_store_;
+  bool sent_request_to_store_ = false;
 
   // True indicates that a safe browsing reputation check has been triggered.
-  bool checked_safe_browsing_reputation_;
+  bool checked_safe_browsing_reputation_ = false;
 
   raw_ptr<AutofillAgent> autofill_agent_ = nullptr;
 
-  raw_ptr<PasswordGenerationAgent>
-      password_generation_agent_;  // Weak reference.
+  raw_ptr<PasswordGenerationAgent> password_generation_agent_ = nullptr;
 
 #if !BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_IOS)
   PagePasswordsAnalyser page_passwords_analyser_;
@@ -620,6 +670,10 @@ class PasswordAutofillAgent : public content::RenderFrameObserver,
   // Can be used to estimate how many times forms are actually reparsed
   // during their lifetime.
   std::map<FormRendererId, size_t> times_received_fill_data_;
+
+  // This notifier is used to avoid sending redundant messages to the password
+  // manager driver mojo interface.
+  FocusStateNotifier focus_state_notifier_{this};
 
 #if BUILDFLAG(IS_ANDROID)
   // Current state of the keyboard replacing surface. This is reset during

@@ -10,7 +10,7 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_input/cr_input.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import 'tangram://resources/polymer/v3_0/iron-a11y-keys/iron-a11y-keys.js';
 import 'tangram://resources/polymer/v3_0/iron-list/iron-list.js';
 import '/shared/settings/prefs/prefs.js';

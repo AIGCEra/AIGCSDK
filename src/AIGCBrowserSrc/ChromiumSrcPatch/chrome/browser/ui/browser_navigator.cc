@@ -41,6 +41,7 @@
 #include "chrome/browser/ui/web_applications/app_browser_controller.h"
 #include "chrome/browser/ui/web_applications/web_app_tabbed_utils.h"
 #include "chrome/browser/web_applications/web_app_helpers.h"
+#include "chrome/browser/web_applications/web_app_tab_helper.h"
 #include "chrome/common/url_constants.h"
 #include "components/captive_portal/core/buildflags.h"
 #include "components/constrained_window/constrained_window_views.h"
@@ -57,6 +58,7 @@
 #include "content/public/browser/site_isolation_policy.h"
 #include "content/public/browser/web_contents.h"
 #include "extensions/buildflags/buildflags.h"
+#include "ui/base/window_open_disposition.h"
 #include "ui/display/display.h"
 #include "ui/display/screen.h"
 #include "url/url_constants.h"
@@ -730,17 +732,15 @@ base::WeakPtr<content::NavigationHandle> Navigate(NavigateParams* params) {
   // TODO(crbug.com/364657540): Revisit integration with web_application system
   // later if needed.
   int singleton_index;
-  std::optional<web_app::AppNavigationResult> app_navigation_result;
+  web_app::AppNavigationResult app_navigation_result;
 #if !BUILDFLAG(IS_ANDROID)
   app_navigation_result = web_app::MaybeHandleAppNavigation(*params);
 #endif  // !BUILDFLAG(IS_ANDROID)
-  if (app_navigation_result.has_value()) {
-    params->browser = app_navigation_result->browser;
-    singleton_index = app_navigation_result->tab_index;
-  } else {
-    std::tie(params->browser, singleton_index) =
-        GetBrowserAndTabForDisposition(*params);
-  }
+
+  std::tie(params->browser, singleton_index) =
+      app_navigation_result.browser_tab_override.has_value()
+          ? app_navigation_result.browser_tab_override.value()
+          : GetBrowserAndTabForDisposition(*params);
 
   if (!params->browser) {
     return nullptr;
@@ -987,10 +987,8 @@ base::WeakPtr<content::NavigationHandle> Navigate(NavigateParams* params) {
 // be non null, so perform tasks if the navigation has been captured by a web
 // app, like enqueueing launch params.
 #if !BUILDFLAG(IS_ANDROID)
-  if (app_navigation_result.has_value()) {
-    web_app::OnWebAppNavigationAfterWebContentsCreation(
-        app_navigation_result.value(), *params);
-  }
+  web_app::OnWebAppNavigationAfterWebContentsCreation(
+      std::move(app_navigation_result), *params, navigation_handle);
 #endif  // !BUILDFLAG(IS_ANDROID)
   return navigation_handle;
 }

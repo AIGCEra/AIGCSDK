@@ -65,6 +65,7 @@
 #include "content/public/browser/web_contents.h"
 #include "ui/base/clipboard/clipboard_constants.h"
 #include "ui/base/dragdrop/os_exchange_data_provider_factory.h"
+#include "ui/base/mojom/window_show_state.mojom.h"
 #include "ui/base/resource/resource_bundle.h"
 #include "ui/compositor/presentation_time_recorder.h"
 #include "ui/display/display.h"
@@ -2279,22 +2280,6 @@ gfx::Rect TabDragController::CalculateDraggedBrowserBounds(
     new_bounds.set_height(std::max(max_size.height() / 2, new_bounds.height()));
   }
 
-#if BUILDFLAG(IS_OZONE)
-  // On Wayland, coordinates are always relative to the window's origin, and the
-  // origin should always be (0, 0). Ensure we set the origin to (0, 0) in this
-  // case, or operations like finding the window under the cursor might not work
-  // as expected.
-  if (!ui::OzonePlatform::GetInstance()
-           ->GetPlatformProperties()
-           .supports_global_screen_coordinates) {
-    // `new_bounds` comes from window bounds, but in tests windows sometimes
-    // have a non-(0, 0) origin, so play it safe and explicitly set the origin.
-    new_bounds.set_origin({0, 0});
-    // The rest of this method only changes the origin, so return early here.
-    return new_bounds;
-  }
-#endif
-
   new_bounds.set_y(point_in_screen.y() - center.y());
   switch (GetDetachPosition(point_in_screen)) {
     case DETACH_BEFORE:
@@ -2436,6 +2421,20 @@ Browser* TabDragController::CreateBrowserForDrag(
       CalculateDraggedBrowserBounds(source, point_in_screen, drag_bounds));
   *drag_offset = point_in_screen - new_bounds.origin();
 
+#if BUILDFLAG(IS_OZONE)
+  // On Wayland, for example, coordinates are always relative to the window's
+  // origin, and the origin should always be (0, 0). Ensure we set the origin to
+  // (0, 0) in this case, or operations like finding the window under the cursor
+  // might not work as expected.
+  if (!ui::OzonePlatform::GetInstance()
+           ->GetPlatformProperties()
+           .supports_global_screen_coordinates) {
+    // `new_bounds` comes from window bounds, but in tests windows sometimes
+    // have a non-(0, 0) origin, so play it safe and explicitly set the origin.
+    new_bounds.set_origin({0, 0});
+  }
+#endif
+
   // Find if there's a controlling app, and thus we should open an app window.
   Browser* from_browser = BrowserView::GetBrowserViewForNativeWindow(
                               GetAttachedBrowserWidget()->GetNativeWindow())
@@ -2477,7 +2476,7 @@ Browser* TabDragController::CreateBrowserForDrag(
   // maximized or fullscreen window and we do not want the newly created browser
   // window is a maximized or fullscreen window since it will prevent window
   // moving/resizing on Chrome OS. See crbug.com/1023871 for details.
-  create_params.initial_show_state = ui::SHOW_STATE_DEFAULT;
+  create_params.initial_show_state = ui::mojom::WindowShowState::kDefault;
 
   // Don't copy the initial workspace since the *current* workspace might be
   // different and copying the workspace will move the tab to the initial one.

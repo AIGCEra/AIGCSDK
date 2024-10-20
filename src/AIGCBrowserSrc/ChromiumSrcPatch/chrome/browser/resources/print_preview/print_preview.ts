@@ -4,11 +4,11 @@
 
 export {CrButtonElement} from 'tangram://resources/cr_elements/cr_button/cr_button.js';
 export {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
+export {IconsetMap} from 'tangram://resources/cr_elements/cr_icon/iconset_map.js';
 export {CrIconButtonElement} from 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 export {CrInputElement} from 'tangram://resources/cr_elements/cr_input/cr_input.js';
 export {PluralStringProxyImpl as PrintPreviewPluralStringProxyImpl} from 'tangram://resources/js/plural_string_proxy.js';
 export {getTrustedHTML} from 'tangram://resources/js/static_types.js';
-export {IronMeta} from 'tangram://resources/polymer/v3_0/iron-meta/iron-meta.js';
 export {Cdd, ColorOption, DpiOption, DuplexOption, MediaSizeCapability, MediaSizeOption, MediaTypeCapability, MediaTypeOption, PageOrientationOption, SelectOption, VendorCapabilityValueType} from './data/cdd.js';
 export {ColorMode, createDestinationKey, Destination, DestinationOrigin, GooglePromotedDestinationId, makeRecentDestination, PDF_DESTINATION_KEY, PrinterType, RecentDestination} from './data/destination.js';
 // <if expr="is_chromeos">

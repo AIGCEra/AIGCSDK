@@ -6,10 +6,10 @@ import './searched_label.js';
 import './shared_style.css.js';
 import './strings.m.js';
 import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/cr_elements/cr_icons.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/js/icon.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
 
 import {HistoryResultType} from 'tangram://resources/cr_components/history/constants.js';
 import type {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';

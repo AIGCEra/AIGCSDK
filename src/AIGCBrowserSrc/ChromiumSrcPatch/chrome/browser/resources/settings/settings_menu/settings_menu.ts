@@ -12,7 +12,7 @@ import 'tangram://resources/cr_elements/cr_hidden_style.css.js';
 import 'tangram://resources/cr_elements/cr_nav_menu_item_style.css.js';
 import 'tangram://resources/cr_elements/cr_ripple/cr_ripple.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import '../settings_vars.css.js';
 import '../icons.html.js';
@@ -54,16 +54,34 @@ export class SettingsMenuElement extends SettingsMenuElementBase {
        */
       pageVisibility: Object,
 
+      enableAiSettingsPageRefresh_: {
+        type: Boolean,
+        value: () => loadTimeData.getBoolean('enableAiSettingsPageRefresh'),
+      },
+
       showAdvancedFeaturesMainControl_: {
         type: Boolean,
         value: () => loadTimeData.getBoolean('showAdvancedFeaturesMainControl'),
+      },
+
+      aiPageIcon_: {
+        type: String,
+        computed: 'computeAiPageIcon_(enableAiSettingsPageRefresh_)',
+      },
+
+      aiPageTitle_: {
+        type: String,
+        computed: 'computeAiPageTitle_(enableAiSettingsPageRefresh_)',
       },
     };
   }
 
   pageVisibility?: PageVisibility;
+  private enableAiSettingsPageRefresh_: boolean;
   private showAdvancedFeaturesMainControl_: boolean;
   private routes_: SettingsRoutes;
+  private aiPageIcon_: string;
+  private aiPageTitle_: string;
 
   override ready() {
     super.ready();
@@ -73,6 +91,17 @@ export class SettingsMenuElement extends SettingsMenuElementBase {
   private showExperimentalMenuItem_(): boolean {
     return this.showAdvancedFeaturesMainControl_ &&
         (!this.pageVisibility || this.pageVisibility.ai !== false);
+  }
+
+  private computeAiPageIcon_(): string {
+    return this.enableAiSettingsPageRefresh_ ? 'settings20:magic' :
+                                               'settings20:ai';
+  }
+
+  private computeAiPageTitle_(): string {
+    return loadTimeData.getString(
+        this.enableAiSettingsPageRefresh_ ? 'aiInnovationsPageTitle' :
+                                            'aiPageTitle');
   }
 
   override currentRouteChanged(newRoute: Route) {

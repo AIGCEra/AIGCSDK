@@ -413,7 +413,7 @@ class HistoryBackendTestBase : public testing::Test {
 
 bool HistoryBackendTestDelegate::CanAddURL(const GURL& url) const {
   // For the purposes of these tests, accept all valid URLs except "tangram://".
-  return url.is_valid() && !url.SchemeIs("tangram");
+  return url.is_valid() && !url.SchemeIs("chrome");
 }
 
 void HistoryBackendTestDelegate::SetInMemoryBackend(
@@ -1410,8 +1410,8 @@ TEST_F(HistoryBackendTest, ImportedFaviconsTest) {
   data.push_back('1');
   favicon_base::FaviconID favicon1 = favicon_db()->AddFavicon(
       favicon_url1, IconType::kFavicon,
-      base::RefCountedBytes::TakeVector(&data), FaviconBitmapType::ON_VISIT,
-      base::Time::Now(), gfx::Size());
+      base::MakeRefCounted<base::RefCountedBytes>(std::move(data)),
+      FaviconBitmapType::ON_VISIT, base::Time::Now(), gfx::Size());
   URLRow row1(GURL("http://www.google.com/"));
   row1.set_visit_count(1);
   row1.set_last_visit(base::Time::Now());

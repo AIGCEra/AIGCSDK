@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type {PrintPreviewDestinationSelectElement} from 'tangram://print/print_preview.js';
-import {Destination, DestinationOrigin, getSelectDropdownBackground, IronMeta} from 'tangram://print/print_preview.js';
+import {Destination, DestinationOrigin, getSelectDropdownBackground, IconsetMap} from 'tangram://print/print_preview.js';
 import {assertEquals} from 'tangram://webui-test/chai_assert.js';
 import {waitAfterNextRender} from 'tangram://webui-test/polymer_test_util.js';
 
@@ -13,8 +13,6 @@ suite('DestinationSelectTest', function() {
   let destinationSelect: PrintPreviewDestinationSelectElement;
 
   let recentDestinationList: Destination[] = [];
-
-  const meta = new IronMeta({type: 'iconset', value: undefined});
 
   setup(function() {
     document.body.innerHTML = window.trustedTypes!.emptyHTML;
@@ -44,7 +42,8 @@ suite('DestinationSelectTest', function() {
     const icon =
         selectEl.style.getPropertyValue('background-image').replace(/ /gi, '');
     const expected = getSelectDropdownBackground(
-        meta.byKey('print-preview'), expectedIcon, destinationSelect);
+        IconsetMap.getInstance().get('print-preview')!, expectedIcon,
+        destinationSelect);
     assertEquals(expected, icon);
   }
 

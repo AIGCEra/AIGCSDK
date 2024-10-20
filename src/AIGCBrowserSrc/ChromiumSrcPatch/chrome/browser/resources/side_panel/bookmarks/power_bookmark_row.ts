@@ -7,7 +7,7 @@ import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_expand_button/cr_expand_button.js';
 import 'tangram://resources/cr_elements/cr_input/cr_input.js';
 import 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';
-import 'tangram://resources/polymer/v3_0/iron-icon/iron-icon.js';
+import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 
 import {CrLitElement} from '//resources/lit/v3_0/lit.rollup.js';
 import type {PropertyValues} from '//resources/lit/v3_0/lit.rollup.js';
@@ -16,11 +16,11 @@ import type {CrInputElement} from 'tangram://resources/cr_elements/cr_input/cr_i
 import type {CrUrlListItemElement} from 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';
 import {CrUrlListItemSize} from 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
-import {getFolderLabel} from './power_bookmarks_utils.js';
 
 import {getCss} from './power_bookmark_row.css.js';
 import {getHtml} from './power_bookmark_row.html.js';
 import type {PowerBookmarksService} from './power_bookmarks_service.js';
+import {getFolderLabel} from './power_bookmarks_utils.js';
 
 export const NESTED_BOOKMARKS_BASE_MARGIN = 45;
 export const NESTED_BOOKMARKS_MARGIN_PER_DEPTH = 17;

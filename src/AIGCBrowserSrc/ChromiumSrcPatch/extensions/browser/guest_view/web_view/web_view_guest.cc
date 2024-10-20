@@ -351,7 +351,7 @@ void WebViewGuest::CreateWebContents(std::unique_ptr<GuestViewBase> owned_this,
   if (!base::IsStringUTF8(storage_partition_id)) {
     bad_message::ReceivedBadMessage(owner_render_process_host,
                                     bad_message::WVG_PARTITION_ID_NOT_UTF8);
-    std::move(callback).Run(std::move(owned_this), nullptr);
+    RejectGuestCreation(std::move(owned_this), std::move(callback));
     return;
   }
 
@@ -369,7 +369,7 @@ void WebViewGuest::CreateWebContentsWithStoragePartition(
     WebContentsCreatedCallback callback,
     std::optional<content::StoragePartitionConfig> partition_config) {
   if (!partition_config.has_value()) {
-    std::move(callback).Run(std::move(owned_this), nullptr);
+    RejectGuestCreation(std::move(owned_this), std::move(callback));
     return;
   }
 
@@ -1604,6 +1604,13 @@ void WebViewGuest::LoadURLWithParams(
            url.scheme()) &&
        !url.SchemeIs(url::kAboutScheme)) ||
       url.SchemeIs(url::kJavaScriptScheme);
+
+  // Check for delegates that may block access to specific schemes, such as
+  // Controlled Frame.
+  if (web_view_guest_delegate_ &&
+      web_view_guest_delegate_->NavigateToURLShouldBlock(url)) {
+    scheme_is_blocked = true;
+  }
 
   // Do not allow navigating a guest to schemes other than known safe schemes.
   // This will block the embedder trying to load unwanted schemes, e.g.

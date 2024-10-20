@@ -24,11 +24,11 @@
 #include "base/task/sequenced_task_runner.h"
 #include "base/time/time.h"
 #include "base/values.h"
-#include "chrome/browser/browser_features.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/certificate_viewer.h"
 #include "chrome/browser/devtools/chrome_devtools_manager_delegate.h"
 #include "chrome/browser/devtools/devtools_eye_dropper.h"
+#include "chrome/browser/devtools/features.h"
 #include "chrome/browser/devtools/process_sharing_infobar_delegate.h"
 #include "chrome/browser/file_select_helper.h"
 #include "chrome/browser/infobars/confirm_infobar_creator.h"
@@ -412,6 +412,14 @@ class DevToolsWindow::Throttle : public content::NavigationThrottle {
  private:
   raw_ptr<DevToolsWindow> devtools_window_;
 };
+
+void DevToolsWindow::MainWebContentsObserver::RenderFrameHostChanged(
+    content::RenderFrameHost* old_frame,
+    content::RenderFrameHost* new_frame) {
+  window_->MainWebContentRenderFrameHostChanged(old_frame, new_frame);
+}
+
+DevToolsWindow::MainWebContentsObserver::~MainWebContentsObserver() = default;
 
 // Helper class that holds the owned main WebContents for the docked
 // devtools window and maintains a keepalive object that keeps the browser
@@ -807,9 +815,7 @@ namespace {
 
 scoped_refptr<DevToolsAgentHost> GetOrCreateDevToolsHostForWebContents(
     WebContents* wc) {
-  return base::FeatureList::IsEnabled(::features::kDevToolsTabTarget)
-             ? DevToolsAgentHost::GetOrCreateForTab(wc)
-             : DevToolsAgentHost::GetOrCreateFor(wc);
+  return DevToolsAgentHost::GetOrCreateForTab(wc);
 }
 
 }  // namespace
@@ -1123,6 +1129,7 @@ DevToolsWindow::DevToolsWindow(FrontendType frontend_type,
     : frontend_type_(frontend_type),
       profile_(profile),
       main_web_contents_(main_web_contents.get()),
+      main_web_contents_observer_(*main_web_contents_, *this),
       toolbox_web_contents_(nullptr),
       bindings_(bindings),
       browser_(nullptr),
@@ -1273,14 +1280,11 @@ GURL DevToolsWindow::GetDevToolsURL(Profile* profile,
                             : "&remoteFrontend=true");
   switch (frontend_type) {
     case kFrontendDefault:
-      url = kDefaultFrontendURL + remote_base;
+      url = kDefaultFrontendURL + remote_base + "&targetType=tab";
       if (can_dock)
         url += "&can_dock=true";
       if (!panel.empty())
         url += "&panel=" + panel;
-      if (base::FeatureList::IsEnabled(::features::kDevToolsTabTarget)) {
-        url += "&targetType=tab";
-      }
       break;
     case kFrontendWorker:
       url = kWorkerFrontendURL + remote_base;
@@ -2039,4 +2043,16 @@ void DevToolsWindow::OnInfoBarRemoved(infobars::InfoBar* infobar,
 
 void DevToolsWindow::PrimaryPageChanged(content::Page& page) {
   MaybeShowSharedProcessInfobar();
+}
+
+void DevToolsWindow::MainWebContentRenderFrameHostChanged(
+    content::RenderFrameHost* old_frame,
+    content::RenderFrameHost* new_frame) {
+  DevToolsUIBindings* new_bindings =
+      DevToolsUIBindings::ForWebContents(main_web_contents_);
+  if (!new_bindings) {
+    return;
+  }
+  bindings_->TransferDelegate(*new_bindings);
+  bindings_ = new_bindings;
 }

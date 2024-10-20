@@ -131,7 +131,7 @@ GURL SanitizeURL(const GURL& url) {
   remove_params.ClearPassword();
   // tangram:// and about: URLs params are never used for navigation, only to
   // prepopulate data on the page, so don't include their params.
-  if (url.SchemeIs(url::kAboutScheme) || url.SchemeIs("tangram")) {
+  if (url.SchemeIs(url::kAboutScheme) || url.SchemeIs("chrome")) {
     remove_params.ClearQuery();
   }
   if (url.SchemeIs(kExtensionScheme)) {

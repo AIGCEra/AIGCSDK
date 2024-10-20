@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import 'tangram://resources/cr_components/localized_link/localized_link.js';
+import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
-import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
-import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import 'tangram://resources/cr_elements/cr_radio_group/cr_radio_group.js';
 import 'tangram://resources/cr_elements/cr_radio_button/cr_radio_button.js';
 import './strings.m.js';

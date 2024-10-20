@@ -264,7 +264,7 @@ std::set<RTCPeerConnectionHandler*>* GetPeerConnectionHandlers() {
 // Counts the number of senders that have |stream_id| as an associated stream.
 size_t GetLocalStreamUsageCount(
     const Vector<std::unique_ptr<blink::RTCRtpSenderImpl>>& rtp_senders,
-    const std::string stream_id) {
+    const std::string& stream_id) {
   size_t usage_count = 0;
   for (const auto& sender : rtp_senders) {
     for (const auto& sender_stream_id : sender->state().stream_ids()) {
@@ -822,6 +822,8 @@ bool RTCPeerConnectionHandler::Initialize(
 
   // Apply 40 ms worth of bursting. See webrtc::TaskQueuePacedSender.
   configuration_.pacer_burst_interval = webrtc::TimeDelta::Millis(40);
+
+  configuration_.set_stats_timestamp_with_environment_clock(true);
 
   peer_connection_observer_ =
       MakeGarbageCollected<Observer>(weak_factory_.GetWeakPtr(), task_runner_);

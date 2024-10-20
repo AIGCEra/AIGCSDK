@@ -248,6 +248,13 @@ const char kSecSharedStorageWritableRequestHeaderKey[] =
 
 constexpr char kNavigationRequestScope[] = "NavigationRequestScope";
 
+// Flag to control whether redirect URLs are being sanitized before sending
+// them to the renderer process as part of the navigation.
+// See https://crbug.com/40095391.
+BASE_FEATURE(kSanitizeRedirectUrlsDuringNavigation,
+             "SanitizeRedirectUrlsDuringNavigation",
+             base::FEATURE_ENABLED_BY_DEFAULT);
+
 // Denotes the type of user agent string value sent in the User-Agent request
 // header.
 //
@@ -464,8 +471,8 @@ bool ShouldPropagateUserActivation(const url::Origin& previous_origin,
 // for BackForward/Reload/NewNavigation variants.
 //
 // kMaxTime and kBuckets constants are consistent with
-// UMA_HISTOGRAM_MEDIUM_TIMES, but a custom kMinTime is used for high fidelity
-// near the low end of measured values.
+// UmaHistogramMediumTimes, but a custom kMinTime is used for high
+// fidelity near the low end of measured values.
 //
 // TODO(csharrison,nasko): This macro is incorrect for subframe navigations,
 // which will only have subframe-specific transition types. This means that all
@@ -1709,10 +1716,10 @@ NavigationRequest::NavigationRequest(
       embedder_shared_storage_context_(embedder_shared_storage_context),
       has_ad_auction_headers_attribute_(frame_tree_node->ad_auction_headers()),
       request_method_(common_params_->method) {
-  TRACE_EVENT_WITH_FLOW0("navigation", "NavigationRequest::NavigationRequest",
+  TRACE_EVENT_WITH_FLOW1("navigation", "NavigationRequest::NavigationRequest",
                          TRACE_ID_WITH_SCOPE(kNavigationRequestScope,
                                              TRACE_ID_LOCAL(navigation_id_)),
-                         TRACE_EVENT_FLAG_FLOW_OUT);
+                         TRACE_EVENT_FLAG_FLOW_OUT, "navigation_request", this);
   CHECK(!common_params_->initiator_base_url ||
         !common_params_->initiator_base_url->is_empty());
   DCHECK(!blink::IsRendererDebugURL(common_params_->url));
@@ -1736,8 +1743,6 @@ NavigationRequest::NavigationRequest(
   // Ensure the blink::RuntimeFeatureStateContext is initialized.
   runtime_feature_state_context_ = blink::RuntimeFeatureStateContext();
 
-  TRACE_EVENT1("navigation", "NavigationRequest::NavigationRequest",
-               "navigation_request", this);
   TRACE_EVENT_NESTABLE_ASYNC_BEGIN1("navigation", "NavigationRequest",
                                     navigation_id_, "navigation_request", this);
   TRACE_EVENT_NESTABLE_ASYNC_BEGIN0("navigation", "Initializing",
@@ -2057,21 +2062,18 @@ NavigationRequest::NavigationRequest(
     // requests will be merged into this preflight request in
     // `ServiceWorkerRegistry::FindRegistrationForClientUrl()` and
     // `ServiceWorkerRegistry::RunFindRegistrationCallbacks()` later.
-    if (base::FeatureList::IsEnabled(
-            kServiceWorkerMergeFindRegistrationForClientUrl)) {
-      if (ServiceWorkerContext* context =
-              frame_tree_node_->navigator()
-                  .controller()
-                  .GetBrowserContext()
-                  ->GetStoragePartition(site_info_.storage_partition_config())
-                  ->GetServiceWorkerContext()) {
-        const blink::StorageKey key = blink::StorageKey::CreateFirstParty(
-            GetTentativeOriginAtRequestTime());
-        if (context->MaybeHasRegistrationForStorageKey(key)) {
-          // `CheckHasServiceWorker` calls `FindRegistrationForClientUrl`
-          // internally.
-          context->CheckHasServiceWorker(GetURL(), key, base::DoNothing());
-        }
+    if (ServiceWorkerContext* context =
+            frame_tree_node_->navigator()
+                .controller()
+                .GetBrowserContext()
+                ->GetStoragePartition(site_info_.storage_partition_config())
+                ->GetServiceWorkerContext()) {
+      const blink::StorageKey key = blink::StorageKey::CreateFirstParty(
+          GetTentativeOriginAtRequestTime());
+      if (context->MaybeHasRegistrationForStorageKey(key)) {
+        // `CheckHasServiceWorker` calls `FindRegistrationForClientUrl`
+        // internally.
+        context->CheckHasServiceWorker(GetURL(), key, base::DoNothing());
       }
     }
 
@@ -5202,10 +5204,18 @@ void NavigationRequest::OnStartChecksComplete(
     ServiceWorkerContextWrapper* service_worker_context =
         static_cast<ServiceWorkerContextWrapper*>(
             partition->GetServiceWorkerContext());
+    std::string fetch_event_client_id;
+    // TODO(crbug.com/368087661): According to the spec this should be fetch
+    // request's client but it is not here in the implementation.
+    if (auto client = frame_tree_node_->current_frame_host()
+                          ->GetLastCommittedServiceWorkerClient()) {
+      fetch_event_client_id = client->client_uuid();
+    }
     service_worker_handle_ = std::make_unique<ServiceWorkerMainResourceHandle>(
         service_worker_context,
         base::BindRepeating(&NavigationRequest::OnServiceWorkerAccessed,
-                            weak_factory_.GetWeakPtr()));
+                            weak_factory_.GetWeakPtr()),
+        std::move(fetch_event_client_id));
   }
 
   // Mark the fetch_start (Navigation Timing API).
@@ -6316,6 +6326,23 @@ void NavigationRequest::CommitNavigation() {
   if (!subresource_loader_params_.prefetched_signed_exchanges.empty()) {
     commit_params->prefetched_signed_exchanges =
         std::move(subresource_loader_params_.prefetched_signed_exchanges);
+  }
+
+  // TODO(https://crbug.com/40095391): Convert to CHECK if it proves to be
+  // consistently upheld condition.
+  DUMP_WILL_BE_CHECK(commit_params->redirect_response.size() ==
+                     commit_params->redirect_infos.size());
+  if (base::FeatureList::IsEnabled(kSanitizeRedirectUrlsDuringNavigation)) {
+    // Before sending the commit parameters to the renderer process, sanitize
+    // the redirect URLs to avoid leaking pontentially sensitive data into
+    // processes which are cross-site. There is no dependency on the
+    // cross-site-ness, therefore just sanitize unilaterally.
+    for (auto redirect : commit_params->redirect_infos) {
+      redirect.new_url = redirect.new_url.DeprecatedGetOriginAsURL();
+    }
+    for (auto redirect : commit_params->redirects) {
+      redirect = redirect.DeprecatedGetOriginAsURL();
+    }
   }
 
   GetRenderFrameHost()->CommitNavigation(
@@ -8082,7 +8109,8 @@ void NavigationRequest::ReadyToCommitNavigation(bool is_error) {
 
   commit_params_->is_load_data_with_base_url = IsLoadDataWithBaseURL();
 
-  // Set origin_to_commit for:
+  // Set origin_to_commit for all cases if kUseBrowserCalculatedOrigin is
+  // enabled, and for these two cases otherwise:
   // 1) Error pages, which should always commit in an opaque origin (with the
   // precursor reflecting the destination URL).
   // 2) data: URLs, which should also be opaque.
@@ -8096,10 +8124,13 @@ void NavigationRequest::ReadyToCommitNavigation(bool is_error) {
   // lead to ambiguous cases where multiple data: SiteInstances will be in the
   // same group. However, when the base URL is empty, LoadDataWithBaseURL is
   // treated like a regular data: URL.
-  if (is_error || (common_params_->url.SchemeIs(url::kDataScheme) &&
-                   !IsLoadDataWithBaseURL())) {
+  if (base::FeatureList::IsEnabled(features::kUseBrowserCalculatedOrigin) ||
+      is_error ||
+      (common_params_->url.SchemeIs(url::kDataScheme) &&
+       !IsLoadDataWithBaseURL())) {
     commit_params_->origin_to_commit = origin_to_commit;
-    CHECK(!is_error || commit_params_->origin_to_commit->opaque());
+    CHECK(base::FeatureList::IsEnabled(features::kUseBrowserCalculatedOrigin) ||
+          !is_error || origin_to_commit->opaque());
   }
 
   if (!IsSameDocument()) {
@@ -8327,7 +8358,9 @@ NavigationRequest::GetOriginForURLLoaderFactoryAfterResponseWithDebugInfo() {
 
   // MHTML documents should commit as an opaque origin. They should not be able
   // to make network request on behalf of the real origin.
-  DCHECK(!IsMhtmlOrSubframe() || origin_with_debug_info.first.opaque());
+  // TODO(crbug.com/370979008): Migrate to CHECK.
+  DUMP_WILL_BE_CHECK(!IsMhtmlOrSubframe() ||
+                     origin_with_debug_info.first.opaque());
 
   // If the target of this navigation will be rendered in a RenderFrameHost,
   // then verify that the chosen origin is allowed to be accessed from that
@@ -8472,7 +8505,10 @@ void NavigationRequest::RestartCommitTimeout() {
 void NavigationRequest::OnCommitTimeout() {
   DCHECK_EQ(READY_TO_COMMIT, state_);
   render_process_blocked_state_changed_subscription_ = {};
+
   GetRenderFrameHost()->GetRenderWidgetHost()->RendererIsUnresponsive(
+      RenderWidgetHostImpl::RendererIsUnresponsiveReason::
+          kNavigationRequestCommitTimeout,
       base::BindRepeating(&NavigationRequest::RestartCommitTimeout,
                           weak_factory_.GetWeakPtr()));
 }
@@ -10183,29 +10219,24 @@ NavigationRequest::ComputeCrossOriginIsolationKey() {
     return std::nullopt;
   }
 
-  // If the Document-Isolation-Policy value is "isolate-and-credentialless",
-  // return an empty CrossOriginIsolationKey. Subresource checks have not been
-  // implemented in this mode yet, so it is not safe to make the document
-  // cross-origin isolated in this case.
-  // TODO(crbug.com/349792240): Support credentialless mode.
-  if (policy_container_builder_->FinalPolicies()
-          .document_isolation_policy.value ==
-      network::mojom::DocumentIsolationPolicyValue::kIsolateAndCredentialless) {
-    return std::nullopt;
-  }
-
   // The document we're navigating to has a DocumentIsolationPolicy of
-  // "isolate-and-require-corp". This means that the document requested
-  // crossOriginIsolation, so return a cross-origin isolation key with the
-  // current origin. Its cross-origin isolation mode depends on the capabilities
-  // of the platform.  Currently, we only support a cross-origin isolation mode
-  // of kConcrete and platforms with full Site Isolation.
+  // "isolate-and-require-corp" or "isolate-and-credentialless". This means that
+  // the document requested crossOriginIsolation, so return a cross-origin
+  // isolation key with the current origin. Its cross-origin isolation mode
+  // depends on the capabilities of the platform.  Currently, we only support a
+  // cross-origin isolation mode of kConcrete and platforms with full Site
+  // Isolation.
   // TODO(crbug.com/342364564): Support platforms that do not
   // support OOPIF and return an AgentClusterKey with a CrossOriginIsolationKey
   // that has a kLogical cross-origin isolation mode.
   CHECK(policy_container_builder_->FinalPolicies()
-            .document_isolation_policy.value ==
-        network::mojom::DocumentIsolationPolicyValue::kIsolateAndRequireCorp);
+                .document_isolation_policy.value ==
+            network::mojom::DocumentIsolationPolicyValue::
+                kIsolateAndRequireCorp ||
+        policy_container_builder_->FinalPolicies()
+                .document_isolation_policy.value ==
+            network::mojom::DocumentIsolationPolicyValue::
+                kIsolateAndCredentialless);
 
   // If the navigation doesn't have an origin, we cannot create a
   // CrossOriginIsolationKey for it, since it must be tied to an origin.
@@ -10981,21 +11012,6 @@ void NavigationRequest::SanitizeDocumentIsolationPolicyHeader() {
   // enabled.
   if (!base::FeatureList::IsEnabled(
           network::features::kDocumentIsolationPolicy)) {
-    response_head_->parsed_headers->document_isolation_policy =
-        network::DocumentIsolationPolicy();
-    return;
-  }
-
-  // Currently, we don't support Document-Isolation-Policy
-  // 'isolate-and-credentialless'. Set Document-Isolation-Policy to its default
-  // value if a credentialless header has been sent.
-  if (response_head_->parsed_headers->document_isolation_policy.value ==
-          network::mojom::DocumentIsolationPolicyValue::
-              kIsolateAndCredentialless ||
-      response_head_->parsed_headers->document_isolation_policy
-              .report_only_value ==
-          network::mojom::DocumentIsolationPolicyValue::
-              kIsolateAndCredentialless) {
     response_head_->parsed_headers->document_isolation_policy =
         network::DocumentIsolationPolicy();
     return;

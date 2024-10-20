@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar_selection_overlay.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import './shared_style.css.js';
 import './strings.m.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar.js';

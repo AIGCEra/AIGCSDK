@@ -11,6 +11,9 @@ import type {CrButtonElement} from 'tangram://resources/cr_elements/cr_button/cr
 import type {CrIconButtonElement} from 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import {I18nMixin} from 'tangram://resources/cr_elements/i18n_mixin.js';
 import {assertNotReached} from 'tangram://resources/js/assert.js';
+// <if expr="not is_chromeos">
+import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
+// </if>
 import {sanitizeInnerHtml} from 'tangram://resources/js/parse_html_subset.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 
@@ -126,6 +129,13 @@ export class PromoCardElement extends PromoCardElementBase {
         recordPromoCardAction(PromoCardMetricId.RELAUNCH_CHROME);
         break;
       case PromoCardId.MOVE_PASSWORDS:
+        // <if expr="not is_chromeos">
+        if (loadTimeData.getBoolean('isBatchUploadDesktopEnabled')) {
+          PromoCardsProxyImpl.getInstance().openBatchUpload();
+          return;
+        }
+        // </if>
+
         this.dispatchEvent(new CustomEvent(
             'move-passwords-clicked', {bubbles: true, composed: true}));
         recordPromoCardAction(PromoCardMetricId.MOVE_PASSWORDS);

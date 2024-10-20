@@ -7,7 +7,7 @@ import type {ExtensionsManagerElement} from 'tangram://extensions/extensions.js'
 import {navigation, Page, Service} from 'tangram://extensions/extensions.js';
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
-import {eventToPromise} from 'tangram://webui-test/test_util.js';
+import {eventToPromise, microtasksFinished} from 'tangram://webui-test/test_util.js';
 
 interface ChromeEventWithDispatch extends
     ChromeEvent<(data: chrome.developerPrivate.EventData) => void> {
@@ -135,7 +135,7 @@ suite('ExtensionManagerTest', function() {
   test('CloseDrawerOnNarrowModeExit', async function() {
     manager.$.toolbar.narrow = true;
     const toolbar = manager.$.toolbar.$.toolbar;
-    await toolbar.updateComplete;
+    await microtasksFinished();
     toolbar.shadowRoot!.querySelector<HTMLElement>('#menuButton')!.click();
 
     await eventToPromise('cr-drawer-opened', manager);

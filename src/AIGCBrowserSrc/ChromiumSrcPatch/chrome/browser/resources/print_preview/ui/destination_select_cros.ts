@@ -5,7 +5,6 @@
 import 'tangram://resources/cr_elements/cr_hidden_style.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/js/util.js';
-import 'tangram://resources/polymer/v3_0/iron-iconset-svg/iron-iconset-svg.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/polymer/v3_0/iron-media-query/iron-media-query.js';
 import './destination_dropdown_cros.js';

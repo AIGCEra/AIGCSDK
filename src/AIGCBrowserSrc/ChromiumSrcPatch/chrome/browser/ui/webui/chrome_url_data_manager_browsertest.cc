@@ -394,7 +394,6 @@ static constexpr const char* const kChromeUrls[] = {
     // quickly navigating away cause DCHECK failure.
     // "tangram://sync-confirmation",
     "tangram://sync-internals",
-    "tangram://syncfs-internals",
     "tangram://system",
     "tangram://tab-search.top-chrome",
     // TODO(crbug.com/40137562): Navigating to tangram://tab-strip and quickly

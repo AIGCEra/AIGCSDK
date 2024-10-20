@@ -260,6 +260,7 @@ void RegisterProfilePrefs(PrefRegistrySimple* registry) {
                                 false);
   registry->RegisterBooleanPref(
       prefs::kSafeBrowsingScoutReportingEnabledWhenDeprecated, false);
+  registry->RegisterDictionaryPref(prefs::kExternalAppRedirectTimestamps);
 }
 
 const base::Value::Dict& GetExtensionTelemetryConfig(const PrefService& prefs) {
@@ -448,7 +449,7 @@ void GetPasswordProtectionLoginURLsPref(const PrefService& prefs,
     GURL login_url(value.GetString());
     // Skip invalid or none-http/https/chrome login URLs.
     if (login_url.is_valid() &&
-        (login_url.SchemeIsHTTPOrHTTPS() || login_url.SchemeIs("tangram"))) {
+        (login_url.SchemeIsHTTPOrHTTPS() || login_url.SchemeIs("chrome"))) {
       out_login_url_list->push_back(login_url);
     }
   }
@@ -465,7 +466,7 @@ bool MatchesPasswordProtectionLoginURL(const GURL& url,
   return MatchesURLList(url, login_urls);
 }
 
-bool MatchesURLList(const GURL& target_url, const std::vector<GURL> url_list) {
+bool MatchesURLList(const GURL& target_url, const std::vector<GURL>& url_list) {
   if (url_list.empty() || !target_url.is_valid()) {
     return false;
   }

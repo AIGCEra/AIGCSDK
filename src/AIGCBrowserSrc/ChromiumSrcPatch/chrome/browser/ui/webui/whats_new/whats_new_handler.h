@@ -27,33 +27,40 @@ class WhatsNewHandler : public whats_new::mojom::PageHandler {
   WhatsNewHandler(const WhatsNewHandler&) = delete;
   WhatsNewHandler& operator=(const WhatsNewHandler&) = delete;
 
-  // Returns whether the survey should be active for this user.
-  bool IsHaTSActivated();
-
-  // Gets the user's latest country.
-  virtual std::string GetLatestCountry();
-
  private:
   // whats_new::mojom::PageHandler
   void GetServerUrl(bool is_staging, GetServerUrlCallback callback) override;
   FRIEND_TEST_ALL_PREFIXES(WhatsNewHandlerTest, GetServerUrl);
   FRIEND_TEST_ALL_PREFIXES(WhatsNewHandlerTest, HistogramsAreEmitted);
-  FRIEND_TEST_ALL_PREFIXES(WhatsNewHandlerTestWithCountry,
-                           SurveyIsTriggeredInActiveCountries);
-  FRIEND_TEST_ALL_PREFIXES(WhatsNewHandlerTestWithCountry,
-                           AlternateSurveyIsTriggeredInActiveCountries);
 
   void RecordTimeToLoadContent(base::Time time) override;
   void RecordVersionPageLoaded(bool is_auto_open) override;
   void RecordEditionPageLoaded(const std::string& page_uid,
                                bool is_auto_open) override;
-  void RecordModuleImpression(const std::string& module_name,
-                              whats_new::mojom::ModulePosition) override;
+  void RecordModuleImpression(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
   void RecordExploreMoreToggled(bool expanded) override;
   void RecordScrollDepth(whats_new::mojom::ScrollDepth depth) override;
   void RecordTimeOnPage(base::TimeDelta time) override;
-  void RecordModuleLinkClicked(const std::string& module_name,
-                               whats_new::mojom::ModulePosition) override;
+  void RecordModuleLinkClicked(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
+  void RecordModuleVideoStarted(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
+  void RecordModuleVideoEnded(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
+  void RecordModulePlayClicked(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
+  void RecordModulePauseClicked(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
+  void RecordModuleRestartClicked(
+      const std::string& module_name,
+      whats_new::mojom::ModulePosition position) override;
   void RecordBrowserCommandExecuted() override;
 
   // Makes a request to show a HaTS survey.
@@ -62,13 +69,6 @@ class WhatsNewHandler : public whats_new::mojom::PageHandler {
   raw_ptr<Profile> profile_;
   raw_ptr<content::WebContents> web_contents_;
   base::Time navigation_start_time_;
-
-  // Testing only
-  void set_override_latest_country_for_testing(std::string_view country) {
-    override_latest_country_for_testing_ = country;
-  }
-  std::optional<std::string> override_latest_country_for_testing_ =
-      std::nullopt;
 
   // These are located at the end of the list of member variables to ensure the
   // WebUI page is disconnected before other members are destroyed.

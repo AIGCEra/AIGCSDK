@@ -75,7 +75,6 @@ bool WhatsNewUIConfig::IsWebUIEnabled(
 void WhatsNewUI::RegisterLocalStatePrefs(PrefRegistrySimple* registry) {
   registry->RegisterDictionaryPref(prefs::kWhatsNewEditionUsed);
   registry->RegisterListPref(prefs::kWhatsNewFirstEnabledOrder);
-  registry->RegisterIntegerPref(prefs::kWhatsNewHatsActivationThreshold, 100);
 }
 
 WhatsNewUI::WhatsNewUI(content::WebUI* web_ui)
@@ -146,6 +145,7 @@ void WhatsNewUI::CreateBrowserCommandHandler(
         supported_commands.end(),
         {
             browser_command::mojom::Command::kOpenPaymentsSettings,
+            browser_command::mojom::Command::KOpenHistorySearchSettings,
         });
   }
 

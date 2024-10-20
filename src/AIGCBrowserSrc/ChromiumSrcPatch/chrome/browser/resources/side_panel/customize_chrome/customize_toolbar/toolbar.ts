@@ -6,6 +6,9 @@ import 'tangram://customize-chrome-side-panel.top-chrome/shared/sp_heading.js';
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
 
 import type {SpHeadingElement} from 'tangram://customize-chrome-side-panel.top-chrome/shared/sp_heading.js';
+import type {CrA11yAnnouncerElement} from 'tangram://resources/cr_elements/cr_a11y_announcer/cr_a11y_announcer.js';
+import {getInstance as getAnnouncerInstance} from 'tangram://resources/cr_elements/cr_a11y_announcer/cr_a11y_announcer.js';
+import {I18nMixinLit} from 'tangram://resources/cr_elements/i18n_mixin_lit.js';
 import {WebUiListenerMixinLit} from 'tangram://resources/cr_elements/web_ui_listener_mixin_lit.js';
 import {assert} from 'tangram://resources/js/assert.js';
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
@@ -16,7 +19,7 @@ import {CustomizeToolbarApiProxy} from './customize_toolbar_api_proxy.js';
 import {getCss} from './toolbar.css.js';
 import {getHtml} from './toolbar.html.js';
 
-const ToolbarElementBase = WebUiListenerMixinLit(CrLitElement);
+const ToolbarElementBase = WebUiListenerMixinLit(I18nMixinLit(CrLitElement));
 
 export interface ToolbarElement {
   $: {
@@ -90,11 +93,13 @@ export class ToolbarElement extends ToolbarElementBase {
 
   protected onResetToDefaultClicked_() {
     this.handler_.resetToDefault();
+    const announcer = getAnnouncerInstance() as CrA11yAnnouncerElement;
+    announcer.announce(this.i18n('resetToDefaultButtonAnnouncement'));
   }
 
-  protected getActionToggleHandler_(actionId: number) {
-    return (event: CustomEvent<boolean>) =>
-               this.handler_.pinAction(actionId, event.detail);
+  protected getActionToggleHandler_(actionId: number, nextValue: boolean) {
+    return (_event: CustomEvent<boolean>) =>
+               this.handler_.pinAction(actionId, nextValue);
   }
 
   private setActionPinned_(actionId: number, pinned: boolean) {

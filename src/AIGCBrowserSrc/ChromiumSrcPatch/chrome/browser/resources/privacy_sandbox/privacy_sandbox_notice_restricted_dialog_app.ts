@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './shared_style.css.js';
 
@@ -33,9 +33,9 @@ export class PrivacySandboxNoticeRestrictedDialogAppElement extends
 
     this.resizeAndShowNativeDialog().then(() => {
       this.updateScrollableContents();
-      this.maybeShowMoreButton().then(
-          () => this.promptActionOccurred(
-              PrivacySandboxPromptAction.RESTRICTED_NOTICE_SHOWN));
+      this.promptActionOccurred(
+          PrivacySandboxPromptAction.RESTRICTED_NOTICE_SHOWN);
+      this.maybeShowMoreButton();
     });
   }
 

@@ -13,7 +13,7 @@ import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 // </if>
 import 'tangram://resources/cr_elements/cr_link_row/cr_link_row.js';
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import '/shared/settings/controls/cr_policy_pref_indicator.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';

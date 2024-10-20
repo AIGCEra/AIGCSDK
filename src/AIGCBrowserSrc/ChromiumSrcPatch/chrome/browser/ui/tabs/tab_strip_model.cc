@@ -254,22 +254,15 @@ void TabStripModel::RemoveObserver(TabStripModelObserver* observer) {
 }
 
 int TabStripModel::count() const {
-  return contents_data_->TabCountRecursive();
+  return contents_data_->TotalTabCount();
 }
 
 bool TabStripModel::empty() const {
-  return contents_data_->TabCountRecursive() == 0;
+  return contents_data_->TotalTabCount() == 0;
 }
 
 int TabStripModel::GetIndexOfTab(tabs::TabHandle tab_handle) const {
-  const tabs::TabModel* tab_model = tab_handle.Get();
-  if (tab_model == nullptr) {
-    return kNoTab;
-  }
-
-  std::optional<size_t> index_of_tab =
-      contents_data_->GetIndexOfTabRecursive(tab_model);
-  return index_of_tab.value_or(kNoTab);
+  return GetIndexOfTab(tab_handle.Get());
 }
 
 tabs::TabHandle TabStripModel::GetTabHandleAt(int index) const {
@@ -1151,14 +1144,17 @@ void TabStripModel::AddToGroupForRestore(const std::vector<int>& indices,
                                          const tab_groups::TabGroupId& group) {
   ReentrancyCheck reentrancy_check(&reentrancy_guard_);
 
-  if (!group_model_)
+  DCHECK(group_model_);
+  if (!group_model_) {
     return;
+  }
 
   const bool group_exists = group_model_->ContainsTabGroup(group);
-  if (group_exists)
+  if (group_exists) {
     AddToExistingGroupImpl(indices, group);
-  else
+  } else {
     AddToNewGroupImpl(indices, group);
+  }
 }
 
 void TabStripModel::RemoveFromGroup(const std::vector<int>& indices) {
@@ -1288,7 +1284,7 @@ std::u16string TabStripModel::GetTitleAt(int index) const {
 }
 
 int TabStripModel::GetTabCount() const {
-  return contents_data_->TabCountRecursive();
+  return contents_data_->TotalTabCount();
 }
 
 // Context menu functions.
@@ -1437,28 +1433,31 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
     }
 
     case CommandCloseTab: {
-      ReentrancyCheck reentrancy_check(&reentrancy_guard_);
-
       base::RecordAction(UserMetricsAction("TabContextMenu_CloseTab"));
-      ExecuteCloseTabsByIndicesCommand(GetIndicesForCommand(context_index));
+      ExecuteCloseTabsByIndicesCommand(
+          base::BindRepeating(&TabStripModel::GetIndicesForCommand,
+                              base::Unretained(this), context_index),
+          /*is_bulk_operation=*/false);
       break;
     }
 
     case CommandCloseOtherTabs: {
-      ReentrancyCheck reentrancy_check(&reentrancy_guard_);
-
       base::RecordAction(UserMetricsAction("TabContextMenu_CloseOtherTabs"));
       ExecuteCloseTabsByIndicesCommand(
-          GetIndicesClosedByCommand(context_index, command_id));
+          base::BindRepeating(&TabStripModel::GetIndicesClosedByCommand,
+                              base::Unretained(this), context_index,
+                              command_id),
+          /*is_bulk_operation=*/true);
       break;
     }
 
     case CommandCloseTabsToRight: {
-      ReentrancyCheck reentrancy_check(&reentrancy_guard_);
-
       base::RecordAction(UserMetricsAction("TabContextMenu_CloseTabsToRight"));
       ExecuteCloseTabsByIndicesCommand(
-          GetIndicesClosedByCommand(context_index, command_id));
+          base::BindRepeating(&TabStripModel::GetIndicesClosedByCommand,
+                              base::Unretained(this), context_index,
+                              command_id),
+          /*is_bulk_operation=*/true);
       break;
     }
 
@@ -1639,11 +1638,11 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       CHECK(service);
       UMA_HISTOGRAM_BOOLEAN("Tab.Organization.AllEntrypoints.Clicked", true);
       UMA_HISTOGRAM_BOOLEAN("Tab.Organization.TabContextMenu.Clicked", true);
-      browser->window()->NotifyPromoFeatureUsed(features::kTabOrganization);
+      browser->window()->NotifyNewBadgeFeatureUsed(features::kTabOrganization);
 
       service->RestartSessionAndShowUI(
           browser, TabOrganizationEntryPoint::kTabContextMenu,
-          GetWebContentsAt(context_index));
+          GetTabAtIndex(context_index));
       break;
     }
 
@@ -1678,12 +1677,22 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       // Closes all tabs except the pinned home tab.
       base::RecordAction(UserMetricsAction("TabContextMenu_CloseAllTabs"));
 
-      std::vector<int> indices;
-      for (int i = count() - 1; i > 0; --i) {
-        indices.push_back(i);
-      }
+      base::RepeatingCallback<std::vector<int>()> get_indices =
+          base::BindRepeating(
+              [](base::RepeatingCallback<int()> count) {
+                std::vector<int> indices;
+                for (int i = count.Run() - 1; i > 0; --i) {
+                  indices.push_back(i);
+                }
+                return indices;
+              },
+              base::BindRepeating(&TabStripModel::count,
+                                  base::Unretained(this)));
 
-      ExecuteCloseTabsByIndicesCommand(indices);
+      // This does not qualify as a bulk operation because no tabs
+      // remain in the tab strip this command originates from.
+      ExecuteCloseTabsByIndicesCommand(get_indices,
+                                       /*is_bulk_operation=*/false);
       break;
     }
 
@@ -1769,28 +1778,41 @@ TabStripModel::GetGroupsDestroyedFromRemovingIndices(
   return groups_to_delete;
 }
 
+void TabStripModel::ExecuteCloseTabsByIndices(
+    base::RepeatingCallback<std::vector<int>()> get_indices_to_close,
+    uint32_t close_types) {
+  ReentrancyCheck reentrancy_check(&reentrancy_guard_);
+  const std::vector<int> indices_to_close =
+      std::move(get_indices_to_close).Run();
+  CloseTabs(GetWebContentsesByIndices(indices_to_close), close_types);
+}
+
 void TabStripModel::ExecuteCloseTabsByIndicesCommand(
-    const std::vector<int>& indices_to_delete) {
+    base::RepeatingCallback<std::vector<int>()> get_indices_to_close,
+    bool is_bulk_operation) {
   std::vector<tab_groups::TabGroupId> groups_to_delete =
-      GetGroupsDestroyedFromRemovingIndices(indices_to_delete);
+      GetGroupsDestroyedFromRemovingIndices(get_indices_to_close.Run());
 
   // If there are groups that will be deleted by closing tabs from the context
   // menu, confirm the group deletion first, and then perform the close, either
   // through the callback provided to confirm, or directly if the Confirm is
-  // allowing a synchronous delete.
-  base::OnceCallback<void()> callback =
-      base::BindOnce(&TabStripModel::CloseTabs, base::Unretained(this),
-                     GetWebContentsesByIndices(indices_to_delete),
+  // allowing a synchronous delete. The delegate gets to decide if the
+  // groups will be deleted or closed based on where this is a bulk
+  // operation.
+  base::OnceCallback<void()> close_callback =
+      base::BindOnce(&TabStripModel::ExecuteCloseTabsByIndices,
+                     base::Unretained(this), get_indices_to_close,
                      TabCloseTypes::CLOSE_CREATE_HISTORICAL_TAB |
                          TabCloseTypes::CLOSE_USER_GESTURE);
+
   if (!groups_to_delete.empty()) {
-    // If the delegate returns false for confirming the destroy of groups
-    // that means that the user needs to make a decision about the
-    // destruction first. prevent CloseTabs from being called.
-    return delegate_->OnGroupsDestruction(groups_to_delete,
-                                          std::move(callback));
+    // The delegate decides whether to close or delete the groups,
+    // potentially prompting the user to decide what action to take.
+    // ExecuteCloseTabs may or may not be called as a result.
+    delegate_->OnGroupsDestruction(groups_to_delete, std::move(close_callback),
+                                   is_bulk_operation);
   } else {
-    std::move(callback).Run();
+    std::move(close_callback).Run();
   }
 }
 
@@ -2039,6 +2061,16 @@ int TabStripModel::InsertTabAtImpl(
   return index;
 }
 
+int TabStripModel::GetIndexOfTab(const tabs::TabModel* tab) const {
+  if (tab == nullptr) {
+    return kNoTab;
+  }
+
+  std::optional<size_t> index_of_tab =
+      contents_data_->GetIndexOfTabRecursive(tab);
+  return index_of_tab.value_or(kNoTab);
+}
+
 tabs::TabModel* TabStripModel::GetTabAtIndex(int index) const {
   return contents_data_->GetTabAtIndexRecursive(index);
 }
@@ -2101,8 +2133,8 @@ bool TabStripModel::CloseWebContentses(
   if (items.empty())
     return true;
 
-  for (size_t i = 0; i < items.size(); ++i) {
-    int index = GetIndexOfWebContents(items[i]);
+  for (WebContents* contents : items) {
+    const int index = GetIndexOfWebContents(contents);
     if (index == active_index() && !closing_all_) {
       GetTabAtIndex(active_index())
           ->WillEnterBackground(base::PassKey<TabStripModel>());
@@ -2851,11 +2883,11 @@ std::vector<std::pair<int, int>> TabStripModel::CalculateIncrementalTabMoves(
   int tab_destination_index = destination_index;
   for (int source_index : tab_indices) {
     if (source_index < tab_destination_index) {
-      source_and_target_indices_to_move_right.push_back(
-          {source_index, tab_destination_index++});
+      source_and_target_indices_to_move_right.emplace_back(
+          source_index, tab_destination_index++);
     } else {
-      source_and_target_indices_to_move_left.push_back(
-          {source_index, tab_destination_index++});
+      source_and_target_indices_to_move_left.emplace_back(
+          source_index, tab_destination_index++);
     }
   }
 

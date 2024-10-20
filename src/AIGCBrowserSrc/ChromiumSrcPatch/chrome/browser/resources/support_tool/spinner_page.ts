@@ -4,7 +4,7 @@
 
 import './support_tool_shared.css.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
-import 'tangram://resources/polymer/v3_0/paper-spinner/paper-spinner-lite.js';
+import 'tangram://resources/cr_elements/cr_spinner_style.css.js';
 
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
 

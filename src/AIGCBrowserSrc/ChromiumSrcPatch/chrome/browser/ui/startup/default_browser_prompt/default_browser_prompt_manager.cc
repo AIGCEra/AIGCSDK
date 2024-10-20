@@ -143,7 +143,7 @@ void DefaultBrowserPromptManager::CreateInfoBarForWebContents(
   }
   // end Add by TangramTeam
 
-  infobars::InfoBar *infobar = chrome::DefaultBrowserInfoBarDelegate::Create(
+  infobars::InfoBar *infobar = DefaultBrowserInfoBarDelegate::Create(
       infobars::ContentInfoBarManager::FromWebContents(web_contents), profile);
 
   if (infobar == nullptr) {

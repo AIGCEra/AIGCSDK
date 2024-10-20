@@ -46,7 +46,7 @@ export {PromoteUpdaterStatus} from './about_page/about_page_browser_proxy.js';
 // clang-format on
 
 export {SettingsAiInfoCardElement} from './ai_page/ai_info_card.js';
-export {FeatureOptInState, SettingsAiPageElement, SettingsAiPageFeaturePrefName} from './ai_page/ai_page.js';
+export {SettingsAiPageElement} from './ai_page/ai_page.js';
 export {AppearanceBrowserProxy, AppearanceBrowserProxyImpl} from './appearance_page/appearance_browser_proxy.js';
 export {SettingsAppearancePageElement, SystemTheme} from './appearance_page/appearance_page.js';
 export {HomeUrlInputElement} from './appearance_page/home_url_input.js';
@@ -117,6 +117,5 @@ export {SettingsMenuElement} from './settings_menu/settings_menu.js';
 export {SettingsSectionElement} from './settings_page/settings_section.js';
 export {SettingsUiElement} from './settings_ui/settings_ui.js';
 export {SiteFaviconElement} from './site_favicon.js';
-export {COMPOSE_PROACTIVE_NUDGE_DISABLED_SITES_PREF, COMPOSE_PROACTIVE_NUDGE_PREF, SettingsOfferWritingHelpPageElement} from './site_settings/offer_writing_help_page.js';
 export {convertDateToWindowsEpoch} from './time.js';
 export {TooltipMixin, TooltipMixinInterface} from './tooltip_mixin.js';

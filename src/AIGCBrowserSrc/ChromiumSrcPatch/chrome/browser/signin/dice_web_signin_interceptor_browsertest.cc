@@ -259,7 +259,7 @@ class DiceWebSigninInterceptorBrowserTest : public SigninBrowserTestBase {
   }
 
   AccountInfo MakeAccountInfoAvailableAndUpdate(
-      const std::string email,
+      std::string_view email,
       const std::string& hosted_domain = "example.com") {
     AccountInfo account_info = identity_test_env()->MakeAccountAvailable(email);
     // Fill the account info, in particular for the hosted_domain field.
@@ -311,7 +311,8 @@ class DiceWebSigninInterceptorBrowserTest : public SigninBrowserTestBase {
 
   web_app::OsIntegrationTestOverrideBlockingRegistration faked_os_integration_;
 
-  std::map<content::BrowserContext*, FakeDiceWebSigninInterceptorDelegate*>
+  std::map<content::BrowserContext*,
+           raw_ptr<FakeDiceWebSigninInterceptorDelegate, CtnExperimental>>
       interceptor_delegates_;
 };
 

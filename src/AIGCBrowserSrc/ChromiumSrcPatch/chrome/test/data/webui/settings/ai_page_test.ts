@@ -5,18 +5,23 @@
 'tangram://settings/settings.js';
 
 import {flush} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
-import type {SettingsToggleButtonElement, SettingsAiPageElement, SettingsPrefsElement} from 'tangram://settings/settings.js';
-import {SettingsAiPageFeaturePrefName as PrefName, CrSettingsPrefs, loadTimeData, FeatureOptInState, resetRouterForTesting, Router, routes} from 'tangram://settings/settings.js';
+import {FeatureOptInState, SettingsAiPageFeaturePrefName as PrefName} from 'tangram://settings/lazy_load.js';
+import type {CrLinkRowElement, SettingsToggleButtonElement, SettingsAiPageElement, SettingsPrefsElement} from 'tangram://settings/settings.js';
+import {CrSettingsPrefs, loadTimeData, resetRouterForTesting, Router, routes, OpenWindowProxyImpl} from 'tangram://settings/settings.js';
 import {flushTasks} from 'tangram://webui-test/polymer_test_util.js';
 
 import {assertEquals, assertTrue, assertFalse} from 'tangram://webui-test/chai_assert.js';
+import {TestOpenWindowProxy} from 'tangram://webui-test/test_open_window_proxy.js';
 import {microtasksFinished, isChildVisible, isVisible} from 'tangram://webui-test/test_util.js';
 
 suite('ExperimentalAdvancedPage', function() {
+  let openWindowProxy: TestOpenWindowProxy;
   let page: SettingsAiPageElement;
   let settingsPrefs: SettingsPrefsElement;
 
   suiteSetup(function() {
+    openWindowProxy = new TestOpenWindowProxy();
+    OpenWindowProxyImpl.setInstance(openWindowProxy);
     settingsPrefs = document.createElement('settings-prefs');
     return CrSettingsPrefs.initialized;
   });
@@ -33,6 +38,7 @@ suite('ExperimentalAdvancedPage', function() {
     // Case 1, a subset of the controls should be visible.
     loadTimeData.overrideValues({
       showHistorySearchControl: false,
+      showCompareControl: true,
       showComposeControl: true,
       showTabOrganizationControl: false,
       showWallpaperSearchControl: false,
@@ -41,6 +47,7 @@ suite('ExperimentalAdvancedPage', function() {
     await createPage();
 
     assertFalse(isChildVisible(page, '#historySearchRowV2'));
+    assertTrue(isChildVisible(page, '#compareRowV2'));
     assertTrue(isChildVisible(page, '#composeRowV2'));
     assertFalse(isChildVisible(page, '#tabOrganizationRowV2'));
     assertFalse(isChildVisible(page, '#wallpaperSearchRowV2'));
@@ -54,6 +61,7 @@ suite('ExperimentalAdvancedPage', function() {
     // Case 2, a different subset of the controls should be visible.
     loadTimeData.overrideValues({
       showHistorySearchControl: true,
+      showCompareControl: false,
       showComposeControl: false,
       showTabOrganizationControl: true,
       showWallpaperSearchControl: true,
@@ -62,6 +70,7 @@ suite('ExperimentalAdvancedPage', function() {
     await createPage();
 
     assertTrue(isChildVisible(page, '#historySearchRowV2'));
+    assertFalse(isChildVisible(page, '#compareRowV2'));
     assertFalse(isChildVisible(page, '#composeRowV2'));
     assertTrue(isChildVisible(page, '#tabOrganizationRowV2'));
     assertTrue(isChildVisible(page, '#wallpaperSearchRowV2'));
@@ -71,6 +80,83 @@ suite('ExperimentalAdvancedPage', function() {
         page.shadowRoot!.querySelectorAll('settings-toggle-button');
     assertEquals(0, toggles2.length);
     assertFalse(isChildVisible(page, '#historySearchRow'));
+  });
+
+  test('historySearchRow', async () => {
+    loadTimeData.overrideValues({
+      showAdvancedFeaturesMainControl: true,
+      showHistorySearchControl: true,
+    });
+    resetRouterForTesting();
+    await createPage();
+
+    const historySearchRow =
+        page.shadowRoot!.querySelector<CrLinkRowElement>('#historySearchRowV2');
+
+    assertTrue(!!historySearchRow);
+    assertTrue(isVisible(historySearchRow));
+
+    page.setPrefValue(
+        PrefName.HISTORY_SEARCH, FeatureOptInState.NOT_INITIALIZED);
+    assertEquals(
+        loadTimeData.getString('historySearchSublabelOff'),
+        historySearchRow.subLabel);
+
+    page.setPrefValue(PrefName.HISTORY_SEARCH, FeatureOptInState.DISABLED);
+    assertEquals(
+        loadTimeData.getString('historySearchSublabelOff'),
+        historySearchRow.subLabel);
+
+    page.setPrefValue(PrefName.HISTORY_SEARCH, FeatureOptInState.ENABLED);
+    assertEquals(
+        loadTimeData.getString('historySearchSublabelOn'),
+        historySearchRow.subLabel);
+
+    historySearchRow.click();
+
+    const currentRoute = Router.getInstance().getCurrentRoute();
+    assertEquals(routes.HISTORY_SEARCH, currentRoute);
+    assertEquals(routes.AI, currentRoute.parent);
+  });
+
+  test('compareRow', async () => {
+    loadTimeData.overrideValues({
+      showAdvancedFeaturesMainControl: true,
+      showCompareControl: true,
+    });
+    resetRouterForTesting();
+    await createPage();
+
+    const compareRow =
+        page.shadowRoot!.querySelector<HTMLElement>('#compareRowV2');
+
+    assertTrue(!!compareRow);
+    assertTrue(isVisible(compareRow));
+    compareRow.click();
+
+    const currentRoute = Router.getInstance().getCurrentRoute();
+    assertEquals(routes.COMPARE, currentRoute);
+    assertEquals(routes.AI, currentRoute.parent);
+  });
+
+  test('composeRow', async () => {
+    loadTimeData.overrideValues({
+      showAdvancedFeaturesMainControl: true,
+      showComposeControl: true,
+    });
+    resetRouterForTesting();
+    await createPage();
+
+    const composeRow =
+        page.shadowRoot!.querySelector<HTMLElement>('#composeRowV2');
+
+    assertTrue(!!composeRow);
+    assertTrue(isVisible(composeRow));
+    composeRow.click();
+
+    const currentRoute = Router.getInstance().getCurrentRoute();
+    assertEquals(routes.OFFER_WRITING_HELP, currentRoute);
+    assertEquals(routes.AI, currentRoute.parent);
   });
 
   test('tabOrganizationRow', async () => {
@@ -89,6 +175,23 @@ suite('ExperimentalAdvancedPage', function() {
     tabOrganizationRow.click();
     assertEquals(
         routes.AI_TAB_ORGANIZATION, Router.getInstance().getCurrentRoute());
+  });
+
+  test('WallpaperSearchRow', async () => {
+    loadTimeData.overrideValues({
+      showWallpaperSearchControl: true,
+    });
+    resetRouterForTesting();
+    await createPage();
+
+    const wallpaperSearchRow =
+        page.shadowRoot!.querySelector<HTMLElement>('#wallpaperSearchRowV2');
+    assertTrue(!!wallpaperSearchRow);
+    assertTrue(isVisible(wallpaperSearchRow));
+
+    wallpaperSearchRow.click();
+    const url = await openWindowProxy.whenCalled('openUrl');
+    assertEquals(url, loadTimeData.getString('wallpaperSearchLearnMoreUrl'));
   });
 });
 
@@ -166,6 +269,7 @@ suite('ExperimentalAdvancedPageRefreshDisabled', () => {
 
     // V2 UI should be hidden if refresh flag is disabled.
     assertFalse(isChildVisible(page, '#historySearchRowV2'));
+    assertFalse(isChildVisible(page, '#compareRowV2'));
     assertFalse(isChildVisible(page, '#composeRowV2'));
     assertFalse(isChildVisible(page, '#tabOrganizationRowV2'));
     assertFalse(isChildVisible(page, '#wallpaperSearchRowV2'));
@@ -189,6 +293,7 @@ suite('ExperimentalAdvancedPageRefreshDisabled', () => {
 
     // V2 UI should be hidden if refresh flag is disabled.
     assertFalse(isChildVisible(page, '#historySearchRowV2'));
+    assertFalse(isChildVisible(page, '#compareRowV2'));
     assertFalse(isChildVisible(page, '#composeRowV2'));
     assertFalse(isChildVisible(page, '#tabOrganizationRowV2'));
     assertFalse(isChildVisible(page, '#wallpaperSearchRowV2'));

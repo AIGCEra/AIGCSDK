@@ -188,7 +188,7 @@
 #include "components/paint_preview/buildflags/buildflags.h"
 #include "components/permissions/permission_request_manager.h"
 #include "components/prefs/pref_service.h"
-#include "components/saved_tab_groups/tab_group_sync_service.h"
+#include "components/saved_tab_groups/public/tab_group_sync_service.h"
 #include "components/search/search.h"
 #include "components/sessions/content/session_tab_helper.h"
 #include "components/sessions/core/session_types.h"
@@ -242,6 +242,7 @@
 #include "third_party/blink/public/mojom/use_counter/metrics/web_feature.mojom.h"
 #include "third_party/blink/public/mojom/window_features/window_features.mojom.h"
 #include "ui/base/l10n/l10n_util.h"
+#include "ui/base/mojom/window_show_state.mojom.h"
 #include "ui/base/window_open_disposition.h"
 #include "ui/gfx/font_list.h"
 #include "ui/gfx/geometry/point.h"
@@ -403,10 +404,9 @@ bool ShouldShowCookieMigrationNoticeForBrowser(const Browser& browser) {
   return last_window_for_profile;
 }
 
-void UpdateTabGroupSessionMetadata(
-    Browser* browser,
-    const tab_groups::TabGroupId& group_id,
-    const std::optional<std::string> saved_group_id) {
+void UpdateTabGroupSessionMetadata(Browser* browser,
+                                   const tab_groups::TabGroupId& group_id,
+                                   std::optional<std::string> saved_group_id) {
   SessionService* const session_service =
       SessionServiceFactory::GetForProfile(browser->profile());
   if (!session_service) {
@@ -420,7 +420,7 @@ void UpdateTabGroupSessionMetadata(
           ->visual_data();
 
   session_service->SetTabGroupMetadata(browser->session_id(), group_id,
-                                       visual_data, saved_group_id);
+                                       visual_data, std::move(saved_group_id));
 }
 
 }  // namespace
@@ -676,6 +676,10 @@ Browser::~Browser() {
   features_.reset();
   ClearAllUserData();
 
+  // Destroy the deletion dialog before profile resets.
+  // (see https://crbug.com/357391254)
+  tab_group_deletion_dialog_controller_.reset();
+
   // Stop observing notifications and destroy the tab monitor before continuing
   // with destruction. Profile destruction will unload extensions and reentrant
   // calls to Browser:: should be avoided while it is being torn down.
@@ -847,6 +851,17 @@ std::u16string Browser::GetWindowTitleForTab(int index) const {
   }
 
   if (title.empty() && (is_type_normal() || is_type_popup())) {
+    title = CoreTabHelper::GetDefaultTitle();
+  }
+
+  return title;
+}
+
+std::u16string Browser::GetTitleForTab(int index) const {
+  std::u16string title = FormatTitleForDisplay(
+      tab_strip_model_->GetWebContentsAt(index)->GetTitle());
+
+  if (title.empty()) {
     title = CoreTabHelper::GetDefaultTitle();
   }
 
@@ -1140,6 +1155,11 @@ views::View* Browser::TopContainer() {
   return window_->GetTopContainer();
 }
 
+base::CallbackListSubscription Browser::RegisterActiveTabDidChange(
+    ActiveTabChangeCallback callback) {
+  return did_active_tab_change_callback_list_.Add(std::move(callback));
+}
+
 tabs::TabInterface* Browser::GetActiveTabInterface() {
   return tab_strip_model_->GetActiveTab();
 }
@@ -1179,8 +1199,12 @@ BrowserWindowInterface::Type Browser::GetType() const {
   return type_;
 }
 
-user_education::FeaturePromoController* Browser::GetFeaturePromoController() {
-  return window()->GetFeaturePromoController();
+BrowserUserEducationInterface* Browser::GetUserEducationInterface() {
+  return window();
+}
+
+web_app::AppBrowserController* Browser::GetAppBrowserController() {
+  return app_controller_.get();
 }
 
 void Browser::DidBecomeActive() {
@@ -2253,7 +2277,7 @@ void Browser::RestoreFromWebAPI() {
   window_->Restore();
 }
 
-ui::WindowShowState Browser::GetWindowShowState() const {
+ui::mojom::WindowShowState Browser::GetWindowShowState() const {
   return window_->GetWindowShowState();
 }
 
@@ -2458,6 +2482,11 @@ void Browser::RequestPointerLock(WebContents* web_contents,
 void Browser::LostPointerLock() {
   exclusive_access_manager_->pointer_lock_controller()
       ->ExitExclusiveAccessToPreviousState();
+}
+
+bool Browser::IsWaitingForPointerLockPrompt(WebContents* web_contents) {
+  return exclusive_access_manager_->pointer_lock_controller()
+      ->IsWaitingForPointerLockPrompt(web_contents);
 }
 
 void Browser::RequestKeyboardLock(WebContents* web_contents,
@@ -2825,6 +2854,7 @@ void Browser::OnActiveTabChanged(WebContents* old_contents,
   }
 
   SearchTabHelper::FromWebContents(new_contents)->OnTabActivated();
+  did_active_tab_change_callback_list_.Notify(this);
 }
 
 void Browser::OnTabMoved(int from_index, int to_index) {
@@ -2837,6 +2867,9 @@ void Browser::OnTabReplacedAt(WebContents* old_contents,
                               WebContents* new_contents,
                               int index) {
   bool was_active = index == tab_strip_model_->active_index();
+  if (was_active) {
+    did_active_tab_change_callback_list_.Notify(this);
+  }
   TabDetachedAtImpl(old_contents, was_active, DETACH_TYPE_REPLACE);
   exclusive_access_manager_->OnTabClosing(old_contents);
   SessionServiceBase* session_service =

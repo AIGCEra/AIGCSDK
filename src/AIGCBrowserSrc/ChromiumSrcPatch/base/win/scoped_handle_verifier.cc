@@ -21,7 +21,6 @@
 #include "base/win/base_win_buildflags.h"
 #include "base/win/current_module.h"
 #include "base/win/scoped_handle.h"
-#include "third_party/abseil-cpp/absl/base/attributes.h"
 
 // begin Add by TangramTeam
 #include "third_party/webruntime/UniverseForChromium.h"
@@ -43,7 +42,7 @@ namespace internal {
 namespace {
 
 ScopedHandleVerifier* g_active_verifier = nullptr;
-ABSL_CONST_INIT thread_local bool closing = false;
+constinit thread_local bool closing = false;
 using GetHandleVerifierFn = void* (*)();
 using HandleMap =
     std::unordered_map<HANDLE, ScopedHandleVerifierInfo, HandleHash>;

@@ -11,7 +11,7 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
-import 'tangram://resources/cr_elements/icons.html.js';
+import 'tangram://resources/cr_elements/icons_lit.html.js';
 import '../controls/settings_toggle_button.js';
 import '../icons.html.js';
 import '../settings_columned_section.css.js';
@@ -74,7 +74,7 @@ export class SettingsAutofillPredictionImprovementsSectionElement extends
   }
 
   prefs: {[key: string]: any};
-  private userAnnotationsEntries_: UserAnnotationsEntry[];
+  private userAnnotationsEntries_: UserAnnotationsEntry[] = [];
   private userAnnotationsManager_: UserAnnotationsManagerProxy =
       UserAnnotationsManagerProxyImpl.getInstance();
   private entryToDelete_?: UserAnnotationsEntry;
