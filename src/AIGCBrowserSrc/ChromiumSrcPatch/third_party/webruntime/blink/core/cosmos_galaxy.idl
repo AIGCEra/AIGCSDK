@@ -1,0 +1,11 @@
+
+[Exposed = Window] interface CosmosGalaxy : CosmosXobj {
+  // CosmosNode API
+  CosmosNode getXobj(DOMString clusterName,
+                     optional DOMString nodeName = "default");
+  CosmosNode getXobj(long nodeHandle);
+
+  // Event handler attributes
+  attribute EventHandler onXobjCreated;
+  attribute EventHandler onMdiChildActivate;
+};

@@ -1,0 +1,81 @@
+
+[Exposed = Window] interface Cosmos : CosmosXobj {
+  // Message API
+  void wait(boolean bwait);
+  void sendMessage(DOMString id, DOMString param1, DOMString param2,
+                   optional DOMString param3 = "",
+                   optional DOMString param4 = "",
+                   optional DOMString param5 = "");
+  void sendMessage(CosmosXobj msg, optional ApplicationCallback appcallback,
+                   optional boolean bwait = false);
+  void openUrl(DOMString url, long nBrowserWndOpenDisposition,
+               optional ApplicationCallback appcallback,
+               optional boolean bwait = false);
+  void Observe(DOMString key, DOMString strXml,
+               optional ApplicationCallback callback);
+  void Observe(DOMString key, Element elem,
+               optional ApplicationCallback callback);
+  void ObserveClient(DOMString key, DOMString strXml,
+                     optional ApplicationCallback callback);
+  void ObserveClient(DOMString key, Element elem,
+                     optional ApplicationCallback callback);
+
+  // DOM API
+  void defineElement(DOMString tagName, DOMString html);
+  void renderElement(DOMString tagName, DOMString html);
+
+  // CosmosNode API
+  CosmosXobj newVar(optional DOMString name = "default");
+  CosmosNode getXobj(Element elem, optional CosmosXobj grid);
+  CosmosNode getXobj(long long nodeHandle);
+  CosmosNode getXobj(DOMString galaxyName, optional DOMString clusterName = "",
+                     optional DOMString gridName = "");
+  CosmosGalaxy getGalaxy(DOMString wndName);
+  CosmosGalaxy getGalaxy(long long wndHandle);
+  void OnMessage(Element elem, DOMString eventName);
+  void OnMessage(Element elem, CosmosXobj msg, DOMString eventName);
+
+  // CosmosWinForm API
+  CosmosWinform InitWinForm(DOMString strFormXml, long long formHandle,
+                            optional ApplicationCallback callback);
+  CosmosWinform InitWinForm(Element elem, long long formHandle,
+                            optional ApplicationCallback callback);
+  void InitWinFormByUrl(DOMString url, long long formHandle,
+                        optional ApplicationCallback callback,
+                        optional boolean bwait = false);
+  CosmosWinform createWinForm(DOMString strFormXml, long FormType,
+                              optional ApplicationCallback callback);
+  CosmosWinform createWinForm(Element elem, long FormType,
+                              optional ApplicationCallback callback);
+  // Cosmos CLR API
+  CosmosXobj createObject(DOMString strObjXml,
+                          optional ApplicationCallback callback);
+  CosmosXobj createObject(Element elem, optional ApplicationCallback callback);
+
+  void RecalcLayoutWnd(long long hWndHandle, optional long delaytime = 0);
+  void ReDrawWnd(long long hWndHandle, optional long delaytime = 0);
+
+  [Affects = Nothing] getter CosmosXobj       ? getNamedItem(DOMString name);
+  [ RaisesException, CEReactions ] CosmosXobj ? setNamedItem(CosmosXobj var);
+  [ RaisesException, CEReactions ] void setNamedItem(DOMString name,
+                                                     CosmosXobj var);
+
+  [Replaceable] readonly attribute DOMString url;
+
+  // Event handler attributes
+  attribute EventHandler onXobjCreated;
+  attribute EventHandler onLoadCloudForm;
+  attribute EventHandler onLoadMdiCloudForm;
+  attribute EventHandler onInitWebRTApp;
+  attribute EventHandler onNewDocument;
+  attribute EventHandler onOpenDocument;
+  attribute EventHandler onCloseDocument;
+  attribute EventHandler onGalaxyCreated;
+  attribute EventHandler onCloudFormClosed;
+  attribute EventHandler onBindCLRObject;
+  attribute EventHandler onMdiChildActivate;
+  attribute EventHandler onMessageReceived;
+  attribute EventHandler onWebrtObjectCreated;
+  attribute EventHandler onCloudMessageForObject;
+  attribute EventHandler onWebrtMessageReceived;
+};
