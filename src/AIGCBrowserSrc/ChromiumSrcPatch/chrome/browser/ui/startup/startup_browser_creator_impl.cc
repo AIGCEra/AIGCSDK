@@ -75,6 +75,7 @@
 #include "third_party/webruntime/Markup.h"
 #include "third_party/webruntime/UniverseForChromium.h"
 #include "ui/views/win/hwnd_util.h"
+bool g_bBrowserInit = false;
 #endif
 // end Add by TangramTeam
 
@@ -368,10 +369,16 @@ void StartupBrowserCreatorImpl::Launch(
     if ((g_pSpaceTelescopeImpl &&
          g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER) ||
         process_startup == chrome::startup::IsProcessStartup::kNo) {
-      if (!bBrowserApp) {
-        launch_result =
-            DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
-      }
+        if (!bBrowserApp || g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER) {
+            if (g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER &&
+                g_bBrowserInit == false) {
+                g_bBrowserInit = true;
+            }
+            else {
+                launch_result =
+                    DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+            }
+        }
     }
   }
   //  end Add by TangramTeam
