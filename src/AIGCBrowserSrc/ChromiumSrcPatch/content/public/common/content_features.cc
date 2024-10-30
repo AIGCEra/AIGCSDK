@@ -501,6 +501,12 @@ BASE_FEATURE(kNetworkQualityEstimatorWebHoldback,
 // (activated by kUserAgentClientHint)
 BASE_FEATURE(kGreaseUACH, "GreaseUACH", base::FEATURE_ENABLED_BY_DEFAULT);
 
+// Whether GuestViews (see components/guest_view/README.md) are implemented
+// using MPArch inner pages. See https://crbug.com/40202416
+BASE_FEATURE(kGuestViewMPArch,
+             "GuestViewMPArch",
+             base::FEATURE_DISABLED_BY_DEFAULT);
+
 // See crbug.com/359623664
 BASE_FEATURE(kIdbPrioritizeForegroundClients,
              "IdbPrioritizeForegroundClients",
@@ -918,6 +924,14 @@ constexpr base::FeatureParam<double> kProcessPerSiteMainFrameTotalMemoryLimit{
 BASE_FEATURE(kServiceWorkerStaticRouter,
              "ServiceWorkerStaticRouter",
              base::FEATURE_ENABLED_BY_DEFAULT);
+
+// crbug.com/374606637: When this is enabled, race-network-and-fetch-hander will
+// prioritize the response processing for the network request over the
+// processing for the fetch handler.
+BASE_FEATURE(
+    kServiceWorkerStaticRouterRaceNetworkRequestPerformanceImprovement,
+    "ServiceWorkerStaticRouterRaceNetworkRequestPerformanceImprovement",
+    base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Run video capture service in the Browser process as opposed to a dedicated
 // utility process.

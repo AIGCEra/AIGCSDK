@@ -8,13 +8,13 @@ import 'tangram://resources/cr_elements/cr_icons.css.js';
 import 'tangram://resources/cr_elements/cr_link_row/cr_link_row.js';
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
 import 'tangram://resources/cr_elements/cr_tooltip/cr_tooltip.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/policy/cr_tooltip_icon.js';
 import 'tangram://resources/js/action_link.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './host_permissions_toggle_list.js';
 import './runtime_host_permissions.js';
-import './strings.m.js';
+import '/strings.m.js';
 import './toggle_row.js';
 
 import {AnchorAlignment} from 'tangram://resources/cr_elements/cr_action_menu/cr_action_menu.js';

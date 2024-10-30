@@ -4,10 +4,10 @@
 
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/js/util.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {getToastManager} from 'tangram://resources/cr_elements/cr_toast/cr_toast_manager.js';
 import type {CrToolbarElement} from 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar.js';

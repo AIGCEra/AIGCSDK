@@ -2677,6 +2677,7 @@ domain DOM
     enum
       first-line
       first-letter
+      check
       before
       after
       marker
@@ -8094,6 +8095,7 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
+      fenced-unpartitioned-storage-read
       focus-without-user-activation
       fullscreen
       frobulate
@@ -10713,6 +10715,7 @@ experimental domain Storage
       SignedInt64AsBase10 destinationLimitPriority
       AttributionReportingAggregatableDebugReportingConfig aggregatableDebugReportingConfig
       optional AttributionScopesData scopesData
+      integer maxEventLevelReports
 
   experimental type AttributionReportingSourceRegistrationResult extends string
     enum

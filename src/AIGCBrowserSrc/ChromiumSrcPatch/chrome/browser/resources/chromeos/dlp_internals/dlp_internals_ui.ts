@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'tangram://resources/cr_elements/cr_page_selector/cr_page_selector.js';
-import 'tangram://resources/cr_elements/cr_tabs/cr_tabs.js';
-import '//resources/cr_elements/cr_collapse/cr_collapse.js';
-import '//resources/cr_elements/cr_expand_button/cr_expand_button.js';
-import './strings.m.js';
+import '//resources/ash/common/cr_elements/cr_expand_button/cr_expand_button.js';
+import '//resources/ash/common/cr_elements/cr_tabs/cr_tabs.js';
+import '//resources/polymer/v3_0/iron-collapse/iron-collapse.js';
+import '//resources/polymer/v3_0/iron-pages/iron-pages.js';
+import '/strings.m.js';
 
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';

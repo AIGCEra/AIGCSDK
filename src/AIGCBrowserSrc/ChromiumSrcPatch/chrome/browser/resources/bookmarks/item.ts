@@ -6,7 +6,7 @@ import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_icons.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import './shared_style.css.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {CrIconButtonElement} from 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import {assert} from 'tangram://resources/js/assert.js';

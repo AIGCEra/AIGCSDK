@@ -4,7 +4,7 @@
 
 // clang-format off
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 
 import {getTrustedHTML} from 'tangram://resources/js/static_types.js';

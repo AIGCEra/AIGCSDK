@@ -13,6 +13,7 @@ import {I18nMixin} from 'tangram://resources/cr_elements/i18n_mixin.js';
 import {assertNotReached} from 'tangram://resources/js/assert.js';
 // <if expr="not is_chromeos">
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
+import {SyncBrowserProxyImpl} from '../sync_browser_proxy.js';
 // </if>
 import {sanitizeInnerHtml} from 'tangram://resources/js/parse_html_subset.js';
 import {PolymerElement} from 'tangram://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
@@ -33,7 +34,7 @@ export enum PromoCardId {
   ACCESS_ON_ANY_DEVICE = 'access_on_any_device_promo',
   RELAUNCH_CHROME = 'relaunch_chrome_promo',
   MOVE_PASSWORDS = 'move_passwords_promo',
-  SCREENLOCK_REAUTH = 'screenlock_reauth_promo',
+  SCREENLOCK_REAUTH = 'screenlock_reauth_promo',  // Obsolete
 }
 
 /**
@@ -49,7 +50,7 @@ enum PromoCardMetricId {
   UNUSED_ACCESS_ON_ANY_DEVICE = 3,
   RELAUNCH_CHROME = 4,
   MOVE_PASSWORDS = 5,
-  SCREENLOCK_REAUTH = 6,
+  // SCREENLOCK_REAUTH = 6, Obsolete
   // Must be last.
   COUNT = 7,
 }
@@ -112,7 +113,7 @@ export class PromoCardElement extends PromoCardElementBase {
     return sanitizeInnerHtml(this.promoCard.description);
   }
 
-  private async onActionButtonClick_() {
+  private onActionButtonClick_() {
     switch (this.promoCard.id) {
       case PromoCardId.CHECKUP:
         const params = new URLSearchParams();
@@ -131,7 +132,7 @@ export class PromoCardElement extends PromoCardElementBase {
       case PromoCardId.MOVE_PASSWORDS:
         // <if expr="not is_chromeos">
         if (loadTimeData.getBoolean('isBatchUploadDesktopEnabled')) {
-          PromoCardsProxyImpl.getInstance().openBatchUpload();
+          SyncBrowserProxyImpl.getInstance().openBatchUpload();
           return;
         }
         // </if>
@@ -140,18 +141,6 @@ export class PromoCardElement extends PromoCardElementBase {
             'move-passwords-clicked', {bubbles: true, composed: true}));
         recordPromoCardAction(PromoCardMetricId.MOVE_PASSWORDS);
         return;
-      case PromoCardId.SCREENLOCK_REAUTH:
-        recordPromoCardAction(PromoCardMetricId.SCREENLOCK_REAUTH);
-        await PasswordManagerImpl.getInstance()
-            .switchBiometricAuthBeforeFillingState()
-            .then(result => {
-              if (result) {
-                this.dispatchEvent(new CustomEvent(
-                    'biometric-auth-before-filling-enabled',
-                    {bubbles: true, composed: true}));
-              }
-            });
-        break;
       default:
         assertNotReached();
     }

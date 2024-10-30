@@ -355,6 +355,10 @@
       status: "experimental",
     },
     {
+      name: "AllowPreloadingWithCSPMetaTag",
+      status: "experimental",
+    },
+    {
       name: "AllowURNsInIframes",
       base_feature: "none",
     },
@@ -438,6 +442,7 @@
       // AudioContext.playoutStats interface.
       // https://chromestatus.com/feature/5172818344148992
       name: "AudioContextPlayoutStats",
+      origin_trial_feature_name: "AudioContextPlayoutStats",
       status: "experimental",
     },
     {
@@ -878,8 +883,9 @@
     {
       // Allow WebAuthn relying parties to report information about existing
       // credentials back to credential storage providers.
+      // Enabled by default on M132. Remove flag on or after M135.
       name: "CredentialManagerReport",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "CrossFramePerformanceTimeline",
@@ -905,7 +911,7 @@
     {
       // Support anchor-size() values in inset and margin properties.
       name: "CSSAnchorSizeInsetsMargins",
-      status: "experimental",
+      status: "stable",
     },
     {
       // Support for <string> syntax in @property
@@ -1087,6 +1093,14 @@
       status: "stable",
     },
     {
+      name: "CSSNestedPseudoElements",
+      status: "experimental",
+    },
+    {
+      name: "CSSOverflowContainerQueries",
+      status: "experimental",
+    },
+    {
       name: "CSSPaintAPIArguments",
       status: "experimental",
     },
@@ -1222,7 +1236,7 @@
       // Flag for supporting scroll-state() and container-type: scroll-state
       // Implied by supporting at least one of the scroll-state query features.
       name: "CSSScrollStateContainerQueries",
-      implied_by: ["CSSStickyContainerQueries", "CSSSnapContainerQueries"],
+      implied_by: ["CSSStickyContainerQueries", "CSSSnapContainerQueries", "CSSOverflowContainerQueries"],
     },
     {
       name: "CSSSelectorFragmentAnchor",
@@ -1389,7 +1403,7 @@
       // events every time it is closed or opened.
       // https://bugs.chromium.org/p/chromium/issues/detail?id=1521813
       name: "DialogElementToggleEvents",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "DialogNewFocusBehavior",
@@ -1641,10 +1655,6 @@
       depends_on: ["DynamicSafeAreaInsets"]
     },
     {
-      name: "DynamicScrollCullRectExpansion",
-      status: "stable",
-    },
-    {
       name: "ElementCapture",
       origin_trial_feature_name: "ElementCapture",
       status: {"Android": "", "default": "experimental"},
@@ -1672,7 +1682,7 @@
     },
     {
       name: "EventTimingHandleKeyboardEventSimulatedClick",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "EventTimingInteractionCount",
@@ -1683,18 +1693,11 @@
       // calculating the input latency, we should exclude all the input events
       // caused by this tap.
       name: "EventTimingTapStopScrollNoInteractionId",
-      status: "experimental",
-    },
-    // Killswitch. Remove after 1-2 stable releases, and rename
-    // cc::ScrollNode::main_thread_scrolling_reasons to
-    // main_thread_repaint_reasons.
-    {
-      name: "ExcludePopupMainThreadScrollingReason",
       status: "stable",
     },
     {
       name: "ExcludeTransparentTextsFromBeingLcpEligible",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "ExperimentalContentSecurityPolicyFeatures",
@@ -1712,6 +1715,10 @@
     },
     {
       name: "ExperimentalPolicies",
+      status: "experimental",
+    },
+    {
+      name: "ExposeCoarsenedRenderTime",
       status: "experimental",
     },
     {
@@ -1746,7 +1753,7 @@
     {
       name: "FastNonCompositedScrollHitTest",
       depends_on: ["HitTestOpaqueness", "RasterInducingScroll"],
-      status: "test",
+      status: "stable",
     },
     // Kill switch.
     {
@@ -1768,7 +1775,7 @@
       depends_on: ["FedCm"],
       public: true,
       browser_process_read_access: true,
-      status: "test",
+      status: "experimental",
       base_feature: "none",
       origin_trial_feature_name: "FedCmContinueOnBundle",
       origin_trial_allows_third_party: true,
@@ -1784,7 +1791,7 @@
       name: "FedCmButtonMode",
       depends_on: ["FedCm"],
       public: true,
-      status: "test",
+      status: "experimental",
       base_feature: "none",
       origin_trial_feature_name: "FedCmButtonMode",
       origin_trial_allows_third_party: true,
@@ -1952,7 +1959,7 @@
     {
       // Non-OPFS File System Access API.
       name: "FileSystemAccessLocal",
-      status: {"Android": "test", "default": "stable"},
+      status: {"default": "stable"},
     },
     {
       name: "FileSystemAccessLockingScheme",
@@ -2263,7 +2270,7 @@
     },
     {
       name: "HitTestOpaqueness",
-      status: "experimental",
+      status: "stable",
     },
     // This is a kill switch for a fix that disables painting of line box hit
     // test data with HitTestOpaqueness.
@@ -2964,8 +2971,7 @@
     },
     {
       name: "OnDeviceChange",
-      // Android does not yet support SystemMonitor.
-      status: {"Android": "", "default": "stable"},
+      status: "stable"
     },
     {
       name: "OnDeviceWebSpeechAvailable",
@@ -3429,6 +3435,12 @@
       status: "experimental",
     },
     {
+      name: "PushMessageDataBytes",
+      depends_on: ["PushMessaging"],
+      status: "stable",
+      base_feature: "none",
+    },
+    {
       name: "PushMessaging",
       public: true,
       status: "stable",
@@ -3547,7 +3559,7 @@
     },
     {
       name: "ReportEventTimingAtVisibilityChange",
-      status: "experimental",
+      status: "stable",
     },
     {
       // TODO(crbug.com/1500633): Remove this flag when the new CursorAnchorInfo
@@ -3664,8 +3676,10 @@
       status: "stable",
     },
     {
+      // Spec: https://wicg.github.io/sanitizer-api/
+      // Tracking bug: crbug.com/356601280
       name: "SanitizerAPI",
-      status: "experimental",
+      status: "test",
     },
     {
       name: "SchedulerYield",
@@ -3707,11 +3721,6 @@
     // while this is fixed, to avoid any web compat issues we have this killswitch.
     {
       name: "ScrollIntoViewRootFrameViewportBugFix",
-      status: "stable",
-    },
-    // Killswitch. Remove after M126 or M127 stable.
-    {
-      name: "ScrollNodeForOverflowHidden",
       status: "stable",
     },
     {
@@ -3786,12 +3795,6 @@
       // https://crbug.com/40400558
       // This feature was shipped in M131, so this flag can be removed in M133.
       name: "SelectionIsCollapsedShadowDOMSupport",
-      status: "stable",
-    },
-    {
-      // Maintain author-defined ::selection highlight colors, even if they
-      // match the text color.
-      name: "SelectionRespectsColors",
       status: "stable",
     },
     {
@@ -3925,7 +3928,7 @@
     {
       // crbug.com/40501131
       name: "SidewaysWritingModes",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "SignatureBasedIntegrity",
@@ -4355,14 +4358,6 @@
       status: "experimental",
     },
     {
-      // Unblock queued blocking touchmove after the main thread handles the
-      // touchstart and the first touchmove and they didn't call
-      // preventDefault(), instead of waiting for the browser to send
-      // touchscrollstarted.
-      name: "UnblockTouchMoveEarlier",
-      status: "stable",
-    },
-    {
       name: "UnclosedFormControlIsInvalid",
       status: "experimental",
     },
@@ -4441,15 +4436,15 @@
       public: true,
     },
     {
-      // crbug.com/356190942
-      name: "VerticalInputRangeKeyOperationFix",
-      status: "stable",
-    },
-    {
       // Whether a video element should automatically play fullscreen unless
       // 'playsinline' is set.
       name: "VideoAutoFullscreen",
       settable_from_internals: true,
+    },
+    {
+      name: "VideoFrameMetadataBackgroundBlur",
+      public: true,
+      status: "experimental",
     },
     {
       name: "VideoFullscreenOrientationLock",
@@ -4510,7 +4505,7 @@
     },
     {
       name: "ViewTransitionOverflowRectFromSurface",
-      status: "test",
+      status: "stable",
       implied_by: ["ViewTransitionLayeredCapture"],
     },
     {
@@ -4791,6 +4786,10 @@
       // Subgroups related features are also enabled if experimental
       // WebGPU is enabled.
       implied_by: ["WebGPUExperimentalFeatures"],
+    },
+    {
+      name: "WebGPUTextureViewUsage",
+      status: "stable",
     },
     {
       name: "WebHID",

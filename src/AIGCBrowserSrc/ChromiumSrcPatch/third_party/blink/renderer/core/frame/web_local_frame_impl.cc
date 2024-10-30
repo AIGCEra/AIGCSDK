@@ -770,11 +770,11 @@ const WebRemoteFrame* WebLocalFrameImpl::ToWebRemoteFrame() const {
   return nullptr;
 }
 
-void WebLocalFrameImpl::Close() {
-  WebLocalFrame::Close();
+void WebLocalFrameImpl::Close(DetachReason detach_reason) {
+  WebLocalFrame::Close(detach_reason);
 
   if (frame_widget_) {
-    frame_widget_->Close();
+    frame_widget_->Close(detach_reason);
     frame_widget_ = nullptr;
   }
 
@@ -2817,6 +2817,12 @@ void WebLocalFrameImpl::DownloadURL(
   GetFrame()->DownloadURL(request.ToResourceRequest(),
                           cross_origin_redirect_behavior,
                           std::move(blob_url_token));
+}
+
+WebFrame* WebLocalFrameImpl::GetProvisionalOwnerFrame() {
+  return GetFrame()->IsProvisional()
+             ? WebFrame::FromCoreFrame(GetFrame()->GetProvisionalOwnerFrame())
+             : nullptr;
 }
 
 void WebLocalFrameImpl::MaybeStartOutermostMainFrameNavigation(

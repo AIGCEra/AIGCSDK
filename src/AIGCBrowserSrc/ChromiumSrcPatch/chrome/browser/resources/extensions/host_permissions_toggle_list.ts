@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './restricted_sites_dialog.js';
 import './toggle_row.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {assert} from 'tangram://resources/js/assert.js';
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';

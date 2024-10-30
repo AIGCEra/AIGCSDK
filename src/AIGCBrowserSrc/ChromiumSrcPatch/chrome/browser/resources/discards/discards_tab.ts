@@ -4,7 +4,7 @@
 
 import 'tangram://resources/js/action_link.js';
 import 'tangram://resources/cr_elements/action_link.css.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {assertNotReached} from 'tangram://resources/js/assert.js';
 import {getFaviconForPageURL} from 'tangram://resources/js/icon.js';

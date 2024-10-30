@@ -38,6 +38,7 @@
 #include "chrome/browser/first_party_sets/first_party_sets_policy_service.h"
 #include "chrome/browser/first_party_sets/first_party_sets_policy_service_factory.h"
 #include "chrome/browser/ip_protection/ip_protection_core_host.h"
+#include "chrome/browser/ip_protection/ip_protection_core_host_factory.h"
 #include "chrome/browser/net/system_network_context_manager.h"
 #include "chrome/browser/privacy_sandbox/privacy_sandbox_settings_factory.h"
 #include "chrome/browser/privacy_sandbox/tracking_protection_settings_factory.h"
@@ -421,6 +422,22 @@ ProfileNetworkContextService::ProfileNetworkContextService(Profile* profile)
                              schedule_update_cert_policy);
 #endif
 
+#if BUILDFLAG(CHROME_ROOT_STORE_CERT_MANAGEMENT_UI)
+  if (base::FeatureList::IsEnabled(features::kEnableCertManagementUIV2Write)) {
+    // Register observer to update certificates when changes are made to the
+    // server cert database. Unretained is safe as the
+    // `server_cert_database_observer_` is a CallbackListSubscription which
+    // will unregister the observer once the ProfileNetworkContextService is
+    // destroyed.
+    server_cert_database_observer_ =
+        net::ServerCertificateDatabaseServiceFactory::GetForBrowserContext(
+            profile_)
+            ->AddObserver(base::BindRepeating(
+                &ProfileNetworkContextService::UpdateAdditionalCertificates,
+                base::Unretained(this)));
+  }
+#endif
+
   pref_change_registrar_.Add(
       prefs::kGloballyScopeHTTPAuthCacheEnabled,
       base::BindRepeating(&ProfileNetworkContextService::
@@ -784,12 +801,12 @@ void ProfileNetworkContextService::UpdateAdditionalCertificates() {
     cert_db_service->GetAllCertificatesMigrateFromNSSFirstIfNeeded(
         base::BindOnce(&ProfileNetworkContextService::
                            UpdateAdditionalCertificatesWithUserAddedCerts,
-                       base::Unretained(this)));
+                       weak_factory_.GetWeakPtr()));
 #else
     cert_db_service->GetAllCertificates(
         base::BindOnce(&ProfileNetworkContextService::
                            UpdateAdditionalCertificatesWithUserAddedCerts,
-                       base::Unretained(this)));
+                       weak_factory_.GetWeakPtr()));
 #endif
   } else {
     profile_->ForEachLoadedStoragePartition(
@@ -1511,7 +1528,8 @@ void ProfileNetworkContextService::ConfigureNetworkContextParamsInternal(
       profile_->GetPrefs()->GetBoolean(
           prefs::kAccessControlAllowMethodsInCORSPreflightSpecConformant);
 
-  IpProtectionCoreHost* ipp_core_host = IpProtectionCoreHost::Get(profile_);
+  IpProtectionCoreHost* ipp_core_host =
+      IpProtectionCoreHostFactory::GetForProfile(profile_);
   if (ipp_core_host) {
     ipp_core_host->AddNetworkService(
         network_context_params->ip_protection_core_host

@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 
@@ -34,11 +34,11 @@ export class ManagedUserProfileNoticeValuePropElement extends CrLitElement {
     };
   }
 
-  pictureUrl: string;
-  override title: string;
-  subtitle: string;
-  email: string;
-  accountName: string;
+  pictureUrl: string = '';
+  override title: string = '';
+  subtitle: string = '';
+  email: string = '';
+  accountName: string = '';
 }
 
 declare global {

@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import '../tab_search_item.js';
 
 import type {PropertyValues} from 'tangram://resources/lit/v3_0/lit.rollup.js';
@@ -19,7 +19,8 @@ import {TabSearchApiProxyImpl} from '../tab_search_api_proxy.js';
 import {getCss} from './declutter_page.css.js';
 import {getHtml} from './declutter_page.html.js';
 
-const MAX_SCROLLABLE_HEIGHT: number = 280;
+const MINIMUM_SCROLLABLE_MAX_HEIGHT: number = 238;
+const NON_SCROLLABLE_VERTICAL_SPACING: number = 164;
 
 function getEventTargetIndex(e: Event): number {
   return Number((e.currentTarget as HTMLElement).dataset['index']);
@@ -32,11 +33,13 @@ export class DeclutterPageElement extends CrLitElement {
 
   static override get properties() {
     return {
+      availableHeight: {type: Number},
       showBackButton: {type: Boolean},
       staleTabDatas_: {type: Array},
     };
   }
 
+  availableHeight: number = 0;
   showBackButton: boolean = false;
 
   protected staleTabDatas_: TabData[] = [];
@@ -87,16 +90,17 @@ export class DeclutterPageElement extends CrLitElement {
     const changedPrivateProperties =
         changedProperties as Map<PropertyKey, unknown>;
 
+    if (changedPrivateProperties.has('availableHeight')) {
+      this.onAvailableHeightChange_();
+    }
     if (changedPrivateProperties.has('staleTabDatas_')) {
+      this.maybeAddScrollListener_();
       this.updateScroll_();
     }
   }
 
   override firstUpdated() {
-    const scrollable = this.shadowRoot!.querySelector('#scrollable');
-    if (scrollable) {
-      scrollable.addEventListener('scroll', this.updateScroll_.bind(this));
-    }
+    this.maybeAddScrollListener_();
   }
 
   logCtrValue(event: DeclutterCTREvent) {
@@ -105,17 +109,39 @@ export class DeclutterPageElement extends CrLitElement {
         DeclutterCTREvent.MAX_VALUE + 1);
   }
 
-  private async updateScroll_() {
-    await this.updateComplete;
+  private getMaxScrollableHeight_(): number {
+    return Math.max(
+        MINIMUM_SCROLLABLE_MAX_HEIGHT,
+        (this.availableHeight - NON_SCROLLABLE_VERTICAL_SPACING));
+  }
+
+  private onAvailableHeightChange_() {
     const scrollable = this.shadowRoot!.querySelector('#scrollable');
     if (scrollable) {
+      this.updateScroll_();
+    }
+  }
+
+  private async maybeAddScrollListener_() {
+    const scrollable = this.shadowRoot!.querySelector('#scrollable');
+    if (scrollable) {
+      scrollable.addEventListener('scroll', this.updateScroll_.bind(this));
+    }
+  }
+
+  private async updateScroll_() {
+    await this.updateComplete;
+    const scrollable =
+        this.shadowRoot!.querySelector<HTMLElement>('#scrollable');
+    if (scrollable) {
+      const maxHeight = this.getMaxScrollableHeight_();
+      scrollable.style.maxHeight = maxHeight + 'px';
       scrollable.classList.toggle(
           'can-scroll', scrollable.clientHeight < scrollable.scrollHeight);
       scrollable.classList.toggle('is-scrolled', scrollable.scrollTop > 0);
       scrollable.classList.toggle(
           'scrolled-to-bottom',
-          scrollable.scrollTop + MAX_SCROLLABLE_HEIGHT >=
-              scrollable.scrollHeight);
+          scrollable.scrollTop + maxHeight >= scrollable.scrollHeight);
     }
   }
 
@@ -127,6 +153,49 @@ export class DeclutterPageElement extends CrLitElement {
     const tabIds = this.staleTabDatas_.map((tabData) => tabData.tab.tabId);
     this.apiProxy_.declutterTabs(tabIds);
     this.logCtrValue(DeclutterCTREvent.kCloseTabsClicked);
+  }
+
+  protected onTabFocus_(e: FocusEvent) {
+    if (e.target instanceof HTMLElement) {
+      e.target.classList.toggle('selected', true);
+    } else {
+      throw new Error('Invalid onTabFocus_ target type: ' + typeof e.target);
+    }
+  }
+
+  protected onTabBlur_(e: FocusEvent) {
+    if (e.target instanceof HTMLElement) {
+      e.target.classList.toggle('selected', false);
+    } else {
+      throw new Error('Invalid onTabBlur_ target type: ' + typeof e.target);
+    }
+  }
+
+  protected onTabKeyDown_(e: KeyboardEvent) {
+    if ((e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) {
+      return;
+    }
+    const tabSearchItems =
+        Array.from(this.shadowRoot!.querySelectorAll('tab-search-item'));
+    const tabSearchItemCount = tabSearchItems.length;
+    const focusedIndex =
+        tabSearchItems.findIndex((element) => element.matches(':focus'));
+    if (focusedIndex < 0) {
+      return;
+    }
+    let nextFocusedIndex = 0;
+    if (e.key === 'ArrowUp') {
+      nextFocusedIndex =
+          (focusedIndex + tabSearchItemCount - 1) % tabSearchItemCount;
+    } else if (e.key === 'ArrowDown') {
+      nextFocusedIndex = (focusedIndex + 1) % tabSearchItemCount;
+    }
+    const selectedItem = tabSearchItems[nextFocusedIndex]!;
+    const focusableElement =
+        selectedItem.shadowRoot!.querySelector(`cr-icon-button`)!;
+    focusableElement.focus();
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   protected onTabRemove_(e: Event) {

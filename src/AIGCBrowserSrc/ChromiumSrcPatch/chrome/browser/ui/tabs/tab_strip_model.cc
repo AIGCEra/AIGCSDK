@@ -680,7 +680,10 @@ void TabStripModel::CloseAllTabsInGroup(const tab_groups::TabGroupId& group) {
     observer.OnTabGroupWillBeRemoved(group);
   }
 
-  gfx::Range tabs_in_group = group_model_->GetTabGroup(group)->ListTabs();
+  TabGroup* const tab_group = group_model_->GetTabGroup(group);
+  tab_group->SetGroupIsClosing(/*is_closing=*/true);
+
+  gfx::Range tabs_in_group = tab_group->ListTabs();
   if (static_cast<int>(tabs_in_group.length()) == count())
     closing_all_ = true;
 
@@ -1291,7 +1294,15 @@ int TabStripModel::GetTabCount() const {
 bool TabStripModel::IsContextMenuCommandEnabled(
     int context_index,
     ContextMenuCommand command_id) const {
+  // Command must be valid.
   DCHECK(command_id > CommandFirst && command_id < CommandLast);
+
+  // Context Index having an index greater than tab strip model doesnt make
+  // sense since this context menu must target a tab.
+  if (!ContainsIndex(context_index)) {
+    return false;
+  }
+
   switch (command_id) {
     case CommandNewTabToRight:
     case CommandCloseTab:
@@ -1301,9 +1312,9 @@ bool TabStripModel::IsContextMenuCommandEnabled(
       return delegate_->CanReload();
 
     case CommandCloseOtherTabs:
-    case CommandCloseTabsToRight:
+    case CommandCloseTabsToRight: {
       return !GetIndicesClosedByCommand(context_index, command_id).empty();
-
+    }
     case CommandDuplicate: {
       std::vector<int> indices = GetIndicesForCommand(context_index);
       for (int index : indices) {
@@ -1388,7 +1399,9 @@ bool TabStripModel::IsContextMenuCommandEnabled(
 
 void TabStripModel::ExecuteContextMenuCommand(int context_index,
                                               ContextMenuCommand command_id) {
-  DCHECK(command_id > CommandFirst && command_id < CommandLast);
+  // This should have been tested by IsContextMenuCommandEnabled.
+  CHECK(command_id > CommandFirst && command_id < CommandLast);
+
   // The tab strip may have been modified while the context menu was open,
   // including closing the tab originally at |context_index|.
   if (!ContainsIndex(context_index))
@@ -1474,6 +1487,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       std::vector<int> indices = GetIndicesForCommand(context_index);
       std::vector<tab_groups::TabGroupId> groups_to_delete =
           GetGroupsDestroyedFromRemovingIndices(indices);
+      MarkTabGroupsForClosing(groups_to_delete);
 
       bool pin = WillContextMenuPin(context_index);
 
@@ -1514,6 +1528,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       } else {
         std::vector<tab_groups::TabGroupId> groups_to_delete =
             GetGroupsDestroyedFromRemovingIndices(indices);
+        MarkTabGroupsForClosing(groups_to_delete);
 
         base::OnceCallback<void()> callback = base::BindOnce(
             &TabStripModel::RemoveFromGroup, base::Unretained(this), indices);
@@ -1556,6 +1571,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       std::vector<int> indices_to_add = GetIndicesForCommand(context_index);
       std::vector<tab_groups::TabGroupId> groups_to_delete =
           GetGroupsDestroyedFromRemovingIndices(indices_to_add);
+      MarkTabGroupsForClosing(groups_to_delete);
 
       base::OnceCallback<void()> callback = base::BindOnce(
           [](TabStripModel* model, std::vector<int> indices) {
@@ -1590,6 +1606,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       std::vector<int> indices_to_remove = GetIndicesForCommand(context_index);
       std::vector<tab_groups::TabGroupId> groups_to_delete =
           GetGroupsDestroyedFromRemovingIndices(indices_to_remove);
+      MarkTabGroupsForClosing(groups_to_delete);
 
       base::OnceCallback<void()> callback =
           base::BindOnce(&TabStripModel::RemoveFromGroup,
@@ -1616,6 +1633,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       std::vector<int> indices_to_move = GetIndicesForCommand(context_index);
       std::vector<tab_groups::TabGroupId> groups_to_delete =
           GetGroupsDestroyedFromRemovingIndices(indices_to_move);
+      MarkTabGroupsForClosing(groups_to_delete);
 
       base::OnceCallback<void()> callback =
           base::BindOnce(&TabStripModelDelegate::MoveTabsToNewWindow,
@@ -1638,6 +1656,7 @@ void TabStripModel::ExecuteContextMenuCommand(int context_index,
       CHECK(service);
       UMA_HISTOGRAM_BOOLEAN("Tab.Organization.AllEntrypoints.Clicked", true);
       UMA_HISTOGRAM_BOOLEAN("Tab.Organization.TabContextMenu.Clicked", true);
+      browser->window()->NotifyNewBadgeFeatureUsed(features::kTabOrganization);
 
       service->RestartSessionAndShowUI(
           browser, TabOrganizationEntryPoint::kTabContextMenu,
@@ -1715,6 +1734,7 @@ void TabStripModel::ExecuteAddToExistingGroupCommand(
 
   std::vector<tab_groups::TabGroupId> groups_to_delete =
       GetGroupsDestroyedFromRemovingIndices(indices);
+  MarkTabGroupsForClosing(groups_to_delete);
 
   // If there are no groups to delete OR there is only one group that was found
   // to be deleted, but it is the group that is being added to then the there
@@ -1769,7 +1789,7 @@ TabStripModel::GetGroupsDestroyedFromRemovingIndices(
   // closing.
   std::vector<tab_groups::TabGroupId> groups_to_delete;
   for (const auto& [group, group_indices] : group_indices_map) {
-    if (group_model()->GetTabGroup(group)->tab_count() ==
+    if (group_model_->GetTabGroup(group)->tab_count() ==
         static_cast<int>(group_indices.size())) {
       groups_to_delete.emplace_back(group);
     }
@@ -1786,11 +1806,21 @@ void TabStripModel::ExecuteCloseTabsByIndices(
   CloseTabs(GetWebContentsesByIndices(indices_to_close), close_types);
 }
 
+void TabStripModel::MarkTabGroupsForClosing(
+    const std::vector<tab_groups::TabGroupId> group_ids) {
+  for (const tab_groups::TabGroupId& group_id : group_ids) {
+    TabGroup* const tab_group = group_model()->GetTabGroup(group_id);
+    CHECK(tab_group);
+    tab_group->SetGroupIsClosing(true);
+  }
+}
+
 void TabStripModel::ExecuteCloseTabsByIndicesCommand(
     base::RepeatingCallback<std::vector<int>()> get_indices_to_close,
     bool is_bulk_operation) {
   std::vector<tab_groups::TabGroupId> groups_to_delete =
       GetGroupsDestroyedFromRemovingIndices(get_indices_to_close.Run());
+  MarkTabGroupsForClosing(groups_to_delete);
 
   // If there are groups that will be deleted by closing tabs from the context
   // menu, confirm the group deletion first, and then perform the close, either

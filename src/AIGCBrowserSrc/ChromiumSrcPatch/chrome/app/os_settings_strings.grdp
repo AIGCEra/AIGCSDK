@@ -1340,14 +1340,17 @@
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_ASSIGNED_GESTURE_ALERT" desc="Spoken feedback for when a user has assigned a gesture to an action in the action settings." is_accessibility_with_no_ui="true">
     Assigned gesture <ph name="GESTURE">$1<ex>Blink both eyes</ex></ph> to <ph name="ACTION">$2<ex>Click a mouse button</ex></ph>
   </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_REMOVED_ACTION_ALERT" desc="Spoken description when a user has removed a specific action in the action settings." is_accessibility_with_no_ui="true">
+    Removed action <ph name="REMOVED_ACTION">$1<ex>Click a mouse button</ex></ph>
+  </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_TITLE" desc="Title for dialog page to add an action in the action settings.">
     Add an action
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_SELECTED_ITEM_INSTRUCTION" desc="Instruction read by screen reader when users can unselect a list item." is_accessibility_with_no_ui="true">
-    <ph name="ITEM">$1<ex>Pause or resume face control</ex></ph> selected. Press Search plus Space to unselect.
+    <ph name="ITEM">$1<ex>Pause or resume face control</ex></ph> selected. <ph name="INDEX">$2<ex>1</ex></ph> of <ph name="COUNT">$3<ex>13</ex></ph>. Press Search plus Space to unselect.
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_NOT_SELECTED_ITEM_INSTRUCTION" desc="Instruction read by screen reader when users can select a list item." is_accessibility_with_no_ui="true">
-    <ph name="ITEM">$1<ex>Pause or resume face control</ex></ph> not selected. Press Search plus Space to select.
+    <ph name="ITEM">$1<ex>Pause or resume face control</ex></ph> not selected. <ph name="INDEX">$2<ex>1</ex></ph> of <ph name="COUNT">$3<ex>13</ex></ph>. Press Search plus Space to select.
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_KEY_COMBINATION_TITLE" desc="Title for dialog page to create a custom key combination in the action settings.">
     Create key combination
@@ -1360,9 +1363,6 @@
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_SELECT_GESTURE_TITLE" desc="Title for dialog page to select a gesture for a given action in the action settings.">
     Select a gesture for <ph name="SELECTED_ACTION">$1<ex>Click a mouse button</ex></ph>
-  </message>
-  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_SELECT_GESTURE_SUBTITLE" desc="Subtitle for dialog page to select a gesture for a given action in the action settings.">
-    Selecting an already assigned gesture will remove it from its original action
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_ACTIONS_DIALOG_GESTURE_THRESHOLD_TITLE" desc="Title for dialog page to set the confidence threshold for a gesture.">
     Gesture setting: <ph name="SELECTED_GESTURE">$1<ex>Eyes blink</ex></ph>
@@ -1432,6 +1432,9 @@
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_MACRO_SUB_LABEL_TOGGLE_SCROLL_MODE" desc="This text describes how users can scroll on their computer using their face when in scroll mode.">
     Once you start scroll mode, move your head in the direction you'd like to scroll
+  </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_MACRO_SUB_LABEL_LONG_CLICK_LEFT" desc="This text describes how users can drag and drop on their computer using their face to hold down or release the left mouse button.">
+    Use the gesture, then move your head to show where you'd like to drop the item. Use the gesture again to drop it.
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_MACRO_LABEL_SCREENSHOT" desc="This text describes an action that a user can take on their computer to take a screenshot.">
     Take a screenshot
@@ -1576,6 +1579,21 @@
   </message>
   <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_CURSOR_VELOCITY_THRESHOLD_SLIDER_MAX_LABEL" desc="Label for the 'Stable' side of the FaceGaze velocity threshold slider.'">
     Stable
+  </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_WARNING_GESTURE_ALREADY_ASSIGNED_LABEL" desc="Label that is shown when the user is attempting to bind a gesture that is already assigned.">
+    Selecting an already assigned gesture will remove it from its original action.
+  </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_WARNING_CONFLICTING_GESTURES_SINGLE_LABEL" desc="Label that is shown when the user is attempting to bind to a gesture that conflicts with another gesture.">
+    "<ph name="MAIN_GESTURE">$1<ex>Smile</ex></ph>" may overlap with "<ph name="CONFLICTING_GESTURE">$2<ex>Squint left eye</ex></ph>". If possible, try picking a different gesture.
+  </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_WARNING_CONFLICTING_GESTURES_DOUBLE_LABEL" desc="Label that is shown when the user is attempting to bind to a gesture that conflicts with two other gestures.">
+    "<ph name="MAIN_GESTURE">$1<ex>Smile</ex></ph>" may overlap with "<ph name="CONFLICTING_GESTURE_ONE">$2<ex>Squint left eye</ex></ph>" and "<ph name="CONFLICTING_GESTURE_TWO">$3<ex>Squint right eye</ex></ph>". If possible, try picking a different gesture.
+  </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_WARNING_CONFLICTING_GESTURES_TRIPLE_LABEL" desc="Label that is shown when the user is attempting to bind to a gesture that conflicts with three other gestures.">
+    "<ph name="MAIN_GESTURE">$1<ex>Smile</ex></ph>" may overlap with "<ph name="CONFLICTING_GESTURE_ONE">$2<ex>Squint left eye</ex></ph>", "<ph name="CONFLICTING_GESTURE_TWO">$3<ex>Squint right eye</ex></ph>", and "<ph name="CONFLICTING_GESTURE_THREE">$4<ex>Blink eyes</ex></ph>". If possible, try picking a different gesture.
+  </message>
+  <message name="IDS_OS_SETTINGS_ACCESSIBILITY_FACEGAZE_WARNING_COMBINED_LABEL" desc="Label that is shown when the user is attempting to bind a gesture that is already assigned and conflicts with other gestures.">
+    <ph name="ALREADY_ASSIGNED_MESSAGE">$1<ex>Selecting an already assigned gesture will remove it from its original action.</ex></ph> <ph name="CONFLICTING_GESTURES_MESSAGE">$2<ex>Smile may overlap with squint left eye. If possible, try picking a different gesture.</ex></ph>
   </message>
   <message name="IDS_SETTINGS_FLASH_NOTIFICATIONS_LABEL" desc="The label of a setting that flashes the screen in a color when a notification is received.">
     Flash notifications

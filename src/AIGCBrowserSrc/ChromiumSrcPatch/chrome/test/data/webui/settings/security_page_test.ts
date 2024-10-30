@@ -339,6 +339,7 @@ suite('FlagsDisabled', function() {
       enableHttpsFirstModeNewSettings: false,
       enableCertManagementUIV2: false,
       enableEsbAiStringUpdate: false,
+      enablePasswordLeakToggleMove: false,
       extendedReportingRemovePrefDependency: false,
       hashPrefixRealTimeLookupsSamplePing: false,
     });
@@ -361,7 +362,7 @@ suite('FlagsDisabled', function() {
 
     page.$.safeBrowsingEnhanced.updateCollapsed();
     page.$.safeBrowsingStandard.updateCollapsed();
-    flush();
+    return flushTasks();
   });
 
   teardown(function() {
@@ -595,6 +596,18 @@ suite('FlagsDisabled', function() {
     // Learn more label should be visible.
     assertTrue(isChildVisible(page, '#learnMoreLabelContainer'));
   });
+
+  // TODO(crbug.com/372671916): Remove test once the passwordLeakToggleMove is
+  // launched.
+  test('PasswordLeakToggleNotMoved', function() {
+    assertFalse(loadTimeData.getBoolean('enablePasswordLeakToggleMove'));
+    // Check that the password leak toggle is still under the safe browsing
+    // radio group.
+    assertTrue(isChildVisible(page, '#passwordsLeakToggleOld'));
+    // Check that the password leak toggle is not visible in the new section.
+    assertFalse(isChildVisible(page, '#passwordsLeakToggle'));
+  });
+
 });
 
 // Separate test suite for tests specifically related to Safe Browsing controls.
@@ -642,8 +655,27 @@ suite('SafeBrowsing', function() {
     assertTrue(page.$.safeBrowsingStandard.expanded);
   });
 
-  test('PasswordsLeakDetectionSubLabel', function() {
-    const toggle = page.$.passwordsLeakToggle;
+  // TODO(crbug.com/372671916): Remove test once the passwordLeakToggleMove is
+  // launched.
+  test('PasswordLeakToggleMoved', function() {
+    assertTrue(loadTimeData.getBoolean('enablePasswordLeakToggleMove'));
+    // Check that the password leak toggle is no longer under the safebrowsing
+    // radio group.
+    assertFalse(isChildVisible(page, '#passwordsLeakToggleOld'));
+    // Check that the password leak toggle is still visible on the page but now
+    // in the new section.
+    assertTrue(isChildVisible(page, '#passwordsLeakToggle'));
+  });
+
+  test('PasswordsLeakDetectionText', function() {
+    const toggle = page.shadowRoot!.querySelector<SettingsToggleButtonElement>(
+        '#passwordsLeakToggle');
+    assertTrue(!!toggle);
+
+    const passwordLeakLabel =
+        loadTimeData.getString('passwordsLeakDetectionLabel');
+    assertEquals(passwordLeakLabel, toggle.label);
+
     const defaultSubLabel =
         loadTimeData.getString('passwordsLeakDetectionGeneralDescription');
     const activeWhenSignedInSubLabel =
@@ -1002,7 +1034,7 @@ suite('SafeBrowsing', function() {
     assertFalse(page.$.safeBrowsingStandard.expanded);
   });
 
-  test('StandardProtectionDropdown', async () => {
+  test('StandardProtectionText', async () => {
     loadTimeData.overrideValues({enableHashPrefixRealTimeLookups: false});
     resetRouterForTesting();
 
@@ -1010,15 +1042,6 @@ suite('SafeBrowsing', function() {
     const standardProtection = page.$.safeBrowsingStandard;
     const spSubLabel = loadTimeData.getString('safeBrowsingStandardDesc');
     assertEquals(spSubLabel, standardProtection.subLabel);
-
-    const passwordsLeakToggle = page.$.passwordsLeakToggle;
-    const passwordLeakLabel =
-        loadTimeData.getString('passwordsLeakDetectionLabel');
-    assertEquals(passwordLeakLabel, passwordsLeakToggle.label);
-
-    const passwordLeakSubLabel =
-        loadTimeData.getString('passwordsLeakDetectionGeneralDescription');
-    assertEquals(passwordLeakSubLabel, passwordsLeakToggle.subLabel);
   });
 
   // TODO(crbug.com/372743989): Update test when EsbAiStringUpdate is fully
@@ -1156,6 +1179,68 @@ suite('SafeBrowsing', function() {
 
         assertTrue(isChildVisible(page, '#safeBrowsingReportingToggle'));
       });
+
+  // TODO(crbug.com/372671916): Remove test once the passwordLeakToggleMove
+  // and SBER deprecation is launched.
+  test('StandardProtectionNoCollapse', async function() {
+    // The Standard Protection radio button should not have a dropdown when
+    // these two flags are BOTH enabled and when the PasswordLeakToggleMove
+    // feature is enabled.
+    loadTimeData.overrideValues({
+      extendedReportingRemovePrefDependency: true,
+      hashPrefixRealTimeLookupsSamplePing: true,
+    });
+    resetRouterForTesting();
+
+    await resetPage();
+    assertTrue(page.$.safeBrowsingStandard.noCollapse);
+  });
+
+  // TODO(crbug.com/372671916): Remove test once the passwordLeakToggleMove
+  // and SBER deprecation is launched.
+  test('StandardProtectionCollapseVisibleCase1', async function() {
+    // The Standard Protection radio button should have a dropdown if any
+    // one of these flags are disabled.
+    loadTimeData.overrideValues({
+      extendedReportingRemovePrefDependency: false,
+      hashPrefixRealTimeLookupsSamplePing: true,
+    });
+    resetRouterForTesting();
+
+    await resetPage();
+    assertFalse(page.$.safeBrowsingStandard.noCollapse);
+  });
+
+  // TODO(crbug.com/372671916): Remove test once the passwordLeakToggleMove
+  // and SBER deprecation is launched.
+  test('StandardProtectionCollapseVisibleCase2', async function() {
+    // The Standard Protection radio button should have a dropdown if any
+    // one of these flags are disabled.
+    loadTimeData.overrideValues({
+      extendedReportingRemovePrefDependency: true,
+      hashPrefixRealTimeLookupsSamplePing: false,
+    });
+    resetRouterForTesting();
+
+    await resetPage();
+    assertFalse(page.$.safeBrowsingStandard.noCollapse);
+  });
+
+  // TODO(crbug.com/372671916): Remove test once the passwordLeakToggleMove
+  // and SBER deprecation is launched.
+  test('StandardProtectionCollapseVisibleCase3', async function() {
+    // The Standard Protection radio button should have a dropdown if the
+    // PasswordLeakToggleMove is disabled.
+    loadTimeData.overrideValues({
+      extendedReportingRemovePrefDependency: true,
+      hashPrefixRealTimeLookupsSamplePing: true,
+      enablePasswordLeakToggleMove: false,
+    });
+    resetRouterForTesting();
+
+    await resetPage();
+    assertFalse(page.$.safeBrowsingStandard.noCollapse);
+  });
 });
 
 async function clickCancelOnDisableSafebrowsingDialog(

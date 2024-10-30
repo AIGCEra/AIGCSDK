@@ -10,7 +10,7 @@ import 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_hidden_style.css.js';
 import './images/icons.html.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {BrowserProxy} from 'tangram://resources/cr_components/commerce/browser_proxy.js';
 import {BrowserProxyImpl} from 'tangram://resources/cr_components/commerce/browser_proxy.js';

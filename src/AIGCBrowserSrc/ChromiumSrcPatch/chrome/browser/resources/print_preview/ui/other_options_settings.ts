@@ -6,7 +6,7 @@ import 'tangram://resources/cr_elements/cr_hidden_style.css.js';
 import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import './print_preview_shared.css.js';
 import './settings_section.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import type {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import {I18nMixin} from 'tangram://resources/cr_elements/i18n_mixin.js';

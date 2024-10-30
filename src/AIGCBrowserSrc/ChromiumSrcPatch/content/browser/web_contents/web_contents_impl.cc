@@ -81,6 +81,7 @@
 #include "content/browser/fenced_frame/fenced_frame.h"
 #include "content/browser/find_request_manager.h"
 #include "content/browser/gpu/gpu_data_manager_impl.h"
+#include "content/browser/guest_page_holder_impl.h"
 #include "content/browser/host_zoom_map_impl.h"
 #include "content/browser/media/audio_stream_monitor.h"
 #include "content/browser/media/media_web_contents_observer.h"
@@ -120,6 +121,7 @@
 #include "content/browser/site_instance_impl.h"
 #include "content/browser/wake_lock/wake_lock_context_host.h"
 #include "content/browser/web_contents/java_script_dialog_commit_deferring_condition.h"
+#include "content/browser/web_contents/partitioned_popins_controller.h"
 #include "content/browser/web_contents/slow_web_preference_cache.h"
 #include "content/browser/web_contents/web_contents_view.h"
 #include "content/browser/web_contents/web_contents_view_child_frame.h"
@@ -211,9 +213,10 @@
 
 #if BUILDFLAG(IS_WIN)
 #include "base/threading/thread_restrictions.h"
+#include "components/stylus_handwriting/win/features.h"
 #include "content/browser/renderer_host/dip_util.h"
 #include "ui/gfx/geometry/dip_util.h"
-#endif
+#endif  // BUILDFLAG(IS_WIN)
 
 #if BUILDFLAG(IS_ANDROID)
 #include "content/browser/android/java_interfaces_impl.h"
@@ -326,7 +329,8 @@ bool IsUserInteractionInputType(blink::WebInputEvent::Type type) {
   return type == blink::WebInputEvent::Type::kMouseDown ||
          type == blink::WebInputEvent::Type::kGestureScrollBegin ||
          type == blink::WebInputEvent::Type::kTouchStart ||
-         type == blink::WebInputEvent::Type::kRawKeyDown;
+         type == blink::WebInputEvent::Type::kRawKeyDown ||
+         type == blink::WebInputEvent::Type::kKeyDown;
 }
 
 // Ensures that OnDialogClosed is only called once.
@@ -859,6 +863,10 @@ bool WebContentsImpl::IsPartitionedPopin() const {
   DCHECK(base::FeatureList::IsEnabled(blink::features::kPartitionedPopins) ||
          !partitioned_popin_opener_);
 
+  // TODO(crbug.com/340606651): Store a boolean telling if `this` is a
+  // partitioned popin, do not imply from the opener. Since the opener's
+  // lifetime is not bound to the popin, it might be gone by the time we're
+  // checking it here.
   return !!partitioned_popin_opener_;
 }
 
@@ -1385,6 +1393,11 @@ WebContentsImpl::~WebContentsImpl() {
   color_chooser_holder_.reset();
 #endif
   find_request_manager_.reset();
+
+  // crbug.com/373898450: The `FrameTree` should outlive the animation manager.
+  if (view_) {
+    view_->DestroyBackForwardTransitionAnimationManager();
+  }
 
   // Shutdown the primary FrameTree.
   primary_frame_tree_.Shutdown();
@@ -2605,24 +2618,21 @@ bool WebContentsImpl::IsCurrentlyAudible() {
   return is_currently_audible_;
 }
 
-bool WebContentsImpl::IsConnectedToBluetoothDevice() {
-  return bluetooth_connected_device_count_ > 0;
-}
-
-bool WebContentsImpl::IsScanningForBluetoothDevices() {
-  return bluetooth_scanning_sessions_count_ > 0;
-}
-
-bool WebContentsImpl::IsConnectedToSerialPort() {
-  return serial_active_frame_count_ > 0;
-}
-
-bool WebContentsImpl::IsConnectedToHidDevice() {
-  return hid_active_frame_count_ > 0;
-}
-
-bool WebContentsImpl::IsConnectedToUsbDevice() {
-  return usb_active_frame_count_ > 0;
+bool WebContentsImpl::IsCapabilityActive(CapabilityType capability_type) {
+  switch (capability_type) {
+    case CapabilityType::kBluetoothConnected:
+      return bluetooth_connected_device_count_ > 0;
+    case CapabilityType::kBluetoothScanning:
+      return bluetooth_scanning_sessions_count_ > 0;
+    case CapabilityType::kSerial:
+      return serial_active_frame_count_ > 0;
+    case CapabilityType::kHID:
+      return hid_active_frame_count_ > 0;
+    case CapabilityType::kUSB:
+      return usb_active_frame_count_ > 0;
+    case CapabilityType::kGeolocation:
+      return geolocation_active_frame_count_ > 0;
+  }
 }
 
 bool WebContentsImpl::HasFileSystemAccessHandles() {
@@ -3037,6 +3047,9 @@ void WebContentsImpl::AttachInnerWebContents(
     std::unique_ptr<WebContents> inner_web_contents,
     RenderFrameHost* render_frame_host,
     bool is_full_page) {
+  // Not reachable with MPArch based guests.
+  CHECK(!base::FeatureList::IsEnabled(features::kGuestViewMPArch));
+
   OPTIONAL_TRACE_EVENT2("content", "WebContentsImpl::AttachInnerWebContents",
                         "inner_web_contents",
                         static_cast<void*>(inner_web_contents.get()),
@@ -3085,12 +3098,12 @@ void WebContentsImpl::AttachInnerWebContents(
     }
   }
 
-  // When the WebContents being initialized has an opener, the  browser side
-  // Render{View,Frame}Host must be initialized and the RenderWidgetHostView
-  // created. This is needed because the usual initialization happens during
-  // the first navigation, but when attaching a new window we don't navigate
-  // before attaching. If the browser side is already initialized, the calls
-  // below will just early return.
+  // When the WebContents being initialized has not already navigated, the
+  // browser side Render{View,Frame}Host must be initialized and the
+  // RenderWidgetHostView created. This is needed because the usual
+  // initialization happens during the first navigation, but not all guest types
+  // navigate before attaching. If the browser side is already initialized, the
+  // calls below will just early return.
   inner_render_manager->InitRenderView(
       inner_main_frame->GetSiteInstance()->group(), inner_render_view_host,
       nullptr);
@@ -3146,6 +3159,94 @@ void WebContentsImpl::AttachInnerWebContents(
   // Make sure that the inner web contents and its outer delegate get properly
   // linked via the embedding token now that inner web contents are attached.
   inner_main_frame->PropagateEmbeddingTokenToParentFrame();
+}
+
+void WebContentsImpl::AttachGuestPage(
+    std::unique_ptr<GuestPageHolder> guest_page,
+    RenderFrameHost* outer_render_frame_host) {
+  CHECK(base::FeatureList::IsEnabled(features::kGuestViewMPArch));
+
+  OPTIONAL_TRACE_EVENT1("content", "WebContentsImpl::AttachGuestPage",
+                        "guest_page", static_cast<void*>(guest_page.get()));
+  auto* outer_render_frame_host_impl =
+      static_cast<RenderFrameHostImpl*>(outer_render_frame_host);
+  CHECK_EQ(this,
+           WebContents::FromRenderFrameHost(outer_render_frame_host_impl));
+  CHECK(outer_render_frame_host_impl->GetParent());
+
+  // Guest pages aren't supported with prerendering. See
+  // https://crbug.com/40191159 for details.
+  CHECK_NE(RenderFrameHostImpl::LifecycleStateImpl::kPrerendering,
+           outer_render_frame_host_impl->lifecycle_state());
+
+  auto* guest_page_impl = static_cast<GuestPageHolderImpl*>(guest_page.get());
+  outer_render_frame_host_impl->GetParent()->TakeGuestOwnership(
+      base::WrapUnique(
+          static_cast<GuestPageHolderImpl*>(guest_page.release())));
+
+  FrameTree& inner_frame_tree = guest_page_impl->frame_tree();
+  RenderFrameHostManager* inner_render_manager =
+      inner_frame_tree.root()->render_manager();
+  RenderFrameHostImpl* inner_main_frame =
+      inner_render_manager->current_frame_host();
+  RenderViewHostImpl* inner_render_view_host =
+      inner_main_frame->render_view_host();
+  auto* outer_render_manager =
+      outer_render_frame_host_impl->frame_tree_node()->render_manager();
+
+  if (RenderWidgetHostViewBase* prev_rwhv =
+          inner_render_manager->GetRenderWidgetHostView()) {
+    // Ensure that if there is an existing RenderWidgetHostView, it's valid to
+    // embed.
+    CHECK(prev_rwhv->IsRenderWidgetHostViewChildFrame());
+    static_cast<RenderWidgetHostViewChildFrame*>(prev_rwhv)
+        ->UnregisterFrameSinkId();
+  }
+
+  // Make `outer_render_frame_host_impl` the placeholder for the inner frame
+  // tree.
+  outer_render_frame_host_impl->set_inner_tree_main_frame_tree_node_id(
+      inner_main_frame->frame_tree_node()->frame_tree_node_id());
+  guest_page_impl->set_outer_frame_tree_node_id(
+      outer_render_frame_host_impl->frame_tree_node()->frame_tree_node_id());
+
+  // When the guest page being initialized has not already navigated, the
+  // browser side Render{View,Frame}Host must be initialized and the
+  // RenderWidgetHostView created. This is needed because the usual
+  // initialization happens during the first navigation, but not all guest types
+  // navigate before attaching. If the browser side is already initialized, the
+  // call below will just early return.
+  inner_render_manager->InitRenderView(
+      inner_main_frame->GetSiteInstance()->group(), inner_render_view_host,
+      /*proxy=*/nullptr);
+
+  RenderFrameProxyHost* proxy =
+      inner_main_frame->browsing_context_state()->CreateOuterDelegateProxy(
+          outer_render_frame_host_impl->GetSiteInstance()->group(),
+          inner_main_frame->frame_tree_node(), blink::RemoteFrameToken());
+  // Since the inner page is created from the browser side we do
+  // not have RemoteFrame mojo channels. New channels will be bound when the
+  // `CreateView` IPC is sent.
+
+  // When attaching a GuestView as an inner frame tree, there should already be
+  // a live RenderFrame, which has to be swapped.
+  if (outer_render_frame_host_impl->IsRenderFrameLive()) {
+    inner_render_manager->SwapOuterDelegateFrame(outer_render_frame_host_impl,
+                                                 proxy);
+  }
+
+  RenderWidgetHostViewBase* child_rwhvb =
+      inner_render_manager->GetRenderWidgetHostView();
+  CHECK(child_rwhvb);
+  CHECK(child_rwhvb->IsRenderWidgetHostViewChildFrame());
+  RenderWidgetHostViewChildFrame* child_rwhv =
+      static_cast<RenderWidgetHostViewChildFrame*>(child_rwhvb);
+  inner_render_manager->SetRWHViewForInnerFrameTree(child_rwhv);
+  child_rwhv->RegisterFrameSinkId();
+
+  outer_render_manager->set_attach_complete();
+  inner_main_frame->PropagateEmbeddingTokenToParentFrame();
+  // TODO(crbug.com/40202416): Determine if anything else is needed here.
 }
 
 void WebContentsImpl::RecursivelyRegisterRenderWidgetHostViews() {
@@ -3328,8 +3429,6 @@ const blink::web_pref::WebPreferences WebContentsImpl::ComputeWebPreferences() {
   int min_width_in_dp =
       static_cast<int>(min_width / display.device_scale_factor());
   if (prefs.viewport_enabled &&
-      base::FeatureList::IsEnabled(
-          blink::features::kDefaultViewportIsDeviceWidth) &&
       (ui::GetDeviceFormFactor() == ui::DEVICE_FORM_FACTOR_AUTOMOTIVE ||
        (min_width_in_dp >= kAndroidMinimumTabletWidthDp &&
         ui::GetDeviceFormFactor() != ui::DEVICE_FORM_FACTOR_TV))) {
@@ -3362,7 +3461,12 @@ const blink::web_pref::WebPreferences WebContentsImpl::ComputeWebPreferences() {
   prefs.long_press_link_select_text = long_press_link_select_text_;
 #endif
 
+#if BUILDFLAG(IS_ANDROID)
   prefs.stylus_handwriting_enabled = stylus_handwriting_enabled_;
+#elif BUILDFLAG(IS_WIN)
+  prefs.stylus_handwriting_enabled =
+      stylus_handwriting::win::IsStylusHandwritingWinEnabled();
+#endif
 
   prefs.disable_reading_from_canvas =
       command_line.HasSwitch(switches::kDisableReadingFromCanvas);
@@ -4621,6 +4725,9 @@ bool WebContentsImpl::OnRenderFrameProxyVisibilityChanged(
       primary_frame_tree_.root()) {
     return false;
   }
+
+  // Not reachable with MPArch based guests.
+  CHECK(!base::FeatureList::IsEnabled(features::kGuestViewMPArch));
 
   DCHECK(GetOuterWebContents());
 
@@ -8225,6 +8332,26 @@ void WebContentsImpl::RunBeforeUnloadConfirm(
     dialog_manager_->RunBeforeUnloadDialog(
         this, render_frame_host, is_reload,
         base::BindOnce(&CloseDialogCallbackWrapper::Run, wrapper, false));
+#if BUILDFLAG(IS_ANDROID)
+    // If A embeds a subframe B and B has a BeforeUnload handler whereas A
+    // doesn't, the main frame navigation from A will show a dialog. In that
+    // case `render_frame_host` is B and `initiator` is A. The navigation
+    // request is on A.
+    RenderFrameHostImpl* initiator =
+        render_frame_host->GetBeforeUnloadInitiator();
+    NavigationRequest* request =
+        initiator ? initiator->frame_tree_node()->navigation_request()
+                  : nullptr;
+    auto* animation_manager =
+        static_cast<BackForwardTransitionAnimationManagerAndroid*>(
+            GetBackForwardTransitionAnimationManager());
+    // We might not always have a NavigationRequest at this point (i.e. a
+    // renderer-initiated navigation). However if this is a browser-initiated
+    // history navigation, the request can't be null.
+    if (animation_manager && request) {
+      animation_manager->OnBeforeUnloadDialogShown(request->GetNavigationId());
+    }
+#endif
   }
 }
 
@@ -9529,6 +9656,7 @@ void WebContentsImpl::CreateRenderWidgetHostViewForRenderManager(
       case FrameTree::Type::kPrerender:
         return false;
       case FrameTree::Type::kFencedFrame:
+      case FrameTree::Type::kGuest:
         return true;
     }
   }();
@@ -9952,8 +10080,8 @@ void WebContentsImpl::IncrementBluetoothConnectedDeviceCount() {
   // Notify for UI updates if the state changes.
   bluetooth_connected_device_count_++;
   if (bluetooth_connected_device_count_ == 1) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kBluetooth, /*used=*/true);
+    OnCapabilityTypesChanged(CapabilityType::kBluetoothConnected,
+                             /*used=*/true);
   }
 }
 
@@ -9969,9 +10097,8 @@ void WebContentsImpl::DecrementBluetoothConnectedDeviceCount() {
   DCHECK_NE(bluetooth_connected_device_count_, 0u);
   bluetooth_connected_device_count_--;
   if (bluetooth_connected_device_count_ == 0) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kBluetooth,
-        /*used=*/false);
+    OnCapabilityTypesChanged(CapabilityType::kBluetoothConnected,
+                             /*used=*/false);
   }
 }
 
@@ -10019,8 +10146,7 @@ void WebContentsImpl::IncrementSerialActiveFrameCount() {
   // Notify for UI updates if the state changes.
   serial_active_frame_count_++;
   if (serial_active_frame_count_ == 1) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kSerial, /*used=*/true);
+    OnCapabilityTypesChanged(CapabilityType::kSerial, /*used=*/true);
   }
 }
 
@@ -10037,8 +10163,7 @@ void WebContentsImpl::DecrementSerialActiveFrameCount() {
   DCHECK_NE(0u, serial_active_frame_count_);
   serial_active_frame_count_--;
   if (serial_active_frame_count_ == 0) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kSerial, /*used=*/false);
+    OnCapabilityTypesChanged(CapabilityType::kSerial, /*used=*/false);
   }
 }
 
@@ -10055,8 +10180,7 @@ void WebContentsImpl::IncrementHidActiveFrameCount() {
   // non-zero.
   hid_active_frame_count_++;
   if (hid_active_frame_count_ == 1) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kHID, /*used=*/true);
+    OnCapabilityTypesChanged(CapabilityType::kHID, /*used=*/true);
   }
 }
 
@@ -10074,20 +10198,52 @@ void WebContentsImpl::DecrementHidActiveFrameCount() {
   DCHECK_NE(0u, hid_active_frame_count_);
   hid_active_frame_count_--;
   if (hid_active_frame_count_ == 0) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kHID, /*used=*/false);
+    OnCapabilityTypesChanged(CapabilityType::kHID, /*used=*/false);
   }
 }
 
-void WebContentsImpl::OnDeviceConnectionTypesChanged(
-    WebContentsObserver::DeviceConnectionType device_connection_type,
-    bool used) {
-  OPTIONAL_TRACE_EVENT0("content",
-                        "WebContentsImpl::OnDeviceConnectionTypesChanged");
+void WebContentsImpl::IncrementGeolocationActiveFrameCount() {
+  OPTIONAL_TRACE_EVENT0(
+      "content", "WebContentsImpl::IncrementGeolocationActiveFrameCount");
+  // Trying to invalidate the tab state while being destroyed could result in a
+  // use after free.
+  if (IsBeingDestroyed()) {
+    return;
+  }
+
+  // Notify for UI updates if the active frame count transitions from zero to
+  // non-zero.
+  geolocation_active_frame_count_++;
+  if (geolocation_active_frame_count_ == 1) {
+    OnCapabilityTypesChanged(CapabilityType::kGeolocation, /*used=*/true);
+  }
+}
+
+void WebContentsImpl::DecrementGeolocationActiveFrameCount() {
+  OPTIONAL_TRACE_EVENT0(
+      "content", "WebContentsImpl::DecrementGeolocationActiveFrameCount");
+  // Trying to invalidate the tab state while being destroyed could result in a
+  // use after free.
+  if (IsBeingDestroyed()) {
+    return;
+  }
+
+  // Notify for UI updates if the active frame count transitions from non-zero
+  // to zero.
+  DCHECK_NE(0u, geolocation_active_frame_count_);
+  geolocation_active_frame_count_--;
+  if (geolocation_active_frame_count_ == 0) {
+    OnCapabilityTypesChanged(CapabilityType::kGeolocation,
+                             /*used=*/false);
+  }
+}
+
+void WebContentsImpl::OnCapabilityTypesChanged(CapabilityType capability_type,
+                                               bool used) {
+  OPTIONAL_TRACE_EVENT0("content", "WebContentsImpl::OnCapabilityTypesChanged");
   NotifyNavigationStateChanged(INVALIDATE_TYPE_TAB);
-  observers_.NotifyObservers(
-      &WebContentsObserver::OnDeviceConnectionTypesChanged,
-      device_connection_type, used);
+  observers_.NotifyObservers(&WebContentsObserver::OnCapabilityTypesChanged,
+                             capability_type, used);
 }
 
 void WebContentsImpl::IncrementUsbActiveFrameCount() {
@@ -10103,8 +10259,7 @@ void WebContentsImpl::IncrementUsbActiveFrameCount() {
   // non-zero.
   usb_active_frame_count_++;
   if (usb_active_frame_count_ == 1) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kUSB, /*used=*/true);
+    OnCapabilityTypesChanged(CapabilityType::kUSB, /*used=*/true);
   }
 }
 
@@ -10122,8 +10277,7 @@ void WebContentsImpl::DecrementUsbActiveFrameCount() {
   DCHECK_NE(0u, usb_active_frame_count_);
   usb_active_frame_count_--;
   if (usb_active_frame_count_ == 0) {
-    OnDeviceConnectionTypesChanged(
-        WebContentsObserver::DeviceConnectionType::kUSB, /*used=*/false);
+    OnCapabilityTypesChanged(CapabilityType::kUSB, /*used=*/false);
   }
 }
 
@@ -10197,6 +10351,7 @@ void WebContentsImpl::SetSpatialNavigationDisabled(bool disabled) {
   NotifyPreferencesChanged();
 }
 
+#if BUILDFLAG(IS_ANDROID)
 void WebContentsImpl::SetStylusHandwritingEnabled(bool enabled) {
   if (stylus_handwriting_enabled_ == enabled) {
     return;
@@ -10204,6 +10359,7 @@ void WebContentsImpl::SetStylusHandwritingEnabled(bool enabled) {
   stylus_handwriting_enabled_ = enabled;
   NotifyPreferencesChanged();
 }
+#endif  // BUILDFLAG(IS_ANDROID)
 
 PictureInPictureResult WebContentsImpl::EnterPictureInPicture() {
   OPTIONAL_TRACE_EVENT0("content", "WebContentsImpl::EnterPictureInPicture");
@@ -10448,11 +10604,25 @@ void WebContentsImpl::OnFrameIsCapturingMediaStreamChanged(
 // for ascending.
 std::vector<FrameTreeNode*> WebContentsImpl::GetUnattachedOwnedNodes(
     RenderFrameHostImpl* owner) {
-  std::vector<FrameTreeNode*> unattached_owned_nodes;
+  if (owner->GetParent()) {
+    return {};
+  }
   BrowserPluginGuestManager* guest_manager =
       GetBrowserContext()->GetGuestManager();
-  if (owner == GetPrimaryMainFrame() && guest_manager) {
-    guest_manager->ForEachUnattachedGuest(
+  if (!guest_manager) {
+    return {};
+  }
+  std::vector<FrameTreeNode*> unattached_owned_nodes;
+  if (base::FeatureList::IsEnabled(features::kGuestViewMPArch)) {
+    guest_manager->ForEachUnattachedGuestPage(
+        owner->GetPage(), [&](GuestPageHolder& guest_page) {
+          unattached_owned_nodes.push_back(
+              static_cast<GuestPageHolderImpl&>(guest_page)
+                  .frame_tree()
+                  .root());
+        });
+  } else if (owner == GetPrimaryMainFrame()) {
+    guest_manager->ForEachUnattachedGuestContents(
         this, [&](WebContents* guest_contents) {
           unattached_owned_nodes.push_back(
               static_cast<WebContentsImpl*>(guest_contents)
@@ -11118,12 +11288,8 @@ std::unique_ptr<PrerenderHandle> WebContentsImpl::StartPrerendering(
       /*target_hint=*/std::nullopt, content::Referrer(),
       /*eagerness=*/std::nullopt,
       /*no_vary_search_expected=*/std::nullopt,
-      /*initiator_origin=*/std::nullopt,
-      content::ChildProcessHost::kInvalidUniqueID, GetWeakPtr(),
-      /*initiator_frame_token=*/std::nullopt,
-      /*initiator_frame_tree_node_id=*/FrameTreeNodeId(), ukm::kInvalidSourceId,
-      page_transition, should_warm_up_compositor,
-      std::move(url_match_predicate),
+      /*initiato_render_frame_host=*/nullptr, GetWeakPtr(), page_transition,
+      should_warm_up_compositor, std::move(url_match_predicate),
       std::move(prerender_navigation_handle_callback),
       base::MakeRefCounted<PreloadPipelineInfo>());
   attributes.holdback_status_override = holdback_status_override;
@@ -11325,6 +11491,8 @@ void WebContentsImpl::SetPartitionedPopinOpenerOnNewWindowIfNeeded(
     return;
   }
 
+  PartitionedPopinsController::CreateForWebContents(
+      static_cast<WebContentsImpl*>(opener->delegate()));
   new_window->partitioned_popin_opener_ = opener->GetWeakPtr();
   opened_partitioned_popin_ = new_window->GetWeakPtr();
 }

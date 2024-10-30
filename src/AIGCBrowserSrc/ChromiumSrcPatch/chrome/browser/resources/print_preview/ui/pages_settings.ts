@@ -7,7 +7,7 @@ import 'tangram://resources/cr_elements/md_select.css.js';
 import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 import './print_preview_shared.css.js';
 import './settings_section.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import type {CrInputElement} from 'tangram://resources/cr_elements/cr_input/cr_input.js';
 import {WebUiListenerMixin} from 'tangram://resources/cr_elements/web_ui_listener_mixin.js';

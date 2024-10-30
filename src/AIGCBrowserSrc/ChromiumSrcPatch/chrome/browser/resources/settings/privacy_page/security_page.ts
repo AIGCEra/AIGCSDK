@@ -217,6 +217,13 @@ export class SettingsSecurityPageElement extends
         },
       },
 
+      enablePasswordLeakToggleMove_: {
+        type: Boolean,
+        value() {
+          return loadTimeData.getBoolean('enablePasswordLeakToggleMove');
+        },
+      },
+
       showDisableSafebrowsingDialog_: Boolean,
 
       /**
@@ -269,6 +276,7 @@ export class SettingsSecurityPageElement extends
   private eventTracker_: EventTracker = new EventTracker();
   private enableEsbAiStringUpdate_: boolean;
   private hideExtendedReportingRadioButton_: boolean;
+  private enablePasswordLeakToggleMove_: boolean;
 
   private browserProxy_: PrivacyPageBrowserProxy =
       PrivacyPageBrowserProxyImpl.getInstance();
@@ -489,6 +497,11 @@ export class SettingsSecurityPageElement extends
       }
     }
     return subLabel;
+  }
+
+  private computeSafeBrowsingStandardNoCollapse_(): boolean {
+    return this.hideExtendedReportingRadioButton_ &&
+        this.enablePasswordLeakToggleMove_;
   }
 
   // Conversion helper for binding Integer pref values as String values.

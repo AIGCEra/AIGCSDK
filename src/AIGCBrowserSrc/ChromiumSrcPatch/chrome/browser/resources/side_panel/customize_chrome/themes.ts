@@ -7,7 +7,7 @@ import 'tangram://resources/cr_elements/cr_auto_img/cr_auto_img.js';
 import 'tangram://resources/cr_elements/cr_grid/cr_grid.js';
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
 import './check_mark_wrapper.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {SpHeadingElement} from 'tangram://customize-chrome-side-panel.top-chrome/shared/sp_heading.js';
 import {HelpBubbleMixinLit} from 'tangram://resources/cr_components/help_bubble/help_bubble_mixin_lit.js';

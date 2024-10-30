@@ -41,6 +41,7 @@
 #include "chrome/browser/ui/views/web_apps/pwa_confirmation_bubble_view.h"
 #include "chrome/browser/ui/webui/new_tab_page/new_tab_page_ui.h"
 #include "chrome/browser/ui/webui/password_manager/password_manager_ui.h"
+#include "chrome/browser/ui/webui/settings/settings_ui.h"
 #include "chrome/browser/ui/webui/side_panel/customize_chrome/customize_chrome_ui.h"
 #include "chrome/browser/user_education/tutorial_identifiers.h"
 #include "chrome/browser/user_education/user_education_service.h"
@@ -64,14 +65,14 @@
 #include "components/strings/grit/components_strings.h"
 #include "components/strings/grit/privacy_sandbox_strings.h"
 #include "components/supervised_user/core/common/supervised_user_constants.h"
-#include "components/user_education/common/feature_promo_handle.h"
-#include "components/user_education/common/feature_promo_registry.h"
-#include "components/user_education/common/feature_promo_specification.h"
-#include "components/user_education/common/help_bubble_factory_registry.h"
-#include "components/user_education/common/help_bubble_params.h"
-#include "components/user_education/common/new_badge_specification.h"
-#include "components/user_education/common/tutorial_description.h"
-#include "components/user_education/common/tutorial_registry.h"
+#include "components/user_education/common/feature_promo/feature_promo_handle.h"
+#include "components/user_education/common/feature_promo/feature_promo_registry.h"
+#include "components/user_education/common/feature_promo/feature_promo_specification.h"
+#include "components/user_education/common/help_bubble/help_bubble_factory_registry.h"
+#include "components/user_education/common/help_bubble/help_bubble_params.h"
+#include "components/user_education/common/new_badge/new_badge_specification.h"
+#include "components/user_education/common/tutorial/tutorial_description.h"
+#include "components/user_education/common/tutorial/tutorial_registry.h"
 #include "components/user_education/common/user_education_features.h"
 #include "components/user_education/common/user_education_metadata.h"
 #include "components/user_education/views/help_bubble_delegate.h"
@@ -629,6 +630,21 @@ void MaybeRegisterChromeFeaturePromos(
                     .SetBubbleIcon(kLightbulbOutlineIcon)
                     .SetBubbleArrow(HelpBubbleArrow::kTopRight)));
 
+  // kIPHAutofillPredictionImprovementsBootstrappingFeature:
+  registry.RegisterFeature(std::move(
+      FeaturePromoSpecification::CreateForToastPromo(
+          feature_engagement::
+              kIPHAutofillPredictionImprovementsBootstrappingFeature,
+          settings::SettingsUI::kAutofillPredictionImprovementsHeaderElementId,
+          IDS_AUTOFILL_PREDICTION_IMPROVEMENTS_BOOTSTRAPPING_IPH,
+          IDS_AUTOFILL_PREDICTION_IMPROVEMENTS_BOOTSTRAPPING_IPH_SCREENREADER,
+          FeaturePromoSpecification::AcceleratorInfo())
+          .SetInAnyContext(true)
+          .SetBubbleArrow(HelpBubbleArrow::kBottomCenter)
+          .SetMetadata(131, "brunobraga@google.com",
+                       "Triggered after autofill predections are bootstrapped "
+                       "from current autofill data.")));
+
   // kIPHPowerBookmarksSidePanelFeature:
   registry.RegisterFeature(
       std::move(FeaturePromoSpecification::CreateForSnoozePromo(
@@ -640,19 +656,6 @@ void MaybeRegisterChromeFeaturePromos(
                     .SetMetadata(121, "emshack@chromium.org",
                                  "Triggered when a bookmark is added from the "
                                  "bookmark page action in omnibox.")));
-
-  // kIPHCompanionSidePanelFeature:
-  registry.RegisterFeature(std::move(
-      FeaturePromoSpecification::CreateForToastPromo(
-          feature_engagement::kIPHCompanionSidePanelFeature,
-          kToolbarAppMenuButtonElementId,
-          IDS_SIDE_PANEL_COMPANION_PROMO_PINNING,
-          IDS_SIDE_PANEL_COMPANION_PROMO_SCREEN_READER,
-          FeaturePromoSpecification::AcceleratorInfo())
-          .SetHighlightedMenuItem(AppMenuModel::kShowSearchCompanion)
-          .SetMetadata(
-              115, "corising@chromium.org",
-              "Triggered to encourage users to try out the CSC feature.")));
 
 #if !BUILDFLAG(IS_CHROMEOS_ASH)
   // kIPHSwitchProfileFeature:
@@ -1512,7 +1515,7 @@ void MaybeRegisterChromeTutorials(
             // Bubble step - Pin icon
             TutorialDescription::BubbleStep(kSidePanelPinButtonElementId)
                 .SetBubbleBodyText(IDS_TUTORIAL_LENS_OVERLAY_CLICK_PIN_ICON)
-                .SetBubbleArrow(HelpBubbleArrow::kRightCenter),
+                .SetBubbleArrow(HelpBubbleArrow::kRightBottom),
 
             // Wait for pin icon click
             HiddenStep::WaitForActivated(kSidePanelPinButtonElementId),
@@ -1577,6 +1580,12 @@ void MaybeRegisterChromeNewBadges(user_education::NewBadgeRegistry& registry) {
       lens::features::kLensOverlay,
       user_education::Metadata(126, "jdonnelly@google.com, dfried@google.com",
                                "Shown in app and web context menus.")));
+
+  registry.RegisterFeature(user_education::NewBadgeSpecification(
+      features::kTabOrganization,
+      user_education::Metadata(
+          126, "emshack@chromium.org",
+          "Shown in app menu when TabOrganizationAppMenuItem is enabled.")));
 
   registry.RegisterFeature(user_education::NewBadgeSpecification(
       autofill::features::kAutofillForUnclassifiedFieldsAvailable,
@@ -1644,8 +1653,8 @@ std::unique_ptr<BrowserFeaturePromoController> CreateUserEducationResources(
       feature_engagement::TrackerFactory::GetForBrowserContext(profile),
       &user_education_service->feature_promo_registry(),
       &user_education_service->help_bubble_factory_registry(),
-      &user_education_service->feature_promo_storage_service(),
-      &user_education_service->feature_promo_session_policy(),
+      &user_education_service->user_education_storage_service(),
+      &user_education_service->user_education_session_policy(),
       &user_education_service->tutorial_service(),
       &user_education_service->product_messaging_controller());
 }

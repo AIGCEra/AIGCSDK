@@ -33,7 +33,7 @@
 #include "base/strings/string_util.h"
 #include "base/task/task_traits.h"
 #include "base/task/thread_pool.h"
-#include "base/time/default_clock.h"
+#include "base/time/default_tick_clock.h"
 #include "base/values.h"
 #include "build/build_config.h"
 #include "build/chromeos_buildflags.h"
@@ -105,7 +105,6 @@
 #include "device/fido/fido_request_handler_base.h"
 #include "device/fido/fido_transport_protocol.h"
 #include "device/fido/fido_types.h"
-#include "device/fido/mac/icloud_keychain.h"
 #include "device/fido/public_key_credential_descriptor.h"
 #include "device/fido/public_key_credential_user_entity.h"
 #include "extensions/browser/extension_registry.h"
@@ -125,10 +124,10 @@
 
 #if BUILDFLAG(IS_MAC)
 #include "base/base64.h"
-#include "chrome/browser/ui/webauthn/user_actions.h"
 #include "chrome/browser/webauthn/chrome_authenticator_request_delegate_mac.h"
 #include "device/fido/mac/authenticator.h"
 #include "device/fido/mac/credential_metadata.h"
+#include "device/fido/mac/icloud_keychain.h"
 #include "third_party/icu/source/i18n/unicode/timezone.h"
 #include "ui/views/widget/widget.h"
 #endif
@@ -140,10 +139,6 @@
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS)
-#include "chrome/browser/webauthn/chromeos/passkey_dialog_controller.h"
-#include "chrome/browser/webauthn/chromeos/passkey_discovery.h"
-#include "chrome/browser/webauthn/chromeos/passkey_service.h"
-#include "chrome/browser/webauthn/chromeos/passkey_service_factory.h"
 #include "chromeos/components/webauthn/webauthn_request_registrar.h"
 #include "ui/aura/window.h"
 #endif
@@ -693,7 +688,7 @@ void ChromeWebAuthenticationDelegate::DeleteUnacceptedPasskeys(
     PasswordsClientUIDelegate* manage_passwords_ui_controller =
         PasswordsClientUIDelegateFromWebContents(web_contents);
     if (manage_passwords_ui_controller) {
-      manage_passwords_ui_controller->OnPasskeyNotAccepted();
+      manage_passwords_ui_controller->OnPasskeyNotAccepted(relying_party_id);
     }
   }
   base::UmaHistogramEnumeration(
@@ -742,7 +737,7 @@ void ChromeWebAuthenticationDelegate::UpdateUserPasskeys(
     PasswordsClientUIDelegate* manage_passwords_ui_controller =
         PasswordsClientUIDelegateFromWebContents(web_contents);
     if (manage_passwords_ui_controller) {
-      manage_passwords_ui_controller->OnPasskeyUpdated();
+      manage_passwords_ui_controller->OnPasskeyUpdated(relying_party_id);
     }
   }
   LogSignalCurrentUserDetailsUpdated(
@@ -950,15 +945,6 @@ ChromeAuthenticatorRequestDelegate::enclave_controller_for_testing() const {
   return enclave_controller_.get();
 }
 
-#if BUILDFLAG(IS_CHROMEOS)
-chromeos::PasskeyDialogController&
-ChromeAuthenticatorRequestDelegate::chromeos_passkey_controller_for_testing()
-    const {
-  CHECK(chromeos_passkey_controller_);
-  return *chromeos_passkey_controller_;
-}
-#endif
-
 void ChromeAuthenticatorRequestDelegate::SetRelyingPartyId(
     const std::string& rp_id) {
   dialog_model_->relying_party_id = rp_id;
@@ -1086,18 +1072,6 @@ void ChromeAuthenticatorRequestDelegate::RegisterActionCallbacks(
       request_ble_permission_callback);
 }
 
-std::vector<std::unique_ptr<device::FidoDiscoveryBase>>
-ChromeAuthenticatorRequestDelegate::CreatePlatformDiscoveries() {
-  std::vector<std::unique_ptr<device::FidoDiscoveryBase>> discoveries;
-#if BUILDFLAG(IS_CHROMEOS)
-  if (base::FeatureList::IsEnabled(device::kChromeOsPasskeys)) {
-    discoveries.push_back(
-        std::make_unique<chromeos::PasskeyDiscovery>(GetRenderFrameHost()));
-  }
-#endif
-  return discoveries;
-}
-
 void ChromeAuthenticatorRequestDelegate::ConfigureDiscoveries(
     const url::Origin& origin,
     const std::string& rp_id,
@@ -1142,8 +1116,8 @@ void ChromeAuthenticatorRequestDelegate::ConfigureDiscoveries(
           enclave_controller_ = std::make_unique<GPMEnclaveController>(
               GetRenderFrameHost(), dialog_model_.get(), rp_id, request_type,
               user_verification_requirement,
-              clock_ ? clock_ : base::DefaultClock::GetInstance(),
-              std::move(pending_trusted_vault_connection_));
+              tick_clock_ ? tick_clock_ : base::DefaultTickClock::GetInstance(),
+              timer_task_runner_, std::move(pending_trusted_vault_connection_));
         }
       }
     } else {
@@ -1372,6 +1346,23 @@ void ChromeAuthenticatorRequestDelegate::OnTransportAvailabilityEnumerated(
     return;
   }
 
+  if (base::FeatureList::IsEnabled(syncer::kSyncWebauthnCredentials) &&
+      (can_use_synced_phone_passkeys_ ||
+       (enclave_controller_ && enclave_controller_->is_active()))) {
+    GetPhoneContactableGpmPasskeysForRpId(&data.recognized_credentials);
+  }
+  FilterRecognizedCredentials(&data);
+
+  if (g_observer) {
+    g_observer->OnTransportAvailabilityEnumerated(this, &data);
+  }
+
+  if (dialog_model_->step() !=
+      AuthenticatorRequestDialogModel::Step::kNotStarted) {
+    dialog_controller_->OnTransportAvailabilityChanged(std::move(data));
+    return;
+  }
+
   const bool delay_ui_for_gpm =
       enclave_controller_ && !enclave_controller_->ready_for_ui();
   if (delay_ui_for_gpm) {
@@ -1504,10 +1495,12 @@ void ChromeAuthenticatorRequestDelegate::SetTrustedVaultConnectionForTesting(
   pending_trusted_vault_connection_ = std::move(connection);
 }
 
-void ChromeAuthenticatorRequestDelegate::SetClockForTesting(
-    base::Clock* clock) {
+void ChromeAuthenticatorRequestDelegate::SetMockTimeForTesting(
+    base::TickClock const* tick_clock,
+    scoped_refptr<base::SequencedTaskRunner> task_runner) {
   CHECK(!enclave_controller_);
-  clock_ = clock;
+  tick_clock_ = tick_clock;
+  timer_task_runner_ = std::move(task_runner);
 }
 
 content::RenderFrameHost*
@@ -1525,23 +1518,6 @@ content::BrowserContext* ChromeAuthenticatorRequestDelegate::GetBrowserContext()
 
 void ChromeAuthenticatorRequestDelegate::ShowUI(
     device::FidoRequestHandlerBase::TransportAvailabilityInfo tai) {
-  if (base::FeatureList::IsEnabled(syncer::kSyncWebauthnCredentials) &&
-      (can_use_synced_phone_passkeys_ ||
-       (enclave_controller_ && enclave_controller_->is_active()))) {
-    GetPhoneContactableGpmPasskeysForRpId(&tai.recognized_credentials);
-  }
-  FilterRecognizedCredentials(&tai);
-
-  if (g_observer) {
-    g_observer->OnTransportAvailabilityEnumerated(this, &tai);
-  }
-
-  if (dialog_model_->step() !=
-      AuthenticatorRequestDialogModel::Step::kNotStarted) {
-    dialog_controller_->OnTransportAvailabilityChanged(std::move(tai));
-    return;
-  }
-
   // At the time of writing we don't support GPM passkeys on iOS, so we want to
   // avoid defaulting to GPM for macOS users who likely have an iPhone. But on
   // all other platforms, GPM should be the default.

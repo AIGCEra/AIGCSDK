@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../strings.m.js';
+import '/strings.m.js';
 import './icons.html.js';
 import '//bookmarks-side-panel.top-chrome/shared/sp_shared_style.css.js';
 import '//resources/cr_elements/cr_action_menu/cr_action_menu.js';
 import '//resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import '//resources/cr_elements/icons_lit.html.js';
+import '//resources/cr_elements/icons.html.js';
 
 import type {BrowserProxy} from '//resources/cr_components/commerce/browser_proxy.js';
 import {BrowserProxyImpl} from '//resources/cr_components/commerce/browser_proxy.js';

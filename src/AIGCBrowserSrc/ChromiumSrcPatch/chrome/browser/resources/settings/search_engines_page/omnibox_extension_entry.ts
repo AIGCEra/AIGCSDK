@@ -7,7 +7,7 @@
  * an omnibox extension with its name and keyword.
  */
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import './search_engine_entry.css.js';
 import '../settings_shared.css.js';
 import '../site_favicon.js';

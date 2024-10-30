@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_expand_button/cr_expand_button.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import '../strings.m.js';
+import '/strings.m.js';
 import './site_permissions_edit_permissions_dialog.js';
 
 import {assert} from 'tangram://resources/js/assert.js';

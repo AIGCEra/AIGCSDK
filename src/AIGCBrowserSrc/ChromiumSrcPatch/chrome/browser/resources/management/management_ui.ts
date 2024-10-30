@@ -5,9 +5,9 @@
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import './icons.html.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {I18nMixinLit} from 'tangram://resources/cr_elements/i18n_mixin_lit.js';
 import {WebUiListenerMixinLit} from 'tangram://resources/cr_elements/web_ui_listener_mixin_lit.js';

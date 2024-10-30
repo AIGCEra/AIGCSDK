@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import './icons.html.js';
 
 import type {CrUrlListItemElement} from 'tangram://resources/cr_elements/cr_url_list_item/cr_url_list_item.js';

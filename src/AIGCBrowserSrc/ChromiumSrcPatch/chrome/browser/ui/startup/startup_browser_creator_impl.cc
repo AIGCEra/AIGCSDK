@@ -74,6 +74,7 @@
 #include "third_party/webruntime/Markup.h"
 #include "third_party/webruntime/UniverseForChromium.h"
 #include "ui/views/win/hwnd_util.h"
+bool g_bBrowserInit = false;
 #endif
 // end Add by TangramTeam
 
@@ -353,18 +354,23 @@ void StartupBrowserCreatorImpl::Launch(
     } else {
       bBrowserApp = (!::PathFileExists(strAppPage) && !PathFileExists(path));
       if (bBrowserApp) {
-         DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+        DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
       }
     }
   } else {
     bBrowserApp = (::PathFileExists(path) && !::PathIsDirectory(path));
-  // DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+    // DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
 
     if ((g_pSpaceTelescopeImpl &&
          g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER) ||
         process_startup == chrome::startup::IsProcessStartup::kNo) {
-      if (!bBrowserApp) {
-         DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+      if (!bBrowserApp || g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER) {
+        if (g_pSpaceTelescopeImpl->m_nAppType == APP_BROWSER &&
+            g_bBrowserInit == false) {
+          g_bBrowserInit = true;
+        } else {
+          DetermineURLsAndLaunch(process_startup, restore_tabbed_browser);
+        }
       }
     }
   }
@@ -575,22 +581,23 @@ void StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
   //  promotions_enabled_pref =
   //      local_state->FindPreference(prefs::kPromotionsEnabled);
   //}
-  //if (promotions_enabled_pref && promotions_enabled_pref->IsManaged()) {
+  // if (promotions_enabled_pref && promotions_enabled_pref->IsManaged()) {
   //  // Presentation is managed; obey the policy setting.
   //  promotions_enabled = promotions_enabled_pref->GetValue()->GetBool();
   //} else {
-  //  // Presentation is not managed. Infer an intent to disable if any value for
+  //  // Presentation is not managed. Infer an intent to disable if any value
+  //  for
   //  // the RestoreOnStartup policy is mandatory or recommended.
   //  promotions_enabled =
   //      !SessionStartupPref::TypeIsManaged(profile_->GetPrefs()) &&
   //      !SessionStartupPref::TypeHasRecommendedValue(profile_->GetPrefs());
   //}
 
-  //const bool whats_new_enabled =
-  //    whats_new::ShouldShowForState(local_state, promotions_enabled);
+  // const bool whats_new_enabled =
+  //     whats_new::ShouldShowForState(local_state, promotions_enabled);
 
-  //const bool whats_new_enabled =
-  //    whats_new::ShouldShowForState(local_state, promotional_tabs_enabled);
+  // const bool whats_new_enabled =
+  //     whats_new::ShouldShowForState(local_state, promotional_tabs_enabled);
   auto* privacy_sandbox_service =
       PrivacySandboxServiceFactory::GetForProfile(profile_);
 
@@ -607,18 +614,18 @@ void StartupBrowserCreatorImpl::DetermineURLsAndLaunch(
       case PrivacySandboxService::PromptType::kNone:
         break;
     }
-  } 
+  }
 
-  //auto result = DetermineStartupTabs(
-  //    StartupTabProviderImpl(), process_startup, is_incognito_or_guest,
-  //    is_post_crash_launch, has_incompatible_applications,
-  //    promotional_tabs_enabled, false,
-  //    privacy_sandbox_dialog_required);
-  // end Add by TangramTeam
+  // auto result = DetermineStartupTabs(
+  //     StartupTabProviderImpl(), process_startup, is_incognito_or_guest,
+  //     is_post_crash_launch, has_incompatible_applications,
+  //     promotional_tabs_enabled, false,
+  //     privacy_sandbox_dialog_required);
+  //  end Add by TangramTeam
   auto result = DetermineStartupTabs(
       StartupTabProviderImpl(), process_startup, is_incognito_or_guest,
-      is_post_crash_launch, has_incompatible_applications, false,
-      false, privacy_sandbox_dialog_required);
+      is_post_crash_launch, has_incompatible_applications, false, false,
+      privacy_sandbox_dialog_required);
   StartupTabs tabs = std::move(result.tabs);
 
   // Return immediately if we start an async restore, since the remainder of

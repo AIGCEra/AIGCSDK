@@ -8,7 +8,7 @@ import 'tangram://resources/cr_elements/cr_ripple/cr_ripple.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import './shared_style.css.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {assert} from 'tangram://resources/js/assert.js';
 import {isRTL} from 'tangram://resources/js/util.js';

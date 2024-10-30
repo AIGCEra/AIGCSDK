@@ -4,11 +4,11 @@
 
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import './icons.html.js';
 import './profile_card.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {HelpBubbleMixinLit} from 'tangram://resources/cr_components/help_bubble/help_bubble_mixin_lit.js';
 import type {CrCheckboxElement} from 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';

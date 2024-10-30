@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import './shared/onboarding_background.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 

@@ -4,7 +4,11 @@
 
 #include "chrome/browser/renderer_context_menu/render_view_context_menu.h"
 
+#include <memory>
 #include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "base/functional/bind.h"
 #include "base/memory/raw_ptr.h"
@@ -75,7 +79,9 @@
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_delegate.h"
 #include "content/public/test/browser_test_utils.h"
+#include "content/public/test/fenced_frame_test_util.h"
 #include "content/public/test/mock_render_process_host.h"
+#include "content/public/test/navigation_simulator.h"
 #include "content/public/test/test_renderer_host.h"
 #include "content/public/test/web_contents_tester.h"
 #include "extensions/browser/extension_prefs.h"
@@ -95,14 +101,10 @@
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS_ASH)
-#include "ash/constants/ash_features.h"
-#include "ash/constants/ash_switches.h"
-#include "base/test/scoped_command_line.h"
 #include "chrome/browser/ash/crosapi/browser_util.h"
 #include "chrome/browser/ash/profiles/profile_helper.h"
 #include "chrome/test/base/testing_browser_process.h"
 #include "chrome/test/base/testing_profile_manager.h"
-#include "chromeos/ash/components/standalone_browser/feature_refs.h"
 #include "components/account_id/account_id.h"
 #include "components/user_manager/fake_user_manager.h"
 #include "components/user_manager/scoped_user_manager.h"
@@ -486,77 +488,6 @@ TEST_F(RenderViewContextMenuExtensionsTest,
   // Expect both items to be found.
   ASSERT_EQ(2, num_items_found);
 }
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-using RenderViewContextMenuDeveloperItemsTest = ChromeRenderViewHostTestHarness;
-
-// Verify that the "Inspect" item and the "View page source" item are not
-// present in the context menu if the lacros is the only browser and the
-// `kAllowDevtoolsInSystemUI` flag is not enabled.
-TEST_F(RenderViewContextMenuDeveloperItemsTest,
-       DeveloperItemsAreNotPresentByDefaultIfAshBrowserIsDisabled) {
-  base::test::ScopedFeatureList features;
-  features.InitWithFeatures(ash::standalone_browser::GetFeatureRefs(), {});
-  base::test::ScopedCommandLine scoped_command_line;
-  scoped_command_line.GetProcessCommandLine()->AppendSwitch(
-      ash::switches::kEnableLacrosForTesting);
-
-  auto fake_user_manager = std::make_unique<user_manager::FakeUserManager>();
-  auto* primary_user =
-      fake_user_manager->AddUser(AccountId::FromUserEmail("test@test"));
-  fake_user_manager->UserLoggedIn(primary_user->GetAccountId(),
-                                  primary_user->username_hash(),
-                                  /*browser_restart=*/false,
-                                  /*is_child=*/false);
-  auto scoped_user_manager = std::make_unique<user_manager::ScopedUserManager>(
-      std::move(fake_user_manager));
-
-  ASSERT_FALSE(crosapi::browser_util::IsAshDevToolEnabled());
-
-  content::ContextMenuParams params = CreateParams(MenuItem::PAGE);
-  auto menu = std::make_unique<TestRenderViewContextMenu>(
-      *web_contents()->GetPrimaryMainFrame(), params);
-  menu->Init();
-
-  EXPECT_FALSE(menu->IsItemPresent(IDC_VIEW_SOURCE));
-  EXPECT_FALSE(menu->IsItemPresent(IDC_CONTENT_CONTEXT_INSPECTELEMENT));
-}
-
-// Verify that the "Inspect" item and the "View page source" are present in the
-// context menu if the lacros is the only browser and the
-// `kAllowDevtoolsInSystemUI` flag is enabled.
-TEST_F(RenderViewContextMenuDeveloperItemsTest,
-       DeveloperItemsArePresentIfAshBrowserIsDisabledAndFlagIsEnabled) {
-  base::test::ScopedFeatureList features;
-  std::vector<base::test::FeatureRef> enabled =
-      ash::standalone_browser::GetFeatureRefs();
-  enabled.push_back(ash::features::kAllowDevtoolsInSystemUI);
-  features.InitWithFeatures(enabled, {});
-  base::test::ScopedCommandLine scoped_command_line;
-  scoped_command_line.GetProcessCommandLine()->AppendSwitch(
-      ash::switches::kEnableLacrosForTesting);
-
-  auto fake_user_manager = std::make_unique<user_manager::FakeUserManager>();
-  auto* primary_user =
-      fake_user_manager->AddUser(AccountId::FromUserEmail("test@test"));
-  fake_user_manager->UserLoggedIn(primary_user->GetAccountId(),
-                                  primary_user->username_hash(),
-                                  /*browser_restart=*/false,
-                                  /*is_child=*/false);
-  auto scoped_user_manager = std::make_unique<user_manager::ScopedUserManager>(
-      std::move(fake_user_manager));
-
-  ASSERT_TRUE(crosapi::browser_util::IsAshDevToolEnabled());
-
-  content::ContextMenuParams params = CreateParams(MenuItem::PAGE);
-  auto menu = std::make_unique<TestRenderViewContextMenu>(
-      *web_contents()->GetPrimaryMainFrame(), params);
-  menu->Init();
-
-  EXPECT_TRUE(menu->IsItemPresent(IDC_VIEW_SOURCE));
-  EXPECT_TRUE(menu->IsItemPresent(IDC_CONTENT_CONTEXT_INSPECTELEMENT));
-}
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 class RenderViewContextMenuPrefsTest
     : public ChromeRenderViewHostTestHarness,
@@ -1272,53 +1203,6 @@ TEST_F(RenderViewContextMenuPrefsTest, LensImageSearchEnabled) {
   EXPECT_FALSE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_TRANSLATEIMAGEWITHLENS));
 }
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-// Verify that the Lens Image Search menu item is disabled on image content in
-// Ash, if Lacros is the only browser.
-TEST_F(RenderViewContextMenuPrefsTest,
-       LensImageSearchDisabledIfAshBrowserIsDisabled) {
-  base::test::ScopedFeatureList features;
-  std::vector<base::test::FeatureRef> enabled =
-      ash::standalone_browser::GetFeatureRefs();
-  enabled.push_back(lens::features::kLensStandalone);
-  enabled.push_back(lens::features::kEnableImageTranslate);
-  features.InitWithFeatures(enabled, {lens::features::kLensOverlay});
-  base::test::ScopedCommandLine scoped_command_line;
-  scoped_command_line.GetProcessCommandLine()->AppendSwitch(
-      ash::switches::kEnableLacrosForTesting);
-
-  auto fake_user_manager = std::make_unique<user_manager::FakeUserManager>();
-  auto* primary_user =
-      fake_user_manager->AddUser(AccountId::FromUserEmail("test@test"));
-  fake_user_manager->UserLoggedIn(primary_user->GetAccountId(),
-                                  primary_user->username_hash(),
-                                  /*browser_restart=*/false,
-                                  /*is_child=*/false);
-  auto scoped_user_manager = std::make_unique<user_manager::ScopedUserManager>(
-      std::move(fake_user_manager));
-  ASSERT_FALSE(crosapi::browser_util::IsAshWebBrowserEnabled());
-  ash::ProfileHelper::Get();
-
-  TestingProfileManager testing_profile_manager(
-      TestingBrowserProcess::GetGlobal(), testing_local_state());
-  ASSERT_TRUE(testing_profile_manager.SetUp());
-
-  SetUserSelectedDefaultSearchProvider("https://www.google.com",
-                                       /*supports_image_search=*/true);
-  content::ContextMenuParams params = CreateParams(MenuItem::IMAGE);
-  params.has_image_contents = true;
-  TestRenderViewContextMenu menu(*web_contents()->GetPrimaryMainFrame(),
-                                 params);
-  menu.SetBrowser(GetBrowser());
-  menu.Init();
-
-  EXPECT_FALSE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_SEARCHWEBFORIMAGE));
-  EXPECT_FALSE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_SEARCHLENSFORIMAGE));
-  EXPECT_FALSE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_TRANSLATEIMAGEWITHWEB));
-  EXPECT_FALSE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_TRANSLATEIMAGEWITHLENS));
-}
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
-
 // Verify that the Lens Image Search menu item is enabled for Progressive Web
 // Apps
 TEST_F(RenderViewContextMenuPrefsTest, LensImageSearchForProgressiveWebApp) {
@@ -1495,48 +1379,6 @@ TEST_F(RenderViewContextMenuPrefsTest, LensRegionSearch) {
 
   EXPECT_TRUE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_LENS_REGION_SEARCH));
 }
-
-#if BUILDFLAG(IS_CHROMEOS_ASH)
-// Verify that the Lens Region Search menu item is not displayed even when the
-// feature is enabled if Lacros is the only browser.
-TEST_F(RenderViewContextMenuPrefsTest,
-       LensRegionSearchDisabledIfAshBrowserIsDisabled) {
-  base::test::ScopedFeatureList features;
-  std::vector<base::test::FeatureRef> enabled =
-      ash::standalone_browser::GetFeatureRefs();
-  enabled.push_back(lens::features::kLensStandalone);
-  features.InitWithFeatures(enabled, {lens::features::kLensOverlay});
-  base::test::ScopedCommandLine scoped_command_line;
-  scoped_command_line.GetProcessCommandLine()->AppendSwitch(
-      ash::switches::kEnableLacrosForTesting);
-
-  auto fake_user_manager = std::make_unique<user_manager::FakeUserManager>();
-  auto* primary_user =
-      fake_user_manager->AddUser(AccountId::FromUserEmail("test@test"));
-  fake_user_manager->UserLoggedIn(primary_user->GetAccountId(),
-                                  primary_user->username_hash(),
-                                  /*browser_restart=*/false,
-                                  /*is_child=*/false);
-  auto scoped_user_manager = std::make_unique<user_manager::ScopedUserManager>(
-      std::move(fake_user_manager));
-  ASSERT_FALSE(crosapi::browser_util::IsAshWebBrowserEnabled());
-  ash::ProfileHelper::Get();
-
-  TestingProfileManager testing_profile_manager(
-      TestingBrowserProcess::GetGlobal(), testing_local_state());
-  ASSERT_TRUE(testing_profile_manager.SetUp());
-
-  SetUserSelectedDefaultSearchProvider("https://www.google.com",
-                                       /*supports_image_search=*/true);
-  content::ContextMenuParams params = CreateParams(MenuItem::PAGE);
-  TestRenderViewContextMenu menu(*web_contents()->GetPrimaryMainFrame(),
-                                 params);
-  menu.SetBrowser(GetBrowser());
-  menu.Init();
-
-  EXPECT_FALSE(menu.IsItemPresent(IDC_CONTENT_CONTEXT_LENS_REGION_SEARCH));
-}
-#endif  // BUILDFLAG(IS_CHROMEOS_ASH)
 
 TEST_F(RenderViewContextMenuPrefsTest, LensRegionSearchPdfEnabled) {
   base::test::ScopedFeatureList features;
@@ -1916,4 +1758,74 @@ TEST_P(FormatUrlForClipboardTest, FormatUrlForClipboard) {
   GURL url(param.input);
   const std::u16string result = FormatUrl(url);
   DCHECK_EQ(base::UTF8ToUTF16(param.output), result);
+}
+
+// TODO(crbug.com/374253376): Once existing fenced frame context menu browser
+// tests are changed to interactive UI tests, the test cases here should also be
+// added the interactive UI tests.
+class FencedFrameRenderViewContextMenuTest
+    : public RenderViewContextMenuPrefsTest {
+ public:
+  FencedFrameRenderViewContextMenuTest() = default;
+  ~FencedFrameRenderViewContextMenuTest() override = default;
+
+  // Create a fenced frame that is eligible for disabling untrusted network
+  // access.
+  content::RenderFrameHost* CreateAndNavigateFencedFrame(
+      content::RenderFrameHostTester* main_frame) {
+    content::RenderFrameHost* fenced_frame_rfh =
+        main_frame->AppendFencedFrame();
+    GURL fenced_frame_url = GURL("https://fencedframe.com");
+    std::unique_ptr<content::NavigationSimulator> navigation_simulator =
+        content::NavigationSimulator::CreateRendererInitiated(fenced_frame_url,
+                                                              fenced_frame_rfh);
+
+    navigation_simulator->Commit();
+    fenced_frame_rfh = navigation_simulator->GetFinalRenderFrameHost();
+    EXPECT_EQ(fenced_frame_rfh->GetLastCommittedURL(), fenced_frame_url);
+
+    // Set fenced frame config so that its mapped url is the same as the
+    // committed URL.
+    content::test::SetFencedFrameConfig(fenced_frame_rfh, fenced_frame_url);
+
+    return fenced_frame_rfh;
+  }
+
+ private:
+  // Enable fenced frame feature flags when constructed.
+  content::test::FencedFrameTestHelper fenced_frame_test_helper_;
+};
+
+TEST_F(FencedFrameRenderViewContextMenuTest,
+       DisableOpenLinkEntriesWhenFencedFrameNetworkRevoked) {
+  content::ContextMenuParams params = CreateParams(MenuItem::LINK);
+
+  // Append a fenced frame to the primary main frame.
+  content::RenderFrameHostTester* main_frame =
+      content::RenderFrameHostTester::For(
+          web_contents()->GetPrimaryMainFrame());
+  main_frame->InitializeRenderFrameIfNeeded();
+  content::RenderFrameHost* fenced_frame_rfh =
+      CreateAndNavigateFencedFrame(main_frame);
+  auto menu =
+      std::make_unique<TestRenderViewContextMenu>(*fenced_frame_rfh, params);
+
+  // "Open Link in New Tab", "Open Link in New Window" and "Open Link in
+  // Incognito Window".
+  std::vector<int> commands{IDC_CONTENT_CONTEXT_OPENLINKNEWTAB,
+                            IDC_CONTENT_CONTEXT_OPENLINKNEWWINDOW,
+                            IDC_CONTENT_CONTEXT_OPENLINKOFFTHERECORD};
+  // Commands should be present and enabled in the context menu.
+  for (auto command : commands) {
+    EXPECT_TRUE(menu->IsCommandIdEnabled(command));
+  }
+
+  ASSERT_TRUE(
+      content::test::RevokeFencedFrameUntrustedNetwork(fenced_frame_rfh));
+  // Commands should be disabled in the context menu after fenced frame has
+  // untrusted network access revoked.
+  menu = std::make_unique<TestRenderViewContextMenu>(*fenced_frame_rfh, params);
+  for (auto command : commands) {
+    EXPECT_FALSE(menu->IsCommandIdEnabled(command));
+  }
 }

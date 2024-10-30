@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_radio_button/cr_radio_button.js';
 import 'tangram://resources/cr_elements/cr_radio_group/cr_radio_group.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';

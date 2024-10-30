@@ -6,10 +6,10 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
 import 'tangram://resources/cr_elements/cr_tooltip/cr_tooltip.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/js/action_link.js';
 import './icons.html.js';
-import './strings.m.js';
+import '/strings.m.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 
 import type {ChromeEvent} from '/tools/typescript/definitions/chrome_event.js';

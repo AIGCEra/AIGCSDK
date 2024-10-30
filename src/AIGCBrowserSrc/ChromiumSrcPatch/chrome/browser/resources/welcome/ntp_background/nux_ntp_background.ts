@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import 'tangram://resources/js/cr.js';
 import '../shared/step_indicator.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {getInstance as getAnnouncerInstance} from 'tangram://resources/cr_elements/cr_a11y_announcer/cr_a11y_announcer.js';
 import {I18nMixinLit} from 'tangram://resources/cr_elements/i18n_mixin_lit.js';

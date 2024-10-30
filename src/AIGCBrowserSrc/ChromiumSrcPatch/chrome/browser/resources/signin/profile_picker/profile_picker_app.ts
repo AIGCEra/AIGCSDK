@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_view_manager/cr_view_manager.js';
 import 'tangram://resources/cr_elements/cr_lazy_render/cr_lazy_render_lit.js';
 import './profile_picker_main_view.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {CrViewManagerElement} from 'tangram://resources/cr_elements/cr_view_manager/cr_view_manager.js';
 import {I18nMixinLit} from 'tangram://resources/cr_elements/i18n_mixin_lit.js';

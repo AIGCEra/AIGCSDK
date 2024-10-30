@@ -98,6 +98,8 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
     test('DisplaysHeading', async () => {
       loadTimeData.overrideValues({
         historyEmbeddingsHeading: 'searched for "$1"',
+        historyEmbeddingsWithAnswersResultsHeading:
+            'searched with answers enabled',
         historyEmbeddingsHeadingLoading: 'loading results for "$1"',
       });
       element.searchQuery = 'my query';
@@ -107,7 +109,12 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
           'loading results for "my query"', headingEl.textContent!.trim());
       await handler.whenCalled('search');
       await flushTasks();
-      assertEquals('searched for "my query"', headingEl.textContent!.trim());
+      if (enableAnswers) {
+        assertEquals(
+            'searched with answers enabled', headingEl.textContent!.trim());
+      } else {
+        assertEquals('searched for "my query"', headingEl.textContent!.trim());
+      }
     });
 
     test('DisplaysLoading', async () => {
@@ -673,6 +680,10 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
       if (!enableAnswers) {
         return;
       }
+      loadTimeData.overrideValues({
+        historyEmbeddingsAnswerHeading: 'Answer section',
+        historyEmbeddingsAnswerLoadingHeading: 'Loading answer...',
+      });
       const answerSectionElement =
           element.shadowRoot!.querySelector<HTMLElement>('.answer-section');
       assertTrue(!!answerSectionElement);
@@ -690,6 +701,10 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
       assertTrue(
           isVisible(answerSectionElement),
           'Answer should be visible to show loading state.');
+      const headingEl =
+          answerSectionElement.querySelector<HTMLElement>('.heading');
+      assertTrue(!!headingEl);
+      assertEquals('Loading answer...', headingEl.innerText.trim());
 
       element.searchResultChangedForTesting({
         query: 'some query',
@@ -701,12 +716,31 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
       assertTrue(
           isVisible(answerSectionElement),
           'Answer should be visible to show answer.');
+      assertEquals('Answer section', headingEl.innerText.trim());
 
       element.searchQuery = 'new query';
       await flushTasks();
       assertFalse(
           isVisible(answerSectionElement),
           'A new query should hide the previous answer.');
+
+      element.searchResultChangedForTesting({
+        query: 'new query',
+        answerStatus: AnswerStatus.kUnanswerable,
+        answer: '',
+        items: [...mockResults],
+      });
+      await flushTasks();
+      assertFalse(isVisible(answerSectionElement));
+
+      element.searchResultChangedForTesting({
+        query: 'new query',
+        answerStatus: AnswerStatus.kFiltered,
+        answer: '',
+        items: [...mockResults],
+      });
+      await flushTasks();
+      assertFalse(isVisible(answerSectionElement));
     });
 
     test('ShowsAnswer', async () => {
@@ -729,6 +763,7 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
       });
       await flushTasks();
       assertTrue(isVisible(answerElement));
+      assertFalse(answerElement.hasAttribute('is-error'));
       assertEquals('some answer', answerElement!.innerText);
     });
 
@@ -842,6 +877,11 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
         return;
       }
 
+      loadTimeData.overrideValues({
+        historyEmbeddingsAnswererErrorModelUnavailable: 'model not available',
+        historyEmbeddingsAnswererErrorTryAgain: 'try again',
+      });
+
       async function updateAnswerStatus(status: AnswerStatus) {
         element.searchResultChangedForTesting({
           query: 'some query',
@@ -852,16 +892,16 @@ import {eventToPromise, isVisible} from 'tangram://webui-test/test_util.js';
         return flushTasks();
       }
 
-      await updateAnswerStatus(AnswerStatus.kUnanswerable);
+      await updateAnswerStatus(AnswerStatus.kModelUnavailable);
       const errorEl = element.shadowRoot!.querySelector<HTMLElement>('.answer');
       assertTrue(!!errorEl);
       assertTrue(isVisible(errorEl));
-      assertEquals('Sorry, I can\'t help you with that.', errorEl.innerText);
+      assertTrue(errorEl.hasAttribute('is-error'));
+      assertEquals('model not available', errorEl.innerText);
 
-      await updateAnswerStatus(AnswerStatus.kExecutionCanceled);
+      await updateAnswerStatus(AnswerStatus.kExecutionFailure);
       assertTrue(isVisible(errorEl));
-      assertEquals(
-          'Something went wrong. Please try again later.', errorEl.innerText);
+      assertEquals('try again', errorEl.innerText);
     });
   });
 });

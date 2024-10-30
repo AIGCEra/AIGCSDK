@@ -7,9 +7,9 @@ import 'tangram://read-later.top-chrome/shared/sp_footer.js';
 import 'tangram://read-later.top-chrome/shared/sp_heading.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import './reading_list_item.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {ColorChangeUpdater} from '//resources/cr_components/color_change_listener/colors_css_updater.js';
 import {HelpBubbleMixinLit} from 'tangram://resources/cr_components/help_bubble/help_bubble_mixin_lit.js';

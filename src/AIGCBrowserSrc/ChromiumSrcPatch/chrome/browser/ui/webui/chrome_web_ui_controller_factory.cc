@@ -28,7 +28,6 @@
 #include "chrome/browser/optimization_guide/optimization_guide_keyed_service.h"
 #include "chrome/browser/optimization_guide/optimization_guide_keyed_service_factory.h"
 #include "chrome/browser/profiles/profile.h"
-#include "chrome/browser/safe_browsing/chrome_safe_browsing_local_state_delegate.h"
 #include "chrome/browser/ui/webui/about/about_ui.h"
 #include "chrome/browser/ui/webui/components/components_ui.h"
 #include "chrome/browser/ui/webui/crashes_ui.h"
@@ -57,11 +56,10 @@
 #include "components/prefs/pref_service.h"
 #include "components/privacy_sandbox/privacy_sandbox_features.h"
 #include "components/reading_list/features/reading_list_switches.h"
-#include "components/safe_browsing/content/browser/web_ui/safe_browsing_ui.h"
-#include "components/safe_browsing/core/common/web_ui_constants.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_ui.h"
+#include "content/public/browser/web_ui_data_source.h"
 #include "content/public/common/content_client.h"
 #include "content/public/common/url_utils.h"
 #include "crypto/crypto_buildflags.h"
@@ -92,8 +90,6 @@
 #include "chrome/browser/ui/webui/identity_internals_ui.h"
 #include "chrome/browser/ui/webui/management/management_ui.h"
 #include "chrome/browser/ui/webui/new_tab_page/new_tab_page_ui.h"
-#include "chrome/browser/ui/webui/ntp/new_tab_ui.h"
-#include "chrome/browser/ui/webui/ntp/ntp_resource_cache.h"
 #include "chrome/browser/ui/webui/password_manager/password_manager_ui.h"
 #include "chrome/browser/ui/webui/settings/settings_utils.h"
 #include "chrome/browser/web_applications/isolated_web_apps/isolated_web_app_url_info.h"
@@ -194,14 +190,6 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
   return new T(web_ui);
 }
 
-// Template for handlers defined in a component layer, that take an instance of
-// a delegate implemented in the chrome layer.
-template <class WEB_UI_CONTROLLER, class DELEGATE>
-WebUIController* NewComponentUI(WebUI* web_ui, const GURL& url) {
-  auto delegate = std::make_unique<DELEGATE>(web_ui);
-  return new WEB_UI_CONTROLLER(web_ui, std::move(delegate));
-}
-
 template <>
 WebUIController* NewWebUI<commerce::CommerceInternalsUI>(WebUI* web_ui,
                                                          const GURL& url) {
@@ -262,42 +250,12 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui,
       optimization_guide_internals::kChromeUIOptimizationGuideInternalsHost) {
     return &NewWebUI<OptimizationGuideInternalsUI>;
   }
-  if (url.host_piece() == safe_browsing::kChromeUISafeBrowsingHost)
-    return &NewComponentUI<safe_browsing::SafeBrowsingUI,
-                           ChromeSafeBrowsingLocalStateDelegate>;
   if (url.host_piece() ==
       history_clusters_internals::kChromeUIHistoryClustersInternalsHost) {
     return &NewWebUI<HistoryClustersInternalsUI>;
   }
 
 #if !BUILDFLAG(IS_ANDROID)
-  if (url.host_piece() == chrome::kChromeUINewTabHost) {
-    // The URL tangram://newtab/ can be either a virtual or a real URL,
-    // depending on the context. In this case, it is always a real URL that
-    // points to the New Tab page for the incognito profile only. For other
-    // profile types, this URL must already be redirected to a different URL
-    // that matches the profile type.
-    //
-    // Returning NewWebUI<NewTabUI> for the wrong profile type will lead to
-    // crash in NTPResourceCache::GetNewTabHTML (Check: false), so here we add
-    // a sanity check to prevent further crashes.
-    //
-    // The switch statement below must be consistent with the code in
-    // NTPResourceCache::GetNewTabHTML!
-    switch (NTPResourceCache::GetWindowType(profile)) {
-      case NTPResourceCache::NORMAL:
-        LOG(ERROR) << "Requested load of tangram://newtab/ for incorrect "
-                      "profile type.";
-        // TODO(crbug.com/40244589): Add DumpWithoutCrashing() here.
-        return nullptr;
-      case NTPResourceCache::INCOGNITO:
-        [[fallthrough]];
-      case NTPResourceCache::GUEST:
-        [[fallthrough]];
-      case NTPResourceCache::NON_PRIMARY_OTR:
-        return &NewWebUI<NewTabUI>;
-    }
-  }
   if (url.SchemeIs(content::kChromeDevToolsScheme)) {
     if (!DevToolsUIBindings::IsValidFrontendURL(url))
       return nullptr;

@@ -14,6 +14,7 @@
 #include "components/compose/buildflags.h"
 #include "components/offline_pages/buildflags/buildflags.h"
 #include "components/signin/public/base/signin_buildflags.h"
+#include "content/public/common/buildflags.h"
 #include "extensions/buildflags/buildflags.h"
 #include "ppapi/buildflags/buildflags.h"
 #include "printing/buildflags/buildflags.h"
@@ -2288,6 +2289,10 @@ inline constexpr char kLocalUserFilesMigrationDestination[] =
 
 // Whether the user can remove OneDrive.
 inline constexpr char kAllowUserToRemoveODFS[] = "allow_user_to_remove_odfs";
+
+// Whether M365 has been already been set as default to open supported links.
+inline constexpr char kM365SupportedLinkDefaultSet[] =
+    "filebrowser.m365_supported_link_default_set";
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS)
@@ -3825,15 +3830,17 @@ inline constexpr char kAutoplayAllowlist[] = "media.autoplay_whitelist";
 inline constexpr char kBlockAutoplayEnabled[] = "media.block_autoplay";
 
 // Holds URL patterns that specify origins that will be allowed to call
-// `getDisplayMedia()` without prior user gesture.
-inline constexpr char kScreenCaptureWithoutGestureAllowedForOrigins[] =
-    "media.screen_capture_without_gesture_allowed_for_origins";
-
-// Holds URL patterns that specify origins that will be allowed to call
 // `show{OpenFile|SaveFile|Directory}Picker()` without prior user gesture.
 inline constexpr char kFileOrDirectoryPickerWithoutGestureAllowedForOrigins[] =
     "file_system.file_or_directory_picker_without_allowed_for_origins";
 #endif  // !BUILDFLAG(IS_ANDROID)
+
+#if BUILDFLAG(ENABLE_SCREEN_CAPTURE)
+// Holds URL patterns that specify origins that will be allowed to call
+// `getDisplayMedia()` without prior user gesture.
+inline constexpr char kScreenCaptureWithoutGestureAllowedForOrigins[] =
+    "media.screen_capture_without_gesture_allowed_for_origins";
+#endif  // BUILDFLAG(ENABLE_SCREEN_CAPTURE)
 
 // Boolean allowing Chrome to block external protocol navigation in sandboxed
 // iframes.

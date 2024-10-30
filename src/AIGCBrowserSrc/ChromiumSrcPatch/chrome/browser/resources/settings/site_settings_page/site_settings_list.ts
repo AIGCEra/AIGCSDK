@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'tangram://resources/cr_elements/cr_link_row/cr_link_row.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import '../icons.html.js';
 import '../settings_shared.css.js';
 

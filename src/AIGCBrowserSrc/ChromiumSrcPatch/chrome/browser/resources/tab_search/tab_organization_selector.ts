@@ -40,11 +40,14 @@ export class TabOrganizationSelectorElement extends CrLitElement {
 
   static override get properties() {
     return {
+      availableHeight: {type: Number},
       declutterHeading_: {type: String},
       disableDeclutter_: {type: Boolean},
       selectedState_: {type: Number},
     };
   }
+
+  availableHeight: number = 0;
 
   protected selectedState_: TabOrganizationFeature =
       TabOrganizationFeature.kSelector;
@@ -97,6 +100,14 @@ export class TabOrganizationSelectorElement extends CrLitElement {
     }
   }
 
+  protected getVisibleFeature_(): TabOrganizationFeature {
+    if (this.selectedState_ === TabOrganizationFeature.kDeclutter &&
+        this.disableDeclutter_) {
+      return TabOrganizationFeature.kSelector;
+    }
+    return this.selectedState_;
+  }
+
   protected onAutoTabGroupsClick_(): void {
     this.logSelectorCtrValue_(SelectorCTREvent.kAutoTabGroupsClicked);
     this.apiProxy_.requestTabOrganization();
@@ -135,12 +146,7 @@ export class TabOrganizationSelectorElement extends CrLitElement {
     if (feature === TabOrganizationFeature.kNone) {
       return;
     }
-    if (feature === TabOrganizationFeature.kDeclutter &&
-        this.disableDeclutter_) {
-      this.selectedState_ = TabOrganizationFeature.kSelector;
-    } else {
-      this.selectedState_ = feature;
-    }
+    this.selectedState_ = feature;
   }
 
   private logSelectorCtrValue_(event: SelectorCTREvent) {

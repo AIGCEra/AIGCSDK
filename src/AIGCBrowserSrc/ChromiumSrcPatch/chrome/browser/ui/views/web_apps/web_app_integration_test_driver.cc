@@ -558,29 +558,6 @@ class BrowserAddedWaiter final : public BrowserListObserver {
   raw_ptr<Browser> browser_added_ = nullptr;
 };
 
-class PageLoadWaiter final : public content::WebContentsObserver {
- public:
-  explicit PageLoadWaiter(content::WebContents* web_contents)
-      : WebContentsObserver(web_contents) {
-    CHECK(web_contents);
-  }
-  ~PageLoadWaiter() override = default;
-
-  void Wait() { run_loop_.Run(); }
-
-  void DocumentOnLoadCompletedInPrimaryMainFrame() override {
-    run_loop_.Quit();
-  }
-
-  void WebContentsDestroyed() override {
-    Observe(nullptr);
-    run_loop_.Quit();
-  }
-
- private:
-  base::RunLoop run_loop_;
-};
-
 Browser* GetAppBrowserForAppId(const Profile* profile,
                                const webapps::AppId& app_id) {
   const BrowserList* browser_list = BrowserList::GetInstance();
@@ -3285,10 +3262,8 @@ void WebAppIntegrationTestDriver::CheckFilesLoadedInSite(
         continue;
       }
 
-      base::Value test_contents =
+      base::Value::List test_content_list =
           EvalJs(web_contents, "launchFinishedPromise").ExtractList();
-      auto& test_content_list = test_contents.GetList();
-
       for (const auto& test_content : test_content_list) {
         if (base::EndsWith(url_str, kFooHandler)) {
           found_foo_files.push_back(test_content.GetString());
@@ -4070,29 +4045,7 @@ void WebAppIntegrationTestDriver::AfterStateChangeAction() {
   FlushShortcutTasks();
   provider()->command_manager().AwaitAllCommandsCompleteForTesting();
   AwaitManifestSystemIdle();
-
-  auto get_first_loading_web_contents = []() -> content::WebContents* {
-    for (Browser* browser : *BrowserList::GetInstance()) {
-      for (int i = 0; i < browser->tab_strip_model()->GetTabCount(); i++) {
-        content::WebContents* web_contents =
-            browser->tab_strip_model()->GetWebContentsAt(i);
-        if (!web_contents->IsDocumentOnLoadCompletedInPrimaryMainFrame()) {
-          return web_contents;
-        }
-      }
-    }
-    return nullptr;
-  };
-
-  // In some circumstances, this loop could hang forever (if pages never
-  // complete loading, or if they cause reloads, etc). However, these
-  // tests only use static test pages that don't do that, so this should
-  // be safe.
-  while (content::WebContents* loading_web_content =
-             get_first_loading_web_contents()) {
-    PageLoadWaiter page_load_waiter(loading_web_content);
-    page_load_waiter.Wait();
-  }
+  web_app::test::CompletePageLoadForAllWebContents();
   after_state_change_action_state_ = ConstructStateSnapshot();
 }
 

@@ -1874,11 +1874,8 @@ void RenderProcessHostImpl::InitializeSharedMemoryRegionsOnceChannelIsUp() {
   // (such as when recovering from a renderer crash). Need to transfer
   // duplicates of all handles in case this happens, so that the original
   // handles can be shared again with the new process.
-  renderer_interface_->TransferSharedMemoryRegions(
-      last_foreground_time_region_->DuplicateReadOnlyRegion(),
-      GetContentClient()->browser()->GetPerformanceScenarioRegionForProcess(
-          this),
-      GetContentClient()->browser()->GetGlobalPerformanceScenarioRegion());
+  renderer_interface_->TransferSharedLastForegroundTime(
+      last_foreground_time_region_->DuplicateReadOnlyRegion());
 }
 
 void RenderProcessHostImpl::ResetChannelProxy() {
@@ -3299,6 +3296,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
       switches::kDisable2dCanvasImageChromium,
       switches::kDisableYUVImageDecoding,
       switches::kDisableAcceleratedVideoDecode,
+      switches::kDisableAcceleratedVideoEncode,
       switches::kDisableBackForwardCache,
       switches::kDisableBackgroundTimerThrottling,
       switches::kDisableBestEffortTasks,
@@ -4555,6 +4553,11 @@ bool RenderProcessHost::IsProcessLimitReached() {
     // (meaning it only collects data from users who reach this code).
 #if !BUILDFLAG(IS_ANDROID)
     if (base::FeatureList::IsEnabled(features::kRemoveRendererProcessLimit)) {
+      // This is used for tests. To avoid changing test behaviors, don't
+      // change the behavior when it is set.
+      if (g_max_renderer_count_override) {
+        return process_count >= g_max_renderer_count_override;
+      }
       size_t sys_limit = GetPlatformProcessLimit();
       if (sys_limit == kUnknownPlatformProcessLimit) {
         return false;

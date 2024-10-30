@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'tangram://resources/cr_elements/cr_link_row/cr_link_row.js';
-import '../strings.m.js';
+import '/strings.m.js';
 import './site_permissions_list.js';
 
 import type {CrLinkRowElement} from 'tangram://resources/cr_elements/cr_link_row/cr_link_row.js';

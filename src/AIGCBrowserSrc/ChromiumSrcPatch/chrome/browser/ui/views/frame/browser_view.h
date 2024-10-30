@@ -20,7 +20,6 @@
 #include "base/timer/timer.h"
 #include "build/branding_buildflags.h"
 #include "build/build_config.h"
-#include "build/chromeos_buildflags.h"
 #include "chrome/browser/extensions/extension_commands_global_registry.h"
 #include "chrome/browser/extensions/extension_keybinding_registry.h"
 #include "chrome/browser/ui/browser.h"
@@ -46,8 +45,8 @@
 #include "components/enterprise/buildflags/buildflags.h"
 #include "components/infobars/core/infobar_container.h"
 #include "components/segmentation_platform/public/result.h"
-#include "components/user_education/common/feature_promo_controller.h"
-#include "components/user_education/common/feature_promo_handle.h"
+#include "components/user_education/common/feature_promo/feature_promo_controller.h"
+#include "components/user_education/common/feature_promo/feature_promo_handle.h"
 #include "components/webapps/browser/banners/app_banner_manager.h"
 #include "content/public/browser/page_user_data.h"
 #include "content/public/browser/permission_controller.h"
@@ -65,7 +64,7 @@
 #include "ui/views/widget/widget_observer.h"
 #include "ui/views/window/client_view.h"
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(IS_CHROMEOS)
 #include "ui/compositor/throughput_tracker.h"
 #endif
 
@@ -804,9 +803,11 @@ class BrowserView : public BrowserWindow,
   // Closes the tab search bubble if open for the given browser instance.
   void CloseTabSearchBubble() override;
 
+#if !BUILDFLAG(IS_CHROMEOS_ASH)
   AccessibilityFocusHighlight* GetAccessibilityFocusHighlightForTesting() {
     return accessibility_focus_highlight_.get();
   }
+#endif
 
   bool should_show_window_controls_overlay_toggle() const {
     return should_show_window_controls_overlay_toggle_;
@@ -1317,14 +1318,16 @@ class BrowserView : public BrowserWindow,
   // The last bounds we notified about in TryNotifyWindowBoundsChanged().
   gfx::Rect last_widget_bounds_;
 
+#if !BUILDFLAG(IS_CHROMEOS_ASH)
   std::unique_ptr<AccessibilityFocusHighlight> accessibility_focus_highlight_;
+#endif
 
   std::unique_ptr<BrowserFeaturePromoController> feature_promo_controller_ =
       nullptr;
 
   OnLinkOpeningFromGestureCallbackList link_opened_from_gesture_callbacks_;
 
-#if BUILDFLAG(IS_CHROMEOS_ASH)
+#if BUILDFLAG(IS_CHROMEOS)
   // |loading_animation_tracker_| is used to measure animation smoothness for
   // tab loading animation.
   std::optional<ui::ThroughputTracker> loading_animation_tracker_;

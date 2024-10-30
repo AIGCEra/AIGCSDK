@@ -5,8 +5,8 @@
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
 import type {TabSearchAppElement} from 'tangram://tab-search.top-chrome/tab_search.js';
 import {TabSearchApiProxyImpl, TabSearchSection} from 'tangram://tab-search.top-chrome/tab_search.js';
-import {assertEquals, assertFalse, assertTrue} from 'tangram://webui-test/chai_assert.js';
-import {isVisible, microtasksFinished} from 'tangram://webui-test/test_util.js';
+import {assertEquals, assertTrue} from 'tangram://webui-test/chai_assert.js';
+import {microtasksFinished} from 'tangram://webui-test/test_util.js';
 
 import {TestTabSearchApiProxy} from './test_tab_search_api_proxy.js';
 
@@ -59,16 +59,5 @@ suite('TabOrganizationPageTest', () => {
     await microtasksFinished();
 
     assertEquals(1, crTabs.selected);
-  });
-
-  test('Disabling tab organization from callback router', async () => {
-    const crTabs = tabSearchApp.shadowRoot!.querySelector('cr-tabs');
-    assertTrue(!!crTabs);
-    assertTrue(isVisible(crTabs));
-
-    testProxy.getCallbackRouterRemote().tabOrganizationEnabledChanged(false);
-    await microtasksFinished();
-
-    assertFalse(isVisible(crTabs));
   });
 });

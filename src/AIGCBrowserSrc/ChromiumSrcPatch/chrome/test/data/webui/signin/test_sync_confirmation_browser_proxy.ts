@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {ScreenMode, SyncConfirmationBrowserProxy} from 'tangram://sync-confirmation/sync_confirmation_browser_proxy.js';
+import type {SyncConfirmationBrowserProxy} from 'tangram://sync-confirmation/sync_confirmation_browser_proxy.js';
 import {TestBrowserProxy} from 'tangram://webui-test/test_browser_proxy.js';
 
 export class TestSyncConfirmationBrowserProxy extends TestBrowserProxy
@@ -18,17 +18,16 @@ export class TestSyncConfirmationBrowserProxy extends TestBrowserProxy
     ]);
   }
 
-  confirm(description: string[], confirmation: string, screenMode: ScreenMode) {
-    this.methodCalled('confirm', [description, confirmation, screenMode]);
+  confirm(description: string[], confirmation: string) {
+    this.methodCalled('confirm', [description, confirmation]);
   }
 
-  undo(screenMode: ScreenMode) {
-    this.methodCalled('undo', [screenMode]);
+  undo() {
+    this.methodCalled('undo');
   }
 
-  goToSettings(
-      description: string[], confirmation: string, screenMode: ScreenMode) {
-    this.methodCalled('goToSettings', [description, confirmation, screenMode]);
+  goToSettings(description: string[], confirmation: string) {
+    this.methodCalled('goToSettings', [description, confirmation]);
   }
 
   openDeviceSyncSettings() {

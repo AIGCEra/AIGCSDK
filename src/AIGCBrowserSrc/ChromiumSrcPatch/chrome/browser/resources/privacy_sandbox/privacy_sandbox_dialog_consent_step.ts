@@ -4,9 +4,9 @@
 
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import './strings.m.js';
+import '/strings.m.js';
 import './shared_style.css.js';
 import './privacy_sandbox_dialog_learn_more.js';
 
@@ -63,6 +63,17 @@ export class PrivacySandboxDialogConsentStepElement extends
         type: Boolean,
         value: false,
       },
+
+      /**
+       * If true, the Ads API UX Enhancement should be shown.
+       */
+      shouldShowV2_: {
+        type: Boolean,
+        value: () => {
+          return loadTimeData.getBoolean(
+              'isPrivacySandboxAdsApiUxEnhancementsEnabled');
+        },
+      },
     };
   }
 
@@ -71,6 +82,7 @@ export class PrivacySandboxDialogConsentStepElement extends
   private isPrivacyPolicyLinkEnabled_: boolean;
   private hideConsentNoticePage_: boolean;
   private isDarkMode_: boolean;
+  private shouldShowV2_: boolean;
 
   override ready() {
     super.ready();
@@ -133,6 +145,7 @@ export class PrivacySandboxDialogConsentStepElement extends
         this.shadowRoot!.querySelector<HTMLElement>('#privacyPolicy');
     iframeContent!.classList.add('hidden');
     iframeContent!.classList.remove('visible');
+    iframeContent!.tabIndex = -1;
     this.hideConsentNoticePage_ = false;
 
     // Send focus back to privacy policy link for a11y screen reader.
@@ -147,6 +160,8 @@ export class PrivacySandboxDialogConsentStepElement extends
         this.shadowRoot!.querySelector<HTMLElement>('#privacyPolicy');
     iframeContent!.classList.add('visible');
     iframeContent!.classList.remove('hidden');
+    // Make iframe tab-able for a11y.
+    iframeContent!.tabIndex = 0;
 
     this.hideConsentNoticePage_ = true;
     this.privacyPolicyPageClickStartTime_ = performance.now();

@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_hidden_style.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 // <if expr="is_chromeos">
 import {getInstance as getAnnouncerInstance} from 'tangram://resources/cr_elements/cr_a11y_announcer/cr_a11y_announcer.js';

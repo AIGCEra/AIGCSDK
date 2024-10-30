@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #include "base/test/bind.h"
-#include "components/user_education/common/feature_promo_result.h"
+#include "components/user_education/common/feature_promo/feature_promo_result.h"
 #ifdef UNSAFE_BUFFERS_BUILD
 // TODO(crbug.com/40285824): Remove this and convert code to safer constructs.
 #pragma allow_unsafe_buffers
@@ -28,7 +28,6 @@
 #include "base/threading/thread_restrictions.h"
 #include "build/branding_buildflags.h"
 #include "build/build_config.h"
-#include "build/chromeos_buildflags.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/extensions/extension_browsertest.h"
 #include "chrome/browser/profiles/profile_attributes_entry.h"
@@ -93,7 +92,7 @@
 #include "components/sync/service/sync_service.h"
 #include "components/sync/service/sync_user_settings.h"
 #include "components/sync/test/fake_server_network_resources.h"
-#include "components/user_education/common/feature_promo_controller.h"
+#include "components/user_education/common/feature_promo/feature_promo_controller.h"
 #include "components/webapps/common/web_app_id.h"
 #include "content/public/browser/navigation_entry.h"
 #include "content/public/test/browser_test.h"

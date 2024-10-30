@@ -5,10 +5,10 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 // <if expr="is_win">
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 // </if>
 import '../shared/step_indicator.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {WebUiListenerMixinLit} from 'tangram://resources/cr_elements/web_ui_listener_mixin_lit.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';

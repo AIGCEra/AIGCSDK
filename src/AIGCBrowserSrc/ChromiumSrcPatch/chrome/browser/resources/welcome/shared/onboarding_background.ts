@@ -8,7 +8,7 @@
  */
 
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {assert} from 'tangram://resources/js/assert.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';

@@ -31,6 +31,7 @@ import {PasskeysBrowserProxyImpl} from './passkeys_browser_proxy.js';
 import type {BlockedSite, BlockedSitesListChangedListener, CredentialsChangedListener} from './password_manager_proxy.js';
 import {PasswordManagerImpl} from './password_manager_proxy.js';
 import type {PrefToggleButtonElement} from './prefs/pref_toggle_button.js';
+
 import type {Route} from './router.js';
 import {RouteObserverMixin, Router, UrlParam} from './router.js';
 import {getTemplate} from './settings_section.html.js';
@@ -384,6 +385,13 @@ export class SettingsSectionElement extends SettingsSectionElementBase {
 
   private onMovePasswordsClicked_(e: Event) {
     e.preventDefault();
+    // <if expr="not is_chromeos">
+    if (loadTimeData.getBoolean('isBatchUploadDesktopEnabled')) {
+      SyncBrowserProxyImpl.getInstance().openBatchUpload();
+      return;
+    }
+    // </if>
+
     this.showMovePasswordsDialog_ = true;
   }
 

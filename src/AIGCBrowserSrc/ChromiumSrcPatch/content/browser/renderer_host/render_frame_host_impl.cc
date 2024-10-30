@@ -88,6 +88,7 @@
 #include "content/browser/font_access/font_access_manager.h"
 #include "content/browser/generic_sensor/frame_sensor_provider_proxy.h"
 #include "content/browser/geolocation/geolocation_service_impl.h"
+#include "content/browser/guest_page_holder_impl.h"
 #include "content/browser/idle/idle_manager_impl.h"
 #include "content/browser/installedapp/installed_app_provider_impl.h"
 #include "content/browser/interest_group/ad_auction_document_data.h"
@@ -1507,11 +1508,16 @@ class DiscardedRFHProcessHelper : public base::SupportsUserData::Data,
   }
 
   // Resets `retries_` and begins attempts to shutdown sequenced with delay
-  // until kKeepAliveHandleFactoryTimeout is reached.
+  // until kKeepAliveHandleFactoryTimeout is reached. Posts the shutdown task to
+  // the task queue as a synchronous process shutdown may update RFH state in a
+  // way callers may not expect.
   void ShutdownForDiscardIfPossible() {
     shutdown_attempt_timer_.Stop();
     retries_ = 0;
-    ShutdownIfPossible();
+    shutdown_attempt_timer_.Start(
+        FROM_HERE, /*delay=*/base::TimeDelta(),
+        base::BindRepeating(&DiscardedRFHProcessHelper::ShutdownIfPossible,
+                            base::Unretained(this)));
   }
 
  private:
@@ -2488,22 +2494,28 @@ RenderFrameHostImpl::~RenderFrameHostImpl() {
         base::TimeTicks::Now(), /*for_legacy=*/false);
   }
 
-  if (prefetched_signed_exchange_cache_) {
+  if (prefetched_signed_exchange_cache_) 
     prefetched_signed_exchange_cache_->RecordHistograms();
-  }
+
+  // |geolocation_service_| needs to be destroyed before RenderFrameHostImpl,
+  // otherwise it might cause dangling pointer.
+  geolocation_service_.reset();
   // begin Add by TangramTeam
   for (auto it : m_mapWebRTSession) {
-    auto itX = it.second->m_mapint64.find(L"domhandle");
-    if (itX != it.second->m_mapint64.end()) {
-      CommonUniverse::CSession* pSession =
-          (CommonUniverse::CSession*)itX->second;
-      delete pSession;
-    }
-    delete it.second;
+      auto itX = it.second->m_mapint64.find(L"domhandle");
+      if (itX != it.second->m_mapint64.end()) {
+          CommonUniverse::CSession* pSession =
+              (CommonUniverse::CSession*)itX->second;
+          delete pSession;
+      }
+      delete it.second;
   }
   m_mapWebRTSession.erase(m_mapWebRTSession.begin(), m_mapWebRTSession.end());
   // end Add by TangramTeam
-  // Matches the TRACE_EVENT_BEGIN in the constructor.
+
+  // Deleting the children would have deleted any guests.
+  CHECK(guest_pages_.empty());
+
   // Matches the pair of TRACE_EVENT_BEGINS in the constructor: one for
   // "RenderFrameHostImpl" slice itself, one for the slice with the lifecycle
   // state name.
@@ -3549,8 +3561,6 @@ RenderFrameHostImpl::AccessibilityGetAcceleratedWidget() {
 gfx::NativeViewAccessible
 RenderFrameHostImpl::AccessibilityGetNativeViewAccessible() {
   if (base::FeatureList::IsEnabled(features::kEvictOnAXEvents) &&
-      base::FeatureList::IsEnabled(
-          features::kEnableBackForwardCacheForScreenReader) &&
       IsInactiveAndDisallowActivation(
           DisallowActivationReasonId::kAXGetNativeView)) {
     // |AccessibilityGetNativeViewAccessible()| should be only accessible when
@@ -6147,15 +6157,10 @@ void RenderFrameHostImpl::ProcessBeforeUnloadCompleted(
       proceed, treat_as_final_completion_callback, this,
       /*is_frame_being_destroyed=*/false, renderer_before_unload_start_time,
       renderer_before_unload_end_time, for_legacy);
-}
 
-RenderFrameHostImpl* RenderFrameHostImpl::GetBeforeUnloadInitiator() {
-  for (RenderFrameHostImpl* frame = this; frame; frame = frame->GetParent()) {
-    if (frame->is_waiting_for_beforeunload_completion_) {
-      return frame;
-    }
+  if (on_process_before_unload_completed_for_testing_) [[unlikely]] {
+    std::move(on_process_before_unload_completed_for_testing_).Run();
   }
-  return nullptr;
 }
 
 void RenderFrameHostImpl::ProcessBeforeUnloadCompletedFromFrame(
@@ -9588,6 +9593,20 @@ void RenderFrameHostImpl::DestroyFencedFrame(FencedFrame& fenced_frame) {
   GetOutermostMainFrame()->CalculateUntrustedNetworkStatus();
 }
 
+void RenderFrameHostImpl::TakeGuestOwnership(
+    std::unique_ptr<GuestPageHolderImpl> guest_page) {
+  guest_pages_.push_back(std::move(guest_page));
+}
+
+void RenderFrameHostImpl::DestroyGuestPage(
+    const FrameTreeNode* child_frame_tree_node) {
+  CHECK_EQ(this, child_frame_tree_node->parent());
+  std::erase_if(guest_pages_, [&](const auto& guest_page) {
+    return child_frame_tree_node->frame_tree_node_id() ==
+           guest_page->GetOuterDelegateFrameTreeNodeId();
+  });
+}
+
 void RenderFrameHostImpl::CreateFencedFrame(
     mojo::PendingAssociatedReceiver<blink::mojom::FencedFrameOwnerHost>
         pending_receiver,
@@ -10273,6 +10292,15 @@ void RenderFrameHostImpl::CalculateUntrustedNetworkStatus() {
               ->frame_tree_node_id());
     }
   }
+}
+
+RenderFrameHostImpl* RenderFrameHostImpl::GetBeforeUnloadInitiator() {
+  for (RenderFrameHostImpl* frame = this; frame; frame = frame->GetParent()) {
+    if (frame->is_waiting_for_beforeunload_completion_) {
+      return frame;
+    }
+  }
+  return nullptr;
 }
 
 void RenderFrameHostImpl::ExemptUrlFromNetworkRevocationForTesting(
@@ -11539,7 +11567,8 @@ bool RenderFrameHostImpl::ShouldDispatchPagehideAndVisibilitychangeDuringCommit(
   DCHECK(is_main_frame());
   DCHECK_NE(old_frame_host, this);
   DCHECK_NE(old_frame_host->GetSiteInstance(), GetSiteInstance());
-  return true;
+  return GetContentClient()->browser()->ShouldDispatchPagehideDuringCommit(
+      GetSiteInstance()->GetBrowserContext(), dest_url_info.url);
 }
 
 bool RenderFrameHostImpl::is_initial_empty_document() const {
@@ -12433,17 +12462,6 @@ void RenderFrameHostImpl::UpdateAccessibilityMode() {
 
   ui::AXMode ax_mode = delegate_->GetAccessibilityMode();
   last_ax_mode_ = ax_mode;
-
-  // Disable BackForwardCache if ScreenReader is on.
-  // TODO(crbug.com/40805561): Screen readers do not recognize a navigation when
-  // the page is served from bfcache. Remove the flag and this section once the
-  // fix is landed.
-  if (ax_mode.has_mode(ui::AXMode::kScreenReader) &&
-      !BackForwardCacheImpl::IsScreenReaderAllowed()) {
-    BackForwardCache::DisableForRenderFrameHost(
-        this, BackForwardCacheDisable::DisabledReason(
-                  BackForwardCacheDisable::DisabledReasonId::kScreenReader));
-  }
 
   if (ax_mode.has_mode(ui::AXMode::kWebContents)) {
     is_first_accessibility_request_ = !render_accessibility_;

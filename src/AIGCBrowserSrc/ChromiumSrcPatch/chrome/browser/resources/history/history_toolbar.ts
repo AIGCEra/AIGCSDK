@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import './shared_style.css.js';
-import './strings.m.js';
+import '/strings.m.js';
 import 'tangram://resources/cr_components/history_embeddings/icons.html.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar_selection_overlay.js';

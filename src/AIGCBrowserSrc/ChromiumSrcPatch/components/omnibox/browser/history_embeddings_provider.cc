@@ -12,6 +12,7 @@
 #include "base/functional/bind.h"
 #include "base/i18n/time_formatting.h"
 #include "base/strings/utf_string_conversions.h"
+#include "components/history_clusters/core/history_clusters_util.h"
 #include "components/history_embeddings/history_embeddings_features.h"
 #include "components/history_embeddings/history_embeddings_service.h"
 #include "components/omnibox/browser/autocomplete_input.h"
@@ -95,7 +96,14 @@ void HistoryEmbeddingsProvider::Start(const AutocompleteInput& input,
 
 void HistoryEmbeddingsProvider::Stop(bool clear_cached_results,
                                      bool due_to_user_inactivity) {
-  done_ = true;
+  // TODO(crbug.com/364303536): Ignore the stop timer since we know answers take
+  //   longer than 1500ms to generate. This inadvertently also ignores stops
+  //   caused by user action. A real fix is for providers to inform the
+  //   controller that they expect a slow response and the controller to
+  //   accommodate it by updating its stop, debounce, and cache timers'
+  //   behaviors.
+  // done_ = true;
+
   // TODO(b/333770460): Once `HistoryEmbeddingsService` has a stop API, we
   //   should call it here.
 }
@@ -155,7 +163,8 @@ AutocompleteMatch HistoryEmbeddingsProvider::CreateMatch(
   match.contents = base::UTF8ToUTF16(scored_url_row.row.url().spec());
   match.contents_class = ClassifyTermMatches(
       FindTermMatches(input_.text(), match.contents), match.contents.size(),
-      ACMatchClassification::MATCH, ACMatchClassification::URL);
+      ACMatchClassification::MATCH | ACMatchClassification::URL,
+      ACMatchClassification::URL);
 
   if (starter_pack_engine_) {
     match.keyword = starter_pack_engine_->keyword();
@@ -177,14 +186,20 @@ std::optional<AutocompleteMatch> HistoryEmbeddingsProvider::CreateAnswerMatch(
 
   switch (answerer_result.status) {
     case history_embeddings::ComputeAnswerStatus::kUnspecified:
+    case history_embeddings::ComputeAnswerStatus::kUnanswerable:
+    case history_embeddings::ComputeAnswerStatus::kFiltered:
+    case history_embeddings::ComputeAnswerStatus::kExecutionCancelled:
       return std::nullopt;
 
-    case history_embeddings::ComputeAnswerStatus::kLoading:
-      return CreateAnswerMatchHelper(
+    case history_embeddings::ComputeAnswerStatus::kLoading: {
+      AutocompleteMatch answer_match = CreateAnswerMatchHelper(
           score,
           l10n_util::GetStringUTF16(
               IDS_HISTORY_EMBEDDINGS_ANSWER_LOADING_HEADING),
           u"");
+      answer_match.history_embeddings_answer_header_loading = true;
+      return answer_match;
+    }
 
     case history_embeddings::ComputeAnswerStatus::kSuccess: {
       AutocompleteMatch answer_match = CreateAnswerMatchHelper(
@@ -194,8 +209,11 @@ std::optional<AutocompleteMatch> HistoryEmbeddingsProvider::CreateAnswerMatch(
               base::UTF8ToUTF16(answerer_result.answer.text())));
       answer_match.destination_url =
           GURL{"tangram://history/?q=" + answerer_result.query};
+      std::u16string source = history_clusters::ComputeURLForDisplay(
+          scored_url_row.row.url(),
+          history_embeddings::kTrimAfterHostInResults.Get());
       answer_match.contents = AutocompleteMatch::SanitizeString(
-          base::UTF8ToUTF16(answerer_result.url) + u"  •  " +
+          source + u"  •  " +
           l10n_util::GetStringFUTF16(
               IDS_HISTORY_EMBEDDINGS_ANSWER_SOURCE_VISIT_DATE_LABEL,
               base::TimeFormatShortDate(scored_url_row.row.last_visit())));
@@ -203,24 +221,19 @@ std::optional<AutocompleteMatch> HistoryEmbeddingsProvider::CreateAnswerMatch(
       return answer_match;
     }
 
-    case history_embeddings::ComputeAnswerStatus::kUnanswerable:
-    case history_embeddings::ComputeAnswerStatus::kFiltered:
+    case history_embeddings::ComputeAnswerStatus::kModelUnavailable:
       return CreateAnswerMatchHelper(
           score,
           l10n_util::GetStringUTF16(IDS_HISTORY_EMBEDDINGS_ANSWER_HEADING),
           l10n_util::GetStringUTF16(
-              IDS_HISTORY_EMBEDDINGS_ANSWERER_ERROR_UNANSWERABLE));
+              IDS_HISTORY_EMBEDDINGS_ANSWERER_ERROR_MODEL_UNAVAILABLE));
 
-    case history_embeddings::ComputeAnswerStatus::kModelUnavailable:
     case history_embeddings::ComputeAnswerStatus::kExecutionFailure:
       return CreateAnswerMatchHelper(
           score,
           l10n_util::GetStringUTF16(IDS_HISTORY_EMBEDDINGS_ANSWER_HEADING),
           l10n_util::GetStringUTF16(
               IDS_HISTORY_EMBEDDINGS_ANSWERER_ERROR_TRY_AGAIN));
-
-    case history_embeddings::ComputeAnswerStatus::kExecutionCancelled:
-      return std::nullopt;
   }
 }
 

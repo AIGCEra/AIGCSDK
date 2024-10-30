@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {MouseHoverableMixinLit} from 'tangram://resources/cr_elements/mouse_hoverable_mixin_lit.js';
 import {getFaviconForPageURL} from 'tangram://resources/js/icon.js';

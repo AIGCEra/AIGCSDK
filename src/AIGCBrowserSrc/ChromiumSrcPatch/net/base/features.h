@@ -229,12 +229,6 @@ NET_EXPORT BASE_DECLARE_FEATURE(kShortLaxAllowUnsafeThreshold);
 // This only has an effect if the cookie defaults to SameSite=Lax.
 NET_EXPORT BASE_DECLARE_FEATURE(kSameSiteDefaultChecksMethodRigorously);
 
-// Turns off streaming media caching to disk when on battery power.
-NET_EXPORT BASE_DECLARE_FEATURE(kTurnOffStreamingMediaCachingOnBattery);
-
-// Turns off streaming media caching to disk always.
-NET_EXPORT BASE_DECLARE_FEATURE(kTurnOffStreamingMediaCachingAlways);
-
 // When enabled this feature will cause same-site calculations to take into
 // account the scheme of the site-for-cookies and the request/response url.
 NET_EXPORT BASE_DECLARE_FEATURE(kSchemefulSameSite);
@@ -285,6 +279,12 @@ NET_EXPORT BASE_DECLARE_FEATURE(kDocumentReporting);
 // site-for-cookies).
 // See spec changes in https://github.com/httpwg/http-extensions/pull/1348
 NET_EXPORT BASE_DECLARE_FEATURE(kCookieSameSiteConsidersRedirectChain);
+
+// When this feature is enabled, servers can include an
+// allow-same-site-none-cookies value that notifies the browser that same-site
+// SameSite=None cookies should be allowed in sandboxed contexts with 3PC
+// restrictions.
+NET_EXPORT BASE_DECLARE_FEATURE(kAllowSameSiteNoneCookiesInSandbox);
 
 // When this feature is enabled, the network service will wait until First-Party
 // Sets are initialized before issuing requests that use the HTTP cache or
@@ -482,6 +482,16 @@ NET_EXPORT extern const base::FeatureParam<int> kIpPrivacyDebugExperimentArm;
 // behavior by default.
 NET_EXPORT extern const base::FeatureParam<bool> kIpPrivacyCacheTokensByGeo;
 
+// When enabled and an IP protection delegate can be be created in the
+// `NetworkContext`, a `IpProtectionProxyDelegate` will ALWAYS be created even
+// for `NetworkContexts` that do not participate in IP protection. This is
+// necessary for the WebView traffic experiment. By default, this feature param
+// is false and will not create a delegate when IP protection is not enabled.
+// Further, this also prevents the unnecessary instantiation of the
+// `IpProtectionCore` for a `NetworkContext` that does not participate in IP
+// protection.
+NET_EXPORT extern const base::FeatureParam<bool> kIpPrivacyAlwaysCreateCore;
+
 // Whether QuicParams::migrate_sessions_on_network_change_v2 defaults to true or
 // false. This is needed as a workaround to set this value to true on Android
 // but not on WebView (until crbug.com/1430082 has been fixed).
@@ -627,6 +637,10 @@ enum class DiskCacheBackend {
 NET_EXPORT BASE_DECLARE_FEATURE(kDiskCacheBackendExperiment);
 NET_EXPORT extern const base::FeatureParam<DiskCacheBackend>
     kDiskCacheBackendParam;
+
+// If enabled, make sure a cookie isn't being incorrectly set on a TLD or
+// public suffix.
+NET_EXPORT BASE_DECLARE_FEATURE(kCookieDomainFieldIsValid);
 
 }  // namespace net::features
 

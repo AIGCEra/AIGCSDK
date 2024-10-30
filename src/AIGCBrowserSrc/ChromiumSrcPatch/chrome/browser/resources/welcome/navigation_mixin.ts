@@ -12,7 +12,7 @@
  *     or popping history state without actually changing the path.
  */
 
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {assert} from 'tangram://resources/js/assert.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';

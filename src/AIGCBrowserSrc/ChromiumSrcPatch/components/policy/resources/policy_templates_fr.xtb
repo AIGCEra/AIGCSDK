@@ -377,19 +377,19 @@ Toutefois, dans le cadre de cette règle, ces formats ne doivent pas inclure les
       Si cette règle n'est pas configurée, <ph name="DEFAULT_POPUPS_SETTING_POLICY_NAME" /> s'applique pour tous les sites, à condition qu'elle soit elle-même configurée. Sinon, le paramètre défini par l'utilisateur s'applique.
 
       Pour en savoir plus sur les formats <ph name="URL_LABEL" /> valides, veuillez consulter https://cloud.google.com/docs/chrome-enterprise/policies/url-patterns. Les caractères génériques (<ph name="WILDCARD_VALUE" />) sont autorisés.</translation>
-<translation id="1279062904578504503">Cette règle active l'appli Content Transfer pour les utilisateurs gérés. Cette appli aide les utilisateurs à transférer leurs données depuis leur compte géré vers un compte personnel.
+<translation id="1279062904578504503">Cette règle active l'application Transfert de contenus pour les utilisateurs gérés. Cette appli permet aux utilisateurs de transférer leurs données depuis leur compte géré vers un compte personnel.
 
-Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE" /> est définie sur <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE_TRUE" />, l'appli Content Transfer est affichée à la date de début et entre les dates de début et de fin en fonction de l'heure locale.
+Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE" /> est définie sur <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE_TRUE" />, l'appli Transfert de contenus sera affichée à la date de début et entre les dates de début et de fin en fonction de l'heure locale.
 
-Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE" /> est définie sur <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE_FALSE" /> ou n'est pas définie, l'appli n'est pas affichée.
+Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE" /> est définie sur <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_IS_ENABLED_VALUE_FALSE" /> ou n'est pas définie, l'appli ne sera pas affichée.
 
-Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_START_DATE_VALUE" /> n'est pas définie, l'appli est affichée jusqu'à la date de fin.
+Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_START_DATE_VALUE" /> n'est pas définie, l'appli sera affichée jusqu'à la date de fin.
 
-Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_END_DATE_VALUE" /> n'est pas définie, l'appli est affichée indéfiniment à partir de la date de début.
+Si la règle <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_END_DATE_VALUE" /> n'est pas définie, l'appli sera affichée indéfiniment à partir de la date de début.
 
-Si les règles <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_START_DATE_VALUE" /> et <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_END_DATE_VALUE" /> ne sont pas définies, l'appli est affichée indéfiniment. Si les dates de début et de fin ne sont pas valides, l'appli n'est pas affichée. Par exemple, si les dates fournies n'existent pas ou si la date de fin est antérieure à la date de début.
+Si les règles <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_START_DATE_VALUE" /> et <ph name="CONTENT_TRANSFER_ENABLEMENT_STATUS_END_DATE_VALUE" /> ne sont pas définies, l'appli sera affichée indéfiniment. Si les dates de début et de fin ne sont pas valides, elle ne sera pas affichée. Par exemple, si les dates fournies n'existent pas ou si la date de fin est antérieure à la date de début.
 
-Le transfert de données avec Takeout doit aussi être activé pour que l'appli fonctionne correctement. Pour en savoir plus, consultez https://support.google.com/a/answer/6364687.</translation>
+Le transfert de données avec Takeout doit aussi être activé pour que l'application fonctionne correctement. Pour en savoir plus, consultez https://support.google.com/a/answer/6364687.</translation>
 <translation id="1285819498003746288">L'API Event.path sera indisponible.</translation>
 <translation id="1290722184971934486">Si cette règle est définie sur <ph name="BLOCK_WINDOW_MANAGEMENT_POLICY_NAME" /> (valeur 2), l'autorisation de gestion des fenêtres est par défaut automatiquement refusée aux sites. Cela limite la capacité des sites à voir les informations concernant les écrans de l'appareil, ainsi qu'à utiliser ces informations pour ouvrir et positionner des fenêtres, ou demander le passage en plein écran sur certains écrans.
 
@@ -553,6 +553,9 @@ Si elle est définie sur "PromptInTab", lorsque l'authentification de l'utilisat
 <translation id="1396119629372155901">Fonctionnalité ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes désactivée</translation>
 <translation id="1397855852561539316">URL de suggestions de recherche du moteur de recherche par défaut</translation>
 <translation id="140076409387986842">Autoriser M'aider à écrire sans améliorer les modèles d'IA.</translation>
+<translation id="1401249111997036083">Si cette règle est définie sur "False", les applis Android peuvent capturer les liens compatibles par défaut.
+Si elle est définie sur "True", tous les liens s'ouvrent par défaut dans le navigateur Chrome.
+Si cette règle n'est pas configurée, les liens s'ouvrent par défaut dans les applis Android pour les utilisateurs gérés et dans le navigateur pour les utilisateurs standards.</translation>
 <translation id="1402227992519954892">Activer les rapports sur les infos des applis de l'appareil</translation>
 <translation id="1405444733221330570">Activer Orca</translation>
 <translation id="1407977345632185991">Ne pas autoriser Créer des thèmes avec l'IA.</translation>
@@ -1728,9 +1731,6 @@ Si cette règle est désactivée ou qu'elle n'est pas configurée, le transfert 
 <translation id="2258126710006312594">Autoriser le transfert de fichiers vers et depuis l'hôte pour les utilisateurs connectés à distance</translation>
 <translation id="225830954785359083">Empêcher les pages d'afficher des pop-ups pendant le déchargement</translation>
 <translation id="2261648512244797294">Désactiver l'impression Privet (obsolète)</translation>
-<translation id="2262153510491523927">Si cette règle est définie sur "False", les applis Android peuvent capturer les liens compatibles par défaut.
-Si elle est définie sur "True", tous les liens s'ouvrent par défaut dans le navigateur Chrome.
-Si cette règle n'est pas configurée, les applis Android capturent les liens compatibles par défaut.</translation>
 <translation id="2263881357524831360">Autoriser l'utilisation de gestionnaires de mots de passe tiers dans <ph name="PRODUCT_NAME" /> sous <ph name="ANDROID_NAME" /></translation>
 <translation id="2264286153777425328">Liste des actions à exécuter lorsque le délai d'inactivité de la règle <ph name="IDLE_TIMEOUT_POLICY_NAME" /> est atteint.
 
@@ -2490,6 +2490,7 @@ Cette règle ne peut être configurée que comme règle relative aux utilisateur
 <translation id="2872968825059227580">Désactiver la prise en charge des GIF</translation>
 <translation id="2874209944580848064">Remarque concernant les appareils <ph name="PRODUCT_OS_NAME" /> compatibles avec les applications Android :</translation>
 <translation id="287474029350993681">Désactiver la diffusion de contenus sur l'appareil</translation>
+<translation id="2874983257003956579">Configurer les outils de gestion des cours</translation>
 <translation id="2875192972412983412">Permet de spécifier le sous-ensemble des serveurs d'impression qui sont interrogés pour accéder aux imprimantes disponibles qui y sont associées.
 
       Si cette règle est configurée, seules les imprimantes de serveur dont l'ID correspond aux valeurs définies dans cette règle sont proposées aux utilisateurs.
@@ -2611,6 +2612,9 @@ Si cette règle est activée, la touche du Lanceur d'applications/de recherche p
 Si un cookie est défini pour un domaine qui correspond à l'un des filtres fournis, il est exclu des éléments à déplacer. Les domaines de cookie sont mis en correspondance selon les règles des champs "host" décrites sur https://support.google.com/chrome/a?p=url_blocklist_filter_format. Tous les autres champs sont ignorés. Les caractères génériques (<ph name="WILDCARD_VALUE" />) sont autorisés.
 
 La règle <ph name="FLOATING_SSO_DOMAIN_BLOCKLIST_EXCEPTIONS_POLICY_NAME" /> est prioritaire.</translation>
+<translation id="2953447815703785478">Indique les certificats clients qui doivent être enregistrés au niveau de l'appareil à l'aide du protocole de gestion des appareils.
+
+L'option d'algorithme de clé <ph name="EC_KEY_ALGORITHM_VALUE_NAME" /> est prise en charge depuis la version 132 de <ph name="PRODUCT_OS_NAME" />.</translation>
 <translation id="2957506574938329824">Interdire à tous les sites de demander l'accès à des appareils Bluetooth via l'API Web Bluetooth</translation>
 <translation id="2957513448235202597">Type de compte pour l'authentification <ph name="HTTP_NEGOTIATE" /></translation>
 <translation id="2959469725686993410">Toujours transmettre les points d'accès Wi-Fi au serveur tout en mettant à jour le fuseau horaire</translation>
@@ -3652,7 +3656,7 @@ Pour connaître les restrictions concernant <ph name="PRIVATE_NETWORK_ACCESS" />
       Si vous activez ce paramètre, <ph name="PRODUCT_NAME" /> et les applications ARC ignorent toutes les options liées au proxy spécifiées à partir de la ligne de commande.
 
       Si ces règles ne sont pas configurées, les utilisateurs peuvent choisir eux-mêmes leurs paramètres de proxy.</translation>
-<translation id="3758249152301468420">Désactiver les outils de développement</translation>
+<translation id="3758249152301468420">Désactiver les outils pour les développeurs</translation>
 <translation id="3758910737665387561">Autoriser les appareils à utiliser Plugin VM</translation>
 <translation id="3759650373178711405">La règle <ph name="COOKIES_SESSION_ONLY_FOR_URLS_POLICY_NAME" /> vous permet de dresser la liste des formats d'URL indiquant les sites autorisés ou non à placer des cookies lors d'une session, à moins que la règle <ph name="RESTORE_ON_STARTUP_POLICY_NAME" /> soit définie pour restaurer définitivement les URL des sessions précédentes.
 
@@ -3942,11 +3946,6 @@ Remarque : Si ce paramètre a pour conséquence qu'aucune méthode d'authentifi
 <translation id="3989829840000169163">Bloquer les anciens points d'extension du navigateur</translation>
 <translation id="3990391739475801018">Le mode Économiseur de batterie sera désactivé.</translation>
 <translation id="3990834929384096140">Ne pas appliquer l'annulation de l'écho audio du système</translation>
-<translation id="3992082233013655355">Cette règle permet d'établir la liste des applis Web isolées (AWI) qui s'installent de manière autonome.
-      Les AWI sont des applis avec des propriétés de sécurité utiles qui ne sont pas disponibles pour les pages Web normales. Elles sont empaquetées dans un bundle Web signé. La clé publique de ce bundle sert à créer l'ID du bundle Web qui identifie l'AWI.
-      Pour l'instant, cette règle ne fonctionne que pour les sessions Invité gérées.
-
-      Chaque élément de la règle correspond à un objet avec deux champs obligatoires : l'<ph name="URL_LABEL" /> du fichier manifeste de mise à jour et l'ID de bundle Web de l'appli Web isolée. Chaque élément peut également comporter un champ facultatif avec le nom du canal de version de l'AWI. Si "update_channel" n'est pas défini, la valeur "default" est utilisée.</translation>
 <translation id="3994043824457743421">Afficher l'annonce d'espace intermédiaire sur la page "Nouvel onglet"</translation>
 <translation id="399433537808390819">Ne pas rendre le mode Bureau unifié accessible à l'utilisateur</translation>
 <translation id="3995880046827722248">Manifest V2 est désactivé</translation>
@@ -4428,6 +4427,7 @@ Si elle est désactivée, les utilisateurs ne peuvent pas suivre leurs colis dan
       <ph name="PRODUCT_NAME" />.</translation>
 <translation id="439661169333921592">Désactiver la mise en surbrillance des éléments sélectionnés au clavier sur l'écran de connexion</translation>
 <translation id="4397045637922200204">Désactiver la récupération de compte</translation>
+<translation id="4397157269508242312">Cette règle permet de spécifier si les utilisateurs utilisent des outils de gestion des cours pour envoyer/recevoir des contenus, envoyer/recevoir des sous-titres en tant qu'élèves ou enseignants, ou si les outils de gestion des cours sont désactivés pour les utilisateurs.</translation>
 <translation id="4397464099112037398">Paramètre d'autorisation de positionnement des fenêtres par défaut</translation>
 <translation id="4398803806072237638">La syntaxe <ph name="CUSTOM_STATE_DEPRECATED_SYNTAX" /> de la fonctionnalité d'état personnalisé CSS est remplacée par <ph name="CUSTOM_STATE_NEW_SYNTAX" /> dans <ph name="PRODUCT_NAME" /> afin de respecter les modifications apportées à <ph name="FIREFOX_PRODUCT_NAME" /> et <ph name="SAFARI_PRODUCT_NAME" />. Cette règle permet d'activer l'ancienne syntaxe obsolète jusqu'à M133.
 
@@ -4825,6 +4825,11 @@ Si les données de navigation existantes sont importées dans le profil géré, 
 
 Si les données de navigation existantes ne sont pas importées dans le profil géré, un profil est créé. Les données de navigation existantes resteront dans un profil non géré, auquel l'utilisateur pourra toujours accéder à l'aide de l'outil de sélection du profil.</translation>
 <translation id="4668325077104657568">Paramètres d'images par défaut</translation>
+<translation id="4669292863736266737">Configurer <ph name="GLS_ENABLED" /> active les services de localisation Google lors de la configuration initiale, sauf si la règle <ph name="DEFAULT_GEOLOCATION_SETTING_POLICY_NAME" /> est définie sur <ph name="BLOCK_GEOLOCATION_SETTING" />. Si la règle est définie sur <ph name="GLS_DISABLED" /> ou n'est pas configurée, les services de localisation restent désactivés pendant la configuration.
+
+Si elle est définie sur <ph name="BR_UNDER_USER_CONTROL" />, les utilisateurs sont invités à préciser s'ils souhaitent ou non utiliser ces services. S'ils les activent, les applis Android utilisent ces services pour rechercher la position de l'appareil et envoyer des données de localisation anonymes à Google.
+
+Les utilisateurs peuvent activer ou désactiver les services de localisation Google après la configuration initiale.</translation>
 <translation id="4670865688564083639">Plage minimale :</translation>
 <translation id="467236746355332046">Fonctionnalités compatibles :</translation>
 <translation id="4672774129073185053">Activer l'annulation du contrôle de joignabilité IPv6</translation>
@@ -4896,6 +4901,7 @@ Pour les instances <ph name="MAC_OS_NAME" />, les applis et extensions non issue
 <translation id="4739596156184678950">Autoriser l'enregistrement de fichiers directement dans <ph name="GOOGLE_DRIVE_NAME" /></translation>
 <translation id="4742973303930120836">Limiter le mode d'impression d'images de fond</translation>
 <translation id="4745232963710538589">Activer l'extension des insights pour transmettre des statistiques d'utilisation</translation>
+<translation id="4746394249367607432">Les utilisateurs pourront rejoindre une session de gestion des cours et y être ajoutés. Les enseignants pourront envoyer des contenus à ces utilisateurs.</translation>
 <translation id="4749670563834935149">Activer <ph name="CHROME_ENTERPRISE_DEVICE_TRUST_CONNECTOR" /> pour une liste d'URL sur l'écran de connexion et de verrouillage.
 
 Cette règle permet de spécifier à quelles URL <ph name="PRODUCT_OS_NAME" /> proposera de lancer le flux d'attestation. Elle permet à ces sites Web d'obtenir un ensemble certifié de signaux contextuels provenant de l'appareil.
@@ -6191,6 +6197,9 @@ Lorsqu'elle est définie pour <ph name="PRODUCT_OS_NAME" /> Kiosk, cette règle
       Si cette règle est désactivée, le correcteur l'est également sur toutes les sources, et les utilisateurs ne peuvent pas l'activer Les règles <ph name="SPELL_CHECK_SERVICE_ENABLED_POLICY_NAME" />, <ph name="SPELLCHECK_LANGUAGE_POLICY_NAME" /> et <ph name="SPELLCHECK_LANGUAGE_BLOCKLIST_POLICY_NAME" /> n'ont aucun effet si cette règle est définie sur "False".
 
       Si cette règle n'est pas définie, les utilisateurs peuvent activer ou désactiver le correcteur orthographique à leur guise dans les paramètres linguistiques. </translation>
+<translation id="5655060841667911118">Indique les certificats clients qui doivent être enregistrés à l'aide du protocole de gestion des appareils.
+
+L'option d'algorithme de clé <ph name="EC_KEY_ALGORITHM_VALUE_NAME" /> est prise en charge depuis la version 132 de <ph name="PRODUCT_OS_NAME" />.</translation>
 <translation id="5655553344896004108">Autoriser l'utilisation de l'API U2F Security Key obsolète</translation>
 <translation id="5656177735561364047">Activer la fonctionnalité de presse-papiers partagé</translation>
 <translation id="5657752663637568277">Cette règle détermine si les avertissements d'abandon de <ph name="CLOUD_PRINT_NAME" /> sont présentés aux utilisateurs dans la boîte de dialogue d'aperçu avant impression ou dans les pages de paramètres.
@@ -6765,13 +6774,6 @@ Vous pouvez modifier le délai d'inactivité avant l'affichage de l'économiseur
       Si elle est activée, l'écran d'introduction de l'IA s'affiche.
 
       Si elle n'est pas configurée, l'écran d'introduction de l'IA sera ignoré pour les utilisateurs gérés par une entreprise et s'affichera pour les utilisateurs non gérés.</translation>
-<translation id="6187573347027372072">Attention ! Cette règle étant obsolète, veuillez utiliser la règle <ph name="CROS_GLS_POLICY_NAME" /> à la place. <ph name="PRODUCT_OS_NAME" /> possède désormais un bouton système d'activation/de désactivation de la localisation pour l'ensemble du système, y compris <ph name="ANDROID_NAME" />. Le bouton d'activation/de désactivation <ph name="ANDROID_NAME" /> est désormais en lecture seule et reflète l'état de la localisation <ph name="PRODUCT_OS_NAME" />.
-
-Lors de la configuration initiale, si la règle est définie sur <ph name="GLS_ENABLED" />, les services de localisation Google sont activés, sauf si la règle <ph name="DEFAULT_GEOLOCATION_SETTING_POLICY_NAME" /> est définie sur <ph name="BLOCK_GEOLOCATION_SETTING" />. Si la règle est définie sur <ph name="GLS_DISABLED" /> ou n'est pas configurée, les services de localisation restent désactivés pendant la configuration.
-
-Si la règle est définie sur <ph name="GLS_UNDER_USER_CONTROL" />, les utilisateurs sont invités à préciser s'ils souhaitent ou non utiliser ces services. Si les utilisateurs les activent, les applis <ph name="ANDROID_NAME" />, ainsi que les applis, sites et services système <ph name="PRODUCT_OS_NAME" />, les utilisent pour rechercher la position de l'appareil et envoyer des données de localisation anonymes à Google.
-
-Après la configuration initiale, les utilisateurs peuvent activer ou désactiver les services de localisation Google.</translation>
 <translation id="6187632100458475876">Paramètre du libellé de l'avatar dans la barre d'outils gérée</translation>
 <translation id="6190367314942602985">Enregistrer les informations d'identification de l'utilisateur</translation>
 <translation id="6191963383731098056">Cette règle permet aux administrateurs de configurer la couleur du thème de <ph name="PRODUCT_NAME" />. La chaîne saisie doit être une couleur hexadécimale valide, comme "#RRGGBB".
@@ -7473,6 +7475,7 @@ Pour que les modifications apportées à cette règle puissent être appliquées
 <translation id="6607983779935460461">Prise en charge de l'URL des données pour SVGUseElement.</translation>
 <translation id="6609867253856597039">Définir l'expérience utilisateur pour les fonctionnalités désactivées</translation>
 <translation id="6614557704487944013">Autoriser les utilisateurs à se servir du navigateur <ph name="LACROS_NAME" /></translation>
+<translation id="6614648642325603511">Algorithme pour générer des paires de clés. L'option EC est prise en charge depuis la version 132.</translation>
 <translation id="661610294649586421">Ne pas autoriser les requêtes API WebAuthn sur les sites avec des certificats TLS non fonctionnels.</translation>
 <translation id="6617589895942747919">Heure de début de l'intervalle (incluse).</translation>
 <translation id="6621830999036927230">Si cette règle est configurée, l'hôte d'accès à distance utilise cette URL pour valider les jetons d'authentification provenant des clients d'accès à distance afin d'accepter les connexions. Si cette règle est définie sur une chaîne vide ou qu'elle n'est pas configurée, elle est désactivée.
@@ -7762,6 +7765,7 @@ REMARQUE : Seuls les nouveaux processus du moteur de rendu refléteront les mod
 
       Cette règle étant obsolète, veuillez utiliser à la place la règle <ph name="PRINTING_API_EXTENSIONS_ALLOWLIST_POLICY_NAME" />.</translation>
 <translation id="6847379587945465889">Activer le transfert des cookies d'authentification unique SAML dans la session utilisateur lors de la connexion</translation>
+<translation id="6847810176590195243">Les utilisateurs pourront se connecter et déployer des contenus auprès des élèves. Cela inclut l'envoi de contenus Web et la mise à disposition de traductions/sous-titres instantanés de la voix de l'enseignant pour les élèves.</translation>
 <translation id="684856667300805181">Cette règle a été supprimée dans <ph name="PRODUCT_NAME" /> 68 et remplacée par <ph name="ARC_GLS_POLICY_NAME" />.</translation>
 <translation id="684882090733715433">Rapports sur les événements du navigateur</translation>
 <translation id="6850300477973481112">Paramètres du connecteur de bureau</translation>
@@ -8895,6 +8899,7 @@ Si cette règle n'est pas configurée, le moteur de rendu des PDF est sélection
 <translation id="776110834126722255">Obsolète</translation>
 <translation id="7763614521440615342">Afficher des recommandations de contenus sur la page "Nouvel onglet"</translation>
 <translation id="7763650553214838209">La définition d'un raccourci pour l'action "Insérer" est désactivée.</translation>
+<translation id="7763655314629932385">Spécifie la version souhaitée de l'AWI. Si vous en fournissez une, le système tentera d'installer cette version spécifique, puis bloquera toutes les mises à jour suivantes. Pour retirer l'épingle de l'appli et réactiver les mises à jour, supprimez ce champ. **Important** : Si la version fournie n'existe pas, l'AWI restera bloquée sur la version actuellement installée. En effet, après avoir tenté (et échoué, dans ce cas) de mettre à jour vers la version épinglée, l'épinglage désactive toutes les mises à jour automatiques ultérieures.</translation>
 <translation id="776465643636059256">Désactiver la fonctionnalité d'ensembles de sites Web associés</translation>
 <translation id="7765879851993224640">Autorise la connexion avec Smart Lock.</translation>
 <translation id="7767066506143083523">Si cette règle est configurée, vous pouvez lister les formats d'URL qui peuvent utiliser la capture d'onglet.
@@ -8929,6 +8934,15 @@ Si cette règle n'est pas configurée, le moteur de rendu des PDF est sélection
           Si elle n'est pas configurée, les raccourcis des fonctionnalités d'accessibilité sont activés par défaut sur l'écran de connexion.</translation>
 <translation id="7777535871204167559">Traiter les appareils de stockage externe en lecture seule</translation>
 <translation id="7781452670568828399">Modifier la configuration <ph name="PRODUCT_OS_NAME" /> recommandée.</translation>
+<translation id="7782770795171480507">Cette règle permet d'établir la liste des applis Web isolées (AWI) qui s'installent de manière autonome.
+      Les AWI sont des applis avec des propriétés de sécurité utiles qui ne sont pas disponibles pour les pages Web normales. Elles sont empaquetées dans un bundle Web signé. La clé publique de ce bundle sert à créer l'ID du bundle Web qui identifie l'AWI.
+      Pour l'instant, cette règle ne fonctionne que pour les sessions Invité gérées.
+
+      Chaque élément de la règle correspond à un objet avec deux champs obligatoires : l'<ph name="URL_LABEL" /> du fichier manifeste de mise à jour et l'ID de bundle Web de l'AWI.
+
+      Chaque élément peut également comporter des champs facultatifs : le nom du canal de version/mise à jour de l'AWI (update_channel) et une version spécifique à épingler (pinned_version).
+      Si "update_channel" n'est pas défini, la valeur "default" est utilisée. Lorsque la version pinned_version est spécifiée, le système tente d'installer cette version spécifique (si elle est disponible sur le canal de mise à jour actuel).
+      Par défaut, l'épinglage des versions n'autorise pas de revenir à des versions antérieures. Épingler une AWI sur une version spécifique empêche sa mise à jour au-delà de cette version. Pour retirer l'épingle, supprimez ce champ.</translation>
 <translation id="7784062550705119230">Si <ph name="PRINTERS_ALLOWLIST" /> est sélectionné pour la règle <ph name="DEVICE_PRINTERS_ACCESS_MODE_POLICY_NAME" />, la définition de <ph name="DEVICE_PRINTERS_ALLOWLIST_POLICY_NAME" /> indique les imprimantes accessibles aux utilisateurs. Seules les imprimantes dont les ID correspondent aux valeurs définies dans cette règle sont proposées aux utilisateurs. Ces ID doivent correspondre à ceux indiqués dans les champs <ph name="ID_FIELD" /> ou <ph name="GUID_FIELD" /> du fichier spécifié dans la règle <ph name="DEVICE_PRINTERS_POLICY_NAME" /></translation>
 <translation id="7785199109546027763">Règle permettant de contrôler si la fonctionnalité IP Protection de <ph name="PRIVACY_SANDBOX_NAME" /> doit être activée.
 
@@ -8961,7 +8975,7 @@ Pour en savoir plus sur la règle <ph name="IEEM_SITELIST_POLICY" /> d'Internet�
       Si elle est définie sur "True", les événements réseau de l'appareil seront signalés.</translation>
 <translation id="780629758750905699">Autoriser l'ajout de comptes Family Link à l'appareil</translation>
 <translation id="7807139251387225825">Liste des types à exclure de la synchronisation</translation>
-<translation id="7808219497358175018">Configurer quand l'outil Content Transfer <ph name="PRODUCT_OS_NAME" /> est disponible</translation>
+<translation id="7808219497358175018">Configurer quand l'outil Transfert de contenus <ph name="PRODUCT_OS_NAME" /> est disponible</translation>
 <translation id="781268256210530471">Paramètres des plug-ins</translation>
 <translation id="7816326058023670173">Secret partagé entre les appareils utilisés par les parents et l’enfant.</translation>
 <translation id="7818131573217430250">Définir l'état par défaut du mode Contraste élevé sur l'écran de connexion</translation>
@@ -8973,6 +8987,7 @@ Pour en savoir plus sur la règle <ph name="IEEM_SITELIST_POLICY" /> d'Internet�
 <translation id="782661371433719637">Interdire à tous les sites de demander l'accès en lecture aux fichiers et répertoires via l'API File System</translation>
 <translation id="7827127381981620448">Application de plate-forme</translation>
 <translation id="7829436838673974723">Autoriser les pages à envoyer des requêtes XHR synchrones pendant leur fermeture</translation>
+<translation id="7829546795016635784">Les utilisateurs ne peuvent pas être ajoutés à une session de gestion des cours ni en utiliser les fonctionnalités.</translation>
 <translation id="782978857350824974">Autoriser les requêtes d'authentification Web sur les sites avec des certificats TLS non fonctionnels.</translation>
 <translation id="7830775338190021763">Activer la fonctionnalité de transfert de fichiers dans les sessions d'assistance à distance internes à l'entreprise</translation>
 <translation id="7832225468415136704">Empêcher Chrome Cleanup d'analyser périodiquement le système, et désactiver les analyses manuelles</translation>
@@ -9165,21 +9180,6 @@ Si ce paramètre est désactivé et que les connexions UDP sortantes sont filtr�
           Cette règle a été supprimée dans Chrome 110.
                                         </translation>
 <translation id="7976157349247117979">Nom de la destination <ph name="PRODUCT_NAME" /></translation>
-<translation id="7982057585796399404">Cette règle permet de lister les applis et extensions qui s'installent de manière autonome, sans intervention de l'utilisateur, et que celui-ci ne peut pas désinstaller ni désactiver. Les autorisations sont accordées implicitement, y compris pour les API d'extension enterprise.deviceAttributes et enterprise.platformKeys (ces deux API ne sont pas disponibles pour les applis et extensions non installées d'office).
-
-Si cette règle n'est pas configurée, aucune appli ni extension n'est installée automatiquement, et l'utilisateur peut désinstaller n'importe quelle appli ou extension dans <ph name="PRODUCT_NAME" />.
-
-Cette règle remplace la règle <ph name="EXTENSION_INSTALL_BLOCKLIST_POLICY_NAME" />. Si une appli ou une extension installée d'office est supprimée de cette liste, <ph name="PRODUCT_NAME" /> la désinstalle automatiquement.
-
-Le code source de toute extension peut être modifié par les utilisateurs à l'aide des outils pour les développeurs, ce qui peut entraîner des dysfonctionnements. Si cela pose problème, configurez la règle <ph name="DEVELOPER_TOOLS_DISABLED_POLICY_NAME" />.
-
-Chaque élément listé de la règle est une chaîne comprenant un ID d'extension et éventuellement une URL de mise à jour séparés par un point-virgule (;). L'ID d'extension est la chaîne de 32 lettres figurant, par exemple, sur la page tangram://extensions, quand le mode développeur est activé. Si indiquée, l'URL de mise à jour doit renvoyer vers un fichier manifeste au format XML (https://developer.chrome.com/extensions/autoupdate) et utiliser l'un des schémas suivants : <ph name="HTTP_SCHEME" />, <ph name="HTTPS_SCHEME" /> ou <ph name="FILE_SCHEME" />. Par défaut, l'URL de mise à jour du Chrome Web Store est utilisée. L'URL de mise à jour spécifiée dans cette règle ne sert que pour l'installation initiale. Toute mise à jour ultérieure de l'extension utilise l'URL de mise à jour indiquée dans le fichier manifeste de l'extension. L'URL de mise à jour peut être remplacée à l'aide de la règle <ph name="EXTENSION_SETTINGS_POLICY_NAME" /> (voir http://support.google.com/chrome/a?p=Configure_ExtensionSettings_policy).
-
-Pour les instances <ph name="MS_WIN_NAME" />, les applis et extensions non issues du Chrome Web Store ne peuvent être installées d'office que si l'instance est associée à un domaine <ph name="MS_AD_NAME" />, à <ph name="MS_AAD_NAME" /> ou bénéficie de la <ph name="CHROME_BROWSER_CLOUD_MANAGEMENT_NAME" />.
-
-Pour les instances <ph name="MAC_OS_NAME" />, les applis et extensions non issues du Chrome Web Store ne peuvent être installées d'office que si l'instance est gérée via MDM, associée à un domaine via MCX ou bénéficie de la <ph name="CHROME_BROWSER_CLOUD_MANAGEMENT_NAME" />.
-
-Remarque : cette règle ne s'applique pas en mode navigation privée. Pour en savoir plus sur l'hébergement des extensions, consultez la page https://developer.chrome.com/extensions/hosting.</translation>
 <translation id="7985242821674907985"><ph name="PRODUCT_NAME" /></translation>
 <translation id="7985781946183471651">Glanceables sur <ph name="PRODUCT_OS_NAME" /></translation>
 <translation id="7986473886676689183">Activer la création de rapports Android</translation>
@@ -10775,6 +10775,7 @@ La valeur par défaut est "RollbackDisabled".</translation>
       Le paramétrage par défaut de cette stratégie autorise le navigateur hôte à effectuer le rendu. Toutefois, vous pouvez remplacer ce paramétrage pour que <ph name="PRODUCT_FRAME_NAME" /> assure le rendu des pages HTML par défaut.</translation>
 <translation id="944817693306670849">Définir la taille du cache disque</translation>
 <translation id="949192525372487705">Bloquer le passage à un gestionnaire de mots de passe tiers</translation>
+<translation id="956107219808875608">Contrôle les paramètres des outils de gestion des cours.</translation>
 <translation id="957322141096206402">La résolution DNS du système peut être exécutée dans le processus réseau ou en dehors de celui-ci, en fonction de la configuration système et des flags de fonctionnalité.</translation>
 <translation id="957778406002650056">URL depuis laquelle l'image de <ph name="PLUGIN_VM_NAME" /> peut être téléchargée.</translation>
 <translation id="957920984193041197">Autoriser les pages à afficher des pop-ups pendant le déchargement</translation>
@@ -10787,6 +10788,7 @@ La valeur par défaut est "RollbackDisabled".</translation>
 <translation id="966425658642788645">Appliquer le comportement par défaut</translation>
 <translation id="971677226939413180">L'option "Imprimer en tant qu'image" n'est pas proposée à l'utilisateur.</translation>
 <translation id="974349541138387272">Permet de définir le modèle URI du résolveur DNS-over-HTTPS souhaité</translation>
+<translation id="978619365985286086">Paramètres des outils de gestion des cours</translation>
 <translation id="978658824596356870">Format 24 heures</translation>
 <translation id="979467274961593903">Ne pas autoriser l'utilisation du débogage à distance</translation>
 <translation id="980218166381006412">Activer cette règle active le mode arrière-plan. Dans ce mode, un processus <ph name="PRODUCT_NAME" /> est lancé lors de la connexion à l'OS. Il ne se termine que lorsque la dernière fenêtre du navigateur est fermée, ce qui permet aux applis en arrière-plan et à la session de navigation de rester actives. Le processus en arrière-plan affiche une icône dans la barre d'état système, d'où il est peut être arrêté à tout moment.

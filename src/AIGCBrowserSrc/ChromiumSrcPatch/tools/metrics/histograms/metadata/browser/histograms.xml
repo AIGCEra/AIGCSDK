@@ -62,7 +62,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Browser.ChromeOS.HatsStatus" enum="HatsStatus"
-    expires_after="2025-02-16">
+    expires_after="2025-04-20">
   <owner>aalsum@chromium.org</owner>
   <owner>chromeos-data-eng@google.com</owner>
   <summary>
@@ -334,7 +334,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Browser.ERP.RecordProcessedByServer" enum="Boolean"
-    expires_after="2025-02-23">
+    expires_after="2025-04-27">
   <owner>jrhilke@google.com</owner>
   <owner>src/components/reporting/OWNERS</owner>
   <summary>
@@ -522,7 +522,7 @@ chromium-metrics-reviews@google.com.
 
 <histogram
     name="Browser.MainThreadsCongestion.ExtensionContentScripts.{NumExtensions}"
-    units="janks" expires_after="2025-02-23">
+    units="janks" expires_after="2025-04-27">
   <owner>joenotcharles@google.com</owner>
   <owner>catan-team@chromium.org</owner>
   <summary>
@@ -991,7 +991,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Browser.Tabs.TotalIncompleteSwitchDuration3{TabSwitchingType}"
-    units="ms" expires_after="2025-02-16">
+    units="ms" expires_after="2025-04-20">
   <owner>fdoray@chromium.org</owner>
   <owner>jonross@chromium.org</owner>
   <owner>joenotcharles@google.com</owner>

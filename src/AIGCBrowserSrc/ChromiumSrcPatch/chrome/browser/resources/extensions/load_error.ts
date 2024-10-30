@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import './code_section.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {CrDialogElement} from 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import {assert} from 'tangram://resources/js/assert.js';

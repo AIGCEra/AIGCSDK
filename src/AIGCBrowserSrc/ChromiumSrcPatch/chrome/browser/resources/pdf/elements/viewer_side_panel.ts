@@ -6,17 +6,11 @@ import './ink_brush_selector.js';
 import './ink_color_selector.js';
 import './ink_size_selector.js';
 
-import {assert} from 'tangram://resources/js/assert.js';
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
-import type {PropertyValues} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 
 import {AnnotationBrushType} from '../constants.js';
-import type {AnnotationBrush, Color} from '../constants.js';
-import {PluginController} from '../controller.js';
-import {hexToColor} from '../pdf_viewer_utils.js';
+import type {Color} from '../constants.js';
 
-import {HIGHLIGHTER_COLORS, PEN_COLORS} from './ink_color_selector.js';
-import {ERASER_SIZES, HIGHLIGHTER_SIZES, PEN_SIZES} from './ink_size_selector.js';
 import {getCss} from './viewer_side_panel.css.js';
 import {getHtml} from './viewer_side_panel.html.js';
 
@@ -35,108 +29,18 @@ export class ViewerSidePanelElement extends CrLitElement {
 
   static override get properties() {
     return {
-      brushDirty_: {type: Boolean},
-      currentType_: {type: String},
+      currentColor: {type: Object},
+      currentSize: {type: Number},
+      currentType: {type: String},
     };
   }
 
-  protected currentType_: AnnotationBrushType = AnnotationBrushType.PEN;
-
-  // Indicates the brush has changes and should be updated in
-  // `this.pluginController_`.
-  private brushDirty_: boolean = false;
-
-  private brushes_: Map<AnnotationBrushType, AnnotationBrush>;
-  private pluginController_: PluginController = PluginController.getInstance();
-
-  constructor() {
-    super();
-
-    // Default brushes.
-    this.brushes_ = new Map([
-      [
-        AnnotationBrushType.ERASER,
-        {
-          type: AnnotationBrushType.ERASER,
-          size: ERASER_SIZES[2]!.size,
-        },
-      ],
-      [
-        AnnotationBrushType.HIGHLIGHTER,
-        {
-          type: AnnotationBrushType.HIGHLIGHTER,
-          color: hexToColor(HIGHLIGHTER_COLORS[0]!.color),
-          size: HIGHLIGHTER_SIZES[2]!.size,
-        },
-      ],
-      [
-        AnnotationBrushType.PEN,
-        {
-          type: AnnotationBrushType.PEN,
-          color: hexToColor(PEN_COLORS[0]!.color),
-          size: PEN_SIZES[2]!.size,
-        },
-      ],
-    ]);
-  }
-
-  override updated(changedProperties: PropertyValues<this>) {
-    super.updated(changedProperties);
-
-    const changedPrivateProperties =
-        changedProperties as Map<PropertyKey, unknown>;
-
-    if (changedPrivateProperties.has('brushDirty_') &&
-        (this.brushDirty_ ||
-         changedPrivateProperties.get('brushDirty_') === undefined)) {
-      this.onBrushChanged_();
-    }
-  }
-
-  protected onBrushChange_(e: CustomEvent<{value: AnnotationBrushType}>) {
-    this.currentType_ = e.detail.value;
-    this.brushDirty_ = true;
-  }
-
-  protected onSizeChange_(e: CustomEvent<{value: number}>) {
-    this.getCurrentBrush_().size = e.detail.value;
-    this.brushDirty_ = true;
-  }
-
-  protected onColorChange_(e: CustomEvent<{value: Color}>) {
-    assert(this.shouldShowColorOptions_());
-
-    this.getCurrentBrush_().color = e.detail.value;
-    this.brushDirty_ = true;
-  }
+  currentColor?: Color;
+  currentSize: number = 0;
+  currentType: AnnotationBrushType = AnnotationBrushType.PEN;
 
   protected shouldShowColorOptions_(): boolean {
-    return this.currentType_ !== AnnotationBrushType.ERASER;
-  }
-
-  protected getCurrentSize_(): number {
-    return this.getCurrentBrush_().size;
-  }
-
-  protected getCurrentColor_(): Color {
-    const color = this.getCurrentBrush_().color;
-    assert(color);
-    return color;
-  }
-
-  /**
-   * When the brush changes, the new brush should be sent to
-   * `this.pluginController_`.
-   */
-  private onBrushChanged_(): void {
-    this.pluginController_.setAnnotationBrush(this.getCurrentBrush_());
-    this.brushDirty_ = false;
-  }
-
-  private getCurrentBrush_(): AnnotationBrush {
-    const brush = this.brushes_.get(this.currentType_);
-    assert(brush);
-    return brush;
+    return this.currentType !== AnnotationBrushType.ERASER;
   }
 }
 

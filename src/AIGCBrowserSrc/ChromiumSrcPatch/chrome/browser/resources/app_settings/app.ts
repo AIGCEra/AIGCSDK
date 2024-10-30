@@ -5,7 +5,7 @@
 import 'tangram://resources/cr_components/localized_link/localized_link.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import 'tangram://resources/cr_elements/cr_toolbar/cr_toolbar.js';
-import './strings.m.js';
+import '/strings.m.js';
 import './app_content_item.js';
 import './file_handling_item.js';
 import './more_permissions_item.js';

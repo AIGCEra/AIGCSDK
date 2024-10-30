@@ -17,8 +17,6 @@
 #include "chrome/browser/ash/drive/file_system_util.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/buildflags.h"
-#include "chrome/browser/cart/commerce_hint_service.h"
-#include "chrome/browser/companion/core/features.h"
 #include "chrome/browser/dom_distiller/dom_distiller_service_factory.h"
 #include "chrome/browser/history_clusters/history_clusters_service_factory.h"
 #include "chrome/browser/media/media_engagement_score_details.mojom.h"
@@ -36,7 +34,6 @@
 #include "chrome/browser/translate/translate_frame_binder.h"
 #include "chrome/browser/ui/search_engines/search_engine_tab_helper.h"
 #include "chrome/browser/ui/ui_features.h"
-#include "chrome/browser/ui/views/side_panel/companion/companion_utils.h"
 #include "chrome/browser/ui/webui/bluetooth_internals/bluetooth_internals.mojom.h"
 #include "chrome/browser/ui/webui/bluetooth_internals/bluetooth_internals_ui.h"
 #include "chrome/browser/ui/webui/browsing_topics/browsing_topics_internals_ui.h"
@@ -195,7 +192,6 @@
 #include "chrome/browser/ui/webui/search_engine_choice/search_engine_choice_ui.h"
 #include "chrome/browser/ui/webui/settings/settings_ui.h"
 #include "chrome/browser/ui/webui/side_panel/bookmarks/bookmarks_side_panel_ui.h"
-#include "chrome/browser/ui/webui/side_panel/companion/companion_side_panel_untrusted_ui.h"
 #include "chrome/browser/ui/webui/side_panel/customize_chrome/customize_chrome.mojom.h"
 #include "chrome/browser/ui/webui/side_panel/customize_chrome/customize_chrome_ui.h"
 #include "chrome/browser/ui/webui/side_panel/customize_chrome/wallpaper_search/wallpaper_search.mojom.h"
@@ -477,8 +473,8 @@
 #endif
 
 #if BUILDFLAG(IS_CHROMEOS)
-#include "chrome/browser/ui/webui/dlp_internals/dlp_internals.mojom.h"
-#include "chrome/browser/ui/webui/dlp_internals/dlp_internals_ui.h"
+#include "chrome/browser/ui/webui/ash/dlp_internals/dlp_internals.mojom.h"
+#include "chrome/browser/ui/webui/ash/dlp_internals/dlp_internals_ui.h"
 #endif
 
 #if BUILDFLAG(CHROME_ROOT_STORE_CERT_MANAGEMENT_UI)
@@ -531,68 +527,6 @@ void BindImageAnnotator(
       Profile::FromBrowserContext(
           frame_host->GetProcess()->GetBrowserContext()))
       ->BindImageAnnotator(std::move(receiver));
-}
-
-void BindCommerceHintObserver(
-    content::RenderFrameHost* const frame_host,
-    mojo::PendingReceiver<cart::mojom::CommerceHintObserver> receiver) {
-  // This is specifically restricting this to main frames, whether they are the
-  // main frame of the tab, while preventing this from working in subframes and
-  // fenced frames.
-  if (frame_host->GetParent() || frame_host->IsFencedFrameRoot()) {
-    mojo::ReportBadMessage(
-        "Unexpected the message from subframe or fenced frame.");
-    return;
-  }
-
-// Check if features require CommerceHint are enabled.
-#if !BUILDFLAG(IS_ANDROID)
-  if (!IsCartModuleEnabled()) {
-    return;
-  }
-#else
-  if (!base::FeatureList::IsEnabled(commerce::kCommerceHintAndroid)) {
-    return;
-  }
-#endif
-
-// On Android, commerce hint observer is enabled for all users with the feature
-// enabled since the observer is only used for collecting metrics for now, and
-// we want to maximize the user population exposed; on Desktop, ChromeCart is
-// not available for non-signin single-profile users and therefore neither does
-// commerce hint observer.
-#if !BUILDFLAG(IS_ANDROID)
-  Profile* profile = Profile::FromBrowserContext(
-      frame_host->GetProcess()->GetBrowserContext());
-  auto* identity_manager = IdentityManagerFactory::GetForProfile(profile);
-  ProfileManager* profile_manager = g_browser_process->profile_manager();
-  if (!identity_manager || !profile_manager) {
-    return;
-  }
-  if (!identity_manager->HasPrimaryAccount(signin::ConsentLevel::kSignin) &&
-      profile_manager->GetNumberOfProfiles() <= 1) {
-    return;
-  }
-#endif
-  auto* web_contents = content::WebContents::FromRenderFrameHost(frame_host);
-  if (!web_contents) {
-    return;
-  }
-  content::BrowserContext* browser_context = web_contents->GetBrowserContext();
-  if (!browser_context) {
-    return;
-  }
-  if (browser_context->IsOffTheRecord()) {
-    return;
-  }
-
-  cart::CommerceHintService::CreateForWebContents(web_contents);
-  cart::CommerceHintService* service =
-      cart::CommerceHintService::FromWebContents(web_contents);
-  if (!service) {
-    return;
-  }
-  service->BindCommerceHintObserver(frame_host, std::move(receiver));
 }
 
 void BindDistillabilityService(
@@ -827,9 +761,6 @@ void PopulateChromeFrameBinders(
   map->Add<image_annotation::mojom::Annotator>(
       base::BindRepeating(&BindImageAnnotator));
 
-  map->Add<cart::mojom::CommerceHintObserver>(
-      base::BindRepeating(&BindCommerceHintObserver));
-
   map->Add<blink::mojom::AnchorElementMetricsHost>(
       base::BindRepeating(&NavigationPredictor::Create));
 
@@ -951,10 +882,8 @@ void PopulateChromeFrameBinders(
         base::BindRepeating(&web_app::SubAppsServiceImpl::CreateIfAllowed));
   }
 
-  if (features::IsPdfOcrEnabled()) {
-    map->Add<screen_ai::mojom::ScreenAIAnnotator>(
-        base::BindRepeating(&BindScreenAIAnnotator));
-  }
+  map->Add<screen_ai::mojom::ScreenAIAnnotator>(
+      base::BindRepeating(&BindScreenAIAnnotator));
 
   if (features::IsReadAnythingWithScreen2xEnabled()) {
     map->Add<screen_ai::mojom::Screen2xMainContentExtractor>(
@@ -974,8 +903,8 @@ void PopulateChromeFrameBinders(
 
 #if BUILDFLAG(ENABLE_ON_DEVICE_TRANSLATION)
   if (base::FeatureList::IsEnabled(blink::features::kEnableTranslationAPI)) {
-    map->Add<blink::mojom::TranslationManager>(
-        base::BindRepeating(&TranslationManagerImpl::Create));
+    map->Add<blink::mojom::TranslationManager>(base::BindRepeating(
+        &on_device_translation::TranslationManagerImpl::Create));
   }
 #endif
 
@@ -1844,7 +1773,7 @@ void PopulateChromeWebUIFrameInterfaceBrokers(
 
   registry.ForWebUI<ash::MediaAppGuestUI>()
       .Add<color_change_listener::mojom::PageHandler>()
-      .Add<ash::media_app_ui::mojom::UntrustedPageHandlerFactory>();
+      .Add<ash::media_app_ui::mojom::UntrustedServiceFactory>();
 
   registry.ForWebUI<ash::HelpAppUntrustedUI>()
       .Add<color_change_listener::mojom::PageHandler>();
@@ -1864,6 +1793,7 @@ void PopulateChromeWebUIFrameInterfaceBrokers(
   if (lens::features::IsLensOverlayEnabled()) {
     registry.ForWebUI<lens::LensSidePanelUntrustedUI>()
         .Add<lens::mojom::LensSidePanelPageHandlerFactory>()
+        .Add<lens::mojom::LensGhostLoaderPageHandlerFactory>()
         .Add<searchbox::mojom::PageHandler>()
         .Add<help_bubble::mojom::HelpBubbleHandlerFactory>()
         .Add<color_change_listener::mojom::PageHandler>();
@@ -1871,6 +1801,7 @@ void PopulateChromeWebUIFrameInterfaceBrokers(
   if (lens::features::IsLensOverlayEnabled()) {
     registry.ForWebUI<lens::LensOverlayUntrustedUI>()
         .Add<lens::mojom::LensPageHandlerFactory>()
+        .Add<lens::mojom::LensGhostLoaderPageHandlerFactory>()
         .Add<color_change_listener::mojom::PageHandler>()
         .Add<help_bubble::mojom::HelpBubbleHandlerFactory>()
         .Add<searchbox::mojom::PageHandler>();
@@ -1880,10 +1811,6 @@ void PopulateChromeWebUIFrameInterfaceBrokers(
         .Add<lens::mojom::SearchBubblePageHandlerFactory>()
         .Add<searchbox::mojom::PageHandler>()
         .Add<color_change_listener::mojom::PageHandler>();
-  }
-  if (companion::IsCompanionFeatureEnabled()) {
-    registry.ForWebUI<CompanionSidePanelUntrustedUI>()
-        .Add<side_panel::mojom::CompanionPageHandlerFactory>();
   }
   registry.ForWebUI<ReadAnythingUntrustedUI>()
       .Add<color_change_listener::mojom::PageHandler>();

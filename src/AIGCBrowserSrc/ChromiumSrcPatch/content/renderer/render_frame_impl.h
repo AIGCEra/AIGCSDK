@@ -599,7 +599,7 @@ class CONTENT_EXPORT RenderFrameImpl
       const blink::RemoteFrameToken& frame_token) override;
   blink::WebFrame* FindFrame(const blink::WebString& name) override;
   void WillDetach(blink::DetachReason detach_reason) override;
-  void FrameDetached() override;
+  void FrameDetached(blink::DetachReason detach_reason) override;
   void DidChangeName(const blink::WebString& name) override;
   void DidMatchCSS(
       const blink::WebVector<blink::WebString>& newly_matching_selectors,
@@ -705,9 +705,6 @@ class CONTENT_EXPORT RenderFrameImpl
       std::vector<ui::AXEvent> events,
       ui::AXLocationAndScrollUpdates location_and_scroll_updates,
       bool had_load_complete_messages) override;
-  void CheckIfAudioSinkExistsAndIsAuthorized(
-      const blink::WebString& sink_id,
-      blink::WebSetSinkIdCompleteCallback callback) override;
   scoped_refptr<network::SharedURLLoaderFactory> GetURLLoaderFactory() override;
   blink::URLLoaderThrottleProvider* GetURLLoaderThrottleProvider() override;
   scoped_refptr<blink::WebBackgroundResourceFetchAssets>

@@ -6,7 +6,7 @@ import './trace_report.js';
 import 'tangram://resources/cr_elements/cr_toast/cr_toast.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 
 import type {CrToastElement} from 'tangram://resources/cr_elements/cr_toast/cr_toast.js';
 import {assert} from 'tangram://resources/js/assert.js';

@@ -8,7 +8,7 @@
  * security site settings.
  */
 
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 import 'tangram://resources/cr_elements/cr_expand_button/cr_expand_button.js';
 import 'tangram://resources/cr_elements/cr_link_row/cr_link_row.js';

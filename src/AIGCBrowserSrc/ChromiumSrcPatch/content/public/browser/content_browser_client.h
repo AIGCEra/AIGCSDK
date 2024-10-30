@@ -19,7 +19,6 @@
 #include "base/containers/flat_map.h"
 #include "base/containers/flat_set.h"
 #include "base/functional/callback_forward.h"
-#include "base/memory/read_only_shared_memory_region.h"
 #include "base/memory/scoped_refptr.h"
 #include "base/supports_user_data.h"
 #include "base/time/time.h"
@@ -251,7 +250,6 @@ class NavigationUIData;
 class PrefetchServiceDelegate;
 class PrerenderWebContentsDelegate;
 class PresentationObserver;
-class PrivacySandboxAttestationsObserver;
 class PrivateNetworkDeviceDelegate;
 class ReceiverPresentationServiceDelegate;
 class RenderFrameHost;
@@ -1630,14 +1628,6 @@ class CONTENT_EXPORT ContentBrowserClient {
                                        WebContents* web_contents);
   virtual void RemovePresentationObserver(PresentationObserver* observer,
                                           WebContents* web_contents);
-
-  // Add or remove an observer for privacy sandbox attestations. Returns true if
-  // privacy sandbox attestations have ever been loaded, or if attestations are
-  // not enforced.
-  virtual bool AddPrivacySandboxAttestationsObserver(
-      PrivacySandboxAttestationsObserver* observer);
-  virtual void RemovePrivacySandboxAttestationsObserver(
-      PrivacySandboxAttestationsObserver* observer);
 
   // Allows programmatic opening of a new tab/window without going through
   // another WebContents. For example, from a Worker. |site_instance|
@@ -3087,24 +3077,17 @@ class CONTENT_EXPORT ContentBrowserClient {
   virtual void OnUiaProviderRequested(bool uia_provider_enabled);
 #endif
 
-  // Returns a handle to a shared memory region to hold performance scenario
-  // state for the given process, or an invalid handle if there is none. The
-  // result can be transferred to the child process and passed to a
-  // ScopedReadOnlyScenarioMemory object with Scope::kCurrentProcess (see
-  // //third_party/blink/public/common/performance/performance_scenarios.h)
-  virtual base::ReadOnlySharedMemoryRegion
-  GetPerformanceScenarioRegionForProcess(RenderProcessHost* process_host);
-
-  // Returns a handle to a shared memory region to hold performance scenario
-  // state for all processes, or an invalid handle if there is none. The result
-  // can be transferred to a child process and passed to a
-  // ScopedReadOnlyScenarioMemory object with Scope::kGlobal
-  // (see//third_party/blink/public/common/performance/performance_scenarios.h)
-  virtual base::ReadOnlySharedMemoryRegion GetGlobalPerformanceScenarioRegion();
-
   // Indicates whether this client allows paint holding in cross-origin
   // navigations even if there was no user activation.
   virtual bool AllowNonActivatedCrossOriginPaintHolding();
+
+  // Indicates whether this client requires dispatching the pagehide &
+  // visibilitychange events before the commit of a new document, when
+  // navigating same-site to `destination_url` and doing a BrowsingInstance
+  // swap, which used to fire those events at that timing.
+  virtual bool ShouldDispatchPagehideDuringCommit(
+      BrowserContext* browser_context,
+      const GURL& destination_url);
 };
 
 }  // namespace content

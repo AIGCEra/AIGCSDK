@@ -6,7 +6,7 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import './code_section.js';
 import './shared_style.css.js';
 

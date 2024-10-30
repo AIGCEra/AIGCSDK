@@ -4,8 +4,8 @@
 
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
-import './strings.m.js';
+import 'tangram://resources/cr_elements/icons.html.js';
+import '/strings.m.js';
 
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 
@@ -29,15 +29,11 @@ export class ManagedUserProfileNoticeDisclosureElement extends CrLitElement {
     return {
       showEnterpriseBadge: {type: Boolean},
       pictureUrl: {type: String},
-      title: {type: String},
-      subtitle: {type: String},
     };
   }
 
-  showEnterpriseBadge: boolean;
-  pictureUrl: string;
-  override title: string;
-  subtitle: string;
+  showEnterpriseBadge: boolean = false;
+  pictureUrl: string = '';
 }
 
 declare global {

@@ -153,6 +153,7 @@
 #include "chrome/browser/safe_browsing/url_checker_delegate_impl.h"
 #include "chrome/browser/safe_browsing/url_lookup_service_factory.h"
 #include "chrome/browser/search/search.h"
+#include "chrome/browser/search_engines/template_url_service_factory.h"
 #include "chrome/browser/segmentation_platform/chrome_browser_main_extra_parts_segmentation_platform.h"
 #include "chrome/browser/sharing/sms/sms_remote_fetcher.h"
 #include "chrome/browser/signin/chrome_signin_proxying_url_loader_factory.h"
@@ -280,7 +281,6 @@
 #include "components/payments/content/payment_request_display_manager.h"
 #include "components/pdf/common/pdf_util.h"
 #include "components/performance_manager/embedder/performance_manager_registry.h"
-#include "components/performance_manager/public/scenarios/performance_scenarios.h"
 #include "components/permissions/permission_context_base.h"
 #include "components/policy/content/policy_blocklist_navigation_throttle.h"
 #include "components/policy/content/policy_blocklist_service.h"
@@ -290,7 +290,6 @@
 #include "components/prefs/pref_registry_simple.h"
 #include "components/prefs/pref_service.h"
 #include "components/prefs/scoped_user_pref_update.h"
-#include "components/privacy_sandbox/privacy_sandbox_attestations/privacy_sandbox_attestations.h"
 #include "components/privacy_sandbox/privacy_sandbox_features.h"
 #include "components/privacy_sandbox/privacy_sandbox_prefs.h"
 #include "components/privacy_sandbox/privacy_sandbox_settings.h"
@@ -307,6 +306,7 @@
 #include "components/safe_browsing/core/common/features.h"
 #include "components/safe_browsing/core/common/hashprefix_realtime/hash_realtime_utils.h"
 #include "components/safe_browsing/core/common/safe_browsing_prefs.h"
+#include "components/search_engines/template_url_service.h"
 #include "components/security_interstitials/content/insecure_form_navigation_throttle.h"
 #include "components/security_interstitials/content/ssl_error_handler.h"
 #include "components/security_interstitials/content/ssl_error_navigation_throttle.h"
@@ -359,6 +359,7 @@
 #include "content/public/browser/web_contents_view_delegate.h"
 #include "content/public/browser/web_ui_url_loader_factory.h"
 #include "content/public/browser/webui_config_map.h"
+#include "content/public/common/buildflags.h"
 #include "content/public/common/content_descriptors.h"
 #include "content/public/common/content_features.h"
 #include "content/public/common/content_switches.h"
@@ -644,8 +645,6 @@
         // BUILDFLAG(IS_CHROMEOS_ASH)
 
 #if defined(TOOLKIT_VIEWS)
-#include "chrome/browser/ui/side_search/side_search_side_contents_helper.h"
-#include "chrome/browser/ui/side_search/side_search_utils.h"
 #include "chrome/browser/ui/views/chrome_browser_main_extra_parts_views.h"
 #endif
 
@@ -813,7 +812,7 @@
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(ENABLE_ON_DEVICE_TRANSLATION)
-#include "chrome/browser/on_device_translation/service_controller.h"
+#include "chrome/browser/on_device_translation/component_manager.h"
 #endif  // BUILDFLAG(ENABLE_ON_DEVICE_TRANSLATION)
 
 using blink::mojom::EffectiveConnectionType;
@@ -858,6 +857,10 @@ BASE_FEATURE(kPrivateNetworkAccessRestrictionsForAutomotive,
              "PrivateNetworkAccessRestrictionsForAutomotive",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_ANDROID)
+
+BASE_FEATURE(kSkipPagehideInCommitForDSENavigation,
+             "SkipPagehideInCommitForDSENavigation",
+             base::FEATURE_DISABLED_BY_DEFAULT);
 
 // A small ChromeBrowserMainExtraParts that invokes a callback when threads are
 // ready. Used to initialize ChromeContentBrowserClient data that needs the UI
@@ -1602,12 +1605,14 @@ void ChromeContentBrowserClient::RegisterProfilePrefs(
   registry->RegisterBooleanPref(prefs::kAutoplayAllowed, false);
   registry->RegisterListPref(prefs::kAutoplayAllowlist);
   registry->RegisterListPref(
-      prefs::kScreenCaptureWithoutGestureAllowedForOrigins);
-  registry->RegisterListPref(
       prefs::kFileOrDirectoryPickerWithoutGestureAllowedForOrigins);
   registry->RegisterIntegerPref(prefs::kFetchKeepaliveDurationOnShutdown, 0);
   registry->RegisterBooleanPref(
       prefs::kSharedArrayBufferUnrestrictedAccessAllowed, false);
+#endif
+#if BUILDFLAG(ENABLE_SCREEN_CAPTURE)
+  registry->RegisterListPref(
+      prefs::kScreenCaptureWithoutGestureAllowedForOrigins);
 #endif
   registry->RegisterBooleanPref(prefs::kSandboxExternalProtocolBlocked, true);
   registry->RegisterBooleanPref(prefs::kSSLErrorOverrideAllowed, true);
@@ -2938,10 +2943,6 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
       if (prefs->GetBoolean(
               webauthn::pref_names::kRemoteProxiedRequestsAllowed)) {
         command_line->AppendSwitch(switches::kWebAuthRemoteDesktopSupport);
-      }
-
-      if (IsCartModuleEnabled()) {
-        command_line->AppendSwitch(commerce::switches::kEnableChromeCart);
       }
 #endif
     }
@@ -4534,6 +4535,9 @@ void ChromeContentBrowserClient::OverrideWebkitPrefs(
           delegate->IsForceDarkWebContentEnabled();
 
       web_prefs->modal_context_menu = delegate->IsModalContextMenu();
+
+      web_prefs->dynamic_safe_area_insets_enabled =
+          delegate->IsDynamicSafeAreaInsetsEnabled();
     }
 #endif  // BUILDFLAG(IS_ANDROID)
 
@@ -5081,9 +5085,6 @@ std::wstring ChromeContentBrowserClient::GetAppContainerSidForSandboxType(
     case sandbox::mojom::Sandbox::kPrintCompositor:
     case sandbox::mojom::Sandbox::kAudio:
     case sandbox::mojom::Sandbox::kScreenAI:
-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-    case sandbox::mojom::Sandbox::kVideoEffects:
-#endif
     case sandbox::mojom::Sandbox::kSpeechRecognition:
     case sandbox::mojom::Sandbox::kPdfConversion:
     case sandbox::mojom::Sandbox::kService:
@@ -5172,9 +5173,6 @@ bool ChromeContentBrowserClient::PreSpawnChild(
       break;
     case sandbox::mojom::Sandbox::kUtility:
     case sandbox::mojom::Sandbox::kGpu:
-#if BUILDFLAG(ENABLE_PPAPI)
-    case sandbox::mojom::Sandbox::kPpapi:
-#endif
     case sandbox::mojom::Sandbox::kNoSandbox:
     case sandbox::mojom::Sandbox::kNoSandboxAndElevatedPrivileges:
     case sandbox::mojom::Sandbox::kXrCompositing:
@@ -5183,12 +5181,7 @@ bool ChromeContentBrowserClient::PreSpawnChild(
     case sandbox::mojom::Sandbox::kPrintBackend:
 #endif
     case sandbox::mojom::Sandbox::kPrintCompositor:
-#if !BUILDFLAG(IS_ANDROID)
     case sandbox::mojom::Sandbox::kScreenAI:
-#endif
-#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC)
-    case sandbox::mojom::Sandbox::kVideoEffects:
-#endif
     case sandbox::mojom::Sandbox::kAudio:
     case sandbox::mojom::Sandbox::kOnDeviceModelExecution:
     case sandbox::mojom::Sandbox::kSpeechRecognition:
@@ -5350,18 +5343,6 @@ void ChromeContentBrowserClient::RemovePresentationObserver(
     media_router::WebContentsPresentationManager::Get(web_contents)
         ->RemoveObserver(observer);
   }
-}
-
-bool ChromeContentBrowserClient::AddPrivacySandboxAttestationsObserver(
-    content::PrivacySandboxAttestationsObserver* observer) {
-  return privacy_sandbox::PrivacySandboxAttestations::GetInstance()
-      ->AddObserver(observer);
-}
-
-void ChromeContentBrowserClient::RemovePrivacySandboxAttestationsObserver(
-    content::PrivacySandboxAttestationsObserver* observer) {
-  privacy_sandbox::PrivacySandboxAttestations::GetInstance()->RemoveObserver(
-      observer);
 }
 
 std::vector<std::unique_ptr<content::NavigationThrottle>>
@@ -5655,14 +5636,6 @@ ChromeContentBrowserClient::CreateThrottlesForNavigation(
       prerender::NoStatePrefetchNavigationThrottle::MaybeCreateThrottleFor(
           handle),
       &throttles);
-
-#if defined(TOOLKIT_VIEWS)
-  if (profile && IsSideSearchEnabled(profile)) {
-    MaybeAddThrottle(
-        SideSearchSideContentsHelper::MaybeCreateThrottleFor(handle),
-        &throttles);
-  }
-#endif
 
 #if BUILDFLAG(ENABLE_LENS_DESKTOP_GOOGLE_BRANDED_FEATURES)
   if (lens::features::IsLensSidePanelEnabled()) {
@@ -6020,7 +5993,8 @@ ChromeContentBrowserClient::MaybeCreateSafeBrowsingURLLoaderThrottle(
                 profile->IsOffTheRecord(), profile->GetPrefs(),
                 safe_browsing::hash_realtime_utils::GetCountryCode(
                     g_browser_process->variations_service()),
-                /*log_usage_histograms=*/true);
+                /*log_usage_histograms=*/true,
+                /*are_background_lookups_allowed=*/true);
     safe_browsing::AsyncCheckTracker* async_check_tracker =
         GetAsyncCheckTracker(wc_getter, is_enterprise_lookup_enabled,
                              is_consumer_lookup_enabled,
@@ -8162,7 +8136,8 @@ bool ChromeContentBrowserClient::SetupEmbedderSandboxParameters(
                                   screen_ai_binary_path.value());
   } else if (sandbox_type == sandbox::mojom::Sandbox::kOnDeviceTranslation) {
     auto translatekit_binary_path =
-        OnDeviceTranslationServiceController::GetTranslateKitComponentPath();
+        on_device_translation::ComponentManager::GetInstance()
+            .GetTranslateKitComponentPath();
     if (translatekit_binary_path.empty()) {
       VLOG(1) << "TranslationKit component not found.";
       return false;
@@ -8874,13 +8849,18 @@ void ChromeContentBrowserClient::SetSamplingProfiler(
   sampling_profiler_ = std::move(sampling_profiler);
 }
 
-base::ReadOnlySharedMemoryRegion
-ChromeContentBrowserClient::GetPerformanceScenarioRegionForProcess(
-    content::RenderProcessHost* process_host) {
-  return performance_manager::GetSharedScenarioRegionForProcess(process_host);
-}
-
-base::ReadOnlySharedMemoryRegion
-ChromeContentBrowserClient::GetGlobalPerformanceScenarioRegion() {
-  return performance_manager::GetGlobalSharedScenarioRegion();
+bool ChromeContentBrowserClient::ShouldDispatchPagehideDuringCommit(
+    content::BrowserContext* browser_context,
+    const GURL& destination_url) {
+  if (!base::FeatureList::IsEnabled(kSkipPagehideInCommitForDSENavigation)) {
+    return true;
+  }
+  auto* template_url_service = TemplateURLServiceFactory::GetForProfile(
+      Profile::FromBrowserContext(browser_context));
+  // Allow not dispatching pagehide during commit when navigating to a DSE
+  // results page, to prioritize committing that page instead of running
+  // events on the previous page.
+  return !template_url_service ||
+         !template_url_service->IsSearchResultsPageFromDefaultSearchProvider(
+             destination_url);
 }

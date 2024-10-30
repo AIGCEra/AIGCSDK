@@ -8,11 +8,11 @@ import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_radio_group/cr_radio_group.js';
 import 'tangram://resources/cr_elements/cr_radio_button/cr_radio_button.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/js/action_link.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import './runtime_hosts_dialog.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {CrActionMenuElement} from 'tangram://resources/cr_elements/cr_action_menu/cr_action_menu.js';
 import type {CrDialogElement} from 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';

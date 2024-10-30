@@ -6,7 +6,7 @@ import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import 'tangram://resources/cr_elements/cr_collapse/cr_collapse.js';
 import 'tangram://resources/cr_elements/cr_toggle/cr_toggle.js';
 import 'tangram://resources/cr_elements/policy/cr_policy_indicator.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 

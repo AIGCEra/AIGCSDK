@@ -5,7 +5,7 @@
 // Frontend for tangram://reset-password/ WebUI page.
 
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 
 import {getRequiredElement} from 'tangram://resources/js/util.js';

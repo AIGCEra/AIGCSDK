@@ -30943,6 +30943,12 @@ should be able to be added at any place in this file.
   <description>Permissions reset from PageInfo.</description>
 </action>
 
+<action name="PageInfo.SafeBrowsing.HelpOpened">
+  <owner>olesiamarukhno@google.com</owner>
+  <owner>dullweber@chromium.org</owner>
+  <description>Help opened from Safe Browsing.</description>
+</action>
+
 <action name="PageInfo.SafetyTip.HelpOpened">
   <owner>olesiamarukhno@google.com</owner>
   <owner>dullweber@chromium.org</owner>
@@ -46056,14 +46062,18 @@ should be able to be added at any place in this file.
 </action>
 
 <action-suffix separator="." ordering="suffix">
+  <suffix name="EnhancedProtection" label="EnhancedProtection"/>
   <suffix name="FamilyLink" label="Family Link"/>
   <suffix name="GANslate" label="GANslate"/>
+  <suffix name="GeminiShortcut" label="Gemini Shortcut"/>
   <suffix name="GeminiSiteSearchShortcut" label="Gemini Site Search Shortcut"/>
+  <suffix name="GenerativeThemes" label="Generative Themes"/>
   <suffix name="GenerativeTheming" label="Generative Theming"/>
   <suffix name="GoogleLens" label="Google Lens"/>
   <suffix name="Googlepayreauth" label="Google Pay Re-auth"/>
   <suffix name="HelpMeWrite" label="Help Me Write"/>
   <suffix name="HistoryEmbeddings" label="History Embeddings Search"/>
+  <suffix name="Passkeys" label="Passkeys"/>
   <suffix name="SafetyCheck" label="Safety Check"/>
   <suffix name="SaveTabGroups" label="Saved Tab Groups"/>
   <suffix name="SearchBoxSuggestions" label="Search Box Suggestions"/>
@@ -46144,6 +46154,8 @@ should be able to be added at any place in this file.
       label="For AutofillManualFallback feature."/>
   <suffix name="AutofillPredictionImprovements"
       label="For AutofillPredictionImprovements feature."/>
+  <suffix name="AutofillPredictionImprovementsBootstrapping"
+      label="For giving users information that data was imported to memories."/>
   <suffix name="AutofillVirtualCardCVCSuggestion"
       label="For autofill suggestion of virtual cards."/>
   <suffix name="AutofillVirtualCardSuggestion"

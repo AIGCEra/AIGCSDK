@@ -6,7 +6,7 @@ import 'tangram://resources/cr_components/localized_link/localized_link.js';
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_icon/cr_icon.js';
 import '/images/icons.html.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {ColorChangeUpdater} from 'tangram://resources/cr_components/color_change_listener/colors_css_updater.js';
 import type {BrowserProxy} from 'tangram://resources/cr_components/commerce/browser_proxy.js';

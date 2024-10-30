@@ -8,7 +8,7 @@ import 'tangram://resources/js/ios/web_ui.js';
 
 import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_tabs/cr_tabs.js';
-import './strings.m.js';
+import '/strings.m.js';
 import './experiment.js';
 
 import {assert} from 'tangram://resources/js/assert.js';

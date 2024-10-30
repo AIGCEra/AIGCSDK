@@ -567,6 +567,9 @@ Se impostato su ChiediInUnaScheda, quando l'autenticazione dell'utente scade, ap
 <translation id="1396119629372155901">Funzionalità ThrottleDisplayNoneAndVisibilityHiddenCrossOriginIframes disattivata</translation>
 <translation id="1397855852561539316">URL di suggerimento del provider di ricerca predefinito</translation>
 <translation id="140076409387986842">Consenti Aiutami a scrivere senza migliorare i modelli di AI.</translation>
+<translation id="1401249111997036083">Se il criterio viene impostato su False, le app per Android possono acquisire i link supportati per impostazione predefinita.
+Se il criterio è impostato su True, tutti i link vengono aperti per impostazione predefinita nel browser Chrome.
+Se il criterio non viene configurato, i link vengono aperti per impostazione predefinita nelle app per Android per gli utenti gestiti e nel browser per i consumatori.</translation>
 <translation id="1402227992519954892">Attiva i report sulle informazioni relative alle app del dispositivo</translation>
 <translation id="1405444733221330570">Attiva Orca</translation>
 <translation id="1407977345632185991">Non consentire Crea temi.</translation>
@@ -807,6 +810,17 @@ Se questo criterio non viene configurato, gli utenti potranno aggiungere eccezio
       Se il criterio non viene configurato per un sito, il criterio di <ph name="DEFAULT_WINDOW_PLACEMENT_SETTING_POLICY_NAME" /> viene applicato al sito, se configurato, altrimenti l'autorizzazione seguirà le impostazioni predefinite del browser e consentirà agli utenti di scegliere se concedere o meno l'autorizzazione per ciascun sito.</translation>
 <translation id="1574258262373444557">Non usare <ph name="AES_KL_NAME" /> come algoritmo di crittografia per la crittografia dello spazio di archiviazione degli utenti</translation>
 <translation id="1575015449587326319">Criterio di configurazione per il connettore OnFileDownloaded di Chrome Enterprise</translation>
+<translation id="1577162851453388235">L'API Direct Sockets consente la comunicazione con endpoint arbitrari che utilizzano TCP e UDP.
+Visita la pagina https://github.com/WICG/direct-sockets per informazioni dettagliate.
+
+La configurazione della policy consente di elencare i pattern URL che specificano i siti autorizzati a utilizzare l'API Direct Sockets.
+I pattern validi sono limitati alle app web isolate.
+
+Se la policy non viene configurata, <ph name="DEFAULT_DIRECT_SOCKETS_SETTING_POLICY_NAME" /> si applica per tutti i siti, se impostata.
+
+I pattern URL non devono essere in conflitto con <ph name="DIRECT_SOCKETS_BLOCKED_FOR_URLS_POLICY_NAME" />. Nessuna policy ha la precedenza se un URL presenta corrispondenze con entrambi.
+
+Visita la pagina https://cloud.google.com/docs/chrome-enterprise/policies/url-patterns per informazioni dettagliate sui pattern URL validi. <ph name="WILDCARD_VALUE" /> non è un valore accettato per questa policy.</translation>
 <translation id="1578495851351913403">Se configuri questo criterio, viene mostrata una nuova opzione di attivazione/disattivazione dell'interfaccia utente sotto ogni display nelle impostazioni di visualizzazione. La normale modalità Specchio trasforma tutti i display in un unico display, ma la nuova opzione di attivazione/disattivazione consente agli utenti di escludere un display dal mirroring e di visualizzarlo come display esteso.
 
 Se il criterio viene impostato su Enabled, verrà visualizzata l'opzione di attivazione/disattivazione per ogni display, in modo da escluderlo dalla modalità di mirroring, e gli utenti potranno scegliere un display da attivare.
@@ -1525,6 +1539,7 @@ In genere, questo criterio è disattivato per difendere gli utenti da tentativi 
         Se il criterio viene impostato su Enabled o se non viene configurato, l'aggiornamento delle app kiosk di Chrome all'interno della sessione sarà consentito.
         </translation>
 <translation id="2082205219176343977">Configura la versione minima di Chrome consentita per il dispositivo.</translation>
+<translation id="2083696311760456171">Non consentire la previsione di compilazione automatica.</translation>
 <translation id="20838788335877967">Disattiva la generazione di report sulle informazioni di identificazione dell'utente</translation>
 <translation id="208566302163036794">Blocca le funzionalità disattivate</translation>
 <translation id="2086040449830622332">Attiva sandbox LPAC di stampa</translation>
@@ -1707,6 +1722,7 @@ Se configuri questo criterio, il criterio <ph name="PRIVACY_SANDBOX_PROMPT_ENABL
 <translation id="2204753382813641270">Controlla la visualizzazione automatica della barra delle app</translation>
 <translation id="2208976000652006649">Parametri per l'URL di ricerca che utilizza POST</translation>
 <translation id="2212011154693551439">La pagina della cronologia di Chrome organizzata in gruppi sarà visibile all'indirizzo tangram://history/grouped per impostazione predefinita.</translation>
+<translation id="221287948061571053">Nascondi badge aziendale espanso nella barra degli strumenti</translation>
 <translation id="2213059592185933570">Attiva la creazione di profili di roaming</translation>
 <translation id="2213342458177721585">Attiva il layout Hindi Inscript a livello di dispositivo.</translation>
 <translation id="2215238871726750562">Se il criterio è impostato su True, la finestra del browser non viene avviata all'inizio della sessione.
@@ -1777,9 +1793,6 @@ Se questo criterio non viene configurato o se viene disattivato, il trasferiment
 <translation id="2258126710006312594">Consenti l'accesso remoto agli utenti per trasferire file da/verso l'host</translation>
 <translation id="225830954785359083">Impedisci alle pagine di mostrare popup durante l'unload</translation>
 <translation id="2261648512244797294">Disattiva stampa Privet deprecata</translation>
-<translation id="2262153510491523927">Se il criterio viene impostato su False, le app per Android possono acquisire i link supportati per impostazione predefinita.
-Se il criterio è impostato su True, tutti i link vengono aperti per impostazione predefinita nel browser Chrome.
-Se il criterio non viene configurato, le app per Android acquisiscono i link supportati per impostazione predefinita.</translation>
 <translation id="2263881357524831360">Consenti l'utilizzo di gestori delle password di terze parti in <ph name="PRODUCT_NAME" /> su <ph name="ANDROID_NAME" /></translation>
 <translation id="2264286153777425328">Elenco di azioni da eseguire quando viene raggiunto il timeout del criterio <ph name="IDLE_TIMEOUT_POLICY_NAME" />.
 
@@ -2792,6 +2805,7 @@ L'utente può impostare l'immagine avatar da una di queste opzioni se questo cri
 <translation id="3034855514833090741">Se il criterio viene impostato su Attivato, il flusso Voice Match dell'Assistente Google viene mostrato durante la configurazione iniziale. Se il criterio viene impostato su Disattivato, l'Assistente Google non mostrerà il flusso Voice Match durante la configurazione iniziale.
 
       Se il criterio non viene impostato, significa che è Attivato.</translation>
+<translation id="3036271748813538143">Consente di controllare se il nuovo comportamento del parser HTML per l'elemento &lt;select&gt; è attivato</translation>
 <translation id="3038323923255997294">Continua a eseguire applicazioni in background dopo la chiusura di <ph name="PRODUCT_NAME" /></translation>
 <translation id="3039862327847526651">Controlla l'utilizzo delle ottimizzazioni di JavaScript</translation>
 <translation id="3041887182529293512">Se il criterio viene impostato su True o non viene impostato, nella pagina Nuova scheda vengono visualizzati suggerimenti di contenuti generati automaticamente in base alla cronologia di navigazione, agli interessi o alla posizione dell'utente.
@@ -3044,6 +3058,7 @@ Se viene attivato o se non viene configurato, le barre di scorrimento senza elem
 Se questo criterio viene disattivato, le barre di scorrimento non saranno attivabili con la tastiera per impostazione predefinita.
 
 Questo criterio è una soluzione alternativa temporanea e verrà rimosso nella versione M135.</translation>
+<translation id="3216094710930835317">Il nuovo comportamento del parser HTML che consente l'uso di più tag verrà disattivato.</translation>
 <translation id="3217774577897351942">L'API <ph name="OFFSET_PARENT" /> verrà modificata in <ph name="PRODUCT_NAME" /> per conformarla alle modifiche apportate in <ph name="FIREFOX_PRODUCT_NAME" /> e <ph name="SAFARI_PRODUCT_NAME" />. Questo criterio ripristina il comportamento precedente fino alla versione M120.
 
 Il nuovo comportamento potrebbe rendere inaccessibili alcuni siti web solo di <ph name="PRODUCT_NAME" /> che usano <ph name="OFFSET_PARENT" />, <ph name="OFFSET_TOP" /> o <ph name="OFFSET_LEFT" /> in combinazione con il DOM Shadow.
@@ -3352,6 +3367,17 @@ Se il criterio non viene impostato, non è possibile navigare nel browser se è 
       Tieni presente che se il criterio <ph name="COMPONENT_UPDATES_ENABLED_POLICY_NAME" /> viene disattivato, ma il criterio <ph name="HISTORY_CLUSTERS_VISIBLE_POLICY_NAME" /> viene attivato o non viene configurato, all'indirizzo tangram://history/grouped sarà comunque disponibile una pagina della cronologia di Chrome organizzata in gruppi, che però potrebbe essere meno pertinente per l'utente.
 </translation>
 <translation id="3469713571374938745">Consenti Crea temi senza migliorare i modelli di AI.</translation>
+<translation id="3471245568493482863">L'API Direct Sockets consente la comunicazione con endpoint arbitrari che utilizzano TCP e UDP.
+Visita la pagina https://github.com/WICG/direct-sockets per informazioni dettagliate.
+
+La configurazione della policy consente di elencare i pattern URL che specificano i siti per i quali non è consentito comunicare tramite l'API Direct Sockets.
+I pattern validi sono limitati alle app web isolate.
+
+Se la policy non viene configurata, <ph name="DEFAULT_DIRECT_SOCKETS_SETTING_POLICY_NAME" /> si applica per tutti i siti, se impostata.
+
+I pattern URL non devono essere in conflitto con <ph name="DIRECT_SOCKETS_ALLOWED_FOR_URLS_POLICY_NAME" />. Nessuna policy ha la precedenza se un URL presenta corrispondenze con entrambi.
+
+Visita la pagina https://cloud.google.com/docs/chrome-enterprise/policies/url-patterns per informazioni dettagliate sui pattern URL validi. <ph name="WILDCARD_VALUE" /> non è un valore accettato per questa policy.</translation>
 <translation id="3478024346823118645">Cancella dati utente all'uscita</translation>
 <translation id="3478406829037689272">Attiva le analisi approfondite dei download di Navigazione sicura</translation>
 <translation id="3480961938508521469">Carica completamente la batteria con la modalità standard.</translation>
@@ -3413,6 +3439,7 @@ Se questo criterio viene configurato, <ph name="DEVELOPER_TOOLS_AVAILABILITY_POL
       Se questa norma è impostata su true o non è configurata, allora <ph name="PRODUCT_OS_NAME" /> contatterà automaticamente Quirks Server e scaricherà i file di configurazione, se disponibili, e li archivierà sul dispositivo.  Questi file potrebbero essere usati, ad esempio, per migliorare la qualità del display dei monitor collegati.</translation>
 <translation id="3515196503924273265">Consente di attivare la funzionalità NewBaseUrlInheritanceBehavior</translation>
 <translation id="351654132746710200">Dopo la disattivazione di <ph name="LACROS_NAME" />, la migrazione dei dati non viene eseguita. La cartella <ph name="LACROS_NAME" /> viene rimossa e gli utenti continuano a utilizzare i dati rimanenti.</translation>
+<translation id="3518512927469906365">Disattiva il partizionamento dello spazio di archiviazione di terze parti per origini di primo livello specifiche</translation>
 <translation id="3522257170445891912">Se questo criterio viene impostato, il flusso di autenticazione dell'accesso avrà uno dei seguenti metodi a seconda del valore dell'impostazione:
 
       Se è impostato su GAIA, l'accesso verrà effettuato tramite il normale flusso di autenticazione GAIA.
@@ -3533,6 +3560,13 @@ Ricorda di non tenere questo criterio sempre attivo, soprattutto nelle distribuz
 
           Se questo criterio non viene impostato, inizialmente la funzione Seleziona per ascoltare è disattivata, ma l'utente può attivarla in qualsiasi momento.</translation>
 <translation id="3587482841069643663">Tutti</translation>
+<translation id="3587487647039152577">Questa impostazione è deprecata. Consente agli utenti di creare e usare profili secondari e di utilizzare la modalità ospite nel browser <ph name="LACROS_NAME" />.
+
+      In modo simile a <ph name="BROWSER_ADD_PERSON_ENABLED_POLICY_NAME" /> e <ph name="BROWSER_GUEST_MODE_ENABLED_POLICY_NAME" />, se la policy viene impostata su false o se non viene configurata, l'utente non può creare o usare profili secondari né utilizzare la modalità ospite. Gli eventuali profili secondari creati in precedenza non sono disponibili.
+
+      Se la policy viene impostata su true, l'utente può creare e usare profili secondari e utilizzare la modalità ospite.
+
+      Nota: se viene impostata su true, ma la policy <ph name="BROWSER_ADD_PERSON_ENABLED_POLICY_NAME" /> viene impostata su false, l'utente non può creare profili secondari. Lo stesso vale per <ph name="BROWSER_GUEST_MODE_ENABLED_POLICY_NAME" /> e la modalità ospite.</translation>
 <translation id="3587766503874071316">Disabilita scorciatoie di accessibilità</translation>
 <translation id="3589193811812796052">Impedisci che i moduli WebAssembly vengano inviati tra origini</translation>
 <translation id="3591527072193107424">Attiva la funzionalità Supporto dei browser precedenti.</translation>
@@ -3734,6 +3768,7 @@ Visita la pagina https://wicg.github.io/private-network-access/ per conoscere le
       Se il criterio viene impostato su Disattivato o se non viene configurato, <ph name="PRODUCT_OS_NAME" /> consente agli utenti di arrestare il dispositivo.</translation>
 <translation id="376375951585423504">Disattiva la quota permanente.</translation>
 <translation id="3765260570442823273">Durata del messaggio di avviso di uscita per inattività</translation>
+<translation id="3766695867369523703">Consenti il partizionamento dello spazio di archiviazione di terze parti per impostazione predefinita.</translation>
 <translation id="3770407495263198786">La configurazione del criterio consente agli amministratori di impostare un elenco di stampanti per i loro utenti. La selezione della stampante viene effettuata la prima volta che gli utenti provano a stampare.
 
       Se viene usato il criterio:
@@ -3755,6 +3790,12 @@ Visita la pagina https://wicg.github.io/private-network-access/ per conoscere le
 <translation id="3778689139323007309">Esegui i controlli delle revoche per i certificati dei server che vengono convalidati correttamente e firmati tramite certificati CA installati localmente</translation>
 <translation id="3780152581321609624">Includi porta non standard in Kerberos SPN</translation>
 <translation id="3785423718413114598">Non consentire le funzionalità di GenAI</translation>
+<translation id="3788155044604525647">L'API Direct Sockets consente la comunicazione con endpoint arbitrari che utilizzano TCP e UDP.
+Visita la pagina https://github.com/WICG/direct-sockets per informazioni dettagliate.
+
+Se la policy viene impostata su 1 o se non viene configurata, le origini delle app web isolate possono usare Direct Sockets.
+
+Se viene impostata su 2, le origini delle app web isolate non possono usare Direct Sockets.</translation>
 <translation id="3788662722837364290">Impostazioni di gestione dell'alimentazione quando l'utente diventa inattivo</translation>
 <translation id="3788876528643861853">Disattiva l'autenticazione cloud di Microsoft®</translation>
 <translation id="3790085888761753785">Se questa impostazione viene attivata, gli utenti potranno accedere ai propri account con Smart Lock. Questa impostazione è più permissiva rispetto al normale comportamento di Smart Lock che consente agli utenti soltanto di sbloccare lo schermo.
@@ -3836,6 +3877,13 @@ Per ulteriori informazioni sulla gestione dei dati per le funzionalità di AI ge
 <translation id="3842619997238271109">Non consente all'host di accesso remoto di usare le autenticazioni con PIN e accoppiamento quando le connessioni client vengono accettate</translation>
 <translation id="3845318141474759319">Consenti Sfondo AI generativa senza migliorare i modelli di AI</translation>
 <translation id="3851443303439635700">Controlla la soglia di nidificazione prima della quale la funzione JavaScript setTimeout() inizia a essere bloccata</translation>
+<translation id="3854609566862485607">Questa policy consente di controllare un'etichetta personalizzata utilizzata per identificare i profili gestiti. Per i profili gestiti, questa etichetta viene mostrata accanto all'avatar nella barra degli strumenti. L'etichetta personalizzata non viene tradotta.
+
+Quando questa policy viene applicata, le stringhe che superano i 16 caratteri vengono troncate con "…". Non utilizzare nomi estesi.
+
+Questa policy può essere impostata soltanto come policy per gli utenti.
+
+Tieni presente che questa policy non ha alcun effetto se <ph name="ENTERPRISE_PROFILE_BADGE_TOOLBAR_SETTINGS" /> viene impostata su <ph name="HIDE_EXPANDED_ENTERPRISE_TOOLBAR_BADGE" /> (valore 1).</translation>
 <translation id="3858658082795336534">Modalità di stampa fronte/retro predefinita</translation>
 <translation id="3859780406608282662">Consente di aggiungere un parametro al recupero del numero di inizializzazione delle varianti in <ph name="PRODUCT_OS_NAME" />.
 
@@ -4010,11 +4058,6 @@ possono essere inviati i report aziendali.
 <translation id="3989829840000169163">Blocca punti di estensioni precedenti nel browser</translation>
 <translation id="3990391739475801018">La modalità Risparmio energetico viene disattivata.</translation>
 <translation id="3990834929384096140">Non forzare l'applicazione della cancellazione dell'eco per l'audio di sistema</translation>
-<translation id="3992082233013655355">La configurazione del criterio consente di specificare un elenco di app web isolate (IWA) che vengono installate automaticamente.
-      Le IWA sono applicazioni che presentano proprietà di sicurezza utili non disponibili per le normali pagine web, che vengono pacchettizzati in un bundle web firmato. La chiave pubblica del bundle web firmato viene utilizzata per creare l'ID pacchetto web che identifica l'IWA.
-      Finora questo criterio funziona solo per la sessione Ospite gestita.
-
-      Ogni voce dell'elenco del criterio è un oggetto con due campi obbligatori: il manifest di aggiornamento <ph name="URL_LABEL" /> e l'ID pacchetto web dell'app web isolata. Ogni voce può anche avere un campo facoltativo con il nome del canale di rilascio dell'IWA. Se il criterio "update_channel" non viene configurato, verrà utilizzato il valore "default".</translation>
 <translation id="3994043824457743421">Mostra la comunicazione dell'area centrale nella pagina Nuova scheda</translation>
 <translation id="399433537808390819">Non rendere la modalità Desktop unificato disponibile per l'utente</translation>
 <translation id="3995880046827722248">Manifest v2 disabilitato</translation>
@@ -4543,7 +4586,11 @@ Questo criterio è stato rimosso nella versione M112.</translation>
 <translation id="4402887080007986374">La versione valida dei Termini di servizio dell'account della scuola</translation>
 <translation id="4408428864159735559">Elenco di condivisioni di file di rete preconfigurate.</translation>
 <translation id="4410236409016356088">Attiva la limitazione della larghezza di banda della rete</translation>
+<translation id="4410361389637971319">Consenti alle origini delle app web isolate di utilizzare Direct Sockets</translation>
 <translation id="4411734231900934213">La differenza (in secondi) consentita tra gli orologi sui dispositivi di figli e genitori.</translation>
+<translation id="4411759973223339687">Se la policy viene impostata su true o se non viene configurata, <ph name="PRODUCT_NAME" /> e <ph name="LACROS_NAME" /> abilitano gli accessi come ospite. Gli accessi come ospite sono profili <ph name="PRODUCT_NAME" /> in cui tutte le finestre sono in modalità di navigazione in incognito.
+
+      Se viene impostata su false, <ph name="PRODUCT_NAME" /> e <ph name="LACROS_NAME" /> non consentono l'avvio dei profili ospite.</translation>
 <translation id="441217499641439905">Disattiva Google Drive su reti cellulari nell'app File di <ph name="PRODUCT_OS_NAME" /></translation>
 <translation id="4412885120239670573">Se il criterio viene impostato su Attivato, il visualizzatore di PDF interno viene disattivato in <ph name="PRODUCT_NAME" />, i file PDF vengono considerati come file scaricati e gli utenti possono aprire i PDF con l'applicazione predefinita.
 
@@ -4820,6 +4867,13 @@ Se questo criterio non viene configurato, tutte le origini richiederanno un gest
       Se il criterio non viene configurato, non viene eseguita la selezione automatica per nessun sito.</translation>
 <translation id="4611983465824842867">Non mostrare avvisi o non disattivare la compilazione automatica sui moduli non sicuri</translation>
 <translation id="4615003180013429835">Modalità di analisi degli elenchi dei siti</translation>
+<translation id="4615436471607987736">A partire da M131, questa policy è deprecata. Consente di disattivare temporaneamente due correzioni correlate al comportamento della finestra di dialogo di conferma mostrata dall'evento beforeunload.
+Se la policy viene attivata, viene usato il nuovo comportamento corretto. Se viene disattivata, viene usato il vecchio comportamento precedente. Se non viene configurata, viene usato il comportamento predefinito.
+Questa policy è una soluzione temporanea e verrà rimossa a breve.
+
+Nuovo comportamento corretto: in "beforeunload", la chiamata di "event.preventDefault()" attiva la finestra di dialogo di conferma. L'impostazione della stringa vuota per "event.returnValue" non attiva la finestra di dialogo di conferma.
+
+Vecchio comportamento precedente: in "beforeunload", la chiamata di "event.preventDefault()" non attiva la finestra di dialogo di conferma. L'impostazione della stringa vuota per "event.returnValue" attiva la finestra di dialogo di conferma.</translation>
 <translation id="4615892138881859957">Controlla la scorciatoia usata per attivare il tasto Inserisci del "pacchetto da sei"</translation>
 <translation id="4617338332148204752">Salta il controllo dei metatag in <ph name="PRODUCT_FRAME_NAME" /></translation>
 <translation id="461901491675418689">Funzionalità NewBaseUrlInheritanceBehavior disponibile</translation>
@@ -4902,6 +4956,11 @@ Se aggiungi i dati di navigazione esistenti nel profilo gestito, il profilo corr
 
 Il mancato trasferimento dei dati di navigazione esistenti nel profilo gestito comporta la creazione di un nuovo profilo pulito. I dati di navigazione esistenti rimarranno in un profilo non gestito, che sarà comunque accessibile all'utente tramite il selettore del profilo.</translation>
 <translation id="4668325077104657568">Impostazione immagini predefinite</translation>
+<translation id="4669292863736266737">A meno che il criterio <ph name="DEFAULT_GEOLOCATION_SETTING_POLICY_NAME" /> sia impostato su <ph name="BLOCK_GEOLOCATION_SETTING" />, l'impostazione <ph name="GLS_ENABLED" /> attiva i Servizi di geolocalizzazione di Google durante la configurazione iniziale. Se il criterio è impostato su <ph name="GLS_DISABLED" /> o se non è configurato, i servizi di geolocalizzazione rimangono disattivati durante la configurazione.
+
+Se il criterio è impostato su <ph name="BR_UNDER_USER_CONTROL" />, agli utenti viene chiesto se utilizzare o meno i Servizi di geolocalizzazione di Google. Se vengono attivati, le app Android utilizzano i servizi per cercare la posizione del dispositivo e inviare dati anonimi sulla posizione a Google.
+
+Dopo la configurazione iniziale, gli utenti possono attivare o disattivare i Servizi di geolocalizzazione di Google.</translation>
 <translation id="4670865688564083639">Minimo:</translation>
 <translation id="467236746355332046">Funzionalità supportate:</translation>
 <translation id="4672774129073185053">Attiva la sostituzione del controllo della connettività IPv6</translation>
@@ -5076,6 +5135,7 @@ Questo criterio è temporaneo e verrà rimosso non appena verrà lanciata la fun
 Se il criterio viene impostato su False, verrà utilizzato il comportamento predefinito.</translation>
 <translation id="4820432864264617413">È vietata l'esecuzione di <ph name="BOREALIS_NAME" /> per un utente</translation>
 <translation id="4821987881803903281">Blocca l'autorizzazione per il posizionamento delle finestre su questi siti</translation>
+<translation id="4825653993105771848">Controlla l'accesso alla rete privata nell'API Direct Sockets</translation>
 <translation id="4825777333376170738">Disattiva i report sulle sessioni kiosk del dispositivo</translation>
 <translation id="4826326557828204741">Azione da compiere quando il ritardo di inattività viene raggiunto durante l'utilizzo della batteria</translation>
 <translation id="4826701474986856664">Visualizza la schermata del sensore della presenza di persone durante l'accesso</translation>
@@ -5851,6 +5911,9 @@ A partire dalla versione 92 di <ph name="PRODUCT_NAME" />, questo criterio è su
       Se il criterio viene impostato su falso (impostazione predefinita), non ci saranno ripercussioni sull'ora di accesso.</translation>
 <translation id="5371152055157582429">Gli utenti possono personalizzare lo sfondo della pagina Nuova scheda</translation>
 <translation id="5372698090378600633">Blocca l'API Direct Sockets su questi siti</translation>
+<translation id="5373552304217872025">Se la policy viene impostata su true o se non viene configurata, <ph name="PRODUCT_NAME" /> e <ph name="LACROS_NAME" /> consentono l'aggiunta di una nuova persona da Gestione utenti.
+
+      Se viene impostata su false, <ph name="PRODUCT_NAME" /> e <ph name="LACROS_NAME" /> non consentono l'aggiunta di una nuova persona da Gestione utenti.</translation>
 <translation id="5377606826822211923">Controlla l'utilizzo delle app Android di fonti non attendibili per l'utente</translation>
 <translation id="537786648513450280">Controlla l'utilizzo delle app Android di fonti non attendibili per il dispositivo</translation>
 <translation id="5378885577701865339">Disattiva la funzionalità Appunti condivisi</translation>
@@ -5919,6 +5982,7 @@ le scorciatoie basate sul tasto Ricerca saranno quelle predefinite.</translation
 
       Se il criterio non viene impostato, l'utente può scegliere l'immagine avatar che lo rappresenta sulla schermata di accesso.</translation>
 <translation id="5428716437928918274">Controlli delle impostazioni di Privacy Sandbox</translation>
+<translation id="5430760800138878127">Verrà attivato il nuovo comportamento del parser HTML che consente l'uso di più tag.</translation>
 <translation id="5431392643649571773">Se il criterio è attivato, la funzionalità <ph name="PRODUCT_NAME" /> consente di utilizzare la cache back-forward. Quando esci da una pagina, il suo stato corrente (documento con struttura ad albero, script e così via) potrebbe essere mantenuto nella cache back-forward. Se il browser torna alla pagina, questa potrebbe essere ripristinata dalla cache back-forward e mostrata nello stato in cui era prima di essere memorizzata nella cache.
 
           Questa funzionalità potrebbe causare problemi per alcuni siti web che non sono preparati per la memorizzazione nella cache. In particolare, alcuni siti web dipendono dall'invio dell'evento "<ph name="UNLOAD_HANDLER_NAME" />" quando il browser esce dalla pagina. L'evento "<ph name="UNLOAD_HANDLER_NAME" />" non verrà inviato se la pagina viene inserita nella cache back-forward.
@@ -6282,6 +6346,22 @@ L'opzione dell'algoritmo chiave <ph name="EC_KEY_ALGORITHM_VALUE_NAME" /> è sup
       Se il criterio viene impostato su False o non viene impostato, gli avvisi relativi al ritiro verranno mostrati.</translation>
 <translation id="5659776687676755342">Attiva il suono della batteria in esaurimento</translation>
 <translation id="5660950553460381588">Imposta come predefinita la creazione di passkey nel portachiavi iCloud quando possibile.</translation>
+<translation id="5664848079661901346">L'API Direct Sockets consente la comunicazione con endpoint arbitrari che utilizzano TCP e UDP.
+Visita la pagina https://github.com/WICG/direct-sockets per informazioni dettagliate.
+
+Gli endpoint di rete privata sono quelli che utilizzano indirizzi IP provenienti dallo spazio indirizzo IP privato, definito in https://wicg.github.io/private-network-access/#ip-address-space-private.
+
+La configurazione della policy consente di elencare i pattern URL che specificano i siti autorizzati a comunicare con gli endpoint di rete privata nell'API Direct Sockets.
+I pattern validi sono limitati alle app web isolate.
+
+Se la policy non viene configurata, <ph name="DEFAULT_DIRECT_SOCKETS_PRIVATE_NETWORK_ACCESS_SETTING_POLICY_NAME" /> si applica per tutti i siti, se impostata.
+
+I pattern URL non devono essere in conflitto con <ph name="DIRECT_SOCKETS_PRIVATE_NETWORK_ACCESS_BLOCKED_FOR_URLS_POLICY_NAME" />. Nessuna policy ha la precedenza se un URL presenta corrispondenze con entrambi.
+
+Visita la pagina https://cloud.google.com/docs/chrome-enterprise/policies/url-patterns per informazioni dettagliate sui pattern URL validi. <ph name="WILDCARD_VALUE" /> non è un valore accettato per questa policy.
+
+Tieni presente che questa policy si applica solo se l'origine è autorizzata a utilizzare l'API Direct Sockets.
+Per maggiori dettagli, consulta <ph name="DEFAULT_DIRECT_SOCKETS_SETTING_POLICY_NAME" />, <ph name="DIRECT_SOCKETS_ALLOWED_FOR_URLS_POLICY_NAME" /> e <ph name="DIRECT_SOCKETS_BLOCKED_FOR_URLS_POLICY_NAME" />.</translation>
 <translation id="5666457529647159548">Consenti agli utenti di gestire i certificati client installati.</translation>
 <translation id="5670249935663090320">Se il criterio viene attivato o se non viene configurato, si attiva <ph name="PRODUCT_NAME" /> e gli utenti possono avviarlo dal menu delle app, dai menu contestuali delle pagine, dai controlli multimediali nei siti web compatibili con Google Cast e (se presente) dall'icona Trasmetti nella barra degli strumenti.
 
@@ -6586,6 +6666,12 @@ Se il criterio viene disattivato, l'audio verrà disattivato in modalità Niente
 <translation id="5917425424971710623">Non segnalare informazioni su eventi di rilevamento e risposta estesi (XDR)</translation>
 <translation id="592036544845479336">Riattiva eventi Mutazione deprecati/rimossi</translation>
 <translation id="5921713479449475707">Permetti download di aggiornamento automatico tramite HTTP</translation>
+<translation id="5925405187134730827">Questa policy è deprecata perché la funzionalità che controlla non è mai stata lanciata. Usa invece <ph name="ENTERPRISE_PROFILE_BADGE_TOOLBAR_SETTINGS" />.
+
+Se la policy non viene configurata o se viene impostata su <ph name="DISPLAY_MANAGEMENT_LABEL_PERMAMENT_VALUE" /> (valore 0), accanto all'avatar della barra degli strumenti viene visualizzata l'etichetta Lavoro o Scuola.
+Queste etichette vengono mostrate solo se l'account a cui è stato eseguito l'accesso è gestito.
+
+Se viene impostata su <ph name="DISPLAY_MANAGEMENT_LABEL_TRANSIENT_VALUE" /> (valore 1), accanto all'avatar della barra degli strumenti viene visualizzata l'etichetta Lavoro o Scuola per 30 secondi dopo l'apertura del profilo.</translation>
 <translation id="5927903236543424081">Obbliga gli utenti ad accedere prima di utilizzare il browser</translation>
 <translation id="5928633129285224981">Controlla se <ph name="PRODUCT_NAME" /> rende l'opzione Stampa come immagine da impostare per impostazione predefinita per la stampa di un PDF.
 
@@ -6634,6 +6720,24 @@ Per informazioni dettagliate sui pattern <ph name="URL_LABEL" /> validi, visita 
       Se viene impostato su Disattivato, gli utenti non possono inviare dei feedback a Google.</translation>
 <translation id="5976636832661103220">Le impostazioni di F11 usano la scorciatoia che contiene il tasto di modifica Maiusc</translation>
 <translation id="5979376378555121803">Applicazione in hosting</translation>
+<translation id="5981308440856672205">L'API Direct Sockets consente la comunicazione con endpoint arbitrari che utilizzano TCP e UDP.
+Visita la pagina https://github.com/WICG/direct-sockets per informazioni dettagliate.
+
+Gli endpoint di rete privata sono quelli che utilizzano indirizzi IP provenienti dallo spazio indirizzo IP privato, definito in https://wicg.github.io/private-network-access/#ip-address-space-private.
+
+La configurazione della policy consente di elencare i pattern URL che specificano i siti per cui è bloccato l'accesso alla rete privata nell'API Direct Sockets.
+I pattern validi sono limitati alle app web isolate.
+
+Se la policy non viene configurata, <ph name="DEFAULT_DIRECT_SOCKETS_PRIVATE_NETWORK_ACCESS_SETTING_POLICY_NAME" /> si applica per tutti i siti, se impostata.
+
+I pattern URL non devono essere in conflitto con <ph name="DIRECT_SOCKETS_PRIVATE_NETWORK_ACCESS_ALLOWED_FOR_URLS_POLICY_NAME" />. Nessuna policy ha la precedenza se un URL presenta corrispondenze con entrambi.
+
+Visita la pagina https://cloud.google.com/docs/chrome-enterprise/policies/url-patterns per informazioni dettagliate sui pattern URL validi. <ph name="WILDCARD_VALUE" /> non è un valore accettato per questa policy.
+
+Tieni presente che questa policy si applica solo se l'origine è autorizzata a utilizzare l'API Direct Sockets.
+Per maggiori dettagli, consulta <ph name="DEFAULT_DIRECT_SOCKETS_SETTING_POLICY_NAME" />, <ph name="DIRECT_SOCKETS_ALLOWED_FOR_URLS_POLICY_NAME" /> e <ph name="DIRECT_SOCKETS_BLOCKED_FOR_URLS_POLICY_NAME" />.
+
+Questa policy si applica solo ai nuovi tentativi di connessione e non invalida le connessioni esistenti.</translation>
 <translation id="5981932073854958705">Scegli se attivare o meno la funzionalità di protezione dal fingerprinting di <ph name="PRIVACY_SANDBOX_NAME" />.</translation>
 <translation id="5983274643567559194">L'impostazione di una scorciatoia per l'azione "Elimina" è disattivata.</translation>
 <translation id="5984099692320899605">Non utilizzare l'autenticazione NTLM</translation>
@@ -6849,13 +6953,6 @@ Il salvaschermo del dispositivo mostra le immagini a cui fa riferimento il crite
       Se impostato su Attivato, la schermata introduttiva dell'AI verrà mostrata.
 
       Se non viene configurato, la schermata introduttiva dell'AI verrà ignorata per gli utenti gestiti a livello aziendale e mostrata per gli utenti non gestiti.</translation>
-<translation id="6187573347027372072">Avviso. Questo criterio è deprecato. Usa il criterio <ph name="CROS_GLS_POLICY_NAME" />. Ora in <ph name="PRODUCT_OS_NAME" /> è disponibile l'opzione di attivazione/disattivazione della posizione del sistema, che regola l'intero sistema, tra cui <ph name="ANDROID_NAME" />. Il pulsante di attivazione/disattivazione di <ph name="ANDROID_NAME" /> è ora in formato di sola lettura e riflette lo stato della posizione di <ph name="PRODUCT_OS_NAME" />.
-
-A meno che il criterio <ph name="DEFAULT_GEOLOCATION_SETTING_POLICY_NAME" /> sia impostato su <ph name="BLOCK_GEOLOCATION_SETTING" />, l'impostazione <ph name="GLS_ENABLED" /> attiva i Servizi di geolocalizzazione di Google durante la configurazione iniziale. Se il criterio è impostato su <ph name="GLS_DISABLED" /> o se non è configurato, i servizi di geolocalizzazione rimangono disattivati durante la configurazione.
-
-Se il criterio è impostato su <ph name="GLS_UNDER_USER_CONTROL" />, agli utenti viene chiesto se utilizzare o meno i Servizi di geolocalizzazione di Google. Se vengono attivati, le app <ph name="ANDROID_NAME" /> e <ph name="PRODUCT_OS_NAME" />, siti web e servizi di sistema utilizzano i servizi per cercare la posizione del dispositivo e inviare dati anonimi sulla posizione a Google.
-
-Dopo la configurazione iniziale, gli utenti possono attivare o disattivare i Servizi di geolocalizzazione di Google.</translation>
 <translation id="6187632100458475876">Impostazione dell'etichetta per l'avatar della barra degli strumenti gestita</translation>
 <translation id="6190367314942602985">Segnala informazioni di identificazione degli utenti</translation>
 <translation id="6191963383731098056">Questo criterio consente agli amministratori di configurare il colore del tema di <ph name="PRODUCT_NAME" />. La stringa di input deve essere una stringa di colore esadecimale valido corrispondente al formato "#RRGGBB".
@@ -7186,6 +7283,13 @@ verrà usata soltanto la risoluzione della posizione basata sull'<ph name="IP" /
 <translation id="6371005337713685988">Impostazioni di insiemi di siti web correlati</translation>
 <translation id="6371561334154580937">Mostra finestra di dialogo di disconnessione nell'ultima finestra chiusa.</translation>
 <translation id="6372105930898423193">Consente di riattivare la funzionalità AppCache anche se è disattivata per impostazione predefinita.</translation>
+<translation id="6372676668820850849">Questa policy consente di stabilire se il partizionamento dello spazio di archiviazione di terze parti è consentito per impostazione predefinita.
+
+Se la policy viene impostata su 1 - AllowPartitioning o se non viene configurata, il partizionamento dello spazio di archiviazione di terze parti è consentito per impostazione predefinita. È possibile eseguire l'override di questa impostazione predefinita per origini di primo livello specifiche in altri modi.
+
+Se la policy viene impostata su 2 - BlockPartitioning, il partizionamento dello spazio di archiviazione di terze parti viene disattivato per tutti i contesti.
+
+Utilizza <ph name="THIRD_PARTY_STORAGE_PARTITIONING_BLOCKED_FOR_ORIGINS_POLICY_NAME" /> per disattivare il partizionamento dello spazio di archiviazione di terze parti per origini di primo livello specifiche. Visita la pagina https://developers.google.com/privacy-sandbox/cookies/storage-partitioning per informazioni dettagliate sul partizionamento dello spazio di archiviazione di terze parti.</translation>
 <translation id="6373299801585455337">Attiva i report sulle informazioni relative alla CPU del dispositivo</translation>
 <translation id="6374945506685352202">Lista bloccata per i tipi di installazione delle estensioni</translation>
 <translation id="6376540107659524656">Disattiva SSH in Terminal System App</translation>
@@ -7345,6 +7449,7 @@ NOTA: il comportamento predefinito per i dispositivi di consumatori e aziende è
 <translation id="647645276885673708">Attiva <ph name="LACROS_NAME" /> e impostalo come browser principale</translation>
 <translation id="647698599569353771">Consenti l'attivazione di Condivisione nelle vicinanze.</translation>
 <translation id="6477685422297715670">Colore della retroilluminazione della tastiera verde</translation>
+<translation id="6477933144150138501">Consenti alle origini delle app web isolate di comunicare con gli endpoint di rete privata nell'API Direct Sockets</translation>
 <translation id="6478258366184919502">Origini della schermata di accesso</translation>
 <translation id="6478261301433199402">La configurazione del criterio consente di specificare l'immagine <ph name="PLUGIN_VM_NAME" /> per un utente. È necessario specificare il criterio come stringa in formato JSON, con <ph name="URL_PLUGIN_VM_IMAGE_FIELD" /> che specifica da dove viene scaricata l'immagine e l'hash SHA-256 <ph name="HASH_PLUGIN_VM_IMAGE_FIELD" /> utilizzato per verificare l'integrità del download.</translation>
 <translation id="6481245670325946423">È consentito l'uso della modalità headless</translation>
@@ -7686,6 +7791,20 @@ Se il criterio viene attivato, la funzionalità di aggiornamento del client hint
       Nota: anche se per il campo <ph name="ENTRIES_FIELD_NAME" /> del criterio sono accettati più valori, vengono ignorati tutti tranne il primo.
       Avviso: la configurazione di questo criterio potrebbe ritardare l'applicazione degli aggiornamenti software.</translation>
 <translation id="6695441448686167614">Impostazioni di WebPrinting</translation>
+<translation id="6695983959768914375">L'API Direct Sockets consente la comunicazione con endpoint arbitrari che utilizzano TCP e UDP.
+Visita la pagina https://github.com/WICG/direct-sockets per informazioni dettagliate.
+
+Gli endpoint di rete privata sono quelli che utilizzano indirizzi IP provenienti dallo spazio indirizzo IP privato, definito in https://wicg.github.io/private-network-access/#ip-address-space-private.
+
+Se la policy viene impostata su 1 o se non viene configurata, le origini delle app web isolate possono comunicare con gli endpoint di rete privata nell'API Direct Sockets.
+
+Se viene impostata su 2, le origini delle app web isolate non possono comunicare con gli endpoint di rete privata nell'API Direct Sockets.
+
+Tieni presente che questa policy si applica solo se l'origine è autorizzata a utilizzare l'API Direct Sockets.
+Per maggiori dettagli, consulta <ph name="DEFAULT_DIRECT_SOCKETS_SETTING_POLICY_NAME" />, <ph name="DIRECT_SOCKETS_ALLOWED_FOR_URLS_POLICY_NAME" /> e <ph name="DIRECT_SOCKETS_BLOCKED_FOR_URLS_POLICY_NAME" />.
+È possibile eseguire l'override del valore predefinito anche per gli URL corrispondenti utilizzando <ph name="DIRECT_SOCKETS_PRIVATE_NETWORK_ACCESS_ALLOWED_FOR_URLS_POLICY_NAME" /> e <ph name="DIRECT_SOCKETS_PRIVATE_NETWORK_ACCESS_BLOCKED_FOR_URLS_POLICY_NAME" />.
+
+Questa policy si applica solo ai nuovi tentativi di connessione e non invalida le connessioni esistenti.</translation>
 <translation id="6698632841807204978">Attiva la stampa monocromatica</translation>
 <translation id="6699740789657890714">Consente di specificare se consentire ai siti web di effettuare richieste agli endpoint di rete con un livello di protezione più alto in modo non sicuro</translation>
 <translation id="6699880231565102694">Abilita autenticazione a due fattori per gli host di accesso remoto</translation>
@@ -7849,6 +7968,11 @@ Se il criterio viene impostato su Disabled, il browser utilizzerà la vecchia im
 Se devi usare il criterio, invia una segnalazione di bug su crbug.com spiegando il tuo caso d'uso e aggiungendo in copia per conoscenza {blundell, vasilyt}@chromium.org. Il criterio sarà valido fino alla versione 114 di <ph name="PRODUCT_NAME" />, dopodiché la vecchia implementazione verrà rimossa.
 
 NOTA: le modifiche apportate a questo criterio verranno applicate soltanto ai processi del renderer appena avviati mentre il browser è in esecuzione.</translation>
+<translation id="6831322012298364374">L'URL di un'immagine che verrà utilizzata come badge aziendale per un profilo gestito. L'URL deve indirizzare a un'immagine.
+
+Questa policy può essere impostata soltanto come policy per gli utenti.
+
+Si consiglia di utilizzare la favicon (ad esempio https://www.google.com/favicon.ico) o un'icona di dimensioni non inferiori a 24 x 24 px.</translation>
 <translation id="6833023569065717572">Se il criterio viene impostato su Vero, nella schermata di accesso del dispositivo viene usato il formato dell'orologio di 24 ore.
 
       Se il criterio viene impostato su Falso, nella schermata di accesso del dispositivo viene usato il formato dell'orologio di 12 ore.
@@ -8681,6 +8805,13 @@ Se il criterio non viene configurato, in pratica equivale a impostarlo su "<ph n
 <translation id="7463934096276667908">Abilita le API video a schermo intero con prefisso</translation>
 <translation id="7464058117970792805">Attiva anteprima di stampa</translation>
 <translation id="7464991223784276288">Limita i cookie degli URL corrispondenti alla sessione corrente</translation>
+<translation id="7467748623079596345">Questa policy consente di impostare un elenco di pattern URL che specificano le origini di primo livello per le quali il partizionamento dello spazio di archiviazione di terze parti (partizionamento dello spazio di archiviazione di iframe multiorigine) deve essere disattivato.
+
+Se la policy non viene configurata o se un'origine di primo livello non corrisponde a uno dei pattern URL, viene applicato <ph name="DEFAULT_THIRD_PARTY_STORAGE_PARTITIONING_SETTING_POLICY_NAME" />.
+
+Visita la pagina https://cloud.google.com/docs/chrome-enterprise/policies/url-patterns per informazioni dettagliate sui pattern validi. Tieni presente che i pattern elencati qui vengono considerati come origini, non URL, quindi non dovresti specificare un percorso.
+
+Visita la pagina https://developers.google.com/privacy-sandbox/cookies/storage-partitioning per informazioni dettagliate sul partizionamento dello spazio di archiviazione di terze parti.</translation>
 <translation id="7468182772656807573">Questo criterio consente di stabilire la frequenza di invio, in millisecondi, dei pacchetti di rete di monitoraggio. Gli intervalli sono compresi tra 30 secondi e 24 ore. I valori che non rientrano in questo intervallo verranno fatti rientrare nei limiti.
 
       Se il criterio non viene configurato, viene applicato l'intervallo predefinito di 3 minuti.</translation>
@@ -8849,6 +8980,7 @@ Se il criterio viene lasciato vuoto, non sono consentite eccezioni a <ph name="F
 <translation id="7612059745454194563">Non consentire la visualizzazione della promozione dell'estensione fornitore di credenziali</translation>
 <translation id="7612157962821894603">Contrassegni a livello di sistema da applicare all'avvio di <ph name="PRODUCT_NAME" /></translation>
 <translation id="7613115815080726221">Il periodo di tempo, in millisecondi, senza input dell'utente trascorso il quale viene compiuta l'azione stabilita per l'inattività.</translation>
+<translation id="7613706918933704660">Non consentire alle origini delle app web isolate di utilizzare Direct Sockets</translation>
 <translation id="7614663184588396421">Elenco degli schemi di protocollo disabilitati</translation>
 <translation id="7616631530432070402">Le suite di crittografia 3DES saranno attivate in TLS</translation>
 <translation id="761788785484453836">Richiedi l'isolamento dei siti per tutti i siti web</translation>
@@ -9029,6 +9161,7 @@ Se questo criterio non viene impostato, il renderer del PDF viene scelto dal bro
 <translation id="776110834126722255">Deprecata</translation>
 <translation id="7763614521440615342">Mostra suggerimenti di contenuti nella pagina Nuova scheda</translation>
 <translation id="7763650553214838209">L'impostazione di una scorciatoia per l'azione "Inserisci" è disattivata.</translation>
+<translation id="7763655314629932385">Specifica la versione che vuoi dell'IWA. Se viene fornita, il sistema tenterà di installare questa versione specifica e successivamente bloccherà eventuali ulteriori aggiornamenti. Per sbloccare l'app e abilitare nuovamente gli aggiornamenti, rimuovi questo campo. **Importante:** se la versione fornita non esiste, l'IWA rimane bloccata sulla versione installata al momento. Questo perché dopo aver tentato (e in questo caso senza successo) di eseguire l'aggiornamento alla versione bloccata, la limitazione degli aggiornamenti disabilita ulteriori aggiornamenti automatici.</translation>
 <translation id="776465643636059256">Disattiva insiemi di siti web correlati</translation>
 <translation id="7765879851993224640">Consenti l'uso dell'accesso tramite Smart Lock.</translation>
 <translation id="7767066506143083523">Se il criterio viene configurato, puoi impostare un elenco di pattern URL che possono usare la funzionalità di acquisizione schede.
@@ -9063,6 +9196,15 @@ Se questo criterio non viene impostato, il renderer del PDF viene scelto dal bro
           Se questo criterio non viene impostato, le scorciatoie delle funzioni di accessibilità saranno attive per impostazione predefinita nella schermata di accesso.</translation>
 <translation id="7777535871204167559">Considera i dispositivi di archiviazione esterni come di sola lettura</translation>
 <translation id="7781452670568828399">Modifica la configurazione di <ph name="PRODUCT_OS_NAME" /> consigliata.</translation>
+<translation id="7782770795171480507">La configurazione del criterio consente di specificare un elenco di app web isolate (IWA) che vengono installate automaticamente.
+      Le IWA sono applicazioni che presentano proprietà di sicurezza utili non disponibili per le normali pagine web, che vengono pacchettizzati in un bundle web firmato. La chiave pubblica del bundle web firmato viene utilizzata per creare l'ID pacchetto web che identifica l'IWA.
+      Finora questo criterio funziona solo per la sessione Ospite gestita.
+
+      Ogni elemento nell'elenco del criterio è un oggetto con due campi obbligatori: il manifest di aggiornamento <ph name="URL_LABEL" /> e l'ID pacchetto web dell'app web isolata.
+
+      Ogni elemento può anche avere campi facoltativi: un nome del canale di rilascio/aggiornamento dell'IWA (update_channel) e una versione specifica da bloccare (pinned_version).
+      Se il criterio "update_channel" non viene configurato, verrà utilizzato il valore "default". Quando viene specificato pinned_version, il sistema tenta di installare quella versione specifica (se disponibile sul canale di aggiornamento corrente).
+      Per impostazione predefinita, il blocco della versione non consente di tornare alle versioni precedenti. Se blocchi un'IWA a una versione specifica, non può essere aggiornato oltre quella versione. Per sbloccare la versione, rimuovi questo campo.</translation>
 <translation id="7784062550705119230">Se per il criterio <ph name="DEVICE_PRINTERS_ACCESS_MODE_POLICY_NAME" /> viene selezionata l'opzione <ph name="PRINTERS_ALLOWLIST" />, la configurazione del criterio <ph name="DEVICE_PRINTERS_ALLOWLIST_POLICY_NAME" /> consente di specificare le stampanti che possono essere utilizzate dagli utenti. Soltanto le stampanti con ID corrispondenti ai valori specificati in questo criterio saranno a disposizione degli utenti. Gli ID devono corrispondere ai campi <ph name="ID_FIELD" /> o <ph name="GUID_FIELD" /> del file specificato nel criterio <ph name="DEVICE_PRINTERS_POLICY_NAME" />.</translation>
 <translation id="7785199109546027763">Un criterio per controllare se la funzionalità di protezione IP di <ph name="PRIVACY_SANDBOX_NAME" /> deve essere attivata o meno.
 
@@ -9081,6 +9223,11 @@ Se questo criterio viene impostato su false o se non viene configurato, <ph name
 Per maggiori informazioni sul criterio <ph name="IEEM_SITELIST_POLICY" /> di Internet Explorer: https://docs.microsoft.com/internet-explorer/ie11-deploy-guide/what-is-enterprise-mode</translation>
 <translation id="7791215522423893512">Non consentire agli utenti di acquisire screenshot o registrazioni video</translation>
 <translation id="7792796937016596423">L'utente non potrà eseguire acquisizioni di pacchetti di rete</translation>
+<translation id="7795648856511126914">Il parser HTML sta per essere modificato per consentire l'inserimento di tag HTML aggiuntivi all'interno dell'elemento &lt;select&gt;. Questa policy consente di utilizzare il comportamento del parser HTML precedente fino alla versione M136.
+
+Se la policy viene attivata o se non viene configurata, il parser HTML consente l'uso di tag aggiuntivi all'interno dell'elemento &lt;select&gt;.
+
+Se viene disattivata, il parser HTML limita i tag che possono essere inseriti all'interno dell'elemento &lt;select&gt;.</translation>
 <translation id="7798441698807517880">Questo criterio è stato rimosso dalla versione 89 di <ph name="PRODUCT_NAME" /> perché<ph name="FLASH_PLUGIN_NAME" /> è stato ritirato.
 
       Se il criterio viene impostato su Vero, vengono eseguiti tutti i contenuti <ph name="FLASH_PLUGIN_NAME" /> incorporati nei siti web che consentono <ph name="FLASH_PLUGIN_NAME" />, inclusi i contenuti di altre origini o contenuti ridotti.
@@ -9113,6 +9260,7 @@ Per maggiori informazioni sul criterio <ph name="IEEM_SITELIST_POLICY" /> di Int
 <translation id="7832225468415136704">Impedisci a Chrome Software Cleaner di eseguire scansioni periodiche del sistema e disattiva le scansioni manuali</translation>
 <translation id="7833148823006528332">Identificatore dell'app Android, ad esempio "com.google.android.gm" per Gmail.</translation>
 <translation id="7835218570504220753">Disattiva i clic automatici</translation>
+<translation id="7836591982756027878">Consenti l'accesso alla rete privata nell'API Direct Sockets su questi siti</translation>
 <translation id="7839124608155212387">La frequenza di raccolta della telemetria di utilizzo delle app sui dispositivi registrati per gli utenti affiliati. Il valore minimo consentito è 5 minuti.
 
       Se il criterio non viene configurato, viene applicata la frequenza predefinita di 15 minuti.</translation>
@@ -9241,6 +9389,7 @@ Se il criterio viene disattivato, tutte le applicazioni native create durante l'
 Disattiva il criterio solo se utilizzi una soluzione di sicurezza degli endpoint che blocca le applicazioni con una firma ad hoc.</translation>
 <translation id="7941528208359969119">Consenti l'esecuzione dei controlli <ph name="OCSP_CRL_LABEL" /> online</translation>
 <translation id="7941975817681987555">Non prevedere le azioni di rete su qualsiasi connessione di rete</translation>
+<translation id="794447754389837404">Blocca l'accesso alla rete privata nell'API Direct Sockets su questi siti</translation>
 <translation id="7945445169067895719">Attiva il blocco quando il dispositivo viene sospeso o il coperchio viene chiuso</translation>
 <translation id="7946350455013548764">Se il criterio viene impostato su 3, i siti web possono richiedere l'accesso ai dispositivi HID. Se il criterio viene impostato su 2, viene negato l'accesso ai dispositivi HID.
 
@@ -9295,21 +9444,6 @@ Disattiva il criterio solo se utilizzi una soluzione di sicurezza degli endpoint
           Questo criterio è stato rimosso in Chrome 110.
                                         </translation>
 <translation id="7976157349247117979">Nome della destinazione di <ph name="PRODUCT_NAME" /></translation>
-<translation id="7982057585796399404">Questo criterio consente di specificare un elenco di app ed estensioni installate automaticamente, senza interazione dell'utente, e che non possono essere disinstallate o disattivate dagli utenti. Le autorizzazioni vengono concesse implicitamente, anche quelle relative alle API delle estensioni enterprise.deviceAttributes ed enterprise.platformKeys. Queste due API non sono disponibili per le app e le estensioni senza installazione forzata.
-
-Se il criterio non viene configurato, nessuna app o estensione viene installata automaticamente e gli utenti possono disinstallare qualsiasi app o estensione in <ph name="PRODUCT_NAME" />.
-
-Questo criterio prevale sul criterio <ph name="EXTENSION_INSTALL_BLOCKLIST_POLICY_NAME" />. Se un'app o un'estensione di cui è stata precedentemente forzata l'installazione viene rimossa da questo elenco, questa app o estensione viene disinstallata automaticamente da <ph name="PRODUCT_NAME" />.
-
-Il codice sorgente di qualsiasi estensione può essere modificato dagli utenti tramite gli strumenti per sviluppatori, causando potenzialmente il malfunzionamento dell'estensione. Per evitare un problema di questo tipo, imposta il criterio <ph name="DEVELOPER_TOOLS_DISABLED_POLICY_NAME" />.
-
-Ogni voce nell'elenco del criterio è una stringa contenente un ID estensione e, facoltativamente, un URL di aggiornamento separati da punto e virgola (;). L'ID estensione è la stringa di 32 lettere che si trova, ad esempio, all'indirizzo tangram://extensions quando è attiva la modalità sviluppatore. Se specificato, l'URL di aggiornamento deve indirizzare a un documento XML manifest di aggiornamento (https://developer.chrome.com/extensions/autoupdate). L'URL di aggiornamento deve utilizzare uno dei seguenti schemi: <ph name="HTTP_SCHEME" />, <ph name="HTTPS_SCHEME" /> o <ph name="FILE_SCHEME" />. Per impostazione predefinita, viene utilizzato l'URL di aggiornamento del Chrome Web Store. L'URL di aggiornamento impostato in questo criterio viene utilizzato esclusivamente per l'installazione iniziale; per i successivi aggiornamenti dell'estensione viene utilizzato l'URL di aggiornamento nel file manifest dell'estensione. È possibile eseguire l'override dell'URL di aggiornamento per gli aggiornamenti successivi utilizzando il criterio <ph name="EXTENSION_SETTINGS_POLICY_NAME" />; vedi http://support.google.com/chrome/a?p=Configure_ExtensionSettings_policy.
-
-Sulle istanze di <ph name="MS_WIN_NAME" /> è possibile forzare l'installazione di app ed estensioni che non fanno parte del Chrome Web Store soltanto se l'istanza è aggiunta a un dominio <ph name="MS_AD_NAME" />, aggiunta a <ph name="MS_AAD_NAME" /> o registrata in <ph name="CHROME_BROWSER_CLOUD_MANAGEMENT_NAME" />.
-
-Sulle istanze di <ph name="MAC_OS_NAME" /> è possibile forzare l'installazione di app ed estensioni che non fanno parte del Chrome Web Store soltanto se l'istanza è gestita tramite MDM, aggiunta a un dominio tramite MCX o registrata in <ph name="CHROME_BROWSER_CLOUD_MANAGEMENT_NAME" />.
-
-Nota: questo criterio non viene applicato alla modalità di navigazione in incognito. Scopri di più sull'hosting delle estensioni (https://developer.chrome.com/extensions/hosting).</translation>
 <translation id="7985242821674907985"><ph name="PRODUCT_NAME" /></translation>
 <translation id="7985781946183471651">Glanceables su <ph name="PRODUCT_OS_NAME" /></translation>
 <translation id="7986473886676689183">Attiva la generazione di report Android</translation>
@@ -9846,6 +9980,23 @@ Se il criterio non viene impostato o viene impostato su 0 e si passa a un URL de
 
       Se il criterio viene disattivato o non viene impostato, saranno utilizzati solo i normali profili locali.</translation>
 <translation id="8417305981081876834">Imposta la lunghezza massima del PIN per la schermata di blocco</translation>
+<translation id="8418020431103978663">Questo criterio consente di specificare un elenco di app ed estensioni installate automaticamente, senza interazione dell'utente, e che non possono essere disinstallate o disattivate dagli utenti tramite l'interfaccia <ph name="PRODUCT_NAME" />. Le autorizzazioni vengono concesse implicitamente, anche quelle relative alle API delle estensioni enterprise.deviceAttributes ed enterprise.platformKeys. Queste due API non sono disponibili per le app e le estensioni senza installazione forzata.
+
+Sebbene <ph name="PRODUCT_NAME" /> abbia l'obiettivo di impedire agli utenti di disinstallare queste estensioni, alcuni sistemi operativi non consentono a <ph name="PRODUCT_NAME" /> di difendersi in modo efficace contro la modifica esterna delle estensioni, quindi questa è la soluzione migliore.
+
+Se il criterio non viene configurato, nessuna app o estensione viene installata automaticamente e gli utenti possono disinstallare qualsiasi app o estensione in <ph name="PRODUCT_NAME" />.
+
+Questo criterio prevale sul criterio <ph name="EXTENSION_INSTALL_BLOCKLIST_POLICY_NAME" />. Se un'app o un'estensione di cui è stata precedentemente forzata l'installazione viene rimossa da questo elenco, questa app o estensione viene disinstallata automaticamente da <ph name="PRODUCT_NAME" />.
+
+Il codice sorgente di qualsiasi estensione può essere modificato dagli utenti tramite gli strumenti per sviluppatori, causando potenzialmente il malfunzionamento dell'estensione. Per evitare un problema di questo tipo, imposta il criterio <ph name="DEVELOPER_TOOLS_DISABLED_POLICY_NAME" />.
+
+Ogni elemento nell'elenco del criterio è una stringa contenente un ID estensione e, facoltativamente, un URL di aggiornamento separati da punto e virgola (;). L'ID estensione è la stringa di 32 lettere che si trova, ad esempio, all'indirizzo chrome://extensions quando è attiva la modalità sviluppatore. Se specificato, l'URL di aggiornamento deve indirizzare a un documento XML manifest di aggiornamento (https://developer.chrome.com/extensions/autoupdate). L'URL di aggiornamento deve utilizzare uno dei seguenti schemi: <ph name="HTTP_SCHEME" />, <ph name="HTTPS_SCHEME" /> o <ph name="FILE_SCHEME" />. Per impostazione predefinita, viene utilizzato l'URL di aggiornamento del Chrome Web Store. L'URL di aggiornamento impostato in questo criterio viene utilizzato esclusivamente per l'installazione iniziale; per i successivi aggiornamenti dell'estensione viene utilizzato l'URL di aggiornamento nel file manifest dell'estensione. È possibile eseguire l'override dell'URL di aggiornamento per gli aggiornamenti successivi utilizzando il criterio <ph name="EXTENSION_SETTINGS_POLICY_NAME" />; vedi http://support.google.com/chrome/a?p=Configure_ExtensionSettings_policy.
+
+Sulle istanze di <ph name="MS_WIN_NAME" /> è possibile forzare l'installazione di app ed estensioni che non fanno parte del Chrome Web Store soltanto se l'istanza è aggiunta a un dominio <ph name="MS_AD_NAME" />, aggiunta a <ph name="MS_AAD_NAME" /> o registrata in <ph name="CHROME_BROWSER_CLOUD_MANAGEMENT_NAME" />.
+
+Sulle istanze di <ph name="MAC_OS_NAME" /> è possibile forzare l'installazione di app ed estensioni che non fanno parte del Chrome Web Store soltanto se l'istanza è gestita tramite MDM, aggiunta a un dominio tramite MCX o registrata in <ph name="CHROME_BROWSER_CLOUD_MANAGEMENT_NAME" />.
+
+Nota: questo criterio non viene applicato alla modalità di navigazione in incognito. Leggi maggiori informazioni sull'hosting delle estensioni (https://developer.chrome.com/extensions/hosting).</translation>
 <translation id="841977920223099909">Attivazione dell'avviso di protezione tramite password</translation>
 <translation id="8419965165591256432">La frequenza del rilevamento dello stato dell'attività del dispositivo su dispositivi registrati di utenti affiliati. Il valore minimo consentito è 1 minuto.
 
@@ -10027,6 +10178,7 @@ Se configuri questo criterio, il criterio <ph name="PRIVACY_SANDBOX_PROMPT_ENABL
 <translation id="8559221882677768248">Disattiva Seleziona per ascoltare nella schermata di accesso</translation>
 <translation id="8561512522781085002">Le impostazioni di Pagina su/Pagina giù usano la scorciatoia che contiene il tasto di modifica Ricerca</translation>
 <translation id="8566842294717252664">Nascondi il Web Store nella pagina Nuova scheda e in Avvio applicazioni</translation>
+<translation id="8571119890730528225">Disattiva il partizionamento dello spazio di archiviazione di terze parti.</translation>
 <translation id="8571314270766672278">Esegui il rollback e il reset del dispositivo con un downgrade del canale, prova a mantenere la registrazione</translation>
 <translation id="8571871284943706125">Segnala eventi di sessioni CRD su dispositivi registrati per utenti affiliati.
 
@@ -10563,6 +10715,7 @@ Se non viene configurato, verrà utilizzato il nuovo comportamento, esattamente 
 <translation id="8955719471735800169">Torna all'inizio</translation>
 <translation id="8956312248048980644">Consente per impostazione predefinita il clustering di agenti in base all'origine.</translation>
 <translation id="8963464192296208229">Le impostazioni di F11 usano la scorciatoia che contiene il tasto di modifica Alt</translation>
+<translation id="8966888925105658202">Non consentire alle origini delle app web isolate di comunicare con gli endpoint di rete privata nell'API Direct Sockets</translation>
 <translation id="8970205333161758602">Eliminazione del messaggio di richiesta di turndown di <ph name="PRODUCT_FRAME_NAME" /></translation>
 <translation id="8973579598359969188">Scegli se è possibile o meno mostrare la richiesta di <ph name="PRIVACY_SANDBOX_NAME" /> ai tuoi utenti</translation>
 <translation id="8974457039656761249">Controlla la funzionalità di scrittura predittiva sulla tastiera fisica</translation>

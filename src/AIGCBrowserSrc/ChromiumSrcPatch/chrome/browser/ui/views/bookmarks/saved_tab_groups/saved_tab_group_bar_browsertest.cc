@@ -9,7 +9,6 @@
 #include "base/task/single_thread_task_runner.h"
 #include "base/test/bind.h"
 #include "base/test/scoped_feature_list.h"
-#include "base/test/test_timeouts.h"
 #include "base/uuid.h"
 #include "chrome/browser/favicon/favicon_utils.h"
 #include "chrome/browser/tab_group_sync/tab_group_sync_service_factory.h"
@@ -75,10 +74,11 @@ struct ScopedAddObservation : public TabGroupSyncService::Observer {
   }
 
   void Wait() {
+    // Post a dummy task in the current thread and wait for its completion so
+    // that any already posted tasks are completed.
     base::RunLoop run_loop;
-    // TODO(374350055): Find alternative to timeout.
-    base::SingleThreadTaskRunner::GetCurrentDefault()->PostDelayedTask(
-        FROM_HERE, run_loop.QuitClosure(), TestTimeouts::tiny_timeout());
+    base::SingleThreadTaskRunner::GetCurrentDefault()->PostTask(
+        FROM_HERE, run_loop.QuitClosure());
     run_loop.Run();
   }
 

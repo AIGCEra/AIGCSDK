@@ -134,7 +134,6 @@
 #include "chrome/browser/ui/tab_dialogs.h"
 #include "chrome/browser/ui/tab_helpers.h"
 #include "chrome/browser/ui/tab_modal_confirm_dialog.h"
-#include "chrome/browser/ui/tabs/saved_tab_groups/saved_tab_group_utils.h"
 #include "chrome/browser/ui/tabs/tab_enums.h"
 #include "chrome/browser/ui/tabs/tab_group.h"
 #include "chrome/browser/ui/tabs/tab_group_deletion_dialog_controller.h"
@@ -405,8 +404,7 @@ bool ShouldShowCookieMigrationNoticeForBrowser(const Browser& browser) {
 }
 
 void UpdateTabGroupSessionMetadata(Browser* browser,
-                                   const tab_groups::TabGroupId& group_id,
-                                   std::optional<std::string> saved_group_id) {
+                                   const tab_groups::TabGroupId& group_id) {
   SessionService* const session_service =
       SessionServiceFactory::GetForProfile(browser->profile());
   if (!session_service) {
@@ -420,7 +418,7 @@ void UpdateTabGroupSessionMetadata(Browser* browser,
           ->visual_data();
 
   session_service->SetTabGroupMetadata(browser->session_id(), group_id,
-                                       visual_data, std::move(saved_group_id));
+                                       visual_data);
 }
 
 }  // namespace
@@ -1151,6 +1149,11 @@ bool Browser::ShouldHideUIForFullscreen() const {
   return window_ && window_->ShouldHideUIForFullscreen();
 }
 
+base::CallbackListSubscription Browser::RegisterBrowserDidClose(
+    BrowserDidCloseCallback callback) {
+  return browser_did_close_callback_list_.Add(std::move(callback));
+}
+
 views::View* Browser::TopContainer() {
   return window_->GetTopContainer();
 }
@@ -1205,6 +1208,18 @@ BrowserUserEducationInterface* Browser::GetUserEducationInterface() {
 
 web_app::AppBrowserController* Browser::GetAppBrowserController() {
   return app_controller_.get();
+}
+
+std::vector<tabs::TabInterface*> Browser::GetAllTabInterfaces() {
+  std::vector<tabs::TabInterface*> results;
+  for (int index = 0; index < tab_strip_model_->count(); ++index) {
+    results.push_back(tab_strip_model_->GetTabAtIndex(index));
+  }
+  return results;
+}
+
+Browser* Browser::GetBrowserForMigrationOnly() {
+  return this;
 }
 
 void Browser::DidBecomeActive() {
@@ -1276,6 +1291,10 @@ void Browser::OnWindowClosing() {
     // If there are no tabs, then a task will be scheduled (by views) to delete
     // this Browser.
     is_delete_scheduled_ = true;
+
+    // At this point the browser has successfully closed and is scheduled for
+    // deletion.
+    browser_did_close_callback_list_.Notify(this);
   }
 }
 
@@ -1535,18 +1554,7 @@ void Browser::OnTabGroupChanged(const TabGroupChange& change) {
   DCHECK(!IsRelevantToAppSessionService(type_));
   DCHECK(tab_strip_model_->group_model());
   if (change.type == TabGroupChange::kVisualsChanged) {
-    std::optional<std::string> saved_guid;
-
-    tab_groups::TabGroupSyncService* tab_group_service =
-        tab_groups::SavedTabGroupUtils::GetServiceForProfile(profile_);
-    if (tab_group_service) {
-      const std::optional<tab_groups::SavedTabGroup> saved_group =
-          tab_group_service->GetGroup(change.group);
-      if (saved_group) {
-        saved_guid = saved_group->saved_guid().AsLowercaseString();
-      }
-    }
-    UpdateTabGroupSessionMetadata(this, change.group, std::move(saved_guid));
+    UpdateTabGroupSessionMetadata(this, change.group);
   } else if (change.type == TabGroupChange::kClosed) {
     sessions::TabRestoreService* tab_restore_service =
         TabRestoreServiceFactory::GetForProfile(profile());

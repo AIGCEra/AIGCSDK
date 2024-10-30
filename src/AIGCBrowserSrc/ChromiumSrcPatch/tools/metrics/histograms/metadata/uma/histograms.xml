@@ -71,7 +71,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="Histogram.TooManyBuckets.1000" enum="HistogramNameHash"
-    expires_after="2024-11-01">
+    expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -182,7 +182,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.ClientIdBackupRecoveredWithAge" units="hours"
-    expires_after="2024-04-28">
+    expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -259,6 +259,21 @@ chromium-metrics-reviews@google.com.
   </summary>
 </histogram>
 
+<histogram name="UMA.DriveIs{Attribute}Result" enum="OptionalBoolRecord"
+    expires_after="2025-02-28">
+  <owner>spvw@chromium.org</owner>
+  <owner>chrome-catan@chromium.org</owner>
+  <summary>
+    Whether the hard drive containing either the user profile or chrome binary
+    was able to be queried for whether it is {Attribute}, and if so, the result
+    of that query.
+  </summary>
+  <token key="Attribute">
+    <variant name="Removable"/>
+    <variant name="USB"/>
+  </token>
+</histogram>
+
 <histogram name="UMA.EnrollmentStatus" enum="EnrollmentStatus"
     expires_after="never">
 <!-- expires-never: used internally for filtering -->
@@ -295,7 +310,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.FileMetricsProvider.AccessResult"
-    enum="FileMetricsProviderAccessResult" expires_after="2024-05-05">
+    enum="FileMetricsProviderAccessResult" expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -304,7 +319,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.FileMetricsProvider.InitialAccessResult"
-    enum="FileMetricsProviderAccessResult" expires_after="2024-11-01">
+    enum="FileMetricsProviderAccessResult" expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -314,7 +329,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.FileMetricsProvider.{Source}.MergedHistogramsCount"
-    units="histograms" expires_after="2024-11-01">
+    units="histograms" expires_after="2025-11-01">
   <owner>lucnguyen@google.com</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -597,7 +612,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.NegativeSamples.Histogram" enum="HistogramNameHash"
-    expires_after="2024-11-01">
+    expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -606,7 +621,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.NegativeSamples.Increment" units="increment"
-    expires_after="2024-11-01">
+    expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -615,7 +630,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.NegativeSamples.Reason" enum="NegativeSampleReason"
-    expires_after="2024-11-01">
+    expires_after="2025-11-01">
   <owner>asvitkine@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>
@@ -801,7 +816,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.SeekPenaltyResult.{Implementation}"
-    enum="SeekPenaltyRecord" expires_after="2025-02-28">
+    enum="OptionalBoolRecord" expires_after="2025-02-28">
   <owner>spvw@chromium.org</owner>
   <owner>chrome-catan@chromium.org</owner>
   <summary>
@@ -978,7 +993,7 @@ chromium-metrics-reviews@google.com.
 </histogram>
 
 <histogram name="UMA.TruncatedEvents.UserAction" units="events"
-    expires_after="2025-04-13">
+    expires_after="2025-04-27">
   <owner>rkaplow@chromium.org</owner>
   <owner>src/base/metrics/OWNERS</owner>
   <summary>

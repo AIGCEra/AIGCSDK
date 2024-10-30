@@ -368,6 +368,8 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
       settings_api::PrefType::kNumber;
   (*s_allowlist)[::content_settings::kCookieDefaultContentSetting] =
       settings_api::PrefType::kString;
+  (*s_allowlist)[::content_settings::kThirdPartyCookieBlockingSetting] =
+      settings_api::PrefType::kNumber;
   (*s_allowlist)[::prefs::kPrivacySandboxRelatedWebsiteSetsEnabled] =
       settings_api::PrefType::kBoolean;
   (*s_allowlist)[::prefs::kBlockAll3pcToggleEnabled] =
@@ -389,8 +391,6 @@ const PrefsUtil::TypedPrefMap& PrefsUtil::GetAllowlistedKeys() {
       [::unified_consent::prefs::kUrlKeyedAnonymizedDataCollectionEnabled] =
           settings_api::PrefType::kBoolean;
   (*s_allowlist)[unified_consent::prefs::kPageContentCollectionEnabled] =
-      settings_api::PrefType::kBoolean;
-  (*s_allowlist)[::omnibox::kDocumentSuggestEnabled] =
       settings_api::PrefType::kBoolean;
   (*s_allowlist)[::commerce::kPriceEmailNotificationsEnabled] =
       settings_api::PrefType::kBoolean;

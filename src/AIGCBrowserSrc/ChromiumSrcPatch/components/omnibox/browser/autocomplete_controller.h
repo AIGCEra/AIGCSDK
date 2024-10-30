@@ -139,7 +139,8 @@ class AutocompleteController : public AutocompleteProviderListener,
                             const AutocompleteResult& result) {}
 
     // Invoked when autocomplete stop timer is triggered.
-    virtual void OnAutocompleteStopTimerTriggered() {}
+    virtual void OnAutocompleteStopTimerTriggered(
+        const AutocompleteInput& input) {}
   };
 
   // Converts `UpdateType` to string.
@@ -321,7 +322,7 @@ class AutocompleteController : public AutocompleteProviderListener,
   FRIEND_TEST_ALL_PREFIXES(AutocompleteControllerTest,
                            FilterMatchesForInstantKeywordWithBareAt);
   FRIEND_TEST_ALL_PREFIXES(AutocompleteControllerTest,
-                           NoPedalsAttachedToLensSearchboxMatches);
+                           NoActionsAttachedToLensSearchboxMatches);
   FRIEND_TEST_ALL_PREFIXES(AutocompleteProviderTest,
                            RedundantKeywordsIgnoredInResult);
   FRIEND_TEST_ALL_PREFIXES(AutocompleteProviderTest, UpdateSearchboxStats);
@@ -391,7 +392,13 @@ class AutocompleteController : public AutocompleteProviderListener,
 
   // Updates `internal_result_` to reflect the current provider state and fires
   // notifications.
-  void UpdateResult(UpdateType update_type);
+  // TODO(crbug.com/364303536): `allow_post_done_updates` allows some exceptions
+  //   in the DCHECKs that verify the order of `update_type`s used in
+  //   consecutive `UpdateResult()` calls makes sense. It's a temporary fix for
+  //   allowing history embedding answers to `UpdateResults()` after
+  //   `stop_timer_` has fired.
+  void UpdateResult(UpdateType update_type,
+                    bool allow_post_done_updates = false);
 
   // `UpdateResult()` helper. Aggregates matches from `providers_` into
   // `internal_result_`.

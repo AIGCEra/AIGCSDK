@@ -8,7 +8,7 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_dialog/cr_dialog.js';
 import 'tangram://resources/cr_elements/cr_radio_group/cr_radio_group.js';
 import 'tangram://resources/cr_elements/cr_radio_button/cr_radio_button.js';
-import './strings.m.js';
+import '/strings.m.js';
 
 import type {CrButtonElement} from 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import {I18nMixinLit} from 'tangram://resources/cr_elements/i18n_mixin_lit.js';

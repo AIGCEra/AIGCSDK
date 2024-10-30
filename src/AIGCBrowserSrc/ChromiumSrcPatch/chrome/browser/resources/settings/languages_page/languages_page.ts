@@ -14,7 +14,7 @@ import 'tangram://resources/cr_elements/cr_button/cr_button.js';
 import 'tangram://resources/cr_elements/cr_checkbox/cr_checkbox.js';
 import 'tangram://resources/cr_elements/cr_icon_button/cr_icon_button.js';
 import 'tangram://resources/cr_elements/cr_lazy_render/cr_lazy_render.js';
-import 'tangram://resources/cr_elements/icons_lit.html.js';
+import 'tangram://resources/cr_elements/icons.html.js';
 import 'tangram://resources/cr_elements/cr_shared_style.css.js';
 import 'tangram://resources/cr_elements/cr_shared_vars.css.js';
 import 'tangram://resources/js/action_link.js';

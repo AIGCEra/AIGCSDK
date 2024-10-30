@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {EventTracker} from 'tangram://resources/js/event_tracker.js';
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';

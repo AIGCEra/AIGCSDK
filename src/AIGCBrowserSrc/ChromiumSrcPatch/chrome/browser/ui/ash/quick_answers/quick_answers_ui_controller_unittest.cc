@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "chrome/browser/ui/quick_answers/quick_answers_ui_controller.h"
+#include "chrome/browser/ui/ash/quick_answers/quick_answers_ui_controller.h"
 
 #include <memory>
 #include <string>
@@ -14,9 +14,9 @@
 #include "base/memory/raw_ptr.h"
 #include "base/strings/strcat.h"
 #include "base/strings/stringprintf.h"
-#include "chrome/browser/ui/quick_answers/quick_answers_controller_impl.h"
-#include "chrome/browser/ui/quick_answers/test/chrome_quick_answers_test_base.h"
-#include "chrome/browser/ui/quick_answers/ui/quick_answers_view.h"
+#include "chrome/browser/ui/ash/quick_answers/quick_answers_controller_impl.h"
+#include "chrome/browser/ui/ash/quick_answers/test/chrome_quick_answers_test_base.h"
+#include "chrome/browser/ui/ash/quick_answers/ui/quick_answers_view.h"
 #include "chrome/browser/ui/settings_window_manager_chromeos.h"
 #include "chromeos/components/quick_answers/test/fake_quick_answers_state.h"
 #include "chromeos/strings/grit/chromeos_strings.h"

@@ -3,14 +3,15 @@
 // found in the LICENSE file.
 
 import 'tangram://resources/cr_components/localized_link/localized_link.js';
-import '../strings.m.js';
+import '/strings.m.js';
 
 import {loadTimeData} from 'tangram://resources/js/load_time_data.js';
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';
 
+import {TabOrganizationError} from '../tab_search.mojom-webui.js';
+
 import {getCss} from './auto_tab_groups_failure.css.js';
 import {getHtml} from './auto_tab_groups_failure.html.js';
-import {TabOrganizationError} from '../tab_search.mojom-webui.js';
 
 export interface AutoTabGroupsFailureElement {
   $: {

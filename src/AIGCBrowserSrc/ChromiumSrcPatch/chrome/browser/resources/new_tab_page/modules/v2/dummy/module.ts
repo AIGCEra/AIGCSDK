@@ -4,7 +4,7 @@
 
 import 'tangram://resources/cr_elements/cr_grid/cr_grid.js';
 import 'tangram://resources/cr_elements/cr_auto_img/cr_auto_img.js';
-import '../../../strings.m.js';
+import '/strings.m.js';
 import '../../module_header.js';
 
 import {CrLitElement} from 'tangram://resources/lit/v3_0/lit.rollup.js';

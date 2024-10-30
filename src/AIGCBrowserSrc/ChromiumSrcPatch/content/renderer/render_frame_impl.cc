@@ -204,7 +204,6 @@
 #include "third_party/blink/public/web/blink.h"
 #include "third_party/blink/public/web/modules/media/audio/audio_device_factory.h"
 #include "third_party/blink/public/web/modules/media/audio/audio_output_ipc_factory.h"
-#include "third_party/blink/public/web/modules/media/web_media_player_util.h"
 #include "third_party/blink/public/web/modules/mediastream/web_media_stream_device_observer.h"
 #include "third_party/blink/public/web/web_autofill_client.h"
 #include "third_party/blink/public/web/web_console_message.h"
@@ -2254,7 +2253,18 @@ void RenderFrameImpl::BindFrameBindingsControl(
 
 void RenderFrameImpl::BindNavigationClient(
     mojo::PendingAssociatedReceiver<mojom::NavigationClient> receiver) {
-  navigation_client_impl_ = std::make_unique<NavigationClient>(this);
+  // If the provisional owner frame is a local frame and it has a non-null
+  // `navigation_client_impl_`, it began the navigation. Some properties need
+  // to be copied over from the original `NavigationClient` to preserve
+  // behaviour.
+  NavigationClient* initiator_navigation_client = nullptr;
+  WebFrame* initiator_frame = GetWebFrame()->GetProvisionalOwnerFrame();
+  if (initiator_frame && initiator_frame->IsWebLocalFrame()) {
+    initiator_navigation_client = RenderFrameImpl::FromWebFrame(initiator_frame)
+                                      ->navigation_client_impl_.get();
+  }
+  navigation_client_impl_ =
+      std::make_unique<NavigationClient>(this, initiator_navigation_client);
   navigation_client_impl_->Bind(std::move(receiver));
 }
 
@@ -2370,9 +2380,11 @@ void RenderFrameImpl::Delete(mojom::FrameDeleteIntention intent) {
       // TODO(dcheng): This is the case of https://crbug.com/838348.
       DCHECK(is_main_frame_);
 #if !BUILDFLAG(IS_ANDROID)
-      // This check is not enabled on Android, since it seems like it's much
-      // easier to trigger data races there.
       CHECK(!in_frame_tree_);
+#else
+      // Previously this CHECK() was disabled on Android because it was much
+      // easier to hit the race there.
+      CHECK(!in_frame_tree_, base::NotFatalUntil::M135);
 #endif  // !BUILDFLAG(IS_ANDROID)
       break;
   }
@@ -3989,7 +4001,7 @@ void RenderFrameImpl::WillDetach(blink::DetachReason detach_reason) {
   SendUpdateState();
 }
 
-void RenderFrameImpl::FrameDetached() {
+void RenderFrameImpl::FrameDetached(blink::DetachReason detach_reason) {
   TRACE_EVENT0("navigation", "RenderFrameImpl::FrameDetached");
   base::ScopedUmaHistogramTimer histogram_timer(
       "Navigation.RenderFrameImpl.FrameDetached");
@@ -4010,7 +4022,7 @@ void RenderFrameImpl::FrameDetached() {
   // |frame_| may not be referenced after this, so clear the pointer since
   // the actual WebLocalFrame may not be deleted immediately and other methods
   // may try to access it.
-  frame_->Close();
+  frame_->Close(detach_reason);
   frame_ = nullptr;
 
   if (mhtml_body_loader_client_) {
@@ -4579,7 +4591,7 @@ bool RenderFrameImpl::SwapOutAndDeleteThis(
     // The swap can fail when the frame is detached during swap (this can
     // happen while running the unload handlers). When that happens, delete
     // the proxy.
-    remote_frame->Close();
+    remote_frame->Close(blink::DetachReason::kFrameDeletion);
     return false;
   }
 
@@ -6653,19 +6665,6 @@ void RenderFrameImpl::BindMhtmlFileWriter(
   mhtml_file_writer_receiver_.reset();
   mhtml_file_writer_receiver_.Bind(
       std::move(receiver), GetTaskRunner(blink::TaskType::kInternalDefault));
-}
-
-// TODO(crbug.com/40550966): Move this method to Blink, and eliminate
-// the plumbing logic through blink::WebLocalFrameClient.
-void RenderFrameImpl::CheckIfAudioSinkExistsAndIsAuthorized(
-    const blink::WebString& sink_id,
-    blink::WebSetSinkIdCompleteCallback completion_callback) {
-  std::move(
-      blink::ConvertToOutputDeviceStatusCB(std::move(completion_callback)))
-      .Run(blink::AudioDeviceFactory::GetInstance()
-               ->GetOutputDeviceInfo(GetWebFrame()->GetLocalFrameToken(),
-                                     sink_id.Utf8())
-               .device_status());
 }
 
 scoped_refptr<network::SharedURLLoaderFactory>
