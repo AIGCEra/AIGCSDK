@@ -1,4 +1,4 @@
-# Every Desktop Application is a Super Web Browser
+# Every Desktop Application is a Super Web Browser for M132
 ## What Problem Do We Need to Solve?
 The problem we need to solve is to enable existing or under developing 64-bit desktop applications, especially those applications developed with .NET, C++/MFC and Win32 SDK, to have their own "Super Web Content Ecosystem" that surpasses Current Web Browsers, and Native Desktop Window Objects becoming Extended Web DOM Elements comparable to "html div" elements, specifically:
 	Allowing developers to directly view ordinary desktop applications as a "Super Web Browser" that surpasses standard web browsers, developers can write any number of webpages directly for ordinary desktop applications.
