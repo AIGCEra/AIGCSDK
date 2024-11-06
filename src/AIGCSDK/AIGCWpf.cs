@@ -80,14 +80,13 @@ namespace AIGC
                     return true;
                 }
             }
-            if(MainWndObj.GetType().IsSubclassOf(typeof(System.Windows.Forms.Form)))
+            if(MainWndObj!=null&&MainWndObj.GetType().IsSubclassOf(typeof(System.Windows.Application)))
             {
-                System.Windows.Forms.Application.Run(MainWndObj as System.Windows.Forms.Form);
-                return true;
-            }
-            else if (MainWndObj.GetType().IsSubclassOf(typeof(System.Windows.Forms.ApplicationContext)))
-            {
-                System.Windows.Forms.Application.Run(MainWndObj as System.Windows.Forms.ApplicationContext);
+                System.Windows.Application app = (System.Windows.Application)MainWndObj;
+                if (app != null)
+                {
+                    app.Run(StartObj as System.Windows.Window);
+                }
                 return true;
             }
             return false;
