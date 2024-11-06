@@ -13,7 +13,7 @@ namespace Tangram
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            AIGC.AIGCApp(new Form1());
+            AIGC.AIGCApp.Run(new Form1());
        }
     }
 }

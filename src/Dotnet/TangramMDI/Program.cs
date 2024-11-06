@@ -16,7 +16,7 @@ namespace TangramMDI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            AIGC.AIGCApp(new MDIParent());
+            AIGC.AIGCApp.Run(new MDIParent());
         }
     }
 }
